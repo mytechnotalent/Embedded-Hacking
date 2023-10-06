@@ -7,7 +7,6 @@
  * DATE: October 6, 2023
  */
 
-
 #include "usart.h"
 
 __attribute__((weak)) int _write(int file, char *ptr, int len)
