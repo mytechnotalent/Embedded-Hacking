@@ -13,7 +13,7 @@
 
 int main(void)
 {
-    usart2_tx_init();
+    usart2_init();
 
     while (1)
     {
