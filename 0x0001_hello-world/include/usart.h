@@ -33,28 +33,55 @@ extern int __io_putchar(int ch) __attribute__((weak));
 static void set_baud_rate(USART_TypeDef *USARTx,  uint32_t periph_clk, uint32_t baud_rate);
 
 /**
- * @brief  Initializes USART2 for transmission on PA2 pin.
+ * @brief  Initializes USART2 for transmission on PA2 pin and receive on PA3 pin.
  *
  *         This function configures the necessary settings for USART2 to enable
- *         transmission on pin PA2. It includes configuring GPIO, setting
- *         alternate function mode, configuring the USART clock, setting the
+ *         transmission on pin PA2 and receive on PA3 pin. It includes configuring 
+ *         GPIO, setting alternate function mode, configuring the USART clock, setting the
  *         baud rate, and enabling the transmitter.
  *
  * @param  None
  * @retval None
  */
-void usart2_tx_init(void);
+void usart2_init(void);
 
 /**
  * @brief  Writes a single byte to USART2 for transmission.
  *
- *         This function writes a single byte to the USART2 transmit data
- *         register for transmission. It ensures that the transmit data register
+ *         This function writes a single byte to the USART2  data
+ *         register for transmission. It ensures that the data register
  *         is empty before writing the byte.
  *
- * @param  ch: The byte to be transmitted.
+ * @param  char_: The byte to be transmitted.
  * @retval None
  */
-void usart2_write(uint8_t ch);
+void usart2_write_char(uint8_t char_);
+
+/**
+ * @brief  Reads a single byte from USART2.
+ *
+ *         This function reads a single byte from the USART2 data
+ *         register. It ensures that the data register is not empty
+ *         before reading the byte.
+ *
+ * @param  None
+ * @retval The byte read from the data register.
+ */
+char usart2_read_char(void);
+
+/**
+ * @brief  Reads a string of characters from input and stores it in the buffer.
+ *
+ *         This function reads characters from input and stores them in the
+ *         provided buffer until either the buffer is full (reaching
+ *         buffer_size - 1 characters) or a newline character is encountered.
+ *         The input is null-terminated, ensuring proper string termination in
+ *         the buffer.
+ *
+ * @param  buffer: Pointer to the buffer where the input characters are stored.
+ * @param  buffer_size: The size of the buffer, including space for the null-terminator.
+ * @retval None
+ */
+void input(char *buffer, size_t buffer_size);
 
 #endif // USART_H
