@@ -7,6 +7,14 @@
 # Embedded-Hacking
 A FREE comprehensive step-by-step embedded hacking tutorial covering Embedded Software Development to Reverse Engineering.
 
+## FREE Book
+[Download](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf)
+
+## Chapter 1: hello, world
+This chapter covers the basics of setting up a dev environment and basic template firmware for the STM32F401CCU6 MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
+
 ## IN DEVELOPMENT
 
 ## License
