@@ -11,12 +11,17 @@ A FREE comprehensive step-by-step embedded hacking tutorial covering Embedded So
 [Download](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf)
 
 ## Chapter 1: hello, world
-This chapter covers the basics of setting up a dev environment and basic template firmware for the STM32F401CCU6 MCU in addition to printing hello, world.
+This chapter covers the basics of setting up a dev environment and basic template firmware for the Pico W MCU in addition to printing hello, world.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 2: Debugging hello, world
-This chapter covers the debugging of our firmware for the STM32F401CCU6 MCU hello, world program.
+This chapter covers the debugging of our firmware for the Pico W MCU hello, world program.
+
+-> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
+
+## Chapter 3: Hacking hello, world
+This chapter covers the hacking of our firmware for the Pico W MCU hello, world program.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
