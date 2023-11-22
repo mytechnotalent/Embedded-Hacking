@@ -50,6 +50,11 @@ This chapter covers uninitialized variables as it relates to embedded developmen
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
+## Chapter 9: Debugging Uninitialized Variables
+This chapter covers debugging uninitialized variables as it relates to embedded development on the Pico W.
+
+-> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
+
 ## IN DEVELOPMENT
 
 ## License
