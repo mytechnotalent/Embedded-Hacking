@@ -51,7 +51,7 @@ target_link_libraries(0x0001_hello-world
         pico_stdlib
         )
 
-pico_enable_stdio_usb(0x0001_hello-world 1)
+pico_enable_stdio_usb(0x0001_hello-world 0)
 pico_enable_stdio_uart(0x0001_hello-world 1)
 
 pico_add_extra_outputs(0x0001_hello-world)
