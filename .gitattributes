@@ -1,3 +1,4 @@
 *.c linguist-detectable=true
 *.cmake linguist-detectable=false
 *.txt linguist-detectable=false
+*.ps1 linguist-detectable=false
