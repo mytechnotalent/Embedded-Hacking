@@ -45,6 +45,7 @@ void uart0_init(void)
 uint8_t on_uart_rx(void) 
 {
     uint8_t c = 0;
+    
     while (!uart_is_readable(UART_ID)) {
         c = uart_getc(UART_ID);
         return c;
