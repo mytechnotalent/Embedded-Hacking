@@ -1,14 +1,11 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "pico/cyw43_arch.h"
 #include "input.h"
 
-#define FAV_NUM 42
 #define ONE 0x31
 #define TWO 0x32
 
-int main(void) 
-{
+int main(void) {
     stdio_init_all();
     uart0_init();
 
@@ -16,6 +13,7 @@ int main(void)
 
     while (true) {
         choice = on_uart_rx();
+
         if (choice == ONE) {
             printf("1\r\n");
         } else if (choice == TWO) {
@@ -23,6 +21,7 @@ int main(void)
         } else {
             printf("??\r\n");
         }
+        
         switch (choice) {
             case '1':
                 printf("one\r\n");

@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "pico/cyw43_arch.h"
 
-int main(void)
-{
+int main(void) {
     uint8_t age = 0;
     int8_t range = 0;
     
@@ -12,8 +10,7 @@ int main(void)
 
     stdio_init_all();
 
-    while (true)
-    {
+    while (true) {
         printf("age: %d\r\n", age);
         printf("range: %d\r\n", range);
     }

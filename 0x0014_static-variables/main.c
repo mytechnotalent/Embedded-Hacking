@@ -1,13 +1,10 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "pico/cyw43_arch.h"
 
-int main(void)
-{
+int main(void) {
     stdio_init_all();
 
-    while (true)
-    {
+    while (true) {
         static int static_fav_num = 42;
         int regular_fav_num = 42;
 

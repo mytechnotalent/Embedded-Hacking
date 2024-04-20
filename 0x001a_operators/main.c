@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "pico/cyw43_arch.h"
 
-int main(void)
-{
+int main(void) {
     stdio_init_all();
 
     int x = 5;
@@ -15,8 +13,7 @@ int main(void)
     int bitwise_operator = (x<<1);  // x is now 6 because of x++ or 0b00000110 and (x<<1) is 0b00001100 or 12 
     int assignment_operator = (x += 5);
 
-    while (true)
-    {
+    while (true) {
         printf("arithmetic_operator: %d\r\n", arithmetic_operator);
         printf("increment_operator: %d\r\n", increment_operator);
         printf("relational_operator: %d\r\n", relational_operator);

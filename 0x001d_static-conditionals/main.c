@@ -1,17 +1,12 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "pico/cyw43_arch.h"
 
-#define FAV_NUM 42
-
-int main(void)
-{
+int main(void) {
     stdio_init_all();
 
     int choice = 1;
 
-    while (true)
-    {
+    while (true) {
         if (choice == 1) {
             printf("1\r\n");
         } else if (choice == 2) {

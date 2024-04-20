@@ -30,21 +30,20 @@
  *  configuration in addition to capturing a character from the UART terminal.
  *   
  *  @author Kevin Thomas
- *  @date   04/06/2024
+ *  @date   04/20/2024
 */
 
 #include "input.h"
 
-void uart0_init(void)
-{
+void uart0_init(void) {
     uart_init(UART_ID, BAUD_RATE);
     gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
     gpio_set_function(UART_RX_PIN, GPIO_FUNC_UART);
 }
 
-uint8_t on_uart_rx(void) 
-{
+uint8_t on_uart_rx(void)  {
     uint8_t c = 0;
+
     while (!uart_is_readable(UART_ID)) {
         c = uart_getc(UART_ID);
         return c;
