@@ -195,7 +195,5 @@ This chapter covers hacking functions, w/o params and without a return value as 
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
-## IN DEVELOPMENT
-
 ## License
 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
