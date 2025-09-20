@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 
-#define LED_PIN 25 
+#define LED_PIN 16 
 
 int main(void) {
     uint8_t age;
