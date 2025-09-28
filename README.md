@@ -46,32 +46,32 @@ This chapter covers hacking an introduction to variables as it relates to embedd
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 8: Uninitialized Variables
-This chapter covers uninitialized variables as it relates to embedded development on the Pico 2.
+This chapter covers uninitialized variables as well as an intro to GPIO as we blink an LED as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 9: Debugging Uninitialized Variables
-This chapter covers debugging uninitialized variables as it relates to embedded development on the Pico 2.
+This chapter covers debugging uninitialized variables as well as an intro to GPIO as we blink an LED as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 10: Hacking Uninitialized Variables
-This chapter covers hacking uninitialized variables as it relates to embedded development on the Pico 2.
+This chapter covers hacking uninitialized variables as well as an intro to GPIO as we blink an LED as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 11: Integer Data Type
-This chapter covers the integer data type as it relates to embedded development on the Pico 2.
+This chapter covers the integer data type in addition to a deeper assembler dive into GPIO as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 12: Debugging Integer Data Type
-This chapter covers debugging the integer data type as it relates to embedded development on the Pico 2.
+This chapter covers debugging the integer data type in addition to a deeper assembler dive into GPIO as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 13: Hacking Integer Data Type
-This chapter covers hacking the integer data type as it relates to embedded development on the Pico 2.
+This chapter covers hacking the integer data type in addition to a deeper assembler dive into GPIO as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
