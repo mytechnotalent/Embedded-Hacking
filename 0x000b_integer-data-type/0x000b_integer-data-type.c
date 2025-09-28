@@ -8,7 +8,7 @@ int main(void) {
     stdio_init_all();                     
 
     __asm volatile (                        
-        "ldr r3, =0x40038000\n"             // address of PADS_BANK0
+        "ldr r3, =0x40038000\n"             // address of PADS_BANK0_BASE
         "ldr r2, =0x40028004\n"             // address of IO_BANK0 GPIO0.ctrl
         "movs r0, #16\n"                    // GPIO16 (start pin)
 
@@ -35,7 +35,7 @@ int main(void) {
             "blt  init_loop\n"              // loop until r0 == 20
     );                              
 
-    uint32_t pin = 16;                 
+    uint8_t pin = 16;                 
 
     while (1) {                     
         __asm volatile (                
