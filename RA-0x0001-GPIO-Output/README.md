@@ -1,4 +1,4 @@
-# RP2350 GPIO Coprocessor Blink - Detailed Documentation
+# RP2350 GPIO Coprocessor Blink - RAW Assembler, NO SDK
 
 ## Overview
 
