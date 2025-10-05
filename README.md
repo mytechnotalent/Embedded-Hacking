@@ -46,32 +46,32 @@ This chapter covers hacking an introduction to variables as it relates to embedd
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 8: Uninitialized Variables
-This chapter covers uninitialized variables as well as an intro to GPIO as we blink an LED as it relates to embedded development on the Pico 2.
+This chapter covers uninitialized variables as well as an intro to GPIO outputs as we blink an LED as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 9: Debugging Uninitialized Variables
-This chapter covers debugging uninitialized variables as well as an intro to GPIO as we blink an LED as it relates to embedded development on the Pico 2.
+This chapter covers debugging uninitialized variables as well as an intro to GPIO outputs as we blink an LED as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 10: Hacking Uninitialized Variables
-This chapter covers hacking uninitialized variables as well as an intro to GPIO as we blink an LED as it relates to embedded development on the Pico 2.
+This chapter covers hacking uninitialized variables as well as an intro to GPIO outputs as we blink an LED as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 11: Integer Data Type
-This chapter covers the integer data type in addition to a deeper assembler dive into GPIO as it relates to embedded development on the Pico 2.
+This chapter covers the integer data type in addition to a deeper assembler dive into GPIO outputs as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 12: Debugging Integer Data Type
-This chapter covers debugging the integer data type in addition to a deeper assembler dive into GPIO as it relates to embedded development on the Pico 2.
+This chapter covers debugging the integer data type in addition to a deeper assembler dive into GPIO outputs as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 13: Hacking Integer Data Type
-This chapter covers hacking the integer data type in addition to a deeper assembler dive into GPIO as it relates to embedded development on the Pico 2.
+This chapter covers hacking the integer data type in addition to a deeper assembler dive into GPIO outputs as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
@@ -106,47 +106,47 @@ This chapter covers hacking the double floating-point data type as it relates to
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 20: Static Variables
-This chapter covers static variables as it relates to embedded development on the Pico 2.
+This chapter covers static variables as well as an intro to GPIO inputs as we work with push buttons as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 21: Debugging Static Variables
-This chapter covers debugging static variables as it relates to embedded development on the Pico 2.
+This chapter covers debugging static variables as well as an intro to GPIO inputs as we work with push buttons as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 22: Hacking Static Variables
-This chapter covers hacking static variables as it relates to embedded development on the Pico 2.
+This chapter covers hacking static variables as well as an intro to GPIO inputs as we work with push buttons as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 23: Constants
-This chapter covers constants as it relates to embedded development on the Pico 2.
+This chapter covers constants as well as an intro to I2C as we work a 1602 LCD as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 24: Debugging Constants
-This chapter covers debugging constants as it relates to embedded development on the Pico 2.
+This chapter covers debugging constants as well as an intro to I2C as we work a 1602 LCD as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 25: Hacking Constants
-This chapter covers hacking constants as it relates to embedded development on the Pico 2.
+This chapter covers hacking constants as well as an intro to I2C as we work a 1602 LCD as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 26: Operators
-This chapter covers operators as it relates to embedded development on the Pico 2.
+This chapter covers operators as well as an intro to single-wire protocol as we work a DHT11 temperature sensor as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 27: Debugging Operators
-This chapter covers debugging operators as it relates to embedded development on the Pico 2.
+This chapter covers debugging operators as well as an intro to single-wire protocol as we work a DHT11 temperature sensor as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 28: Hacking Operators
-This chapter covers hacking operators as it relates to embedded development on the Pico 2.
+This chapter covers hacking operators as well as an intro to single-wire protocol as we work a DHT11 temperature sensor as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
@@ -181,17 +181,32 @@ This chapter covers hacking dynamic conditionals as it relates to embedded devel
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 35: Functions, w/o Param, w/o Return
-This chapter covers functions, w/o params and without a return value as it relates to embedded development on the Pico 2.
+This chapter covers functions, w/o params and w/o a return value as well as an intro to infrared basics as we work a infrared receiver and infrared remote controller as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 36: Debugging Functions, w/o Param, w/o Return
-This chapter covers debugging functions, w/o params and without a return value as it relates to embedded development on the Pico 2.
+This chapter covers debugging functions, w/o params and w/o a return value as well as an intro to infrared basics as we work a infrared receiver and infrared remote controller as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Chapter 37: Hacking Functions, w/o Param, w/o Return
-This chapter covers hacking functions, w/o params and without a return value as it relates to embedded development on the Pico 2.
+This chapter covers hacking functions, w/o params and w/o a return value as well as an intro to infrared basics as we work a infrared receiver and infrared remote controller as it relates to embedded development on the Pico 2.
+
+-> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
+
+## Chapter 38: Functions, w/ Param, w/ Return
+This chapter covers functions, w/ params and w/ a return value as it relates to embedded development on the Pico 2.
+
+-> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
+
+## Chapter 39: Debugging Functions, w/ Param, w/ Return
+This chapter covers debugging functions, w/ params and w/ a return value as it relates to embedded development on the Pico 2.
+
+-> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
+
+## Chapter 40: Hacking Functions, w/ Param, w/ Return
+This chapter covers hacking functions, w/ params and w/ a return value as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
