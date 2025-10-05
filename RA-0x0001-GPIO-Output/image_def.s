@@ -7,7 +7,6 @@
  * binary for the bootrom to recognise it as a valid program image, as opposed to,
  * for example, blank flash contents or a disconnected flash device. This must
  * appear within the first 4 kB of a flash image, or anywhere in a RAM or OTP image.
- *
  * Unlike RP2040, there is no requirement for flash binaries to have a checksummed
  * "boot2" flash setup function at flash address 0. The RP2350 bootrom performs a
  * simple best‑effort XIP setup during flash scanning, and a flash‑resident program

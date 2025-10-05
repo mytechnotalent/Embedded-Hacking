@@ -1,14 +1,3 @@
-<img src="https://github.com/mytechnotalent/RP2350_Blink_Driver/blob/main/RP2350_Blink_Driver.png?raw=true">
-
-## FREE Reverse Engineering Self-Study Course [HERE](https://github.com/mytechnotalent/Reverse-Engineering-Tutorial)
-
-<br>
-
-# RP2350 Blink Driver
-An RP2350 blink driver written entirely in Assembler.
-
-# Code
-```assembler
 /**
  * FILE: main.s
  *
@@ -264,9 +253,3 @@ Delay_500ms:
  * The .bss section is used for uninitialized global or static variables.
  */
 .section .bss                                         // BSS section
-```
-
-<br>
-
-## License
-[Apache License 2.0](https://github.com/mytechnotalent/RP2350_Blink_Driver/blob/main/LICENSE)

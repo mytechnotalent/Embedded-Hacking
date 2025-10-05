@@ -1,9 +1,9 @@
 @echo off
-REM ============================================================================
+REM ==============================================================================
 REM FILE: build.bat
 REM
 REM DESCRIPTION:
-REM Build script for RP2350 GPIO16 Blink (Coprocessor Version).
+REM Build script for RP2350.
 REM Automates the process of assembling, linking, and generating UF2 firmware.
 REM
 REM AUTHOR: Kevin Thomas
@@ -16,46 +16,46 @@ REM   2. Link objects with linker script (linker.ld)
 REM   3. Convert ELF to BIN
 REM   4. Convert BIN to UF2 with correct family ID (RP2350 = 0xe48bff59)
 REM   5. Provide flashing instructions (UF2 drag‑and‑drop or OpenOCD)
-REM ============================================================================
+REM ==============================================================================
 
 echo Building GPIO16 blink...
 
-REM ============================================================================
+REM ==============================================================================
 REM Assemble source files
-REM ============================================================================
-arm-none-eabi-as -mcpu=cortex-m33 -mthumb gpio16_blink.s -o gpio16_blink.o
+REM ==============================================================================
+arm-none-eabi-as -mcpu=cortex-m33 -mthumb main.s -o main.o
 if errorlevel 1 goto error
 
 arm-none-eabi-as -mcpu=cortex-m33 -mthumb image_def.s -o image_def.o
 if errorlevel 1 goto error
 
-REM ============================================================================
+REM ==============================================================================
 REM Link object files into ELF using linker script
-REM ============================================================================
+REM ==============================================================================
 arm-none-eabi-ld -T linker.ld gpio16_blink.o image_def.o -o gpio16_blink.elf
 if errorlevel 1 goto error
 
-REM ============================================================================
+REM ==============================================================================
 REM Create raw binary from ELF
-REM ============================================================================
+REM ==============================================================================
 arm-none-eabi-objcopy -O binary gpio16_blink.elf gpio16_blink.bin
 if errorlevel 1 goto error
 
-REM ============================================================================
+REM ==============================================================================
 REM Create UF2 image for RP2350
 REM -b 0x10000000 : base address
 REM -f 0xe48bff59 : RP2350 family ID
-REM ============================================================================
-python ..\..\uf2conv.py -b 0x10000000 -f 0xe48bff59 -o gpio16_blink.uf2 gpio16_blink.bin
+REM ==============================================================================
+python uf2conv.py -b 0x10000000 -f 0xe48bff59 -o gpio16_blink.uf2 gpio16_blink.bin
 if errorlevel 1 goto error
 
-REM ============================================================================
+REM ==============================================================================
 REM Success message and flashing instructions
-REM ============================================================================
+REM ==============================================================================
 echo.
-echo ========================================
+echo =================================
 echo SUCCESS! Created gpio16_blink.uf2
-echo ========================================
+echo =================================
 echo.
 echo To flash via UF2:
 echo   1. Hold BOOTSEL button
@@ -67,9 +67,9 @@ echo   openocd -f interface/cmsis-dap.cfg -f target/rp2350.cfg -c "adapter speed
 echo.
 goto end
 
-REM ============================================================================
+REM ==============================================================================
 REM Error handling
-REM ============================================================================
+REM ==============================================================================
 :error
 echo.
 echo BUILD FAILED!
