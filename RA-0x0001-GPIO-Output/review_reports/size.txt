@@ -1,0 +1,2 @@
+   text	   data	    bss	    dec	    hex	filename
+    268	      0	      0	    268	    10c	gpio16_blink.elf

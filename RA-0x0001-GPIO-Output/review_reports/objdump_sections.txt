@@ -1,0 +1,13 @@
+
+gpio16_blink.elf:     file format elf32-littlearm
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .vectors      00000008  10000000  10000000  00001000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .text         000000f0  10000008  10000008  00001008  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .picobin_block 00000014  100000f8  100000f8  000010f8  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  3 .stack        00000000  20000000  20000000  0000110c  2**0
+                  CONTENTS
