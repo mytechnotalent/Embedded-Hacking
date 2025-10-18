@@ -135,7 +135,7 @@ main:
   BL    Delay_500ms                                   // ~500 ms delay
   BL    GPIO16_Clear                                  // set GPIO16 low
   BL    Delay_500ms                                   // ~500 ms delay
-  B     Loop                                          // loop forever
+  B     .Loop                                         // loop forever
 .Pop_Registers:
   POP   {R4-R12, LR}                                  // pop registers R4-R12, LR from the stack
   BX    LR                                            // return to caller
