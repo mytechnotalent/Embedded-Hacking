@@ -3,6 +3,8 @@
  *
  * DESCRIPTION:
  * RP2350 IMAGE_DEF Block.
+ * 
+ * BRIEF:
  * A minimum amount of metadata (a valid IMAGE_DEF block) must be embedded in any
  * binary for the bootrom to recognise it as a valid program image, as opposed to,
  * for example, blank flash contents or a disconnected flash device. This must
@@ -16,23 +18,16 @@
  * AUTHOR: Kevin Thomas
  * CREATION DATE: October 5, 2025
  * UPDATE DATE: October 5, 2025
- *
- * REFERENCE:
- * RP2350 Datasheet, Section 5.9.5 Minimum viable image metadata
- *
- * NOTES:
- * In the Pico SDK, this block is generated automatically from
- * embedded_start_block.inc.S / embedded_end_block.inc.S.
  */
 
-.section .picobin_block, "a"                // place IMAGE_DEF block in flash
+.section .picobin_block, "a"                               // place IMAGE_DEF block in flash
 
-.word  0xffffded3                           // PICOBIN_BLOCK_MARKER_START
-.byte  0x42                                 // PICOBIN_BLOCK_ITEM_1BS_IMAGE_TYPE
-.byte  0x1                                  // item is 1 word in size
-.hword 0b0001000000100001                   // SECURE mode (0x1021)
-.byte  0xff                                 // PICOBIN_BLOCK_ITEM_2BS_LAST
-.hword 0x0001                               // item is 1 word in size
-.byte  0x0                                  // pad
-.word  0x0                                  // relative pointer to next block (0 = loop to self)
-.word  0xab123579                           // PICOBIN_BLOCK_MARKER_END
+.word  0xFFFFDED3                                          // PICOBIN_BLOCK_MARKER_START
+.byte  0x42                                                // PICOBIN_BLOCK_ITEM_1BS_IMAGE_TYPE
+.byte  0x1                                                 // item is 1 word in size
+.hword 0b0001000000100001                                  // SECURE mode (0x1021)
+.byte  0xFF                                                // PICOBIN_BLOCK_ITEM_2BS_LAST
+.hword 0x0001                                              // item is 1 word in size
+.byte  0x0                                                 // pad
+.word  0x0                                                 // relative pointer to next block (0 = loop to self)
+.word  0xAB123579                                          // PICOBIN_BLOCK_MARKER_END

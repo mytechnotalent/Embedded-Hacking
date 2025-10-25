@@ -3,29 +3,16 @@
  *
  * DESCRIPTION:
  * RP2350 Minimal Linker Script for bare‑metal development.
- * Ensures the boot ROM accepts and runs the image by:
- *   - Placing the IMAGE_DEF block first at 0x10000000
- *   - Aligning the vector table to a 128‑byte boundary within the first 4 KB
- *   - Defining a non‑secure stack region in SRAM
+ *
+ * BRIEF:
+ * Ensures the boot ROM accepts and runs the image by placing 
+ * the IMAGE_DEF block first at 0x10000000, aligning the vector 
+ * table to a 128‑byte boundary within the first 4 KB and defining 
+ * a non‑secure stack region in SRAM.
  *
  * AUTHOR: Kevin Thomas
  * CREATION DATE: October 5, 2025
  * UPDATE DATE: October 5, 2025
- *
- * KEY FEATURES:
- *   - FLASH origin at 0x10000000 (XIP base), 32 MB length
- *   - RAM origin at 0x20000000, 512 KB non‑secure window
- *   - IMAGE_DEF block emitted before all other sections
- *   - Vector table alignment and assertion to satisfy ROM requirements
- *   - Symbols for __StackTop, __StackLimit, and __Vectors provided
- *
- * REFERENCE:
- *   RP2350 Datasheet, Section 5.9.5 Minimum viable image metadata
- *
- * NOTES:
- *   This script is intentionally minimal to support reproducible,
- *   SDK‑free bare‑metal builds. It pairs with a standalone IMAGE_DEF
- *   assembly file and a vector table defined in your startup code.
  */
 
 ENTRY(Reset_Handler)
@@ -37,7 +24,7 @@ __XIP_BASE   = 0x10000000;
 __XIP_SIZE   = 32M;
 
 __SRAM_BASE  = 0x20000000;
-__SRAM_SIZE  = 512K;                        /* non-secure window */
+__SRAM_SIZE  = 512K;                                       /* non-secure window */
 __STACK_SIZE = 32K;
 
 MEMORY
@@ -51,7 +38,7 @@ MEMORY
  */
 PHDRS
 {
-  text PT_LOAD FLAGS(5);                    /* RX */
+  text PT_LOAD FLAGS(5);                                   /* RX */
 }
 
 /**
