@@ -24,7 +24,7 @@ __XIP_BASE   = 0x10000000;
 __XIP_SIZE   = 32M;
 
 __SRAM_BASE  = 0x20000000;
-__SRAM_SIZE  = 512K;                                       /* non-secure window */
+__SRAM_SIZE  = 512K;                             /* non-secure window */
 __STACK_SIZE = 32K;
 
 MEMORY
@@ -38,7 +38,7 @@ MEMORY
  */
 PHDRS
 {
-  text PT_LOAD FLAGS(5);                                   /* RX */
+  text PT_LOAD FLAGS(5);                         /* RX */
 }
 
 /**
