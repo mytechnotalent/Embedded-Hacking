@@ -14,48 +14,58 @@ An RP2350 blink driver written entirely in Assembler.
  *
  * DESCRIPTION:
  * RP2350 Bare-Metal GPIO16 Blink, Coprocessor Version.
- * Minimal bare‑metal LED blink on the RP2350 using direct coprocessor
+ * 
+ * BRIEF:
+ * Minimal bare‑metal LED blink on the RP2350 using the direct coprocessor
  * (MCRR) instructions to manipulate GPIO control registers. This bypasses
  * SDK abstractions and demonstrates register‑level control in assembler.
+ * Clocks the external crystal oscillator (XOSC) at 14.5MHz.
  *
  * AUTHOR: Kevin Thomas
- * CREATION DATE: October 5, 2025
- * UPDATE DATE: October 5, 2025
+ * CREATION DATE: October 24, 2025
+ * UPDATE DATE: October 25, 2025
  */
 
-.syntax unified                                       // use unified assembly syntax
-.cpu cortex-m33                                       // target Cortex-M33 core
-.thumb                                                // use Thumb instruction set
+.syntax unified                                            // use unified assembly syntax
+.cpu cortex-m33                                            // target Cortex-M33 core
+.thumb                                                     // use Thumb instruction set
 
 /**
  * Memory addresses and constants.
  */
-.equ IO_BANK0_BASE,   0x40028000                      // base address of IO_BANK0
-.equ PADS_BANK0_BASE, 0x40038000                      // base address of PADS_BANK0
-.equ SIO_BASE,        0xD0000000                      // base address of SIO block
-.equ GPIO16_CTRL,     0x84                            // io[16].ctrl offset
-.equ GPIO16_PAD,      0x44                            // pads io[16] offset
-.equ GPIO16_BIT,      (1<<16)                         // bit mask for GPIO16
-.equ GPIO_OUT_SET,    0x18                            // SIO->GPIO_OUT_SET offset
-.equ GPIO_OUT_XOR,    0x28                            // SIO->GPIO_OUT_XOR offset
-.equ GPIO_OE_SET,     0x38                            // SIO->GPIO_OE_SET offset
-.equ STACK_TOP,       0x20082000                      // top of non-secure SRAM
-.equ STACK_LIMIT,     0x2007A000                      // stack limit (32 KB below top)
+.equ STACK_TOP,                   0x20082000               // top of non-secure SRAM
+.equ STACK_LIMIT,                 0x2007A000               // stack limit (32 KB below top)
+.equ XOSC_BASE,                   0x40048000               // base address of XOSC
+.equ XOSC_CTRL,                   XOSC_BASE + 0x00         // XOSC->CTRL
+.equ XOSC_STATUS,                 XOSC_BASE + 0x04         // XOSC->STATUS
+.equ XOSC_STARTUP,                XOSC_BASE + 0x0C         // XOSC->STARTUP
+.equ PPB_BASE,                    0xE0000000               // base address of PPB
+.equ CPACR,                       PPB_BASE + 0x0ED88       // PPB_BASE->CPACR
+.equ CLOCKS_BASE,                 0x40010000               // base address of CLOCKS
+.equ CLK_PERI_CTRL,               CLOCKS_BASE + 0x48       // CLOCKS->CLK_PERI_CTRL
+.equ RESETS_BASE,                 0x40020000               // base address of RESETS
+.equ RESETS_RESET,                RESETS_BASE + 0x0        // RESETS->RESET
+.equ RESETS_RESET_CLEAR,          RESETS_BASE + 0x3000     // RESETS->RESET_CLEAR
+.equ RESETS_RESET_DONE,           RESETS_BASE + 0x8        // RESETS->RESET_DONE
+.equ IO_BANK0_BASE,               0x40028000               // base address of IO_BANK0
+.equ IO_BANK0_GPIO16_CTRL_OFFSET, 0x84                     // IO_BANK0->GPIO16 offset
+.equ PADS_BANK0_BASE,             0x40038000               // base address of PADS_BANK0
+.equ PADS_BANK0_GPIO16_OFFSET,    0x44                     // PADS_BANK0->GPIO16 offset
 
 /**
  * Initialize the .vectors section. The .vectors section contains vector
- * table.
+ * table and Reset_Handler.
  */
-.section .vectors, "ax"                               // vector table section
-.align 2                                              // align to 4-byte boundary
+.section .vectors, "ax"                                    // vector table section
+.align 2                                                   // align to 4-byte boundary
 
 /**
  * Vector table section.
  */
-.global _vectors                                      // export symbol
+.global _vectors                                           // export _vectors symbol
 _vectors:
-  .word STACK_TOP                                     // initial stack pointer
-  .word Reset_Handler + 1                             // reset handler (Thumb bit set)
+  .word STACK_TOP                                          // initial stack pointer
+  .word Reset_Handler + 1                                  // reset handler (Thumb bit set)
 
 /**
  * @brief   Reset handler for RP2350.
@@ -69,12 +79,15 @@ _vectors:
  * @param   None
  * @retval  None
  */
-.global Reset_Handler                                 // export Reset_Handler
-.type Reset_Handler, %function                        // mark as function
+.global Reset_Handler                                      // export Reset_Handler symbol
+.type Reset_Handler, %function                        
 Reset_Handler:
-  BL    Init_Stack                                    // initialize MSP/PSP and limits
-  BL    Enable_Coprocessor                            // enable CP0 in CPACR for MCRR
-  B     main                                          // branch to main loop
+  BL    Init_Stack                                         // initialize MSP/PSP and limits
+  BL    Init_XOSC                                          // initialize external crystal oscillator
+  BL    Enable_XOSC_Peri_Clock                             // enable XOSC peripheral clock
+  BL    Init_Subsystem                                     // initialize subsystems
+  BL    Enable_Coprocessor                                 // enable CP0 coprocessor
+  B     main                                               // branch to main loop
 .size Reset_Handler, . - Reset_Handler
 
 /**
@@ -87,183 +100,253 @@ Reset_Handler:
  */
 .type Init_Stack, %function
 Init_Stack:
-  LDR   R0, =STACK_TOP                                // load stack top
-  MSR   PSP, R0                                       // set PSP
-  LDR   R0, =STACK_LIMIT                              // load stack limit
-  MSR   MSPLIM, R0                                    // set MSP limit
-  MSR   PSPLIM, R0                                    // set PSP limit
-  LDR   R0, =STACK_TOP                                // reload stack top
-  MSR   MSP, R0                                       // set MSP
-  BX    LR                                            // return
+  LDR   R0, =STACK_TOP                                     // load stack top
+  MSR   PSP, R0                                            // set PSP
+  LDR   R0, =STACK_LIMIT                                   // load stack limit
+  MSR   MSPLIM, R0                                         // set MSP limit
+  MSR   PSPLIM, R0                                         // set PSP limit
+  LDR   R0, =STACK_TOP                                     // reload stack top
+  MSR   MSP, R0                                            // set MSP
+  BX    LR                                                 // return
+
+/**
+ * @brief   Init XOSC and wait until it is ready.
+ *
+ * @details Configures and initializes the external crystal oscillator (XOSC).
+ *          Waits for the XOSC to become stable before returning.
+ *
+ * @param   None
+ * @retval  None
+ */
+.type Init_XOSC, %function
+Init_XOSC:
+  LDR   R0, =XOSC_STARTUP                                  // load XOSC_STARTUP address
+  LDR   R1, =0x00C4                                        // set delay 50,000 cycles
+  STR   R1, [R0]                                           // store value into XOSC_STARTUP
+  LDR   R0, =XOSC_CTRL                                     // load XOSC_CTRL address
+  LDR   R1, =0x00FABAA0                                    // set 1_15MHz, freq range, actual 14.5MHz
+  STR   R1, [R0]                                           // store value into XOSC_CTRL
+.Init_XOSC_Wait:
+  LDR   R0, =XOSC_STATUS                                   // load XOSC_STATUS address
+  LDR   R1, [R0]                                           // read XOSC_STATUS value
+  TST   R1, #(1<<31)                                       // test STABLE bit
+  BEQ   .Init_XOSC_Wait                                    // wait until stable bit is set
+  BX    LR                                                 // return
+
+/**
+ * @brief   Enable XOSC peripheral clock.
+ *
+ * @details Sets the peripheral clock to use XOSC as its AUXSRC.
+ *
+ * @param   None
+ * @retval  None
+ */
+.type Enable_XOSC_Peri_Clock, %function
+Enable_XOSC_Peri_Clock:
+  LDR   R0, =CLK_PERI_CTRL                                 // load CLK_PERI_CTRL address
+  LDR   R1, [R0]                                           // read CLK_PERI_CTRL value
+  ORR   R1, R1, #(1<<11)                                   // set ENABLE bit
+  ORR   R1, R1, #(4<<5)                                    // set AUXSRC: XOSC_CLKSRC bit
+  STR   R1, [R0]                                           // store value into CLK_PERI_CTRL
+  BX    LR                                                 // return
+
+/**
+ * @brief   Init subsystem.
+ *
+ * @details Initiates the various subsystems by clearing their reset bits.
+ *
+ * @param   None
+ * @retval  None
+ */
+.type Init_Subsystem, %function
+Init_Subsystem:
+.GPIO_Subsystem_Reset:
+  LDR   R0, =RESETS_RESET                                  // load RESETS->RESET address
+  LDR   R1, [R0]                                           // read RESETS->RESET value
+  BIC   R1, R1, #(1<<6)                                    // clear IO_BANK0 bit
+  STR   R1, [R0]                                           // store value into RESETS->RESET address
+.GPIO_Subsystem_Reset_Wait:
+  LDR   R0, =RESETS_RESET_DONE                             // load RESETS->RESET_DONE address
+  LDR   R1, [R0]                                           // read RESETS->RESET_DONE value
+  TST   R1, #(1<<6)                                        // test IO_BANK0 reset done
+  BEQ   .GPIO_Subsystem_Reset_Wait                         // wait until done
+  BX    LR                                                 // return
 
 /**
  * @brief   Enable coprocessor access.
  *
- * @details Grants full access to coprocessor 0 (CP0) via CPACR.
+ * @details Grants full access to coprocessor 0 via CPACR.
  *
  * @param   None
  * @retval  None
  */
 .type Enable_Coprocessor , %function
 Enable_Coprocessor:
-  LDR   R0, =0xE000ED88                               // CPACR address
-  LDR   R1, [R0]                                      // read CPACR
-  ORR   R1, R1, #0x3                                  // set CP0 full access
-  STR   R1, [R0]                                      // write CPACR
-  DSB                                                 // data sync barrier
-  ISB                                                 // instruction sync barrier
-  BX    LR                                            // return
+  LDR   R0, =CPACR                                         // load CPACR address
+  LDR   R1, [R0]                                           // read CPACR value
+  ORR   R1, R1, #(1<<1)                                    // set CP0: Controls access priv coproc 0 bit
+  ORR   R1, R1, #(1<<0)                                    // set CP0: Controls access priv coproc 0 bit
+  STR   R1, [R0]                                           // store value into CPACR
+  DSB                                                      // data sync barrier
+  ISB                                                      // instruction sync barrier
+  BX    LR                                                 // return
 
 /**
  * Initialize the .text section. 
  * The .text section contains executable code.
  */
-.section .text                                        // code section
-.align 2                                              // align to 4-byte boundary
+.section .text                                             // code section
+.align 2                                                   // align to 4-byte boundary
 
 /**
  * @brief   Main application entry point.
  *
- * @details Implements the infinite blink loop:
- *          - Set GPIO16 high
- *          - Delay ~500 ms
- *          - Set GPIO16 low
- *          - Delay ~500 ms
- *          - Repeat forever
+ * @details Implements the infinite blink loop.
  *
  * @param   None
  * @retval  None
  */
-.global main                                          // export main
-.type main, %function                                 // mark as function
+.global main                                               // export main
+.type main, %function                                      // mark as function
 main:
 .Push_Registers:
-  PUSH  {R4-R12, LR}                                  // push registers R4-R12, LR to the stack
+  PUSH  {R4-R12, LR}                                       // push registers R4-R12, LR to the stack
 .GPIO16_Config:
-  BL    GPIO16_Config                                 // configure pads and FUNCSEL for GPIO16
+  LDR   R0, =PADS_BANK0_GPIO16_OFFSET                      // load PADS_BANK0_GPIO16_OFFSET
+  LDR   R1, =IO_BANK0_GPIO16_CTRL_OFFSET                   // load IO_BANK0_GPIO16_CTRL_OFFSET
+  LDR   R2, =16                                            // load GPIO number
+  BL    GPIO_Config                                        // call GPIO_Config
 .Loop:
-  BL    GPIO16_Set                                    // set GPIO16 high
-  BL    Delay_500ms                                   // ~500 ms delay
-  BL    GPIO16_Clear                                  // set GPIO16 low
-  BL    Delay_500ms                                   // ~500 ms delay
-  B     Loop                                          // loop forever
+  LDR   R0, =16                                            // load GPIO number
+  BL    GPIO_Set                                           // call GPIO_Set
+  LDR   R0, =500                                           // 500ms
+  BL    Delay_MS                                           // call Delay_MS
+  LDR   R0, =16                                            // load GPIO number
+  BL    GPIO_Clear                                         // call GPIO_Clear
+  LDR   R0, =500                                           // 500ms
+  BL    Delay_MS                                           // call Delay_MS
+  B     .Loop                                              // loop forever
 .Pop_Registers:
-  POP   {R4-R12, LR}                                  // pop registers R4-R12, LR from the stack
-  BX    LR                                            // return to caller
+  POP   {R4-R12, LR}                                       // pop registers R4-R12, LR from the stack
+  BX    LR                                                 // return to caller
 
 /**
- * @brief   Configure GPIO16 for SIO control.
+ * @brief   Configure GPIO.
  *
- * @details Sets pad control (IE, OD, ISO) and FUNCSEL = 5 (SIO). Enables OE.
+ * @details Configures a GPIO pin's pad control and function select.
  *
- * @param   None
+ * @param   R0 - PAD_OFFSET
+ * @param   R1 - CTRL_OFFSET
+ * @param   R2 - GPIO
  * @retval  None
  */
-.type GPIO16_Config, %function
-GPIO16_Config:
-.GPIO16_Config_Push_Registers:
-  PUSH  {R4-R12, LR}                                  // push registers R4-R12, LR to the stack
-.GPIO16_Config_Modify_Pad:
-  LDR   R3, =PADS_BANK0_BASE + GPIO16_PAD             // pad control address
-  LDR   R2, [R3]                                      // read pad config
-  BIC   R2, R2, #0x80                                 // clear OD
-  ORR   R2, R2, #0x40                                 // set IE
-  BIC   R2, R2, #0x100                                // clear ISO
-  STR   R2, [R3]                                      // write pad config
-.GPIO16_Config_Modify_IO:
-  LDR   R3, =IO_BANK0_BASE + GPIO16_CTRL              // IO control address
-  LDR   R2, [R3]                                      // read IO config
-  BIC   R2, R2, #0x1F                                 // clear FUNCSEL
-  ORR   R2, R2, #5                                    // set FUNCSEL=5
-  STR   R2, [R3]                                      // write IO config
-.GPIO16_Config_Enable_OE:
-  MOVS  R4, #16                                       // GPIO number
-  MOVS  R5, #1                                        // enable output
-  MCRR  p0, #4, R4, R5, c4                            // gpioc_bit_oe_put(16, 1)
-.GPIO16_Config_Pop_Registers:
-  POP   {R4-R12, LR}                                  // pop registers R4-R12, LR from the stack
-  BX    LR                                            // return
+.type GPIO_Config, %function
+GPIO_Config:
+.GPIO_Config_Push_Registers:
+  PUSH  {R4-R12, LR}                                       // push registers R4-R12, LR to the stack
+.GPIO_Config_Modify_Pad:
+  LDR   R4, =PADS_BANK0_BASE                               // load PADS_BANK0_BASE address
+  ADD   R4, R4, R0                                         // PADS_BANK0_BASE + PAD_OFFSET
+  LDR   R5, [R4]                                           // read PAD_OFFSET value
+  BIC   R5, R5, #(1<<7)                                    // clear OD bit
+  ORR   R5, R5, #(1<<6)                                    // set IE bit
+  BIC   R5, R5, #(1<<8)                                    // clear ISO bit
+  STR   R5, [R4]                                           // store value into PAD_OFFSET
+.GPIO_Config_Modify_CTRL:
+  LDR   R4, =IO_BANK0_BASE                                 // load IO_BANK0 base
+  ADD   R4, R4, R1                                         // IO_BANK0_BASE + CTRL_OFFSET
+  LDR   R5, [R4]                                           // read CTRL_OFFSET value
+  BIC   R5, R5, #0x1F                                      // clear FUNCSEL
+  ORR   R5, R5, #0x05                                      // set FUNCSEL 0x05->SIO_0
+  STR   R5, [R4]                                           // store value into CTRL_OFFSET
+.GPIO_Config_Enable_OE:
+  LDR   R4, =1                                             // enable output
+  MCRR  P0, #4, R2, R4, C4                                 // gpioc_bit_oe_put(GPIO, 1)
+.GPIO_Config_Pop_Registers:
+  POP   {R4-R12, LR}                                       // pop registers R4-R12, LR from the stack
+  BX    LR                                                 // return
 
 /**
- * @brief   Set GPIO16 high.
+ * @brief   GPIO set.
  *
- * @details Drives GPIO16 output = 1 via coprocessor MCRR.
+ * @details Drives GPIO output high via coprocessor.
  *
- * @param   None
+ * @param   R0 - GPIO
  * @retval  None
  */
-.type GPIO16_Set, %function
-GPIO16_Set:
-.GPIO16_Set_Push_Registers:
-  PUSH  {R4-R12, LR}                                  // push registers R4-R12, LR to the stack
-.GPIO16_Set_Load_Operands:
-  MOVS  R4, #16                                       // GPIO number
-  MOVS  R5, #1                                        // logic high
-.GPIO16_Set_Execute:
-  MCRR  p0, #4, R4, R5, c0                            // gpioc_bit_out_put(16, 1)
-.GPIO16_Set_Pop_Registers:
-  POP   {R4-R12, LR}                                  // pop registers R4-R12, LR from the stack
-  BX    LR                                            // return to caller
+.type GPIO_Set, %function
+GPIO_Set:
+.GPIO_Set_Push_Registers:
+  PUSH  {R4-R12, LR}                                       // push registers R4-R12, LR to the stack
+.GPIO_Set_Execute:
+  LDR   R4, =1                                             // enable output
+  MCRR  P0, #4, R0, R4, C0                                 // gpioc_bit_out_put(GPIO, 1)
+.GPIO_Set_Pop_Registers:
+  POP   {R4-R12, LR}                                       // pop registers R4-R12, LR from the stack
+  BX    LR                                                 // return
 
 /**
- * @brief   Clear GPIO16 (set low).
+ * @brief   GPIO clear.
  *
- * @details Drives GPIO16 output = 0 via coprocessor MCRR.
+ * @details Drives GPIO output high via coprocessor.
  *
- * @param   None
+ * @param   R0 - GPIO
  * @retval  None
  */
-.type GPIO16_Clear, %function
-GPIO16_Clear:
-.GPIO16_Clear_Push_Registers:
-  PUSH  {R4-R12, LR}                                  // push registers R4-R12, LR to the stack
-.GPIO16_Clear_Load_Operands:
-  MOVS  R4, #16                                       // GPIO number
-  MOVS  R5, #0                                        // logic low
-.GPIO16_Clear_Execute:
-  MCRR  p0, #4, R4, R5, c0                            // gpioc_bit_out_put(16, 0)
-.GPIO16_Clear_Pop_Registers:
-  POP   {R4-R12, LR}                                  // pop registers R4-R12, LR from the stack
-  BX    LR                                            // return to caller
+.type GPIO_Clear, %function
+GPIO_Clear:
+.GPIO_Clear_Push_Registers:
+  PUSH  {R4-R12, LR}                                       // push registers R4-R12, LR to the stack
+.GPIO_Clear_Execute:
+  LDR   R4, =0                                             // disable output
+  MCRR  P0, #4, R0, R4, C0                                 // gpioc_bit_out_put(GPIO, 1)
+.GPIO_Clear_Pop_Registers:
+  POP   {R4-R12, LR}                                       // pop registers R4-R12, LR from the stack
+  BX    LR                                                 // return
 
 /**
- * @brief   Busy‑wait Delay_500ms loop.
+ * @brief   Delay_MS.
  *
- * @details Consumes ~2,000,000 cycles to approximate ~500 ms at boot clock.
+ * @details Delays for R0 milliseconds. Conversion: loop_count = ms * 3600
+ *          based on a 14.5MHz clock.
  *
- * @param   None
+ * @param   R0 - milliseconds
  * @retval  None
  */
-.type Delay_500ms, %function
-Delay_500ms:
-.Delay_500ms_Push_Registers:
-  PUSH  {R4-R12, LR}                                  // push registers R4-R12, LR to the stack
-.Delay_500ms_Setup:
-  LDR   R2, =2000000                                  // loop count (~500 ms)
-.Delay_500ms_Loop:
-  SUBS  R2, R2, #1                                    // decrement counter
-  BNE   .Delay_500ms_Loop                             // branch until zero
-.Delay_500ms_Pop_Registers:
-  POP   {R4-R12, LR}                                  // pop registers R4-R12, LR from the stack
-  BX    LR                                            // return to caller
+.type Delay_MS, %function
+Delay_MS:
+.Delay_MS_Push_Registers:
+  PUSH  {R4-R12, LR}                                       // push registers R4-R12, LR to the stack
+.Delay_MS_Check:
+  CMP   R0, #0                                             // if MS is not valid, return
+  BLE   .Delay_MS_Done                                     // branch if less or equal to 0 
+.Delay_MS_Setup:
+  LDR   R4, =3600                                          // loops per MS based on 14.5MHz clock
+  MUL   R5, R0, R4                                         // MS * 3600
+.Delay_MS_Loop:
+  SUBS  R5, R5, #1                                         // decrement counter
+  BNE   .Delay_MS_Loop                                     // branch until zero
+.Delay_MS_Done:
+  POP   {R4-R12, LR}                                       // pop registers R4-R12, LR from the stack
+  BX    LR                                                 // return
 
 /**
  * Test data and constants.
  * The .rodata section is used for constants and static data.
  */
-.section .rodata                                      // read-only data section
+.section .rodata                                           // read-only data section
 
 /**
  * Initialized global data.
  * The .data section is used for initialized global or static variables.
  */
-.section .data                                        // data section
+.section .data                                             // data section
 
 /**
  * Uninitialized global data.
  * The .bss section is used for uninitialized global or static variables.
  */
-.section .bss                                         // BSS section
+.section .bss                                              // BSS section
 ```
 
 <br>
