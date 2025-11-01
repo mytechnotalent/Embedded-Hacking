@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-FILE: safe_patch.py
+FILE: hack-temp.py
 
 DESCRIPTION:
 Incremental firmware patcher with minimal, conservative steps to bias readings.
