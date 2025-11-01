@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "dht11.h"
 
 int main(void) {
     stdio_init_all();
+
+    dht11_init(4);
 
     int x = 5;
     int y = 10;
@@ -20,5 +23,14 @@ int main(void) {
         printf("logical_operator: %d\r\n", logical_operator);
         printf("bitwise_operator: %d\r\n", bitwise_operator);
         printf("assignment_operator: %d\r\n", assignment_operator);
+        
+        float hum, temp;
+        if (dht11_read(&hum, &temp)) {
+            printf("Humidity: %.1f%%, Temperature: %.1f°C\r\n", hum, temp);
+        } else {
+            printf("DHT11 read failed\r\n");
+        }
+        
+        sleep_ms(2000);
     }
 }
