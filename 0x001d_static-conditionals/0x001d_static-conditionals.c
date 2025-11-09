@@ -1,10 +1,15 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "servo.h"
+
+#define SERVO_GPIO 6
 
 int main(void) {
     stdio_init_all();
 
     int choice = 1;
+
+    servo_init(SERVO_GPIO);
 
     while (true) {
         if (choice == 1) {
@@ -25,5 +30,10 @@ int main(void) {
             default:
                 printf("??\r\n");  
         }
+
+        servo_set_angle(0.0f);
+        sleep_ms(500);
+        servo_set_angle(180.0f);
+        sleep_ms(500);
     }
 }
