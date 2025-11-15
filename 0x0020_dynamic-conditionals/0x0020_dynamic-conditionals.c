@@ -1,22 +1,22 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "input.h"
+#include "servo.h"
 
-#define ONE 0x31
-#define TWO 0x32
+#define SERVO_GPIO 6
 
 int main(void) {
     stdio_init_all();
-    uart0_init();
 
     uint8_t choice = 0;
 
-    while (true) {
-        choice = on_uart_rx();
+    servo_init(SERVO_GPIO);
 
-        if (choice == ONE) {
+    while (true) {
+        choice = getchar();
+
+        if (choice == 0x31) {
             printf("1\r\n");
-        } else if (choice == TWO) {
+        } else if (choice == 0x32) {
             printf("2\r\n");
         } else {
             printf("??\r\n");
@@ -25,9 +25,17 @@ int main(void) {
         switch (choice) {
             case '1':
                 printf("one\r\n");
+                servo_set_angle(0.0f);
+                sleep_ms(500);
+                servo_set_angle(180.0f);
+                sleep_ms(500);
                 break;
             case '2':
                 printf("two\r\n");
+                servo_set_angle(180.0f);
+                sleep_ms(500);
+                servo_set_angle(0.0f);
+                sleep_ms(500);
                 break;   
             default:
                 printf("??\r\n");  
