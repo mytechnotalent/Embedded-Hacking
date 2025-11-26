@@ -14,6 +14,8 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 ## FREE Book
 [Download](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf)
 
+<br>
+
 ## Hardware
 ### Raspberry Pi Pico 2 w/ Header [BUY](https://www.pishop.us/product/raspberry-pi-pico-2-with-header)
 ### USB A-Male to USB Micro-B Cable [BUY](https://www.pishop.us/product/usb-a-male-to-usb-micro-b-cable-6-inches)
