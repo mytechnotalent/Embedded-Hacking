@@ -9,18 +9,20 @@ A FREE comprehensive step-by-step embedded hacking tutorial covering Embedded So
 
 VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 
+<br>
+
 ## FREE Book
 [Download](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf)
 
 ## Hardware
-
 ### Raspberry Pi Pico 2 w/ Header [BUY](https://www.pishop.us/product/raspberry-pi-pico-2-with-header)
 ### USB A-Male to USB Micro-B Cable [BUY](https://www.pishop.us/product/usb-a-male-to-usb-micro-b-cable-6-inches)
 ### Raspberry Pi Pico Debug Probe [BUY](https://www.pishop.us/product/raspberry-pi-debug-probe)
 ### Complete Component Kit for Raspberry Pi [BUY](https://www.pishop.us/product/complete-component-kit-for-raspberry-pi)
 ### 10pc 25v 1000uF Capacitor [BUY](https://www.amazon.com/Cionyce-Capacitor-Electrolytic-CapacitorsMicrowave/dp/B0B63CCQ2N?th=1)
-#### DISCOUNT CODE
-##### KVPE_HS320548_10PC
+#### PiShop DISCOUNT CODE - KVPE_HS320548_10PC
+
+<br>
 
 ## Chapter 1: hello, world
 This chapter covers the basics of setting up a dev environment and basic template firmware for the Pico 2 MCU in addition to printing hello, world.
@@ -221,6 +223,8 @@ This chapter covers debugging functions, w/ params and w/ a return value as well
 This chapter covers hacking functions, w/ params and w/ a return value as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
+
+<br>
 
 ## License
 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
