@@ -4,7 +4,7 @@
 
 <br>
 
-# Embedded-Hacking
+# Embedded Hacking
 A FREE comprehensive step-by-step embedded hacking tutorial covering Embedded Software Development to Reverse Engineering.
 
 VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
