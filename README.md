@@ -227,5 +227,5 @@ This chapter covers hacking functions, w/ params and w/ a return value as it rel
 
 <br>
 
-## License
+# License
 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
