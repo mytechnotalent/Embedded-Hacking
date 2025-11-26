@@ -10,6 +10,10 @@ A FREE comprehensive step-by-step embedded hacking tutorial covering Embedded So
 ## FREE Book
 [Download](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf)
 
+## Complete Component Kit [BUY](https://www.pishop.us/product/complete-component-kit-for-raspberry-pi)
+#### DISCOUNT CODE
+##### KVPE_HS320548_10PC
+
 ## Chapter 1: hello, world
 This chapter covers the basics of setting up a dev environment and basic template firmware for the Pico 2 MCU in addition to printing hello, world.
 
