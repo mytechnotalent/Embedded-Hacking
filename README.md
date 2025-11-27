@@ -227,5 +227,11 @@ This chapter covers hacking functions, w/ params and w/ a return value as it rel
 
 <br>
 
+# Embedded Assembler Drivers
+## RP2350 Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver)
+## RP2350 UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver)
+
+<br>
+
 # License
 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
