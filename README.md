@@ -25,6 +25,15 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 
 <br>
 
+# Embedded Assembler Drivers
+## RP2350 Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver)
+## RP2350 UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver)
+
+# Embedded C Drivers
+## RP2350 C Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_C_Blink_Driver)
+
+<br>
+
 ## Chapter 1: hello, world
 This chapter covers the basics of setting up a dev environment and basic template firmware for the Pico 2 MCU in addition to printing hello, world.
 
@@ -224,12 +233,6 @@ This chapter covers debugging functions, w/ params and w/ a return value as well
 This chapter covers hacking functions, w/ params and w/ a return value as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
-
-<br>
-
-# Embedded Assembler Drivers
-## RP2350 Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver)
-## RP2350 UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver)
 
 <br>
 
