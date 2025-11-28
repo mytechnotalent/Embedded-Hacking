@@ -29,6 +29,8 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 ## RP2350 Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver)
 ## RP2350 UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver)
 
+<br>
+
 # Embedded C Drivers
 ## RP2350 C Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_C_Blink_Driver)
 
