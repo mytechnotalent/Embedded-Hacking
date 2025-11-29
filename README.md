@@ -37,6 +37,7 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 ## RP2350 C Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_C_Blink_Driver)
 ## RP2350 C Button Driver [HERE](https://github.com/mytechnotalent/RP2350_C_Button_Driver)
 ## RP2350 C UART Driver [HERE](https://github.com/mytechnotalent/RP2350_C_UART_Driver)
+## RP2350 C 1602 LCD Driver [HERE](https://github.com/mytechnotalent/RP2350_C_1602_LCD_Driver)
 
 <br>
 
