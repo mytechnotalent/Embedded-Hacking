@@ -37,6 +37,11 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 ## RP2350 C Button Driver [HERE](https://github.com/mytechnotalent/RP2350_C_Button_Driver)
 ## RP2350 C UART Driver [HERE](https://github.com/mytechnotalent/RP2350_C_UART_Driver)
 
+<br>
+
+# Embedded Rust Drivers
+## RP2350 Rust Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_Blink_Driver)
+
 <br><br>
 
 ![image](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/EHP2_bb.png?raw=true)
