@@ -44,6 +44,11 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 # Embedded Rust Drivers
 ## RP2350 Rust Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_Blink_Driver)
 
+<br>
+
+# Embedded AI
+## Embedi [HERE](https://github.com/mytechnotalent/embedi)
+
 <br><br>
 
 ![image](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/EHP2_bb.png?raw=true)
