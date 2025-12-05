@@ -25,28 +25,15 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 
 <br>
 
-# Embedded Assembler Drivers
-## RP2350 Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver)
-## RP2350 Button Driver [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver)
-## RP2350 UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver)
-## RP2350 1602 LCD Driver [HERE](https://github.com/mytechnotalent/RP2350_1602_LCD_Driver)
-
-<br>
-
-# Embedded C Drivers
-## RP2350 C Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_C_Blink_Driver)
-## RP2350 C Button Driver [HERE](https://github.com/mytechnotalent/RP2350_C_Button_Driver)
-## RP2350 C UART Driver [HERE](https://github.com/mytechnotalent/RP2350_C_UART_Driver)
-## RP2350 C 1602 LCD Driver [HERE](https://github.com/mytechnotalent/RP2350_C_1602_LCD_Driver)
-
-<br>
-
 # Embedded Rust Drivers
 ## RP2350 Rust Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_Blink_Driver)
 
 <br><br>
 
+# Schematic
 ![image](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/EHP2_bb.png?raw=true)
+
+<br>
 
 ## Chapter 1: hello, world
 This chapter covers the basics of setting up a dev environment and basic template firmware for the Pico 2 MCU in addition to printing hello, world.
