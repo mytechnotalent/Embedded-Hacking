@@ -23,11 +23,6 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 ## 10pc 25v 1000uF Capacitor [BUY](https://www.amazon.com/Cionyce-Capacitor-Electrolytic-CapacitorsMicrowave/dp/B0B63CCQ2N?th=1)
 ### 10% PiShop DISCOUNT CODE - KVPE_HS320548_10PC
 
-<br>
-
-# Embedded Rust Projects
-## DAY001 - Blink a Single LED [HERE](https://github.com/mytechnotalent/DAY001)
-
 <br><br>
 
 # Schematic
