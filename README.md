@@ -32,7 +32,8 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 
 # Syllabus
 
-## Week 1: Introduction and Overview of Embedded Reverse Engineering: Ethics, Scoping, and Basic Concepts
+## Week 1
+Introduction and Overview of Embedded Reverse Engineering: Ethics, Scoping, and Basic Concepts
 
 ### Week 1 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01.md)
 
@@ -56,21 +57,24 @@ This chapter covers the debugging of our firmware for the Pico 2 MCU hello, worl
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
-## Week 2: Hello, World - Debugging and Hacking Basics: Debugging and Hacking a Basic Program for the Pico 2
+## Week 2
+Hello, World - Debugging and Hacking Basics: Debugging and Hacking a Basic Program for the Pico 2
 
 ### Chapter 3: Hacking hello, world
 This chapter covers the hacking of our firmware for the Pico 2 MCU hello, world program.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
-## Week 3: Embedded System Analysis: Understanding the RP2350 Architecture w/ Comprehensive Firmware Analysis
+## Week 3
+Embedded System Analysis: Understanding the RP2350 Architecture w/ Comprehensive Firmware Analysis
 
 ### Chapter 4: Embedded System Analysis
 This chapter covers a comprehensive embedded system analysis reviewing parts of the RP2350 datasheet and helpful firmware analysis tools.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
-## Week 4: Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Basics
+## Week 4
+Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Basics
 
 ### Chapter 5: Intro To Variables
 This chapter covers an introduction to variables as it relates to embedded development on the Pico 2.
@@ -102,7 +106,8 @@ This chapter covers hacking uninitialized variables as well as an intro to GPIO 
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
-## Week 5: Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floats w/ Intermediate GPIO Output Assembler Analysis
+## Week 5
+Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floats w/ Intermediate GPIO Output Assembler Analysis
 
 ### Chapter 11: Integer Data Type
 This chapter covers the integer data type in addition to a deeper assembler dive into GPIO outputs as it relates to embedded development on the Pico 2.
@@ -149,7 +154,8 @@ This chapter covers hacking the double floating-point data type as it relates to
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
-## Week 6: Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ GPIO Input Basics
+## Week 6
+Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ GPIO Input Basics
 
 ### Chapter 20: Static Variables
 This chapter covers static variables as well as an intro to GPIO inputs as we work with push buttons as it relates to embedded development on the Pico 2.
@@ -166,7 +172,8 @@ This chapter covers hacking static variables as well as an intro to GPIO inputs 
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
-## Week 7: Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C Basics
+## Week 7
+Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C Basics
 
 ### Chapter 23: Constants
 This chapter covers constants as well as an intro to I2C as we work a 1602 LCD as it relates to embedded development on the Pico 2.
@@ -181,9 +188,11 @@ This chapter covers debugging constants as well as an intro to I2C as we work a 
 ### Chapter 25: Hacking Constants
 This chapter covers hacking constants as well as an intro to I2C as we work a 1602 LCD as it relates to embedded development on the Pico 2.
 
-## Week 8: Midterm Exam
+## Week 8
+Midterm Exam
 
-## Week 9: Operators in Embedded Systems: Debugging and Hacking Operators w/ DHT11 Temperature & Humidity Sensor Single-Wire Protocol Basics.
+## Week 9
+Operators in Embedded Systems: Debugging and Hacking Operators w/ DHT11 Temperature & Humidity Sensor Single-Wire Protocol Basics.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
@@ -202,7 +211,8 @@ This chapter covers hacking operators as well as an intro to single-wire protoco
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
-## Week 10: Conditionals in Embedded Systems: Debugging and Hacking Conditionals w/ SG90 Servo Motor PWM Basics
+## Week 10
+Conditionals in Embedded Systems: Debugging and Hacking Conditionals w/ SG90 Servo Motor PWM Basics
 
 ### Chapter 29: Static Conditionals
 This chapter covers static conditionals as well as an intro to PWM as we work a SG90 servo motor as it relates to embedded development on the Pico 2.
@@ -234,7 +244,8 @@ This chapter covers hacking dynamic conditionals as well as additional PWM examp
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
-## Week 11: Functions in Embedded Systems: Debugging and Hacking Structs & Functions w/ Infrared Receiver & Transmitter Basics and the Final Project Intro.
+## Week 11
+Functions in Embedded Systems: Debugging and Hacking Structs & Functions w/ Infrared Receiver & Transmitter Basics and the Final Project Intro.
 
 ### Chapter 35: Structures
 This chapter covers structures as well as an intro to infrared basics as we work a infrared receiver and infrared remote controller as it relates to embedded development on the Pico 2.
@@ -266,11 +277,14 @@ This chapter covers hacking functions, w/ params and w/ a return value as it rel
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
-## Week 12: Unknown Firmware Debugging and Hacking
+## Week 12
+Unknown Firmware Debugging and Hacking
 
-## Week 13: Final Review – Embedded Debugging and Hacking Techniques w/ Advanced Firmware Analysis Q&A
+## Week 13
+Final Review – Embedded Debugging and Hacking Techniques w/ Advanced Firmware Analysis Q&A
 
-## Week 14: Final Exam
+## Week 14
+Final Exam
 
 <br>
 
