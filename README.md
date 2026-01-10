@@ -45,8 +45,6 @@ Introduction and Overview of Embedded Reverse Engineering: Ethics, Scoping, and 
 
 #### Exercise 4: Connect GDB & Basic Exploration [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-04.md)
 
-### RP2350 UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver)
-
 ### Chapter 1: hello, world
 This chapter covers the basics of setting up a dev environment and basic template firmware for the Pico 2 MCU in addition to printing hello, world.
 
