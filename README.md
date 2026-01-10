@@ -36,13 +36,13 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 
 ### Week 1 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01.md)
 
-### Exercise 1: Explore in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-01.md)
+#### Exercise 1: Explore in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-01.md)
 
-### Exercise 2: Find Strings in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-02.md)
+#### Exercise 2: Find Strings in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-02.md)
 
-### Exercise 3: Find Cross-References in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-03.md)
+#### Exercise 3: Find Cross-References in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-03.md)
 
-### Exercise 4: Connect GDB & Basic Exploration [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-04.md)
+#### Exercise 4: Connect GDB & Basic Exploration [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-04.md)
 
 ### RP2350 UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver)
 
