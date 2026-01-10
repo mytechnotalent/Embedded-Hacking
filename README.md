@@ -34,9 +34,15 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 
 ## Week 1
 
-### Week 1 Notebook
+### Week 1 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01.md)
 
-### Week 1  
+### Exercise 1: Explore in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-01.md)
+
+### Exercise 2: Find Strings in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-02.md)
+
+### Exercise 3: Find Cross-References in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-03.md)
+
+### Exercise 4: Connect GDB & Basic Exploration [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-04.md)
 
 ### Chapter 1: hello, world
 This chapter covers the basics of setting up a dev environment and basic template firmware for the Pico 2 MCU in addition to printing hello, world.
