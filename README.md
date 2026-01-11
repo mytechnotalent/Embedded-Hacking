@@ -58,6 +58,16 @@ This chapter covers the debugging of our firmware for the Pico 2 MCU hello, worl
 ## Week 2
 Hello, World - Debugging and Hacking Basics: Debugging and Hacking a Basic Program for the Pico 2
 
+### Week 2 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02.md)
+
+#### Exercise 1: Change the Message [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-01.md)
+
+#### Exercise 2: Use a Different SRAM Address [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-02.md)
+
+#### Exercise 3: Examine Memory Around Your String [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-03.md)
+
+#### Exercise 4: Automate the Hack [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-04.md)
+
 ### Chapter 3: Hacking hello, world
 This chapter covers the hacking of our firmware for the Pico 2 MCU hello, world program.
 
