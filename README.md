@@ -4,6 +4,14 @@
 
 <br>
 
+# Today's Tutorial [January 14, 2026]
+## Lesson 79: ARM-32 Course 2 (Part 14 - Hello World)
+This tutorial will discuss the basics of a hello world program in ARM 32-bit.
+
+-> Click [HERE](https://0xinfection.github.io/reversing) to read the FREE ebook.
+
+<br>
+
 # Embedded Hacking
 A FREE comprehensive step-by-step embedded hacking course covering Embedded Software Development to Reverse Engineering.
 
