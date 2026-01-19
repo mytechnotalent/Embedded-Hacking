@@ -84,6 +84,16 @@ This chapter covers the hacking of our firmware for the Pico 2 MCU hello, world 
 ## Week 3
 Embedded System Analysis: Understanding the RP2350 Architecture w/ Comprehensive Firmware Analysis
 
+### Week 3 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03.md)
+
+#### Exercise 1: Trace a Reset [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-01.md)
+
+#### Exercise 2: Find the Stack Size [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-02.md)
+
+#### Exercise 3: Examine All Vectors [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-03.md)
+
+#### Exercise 4: Find Your Main Function [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-04.md)
+
 ### Chapter 4: Embedded System Analysis
 This chapter covers a comprehensive embedded system analysis reviewing parts of the RP2350 datasheet and helpful firmware analysis tools.
 
