@@ -102,6 +102,16 @@ This chapter covers a comprehensive embedded system analysis reviewing parts of 
 ## Week 4
 Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Basics
 
+### Week 4 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04.md)
+
+#### Exercise 1: Analyze Variable Storage in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-01.md)
+
+#### Exercise 2: Patch Binary to Change Variable Value [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-02.md)
+
+#### Exercise 3: Analyze and Understand GPIO Control [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-03.md)
+
+#### Exercise 4: Patch GPIO Binary to Change LED Pin [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-04.md)
+
 ### Chapter 5: Intro To Variables
 This chapter covers an introduction to variables as it relates to embedded development on the Pico 2.
 
