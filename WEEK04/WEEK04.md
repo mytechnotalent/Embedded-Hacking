@@ -300,7 +300,9 @@ Ghidra will open. Now we need to create a new project.
 1. Open your file explorer
 2. Navigate to the `Embedded-Hacking` folder
 3. Find `0x0005_intro-to-variables.bin`
-4. **Drag and drop** the `.bin` file into Ghidra's project window
+4. Select Cortex M Little Endian 32
+5. Select Options and set up the .text and offset 10000000
+6. **Drag and drop** the `.bin` file into Ghidra's project window
 
 ### Step 7: Configure the Binary Format
 
