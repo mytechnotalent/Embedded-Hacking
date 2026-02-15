@@ -91,18 +91,18 @@ When your program is compiled, variables go to different places depending on how
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  .data Section (Flash → copied to RAM at startup)              │
-│  Contains: Initialized global/static variables                 │
-│  Example: int counter = 42;                                    │
+│  .data Section (Flash → copied to RAM at startup)               │
+│  Contains: Initialized global/static variables                  │
+│  Example: int counter = 42;                                     │
 ├─────────────────────────────────────────────────────────────────┤
-│  .bss Section (RAM - zeroed at startup)                        │
-│  Contains: Uninitialized global/static variables               │
-│  Example: int counter;  (will be 0)                            │
+│  .bss Section (RAM - zeroed at startup)                         │
+│  Contains: Uninitialized global/static variables                │
+│  Example: int counter;  (will be 0)                             │
 ├─────────────────────────────────────────────────────────────────┤
-│  .rodata Section (Flash - read only)                           │
-│  Contains: Constants, string literals                          │
-│  Example: const int MAX = 100;                                 │
-│  Example: "hello, world"                                       │
+│  .rodata Section (Flash - read only)                            │
+│  Contains: Constants, string literals                           │
+│  Example: const int MAX = 100;                                  │
+│  Example: "hello, world"                                        │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -842,7 +842,7 @@ delay2:
 │     - Format: Raw Bytes                                         │
 ├─────────────────────────────────────────────────────────────────┤
 │  5. Convert to UF2                                              │
-│     - python uf2conv.py file.bin --base 0x10000000             │
+│     - python uf2conv.py file.bin --base 0x10000000              │
 │       --family 0xe48bff59 --output hacked.uf2                   │
 ├─────────────────────────────────────────────────────────────────┤
 │  6. Flash and verify                                            │
