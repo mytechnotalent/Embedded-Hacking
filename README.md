@@ -43,6 +43,8 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 ## Week 1
 Introduction and Overview of Embedded Reverse Engineering: Ethics, Scoping, and Basic Concepts
 
+### Week 1 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01.pdf)
+
 ### Week 1 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01.md)
 
 #### Exercise 1: Explore in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-01.md)
@@ -65,6 +67,8 @@ This chapter covers the debugging of our firmware for the Pico 2 MCU hello, worl
 
 ## Week 2
 Hello, World - Debugging and Hacking Basics: Debugging and Hacking a Basic Program for the Pico 2
+
+### Week 2 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK02.pdf)
 
 ### Week 2 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02.md)
 
