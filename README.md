@@ -68,7 +68,7 @@ This chapter covers the debugging of our firmware for the Pico 2 MCU hello, worl
 ## Week 2
 Hello, World - Debugging and Hacking Basics: Debugging and Hacking a Basic Program for the Pico 2
 
-### Week 2 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK02.pdf)
+### Week 2 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02.pdf)
 
 ### Week 2 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02.md)
 
