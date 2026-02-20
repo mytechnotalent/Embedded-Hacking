@@ -33,7 +33,7 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 
 <br><br>
 
-# Schematic
+# Breadboard Design
 ![image](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/EHP2_bb.png?raw=true)
 
 <br>
