@@ -207,6 +207,16 @@ This chapter covers hacking the double floating-point data type as it relates to
 ## Week 6
 Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ GPIO Input Basics
 
+### Week 6 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06.md)
+
+#### Exercise 1: Change the Static Variable Initial Value from 42 to 100 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-01.md)
+
+#### Exercise 2: Reverse Engineer gpio_set_pulls with GDB [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-02.md)
+
+#### Exercise 3: Make the Overflow Happen Faster [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-03.md)
+
+#### Exercise 4: Invert the Button Logic with XOR [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-04.md)
+
 ### Chapter 20: Static Variables
 This chapter covers static variables as well as an intro to GPIO inputs as we work with push buttons as it relates to embedded development on the Pico 2.
 
@@ -224,6 +234,16 @@ This chapter covers hacking static variables as well as an intro to GPIO inputs 
 
 ## Week 7
 Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C Basics
+
+### Week 7 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07.md)
+
+#### Exercise 1: Change Both LCD Lines [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-01.md)
+
+#### Exercise 2: Find All String Literals in the Binary [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-02.md)
+
+#### Exercise 3: Trace the I²C Struct Pointer Chain [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-03.md)
+
+#### Exercise 4: Display Your Own Custom Message on the LCD [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-04.md)
 
 ### Chapter 23: Constants
 This chapter covers constants as well as an intro to I2C as we work a 1602 LCD as it relates to embedded development on the Pico 2.
