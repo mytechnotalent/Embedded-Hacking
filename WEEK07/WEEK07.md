@@ -791,7 +791,7 @@ For example:
 - Address `0x1000028e` → file offset `0x28E` (654 in decimal)
 - Address `0x10003ee8` → file offset `0x3EE8` (16104 in decimal)
 
-### Step 17: Hack #1 — Change FAV_NUM from 42 to 43
+### Step 17: Understand FAV_NUM Encoding (movs — 16-bit Thumb)
 
 From our GDB analysis, we know the instruction at `0x1000028e` is:
 
@@ -799,20 +799,11 @@ From our GDB analysis, we know the instruction at `0x1000028e` is:
 movs r1, #0x2a    →    bytes: 2a 21
 ```
 
-To change the value from 42 (`0x2a`) to 43 (`0x2b`):
+In HxD, navigate to file offset `0x28E` and verify you see the byte `2A` followed by `21`.
 
-1. In HxD, open `C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0017_constants\build\0x0017_constants.bin`
-2. Press **Ctrl+G** (Go to offset)
-3. Enter offset: `28E`
-4. You should see the byte `2A` at this position
-5. Change `2A` to `2B`
-6. The instruction is now `movs r1, #0x2b` (43 in decimal)
+> 🔍 **How Thumb encoding works:** In `movs r1, #imm8`, the immediate value is the first byte, and the opcode `21` is the second byte. So the bytes `2a 21` encode `movs r1, #0x2a` (42). If you wanted to change this to 43, you'd change `2A` to `2B`.
 
-> 🔍 **How Thumb encoding works:** In `movs r1, #imm8`, the immediate value is the first byte, and the opcode `21` is the second byte. So the bytes `2a 21` encode `movs r1, #0x2a`.
-
-### Step 18: Hack #2 — Change OTHER_FAV_NUM from 1337 to 1344
-
-#### Understand the Encoding
+### Step 18: Understand OTHER_FAV_NUM Encoding (movw — 32-bit Thumb-2)
 
 From GDB, we found the `movw r1, #1337` instruction at `0x10000296`. Examine the exact bytes:
 
@@ -849,7 +840,7 @@ To change `movw r1, #1337` to `movw r1, #1344`:
 
 > 🔍 **Why offset `0x298` and not `0x296`?** The lower 8 bits of the immediate (`imm8`) are in the **third byte** of the 4-byte `movw` instruction. The instruction starts at file offset `0x296`, so imm8 is at `0x296 + 2 = 0x298`. Changing `0x39` to `0x40` changes the value from `0x539` (1337) to `0x540` (1344).
 
-### Step 19: Hack #3 — Change LCD Text from "Reverse" to "Exploit"
+### Step 19: Hack — Change LCD Text from "Reverse" to "Exploit"
 
 **IMPORTANT:** The new string must be the **same length** as the original! "Reverse" and "Exploit" are both 7 characters — perfect!
 
@@ -901,7 +892,7 @@ python ..\uf2conv.py build\0x0017_constants-h.bin --base 0x10000000 --family 0xe
 2. Drag and drop `hacked.uf2` onto the RPI-RP2 drive
 3. Check your LCD and serial monitor
 
-### Step 23: Verify the Hacks
+### Step 23: Verify the Hack
 
 **Check the LCD:**
 - Line 1 should now show: `Exploit` (instead of "Reverse")
@@ -909,17 +900,16 @@ python ..\uf2conv.py build\0x0017_constants-h.bin --base 0x10000000 --family 0xe
 
 **Check the serial monitor:**
 ```
-FAV_NUM: 43
-OTHER_FAV_NUM: 1344
-FAV_NUM: 43
-OTHER_FAV_NUM: 1344
+FAV_NUM: 42
+OTHER_FAV_NUM: 1337
+FAV_NUM: 42
+OTHER_FAV_NUM: 1337
 ...
 ```
 
-🎉 **BOOM! We successfully:**
-1. Changed FAV_NUM from 42 to 43
-2. Changed OTHER_FAV_NUM from 1337 to 1344
-3. Changed the LCD text from "Reverse" to "Exploit"
+The numbers are unchanged — we only patched the LCD string!
+
+🎉 **BOOM! We successfully changed the LCD text from "Reverse" to "Exploit" without access to the source code!**
 
 ---
 
@@ -932,8 +922,8 @@ OTHER_FAV_NUM: 1344
 3. **Explored C structs** - How the Pico SDK abstracts hardware
 4. **Mastered the macro chain** - From `I2C_PORT` to `0x40098000`
 5. **Examined structs in GDB** - Inspected memory layout of `i2c_inst_t`
-6. **Hacked constant values** - Both `movs` (8-bit) and `movw` (16-bit) immediates using a hex editor
-7. **Patched string literals** - Changed LCD display text
+6. **Analyzed instruction encodings** - Both `movs` (8-bit) and `movw` (16-bit) immediates in the hex editor
+7. **Patched a string literal** - Changed LCD display text from "Reverse" to "Exploit"
 
 ### #define vs const Summary
 
