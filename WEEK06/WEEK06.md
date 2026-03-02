@@ -52,8 +52,8 @@ Think of it like this:
 In C, you declare a static variable by adding the `static` keyword:
 
 ```c
-uint8_t regular_fav_num = 42;        // Regular - recreated each time
-static uint8_t static_fav_num = 42;  // Static - persists forever
+uint8_t regular_fav_num = 42;       // Regular - recreated each time
+static uint8_t static_fav_num = 42; // Static - persists forever
 ```
 
 ### Where Do Variables Live in Memory?
@@ -227,8 +227,8 @@ When you compile code, the compiler tries to make it faster and smaller. This is
 **Example from our code:**
 ```c
 while (true) {
-    uint8_t regular_fav_num = 42;  // Created
-    regular_fav_num++;              // Incremented to 43
+    uint8_t regular_fav_num = 42; // Created
+    regular_fav_num++;            // Incremented to 43
     // But then it's destroyed and recreated as 42 next loop!
 }
 ```
@@ -305,7 +305,7 @@ Embedded-Hacking/
 ├── 0x0014_static-variables/
 │   ├── build/
 │   │   ├── 0x0014_static-variables.uf2
-│   │   └── 0x0014_static-variables.bin
+│   │   └── 0x0014_static-variables.elf
 │   └── 0x0014_static-variables.c
 └── uf2conv.py
 ```
@@ -381,6 +381,7 @@ Open PuTTY, minicom, or screen and connect to your Pico's serial port.
 **You should see output like this:**
 
 ```
+...
 regular_fav_num: 42
 static_fav_num: 42
 regular_fav_num: 42
@@ -455,30 +456,50 @@ arm-none-eabi-gdb build/0x0014_static-variables.elf
 Let's examine the main function at its entry point. First, disassemble from the start:
 
 ```
-x/50i 0x10000234
+x/38i 0x10000234
 ```
 
 You should see output like:
 
 ```
-0x10000234: push {r4, r5, r6, r7, lr}
-0x10000236: sub sp, #12
-0x10000238: bl 0x10003014              ; stdio_init_all
-0x1000023c: movs r0, #15               ; BUTTON_GPIO = 15
-0x1000023e: bl 0x100002b4              ; gpio_init
-0x10000242: movs r0, #15
-0x10000244: movs r1, #0                ; GPIO_IN
-0x10000246: bl 0x100002c8              ; gpio_set_dir
-0x1000024a: movs r0, #15
-0x1000024c: movs r1, #1                ; up = true
-0x1000024e: movs r2, #0                ; down = false
-0x10000250: bl 0x100002dc              ; gpio_set_pulls (inlined gpio_pull_up)
-0x10000254: movs r0, #16               ; LED_GPIO = 16
-0x10000256: bl 0x100002b4              ; gpio_init
-0x1000025a: movs r0, #16
-0x1000025c: movs r1, #1                ; GPIO_OUT
-0x1000025e: bl 0x100002c8              ; gpio_set_dir
-...
+   0x10000234 <+0>:     push    {r4, lr}
+   0x10000236 <+2>:     bl      0x10003014 <stdio_init_all>
+   0x1000023a <+6>:     movs    r0, #15
+   0x1000023c <+8>:     bl      0x10000300 <gpio_init>
+   0x10000240 <+12>:    movs    r0, #15
+   0x10000242 <+14>:    mov.w   r3, #0
+   0x10000246 <+18>:    mcrr    0, 4, r0, r3, cr4
+   0x1000024a <+22>:    movs    r2, #0
+   0x1000024c <+24>:    movs    r1, #1
+   0x1000024e <+26>:    bl      0x100002d8 <gpio_set_pulls>
+   0x10000252 <+30>:    movs    r0, #16
+   0x10000254 <+32>:    bl      0x10000300 <gpio_init>
+   0x10000258 <+36>:    movs    r3, #16
+   0x1000025a <+38>:    mov.w   r2, #1
+   0x1000025e <+42>:    mcrr    0, 4, r3, r2, cr4
+   0x10000262 <+46>:    ldr     r4, [pc, #44]   @ (0x10000290 <main+92>)
+   0x10000264 <+48>:    movs    r1, #42 @ 0x2a
+   0x10000266 <+50>:    ldr     r0, [pc, #44]   @ (0x10000294 <main+96>)
+   0x10000268 <+52>:    bl      0x100031a4 <__wrap_printf>
+   0x1000026c <+56>:    ldrb    r1, [r4, #0]
+   0x1000026e <+58>:    ldr     r0, [pc, #40]   @ (0x10000298 <main+100>)
+   0x10000270 <+60>:    bl      0x100031a4 <__wrap_printf>
+   0x10000274 <+64>:    mov.w   r1, #3489660928 @ 0xd0000000
+   0x10000278 <+68>:    ldrb    r3, [r4, #0]
+   0x1000027a <+70>:    movs    r2, #16
+   0x1000027c <+72>:    adds    r3, #1
+   0x1000027e <+74>:    strb    r3, [r4, #0]
+   0x10000280 <+76>:    ldr     r3, [r1, #4]
+   0x10000282 <+78>:    ubfx    r3, r3, #15, #1
+   0x10000286 <+82>:    eor.w   r3, r3, #1
+   0x1000028a <+86>:    mcrr    0, 4, r2, r3, cr0
+   0x1000028e <+90>:    b.n     0x10000264 <main+48>
+   0x10000290 <+92>:    lsls    r0, r5, #22
+   0x10000292 <+94>:    movs    r0, #0
+   0x10000294 <+96>:    adds    r5, #96 @ 0x60
+   0x10000296 <+98>:    asrs    r0, r0, #32
+   0x10000298 <+100>:   adds    r5, #120        @ 0x78
+   0x1000029a <+102>:   asrs    r0, r0, #32
 ```
 
 ### Step 7: Set a Breakpoint at Main
@@ -490,60 +511,105 @@ c
 
 GDB responds:
 ```
-Breakpoint 1 at 0x10000234
+Breakpoint 1 at 0x10000234: file C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0014_static-variables/0x0014_static-variables.c, line 5.
+Note: automatically using hardware breakpoints for read-only addresses.
+(gdb) c
 Continuing.
 
-Breakpoint 1, 0x10000234 in ?? ()
+Thread 1 "rp2350.cm0" hit Breakpoint 1, main ()
+    at C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0014_static-variables/0x0014_static-variables.c:5
+5           stdio_init_all();
 ```
+
+> ⚠️ **Note:** If GDB says `The program is not being run.` when you type `c`, the target hasn't been started yet. Use `monitor reset halt` first, then `c` to continue to your breakpoint.
 
 ### Step 8: Examine the Static Variable Location
 
-Static variables live at fixed RAM addresses. Let's find where `static_fav_num` is stored:
+Static variables live at fixed RAM addresses. But how do we find that address? Look at the first instruction in the disassembly from Step 6:
 
 ```
-x/20i 0x10000260
+0x10000262:    ldr r4, [pc, #44]   @ (0x10000290 <main+92>)
 ```
 
-Look for instructions that load/store to addresses in the `0x20000xxx` range - that's where static variables live in RAM.
+This loads `r4` from the **literal pool** at address `0x10000290`. The literal pool stores constants that are too large for immediate encoding — in this case, a 32-bit RAM address. Let's examine what's stored there:
+
+```gdb
+(gdb) x/1wx 0x10000290
+0x10000290 <main+92>:   0x200005a8
+```
+
+That's `0x200005a8` — the RAM address of `static_fav_num`! The compiler placed this address in the literal pool because it can't encode a full 32-bit address in a single Thumb instruction.
+
+> 💡 **Why did the disassembly at `0x10000290` show `lsls r0, r5, #22` instead?** Because `x/i` (disassemble) interprets raw data as instructions. The bytes `A8 05 00 20` at that address are the little-endian encoding of `0x200005A8`, but GDB's disassembler doesn't know it's data — it tries to decode it as a Thumb instruction. Using `x/wx` (examine as word) shows the actual value.
 
 ### Step 9: Step Through the Loop
 
-```
-si
+Set a breakpoint at the start of the loop and step through:
+
+```gdb
+(gdb) b *0x10000264
+(gdb) c
 ```
 
-Use `si` (step instruction) to execute one instruction at a time and watch how the static variable gets loaded, incremented, and stored back.
+Now use `si` (step instruction) to execute one instruction at a time:
+
+```gdb
+(gdb) si
+```
+
+Watch how the static variable gets loaded (`ldrb`), incremented (`adds`), and stored back (`strb`).
 
 ### Step 10: Examine Register Values
 
-```
-i r
+After stepping to `0x10000262` or later, check the registers:
+
+```gdb
+(gdb) i r
 ```
 
-This shows all register values. Pay attention to:
-- `r0-r3` - Used for function arguments and return values
-- `sp` - Stack pointer
-- `pc` - Program counter (current instruction)
+Pay attention to:
+- `r4` — Should hold `0x200005a8` (static variable's RAM address, loaded from literal pool)
+- `r1` — Used for `printf` arguments (holds `42` or the static variable value)
+- `r3` — Used for load/increment/store of the static variable
+- `pc` — Program counter (current instruction address)
 
 ### Step 11: Watch the Static Variable Change
 
-Once you identify the static variable address (e.g., `0x200005a8`), you can watch it:
+Now that we know the static variable lives at `0x200005a8`, examine it directly:
 
-```
-x/1db 0x200005a8
+```gdb
+(gdb) x/1db 0x200005a8
+0x200005a8:     42
 ```
 
-This displays 1 byte in decimal format. Step through a few loop iterations and re-examine to see it increment.
+Step through a full loop iteration (back to `0x10000264`) and re-examine:
+
+```gdb
+(gdb) c
+(gdb) x/1db 0x200005a8
+0x200005a8:     43
+```
+
+The value incremented from 42 to 43! Each loop iteration, the `adds r3, #1` at `0x1000027c` bumps it by 1, and `strb r3, [r4, #0]` at `0x1000027e` writes it back to RAM.
 
 ### Step 12: Examine GPIO State
 
-Read the GPIO input register to see button state:
+Read the GPIO input register to see the button state:
 
-```
-x/1wx 0xd0000004
+```gdb
+(gdb) x/1wx 0xd0000004
 ```
 
-The SIO GPIO input register at `0xd0000004` shows the current state of all GPIO pins. Bit 15 corresponds to our button on GPIO 15.
+The SIO GPIO input register at `0xd0000004` shows the current state of all GPIO pins. Bit 15 corresponds to our button on GPIO 15. To extract just bit 15:
+
+```gdb
+(gdb) p/x (*(unsigned int *)0xd0000004 >> 15) & 1
+```
+
+- Returns `1` when button is **not pressed** (pull-up holds it HIGH)
+- Returns `0` when button is **pressed** (connected to GND)
+
+TRY IT!
 
 ---
 
@@ -553,16 +619,16 @@ Now that we've explored the binary in GDB, let's make sense of the key patterns.
 
 ### Step 13: Analyze the Regular Variable
 
-In GDB, examine the code around the first `printf` call:
+In GDB, examine the code at the start of the loop:
 
 ```gdb
-(gdb) x/5i 0x1000028c
+(gdb) x/5i 0x10000262
 ```
 
 Look for this instruction:
 
 ```
-0x1000028e:    movs r1, #0x2a
+0x10000264:    movs r1, #42 @ 0x2a
 ```
 
 This loads the value `0x2a` (42 in decimal) directly into register `r1` for the first `printf` call.
@@ -571,25 +637,32 @@ This loads the value `0x2a` (42 in decimal) directly into register `r1` for the 
 
 ### Step 14: Analyze the Static Variable
 
-Examine the static variable operations:
+Examine the static variable operations in the second half of the loop body:
 
 ```gdb
-(gdb) x/10i 0x10000260
+(gdb) x/10i 0x10000274
 ```
 
-Look for references to addresses in the `0x200005xx` range:
+Look for the load-increment-store pattern using `r4` (which holds the static variable's RAM address):
 
 ```
-ldrb r1,[r4,#0x0]    ; Load static_fav_num from RAM
-...
-ldrb r3,[r4,#0x0]    ; Load it again
-adds r3,#0x1         ; Increment by 1
-strb r3,[r4,#0x0]    ; Store it back to RAM
+   0x10000274 <main+64>:        mov.w   r1, #3489660928 @ 0xd0000000
+   0x10000278 <main+68>:        ldrb    r3, [r4, #0]
+   0x1000027a <main+70>:        movs    r2, #16
+   0x1000027c <main+72>:        adds    r3, #1
+   0x1000027e <main+74>:        strb    r3, [r4, #0]
+   0x10000280 <main+76>:        ldr     r3, [r1, #4]
+   0x10000282 <main+78>:        ubfx    r3, r3, #15, #1
+   0x10000286 <main+82>:        eor.w   r3, r3, #1
+   0x1000028a <main+86>:        mcrr    0, 4, r2, r3, cr0
+   0x1000028e <main+90>:        b.n     0x10000264 <main+48>
 ```
+
+Note that `r4` was loaded earlier at `0x10000262` via `ldr r4, [pc, #44]` — this pulled the static variable's RAM address (`0x200005a8`) from the literal pool at `0x10000290`.
 
 **Key insight:** The static variable lives at a **fixed RAM address** (`0x200005a8`). It's loaded, incremented, and stored back — unlike the regular variable which was optimized away!
 
-Verify the static variable value:
+Verify the static variable value which should be `43`:
 
 ```gdb
 (gdb) x/1db 0x200005a8
@@ -606,32 +679,44 @@ Examine the GPIO input/output code:
 Look for this sequence:
 
 ```
-mov.w r1,#0xd0000000    ; SIO base address
-ldr r3,[r1,#offset]     ; Read GPIO input register
-ubfx r3,r3,#0xf,#0x1    ; Extract bit 15 (button state)
-eor r3,r3,#0x1          ; Invert the value (the ternary operator!)
-mcrr p0,0x4,r2,r3,cr0   ; Write to GPIO output
+   0x10000274 <main+64>:        mov.w   r1, #3489660928 @ 0xd0000000
+   0x10000278 <main+68>:        ldrb    r3, [r4, #0]
+   0x1000027a <main+70>:        movs    r2, #16
+   0x1000027c <main+72>:        adds    r3, #1
+   0x1000027e <main+74>:        strb    r3, [r4, #0]
+   0x10000280 <main+76>:        ldr     r3, [r1, #4]
+   0x10000282 <main+78>:        ubfx    r3, r3, #15, #1
+   0x10000286 <main+82>:        eor.w   r3, r3, #1
+   0x1000028a <main+86>:        mcrr    0, 4, r2, r3, cr0
+   0x1000028e <main+90>:        b.n     0x10000264 <main+48>
 ```
 
 **Breaking this down:**
 
-| Instruction             | Purpose                                     |
-| ----------------------- | ------------------------------------------- |
-| `mov.w r1,#0xd0000000` | Load SIO (Single-cycle I/O) base address    |
-| `ldr r3,[r1,#offset]`  | Read GPIO input state                       |
-| `ubfx r3,r3,#0xf,#0x1` | Extract bit 15 (GPIO 15 = button)           |
-| `eor r3,r3,#0x1`       | XOR with 1 to invert (implements `? 0 : 1`) |
-| `mcrr p0,0x4,...`      | Write result to GPIO output (LED)           |
+| Address        | Instruction                | Purpose                                              |
+| -------------- | -------------------------- | ---------------------------------------------------- |
+| `0x10000274`   | `mov.w r1, #0xd0000000`    | Load SIO (Single-cycle I/O) base address into `r1`   |
+| `0x10000278`   | `ldrb r3, [r4, #0]`        | Load `static_fav_num` from RAM into `r3`             |
+| `0x1000027a`   | `movs r2, #16`             | Load LED pin number (16) into `r2` for later         |
+| `0x1000027c`   | `adds r3, #1`              | Increment `static_fav_num` by 1                      |
+| `0x1000027e`   | `strb r3, [r4, #0]`        | Store incremented value back to RAM                  |
+| `0x10000280`   | `ldr r3, [r1, #4]`         | Read GPIO input state (SIO_GPIO_IN at offset `0x04`) |
+| `0x10000282`   | `ubfx r3, r3, #15, #1`     | Extract bit 15 (GPIO 15 = button)                    |
+| `0x10000286`   | `eor.w r3, r3, #1`         | XOR with 1 to invert (implements `? 0 : 1`)          |
+| `0x1000028a`   | `mcrr 0, 4, r2, r3, cr0`   | Write `r3` (button) and `r2` (pin 16) to GPIO output |
+| `0x1000028e`   | `b.n 0x10000264`           | Loop back to start (`while (true)`)                  |
+
+> 💡 **Notice how the compiler interleaves the static variable increment with the GPIO logic.** It loads the SIO base address (`r1`) *before* doing the increment, and sets up `r2 = 16` (LED pin) in between. This is called **instruction scheduling** — the compiler reorders instructions to avoid pipeline stalls while waiting for memory reads.
 
 ### Step 16: Find the Infinite Loop
 
-At the end of the function, look for:
+The last instruction at `0x1000028e` is already covered in the table above:
 
 ```
-b 0x10000264
+0x1000028e:    b.n 0x10000264
 ```
 
-This is an **unconditional branch** back to the start of the loop — this is the `while (true)` in our code!
+This is an **unconditional branch** back to `0x10000264` (the `movs r1, #42` at the top of the loop) — this is the `while (true)` in our code! There is no `pop` or `bx lr` to return from `main` because the loop never exits.
 
 ---
 
@@ -639,13 +724,13 @@ This is an **unconditional branch** back to the start of the loop — this is th
 
 Now for the fun part — we'll patch the `.bin` file directly using a hex editor!
 
-> 💡 **Why a hex editor?** GDB can modify values in RAM at runtime, but those changes are lost when the device reboots. To make **permanent** changes, we edit the `.bin` file on disk and re-flash it.
+> 💡 **Why a hex editor?** GDB lets you modify values **in RAM** at runtime (e.g., `set *(char *)0x200005a8 = 100`), but those changes are **lost when the device reboots** — GDB has no way to write changes back to the `.bin` file on disk. To make **permanent** patches that survive a power cycle, we edit the `.bin` file directly with a hex editor and re-flash it.
 
 ### Step 17: Open the Binary in a Hex Editor
 
 1. Open **HxD** (or your preferred hex editor: ImHex, 010 Editor, etc.)
 2. Click **File** → **Open**
-3. Navigate to `0x0014_static-variables/build/`
+3. Navigate to `C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0014_static-variables\build\`
 4. Open `0x0014_static-variables.bin`
 
 ### Step 18: Calculate the File Offset
@@ -657,12 +742,35 @@ file_offset = address - 0x10000000
 ```
 
 For example:
-- Address `0x1000028e` → file offset `0x28e` (654 in decimal)
-- Address `0x10000274` → file offset `0x274` (628 in decimal)
+- Address `0x10000264` → file offset `0x264` (612 in decimal)
+- Address `0x10000286` → file offset `0x286` (646 in decimal)
 
 ### Step 19: Hack #1 — Change regular_fav_num from 42 to 43
 
-From GDB, we know the instruction at `0x1000028e` is:
+#### Test in GDB First (Temporary)
+
+Before touching the binary file, test the change in GDB to make sure it works. From your GDB session (with the breakpoint at `0x10000264`):
+
+```gdb
+(gdb) set *(char *)0x10000264 = 0x2b
+(gdb) x/1i 0x10000264
+0x10000264 <main+48>:   movs    r1, #43 @ 0x2b
+(gdb) c
+```
+
+Check your serial monitor — you should see `regular_fav_num: 43` instead of `42`. It works!
+
+> ⚠️ **This change is temporary.** GDB modified the value in RAM, but the `.bin` file on disk is unchanged. When you reboot the Pico, it will reload the original binary and go back to `42`. To make the change **permanent**, we need to patch the `.bin` file with a hex editor.
+
+#### Make It Permanent in HxD
+
+Now quit GDB and open the hex editor:
+
+```gdb
+(gdb) q
+```
+
+From GDB, we know the instruction at `0x10000264` is:
 
 ```
 movs r1, #0x2a    →    bytes: 2a 21
@@ -670,32 +778,67 @@ movs r1, #0x2a    →    bytes: 2a 21
 
 To change the value from 42 (`0x2a`) to 43 (`0x2b`):
 
-1. In HxD, press **Ctrl+G** (Go to offset)
-2. Enter offset: `28E`
-3. You should see the byte `2A` at this position
-4. Change `2A` to `2B`
-5. The instruction is now `movs r1, #0x2b` (43 in decimal)
+1. In HxD, open `C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0014_static-variables\build\0x0014_static-variables.bin`
+2. Press **Ctrl+G** (Go to offset)
+3. Enter offset: `264`
+4. You should see the byte `2A` at this position
+5. Change `2A` to `2B`
+6. The instruction is now `movs r1, #0x2b` (43 in decimal)
 
 > 🔍 **How Thumb encoding works:** In `movs r1, #imm8`, the immediate value is the first byte, and the opcode `21` is the second byte. So the bytes `2a 21` encode `movs r1, #0x2a`.
 
 ### Step 20: Hack #2 — Invert the Button Logic
 
-From GDB, we found the `eor r3, r3, #0x1` instruction that inverts the button value. We need to find where this instruction is in the binary.
+#### Understand the Encoding
 
-In GDB, examine the exact address and bytes:
+From GDB, we found the `eor.w r3, r3, #1` instruction at `0x10000286` that inverts the button value. Examine the exact bytes:
 
 ```gdb
-(gdb) x/2bx <address_of_eor_instruction>
+(gdb) x/4bx 0x10000286
+0x10000286 <main+82>:   0x83    0xf0    0x01    0x03
 ```
 
-The `eor` instruction with `#0x1` needs to become `eor` with `#0x0`:
+This is the 32-bit Thumb-2 encoding of `eor.w r3, r3, #1`. The bytes break down as:
 
-1. Calculate the file offset of the EOR instruction
-2. In HxD, go to that offset
-3. Find the byte encoding the immediate value `0x01`
-4. Change it to `0x00`
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  eor.w r3, r3, #1  →  bytes: 83 F0 01 03                        │
+│                                                                 │
+│  Byte 0: 0x83  ─┐                                               │
+│  Byte 1: 0xF0  ─┘  First halfword (opcode + source register)    │
+│  Byte 2: 0x01  ──── Immediate value (#1) ← CHANGE THIS          │
+│  Byte 3: 0x03  ──── Destination register (r3)                   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-Now the logic is:
+#### Test in GDB First (Temporary)
+
+```gdb
+(gdb) set *(char *)(0x10000286 + 2) = 0x00
+(gdb) x/4bx 0x10000286
+0x10000286 <main+82>:   0x83    0xf0    0x00    0x03
+(gdb) c
+```
+
+Now test the button — the LED behavior should be **inverted** (ON when not pressed, OFF when pressed). It works!
+
+> ⚠️ Again, this is **temporary** — reboot and it's gone. Let's make it permanent.
+
+#### Make It Permanent in HxD
+
+The file offset is `0x10000286 - 0x10000000 = 0x286`. The immediate byte is the 3rd byte of the instruction, so: `0x286 + 2 = 0x288`.
+
+To change `eor.w r3, r3, #1` to `eor.w r3, r3, #0`:
+
+1. In HxD, press **Ctrl+G** (Go to offset)
+2. Enter offset: `288` (the third byte of the 4-byte instruction)
+3. You should see the byte `01` at this position
+4. Change `01` to `00`
+
+> 🔍 **Why offset `0x288` and not `0x286`?** The immediate value `#1` is in the **third byte** of the 4-byte instruction. The instruction starts at file offset `0x286`, so the immediate byte is at `0x286 + 2 = 0x288`.
+
+Now the logic is permanently changed:
 - Button released (input = 1): `1 XOR 0 = 1` → LED **ON**
 - Button pressed (input = 0): `0 XOR 0 = 0` → LED **OFF**
 
@@ -715,21 +858,21 @@ This is the **opposite** of the original behavior!
 
 Open a terminal and navigate to your project directory:
 
-```bash
-cd Embedded-Hacking/0x0014_static-variables
+```powershell
+cd C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0014_static-variables
 ```
 
 Run the conversion command:
 
-```bash
-python ../uf2conv.py build/0x0014_static-variables-h.bin --base 0x10000000 --family 0xe48bff59 --output build/hacked.uf2
+```powershell
+python ..\uf2conv.py build\0x0014_static-variables-h.bin --base 0x10000000 --family 0xe48bff59 --output build\hacked.uf2
 ```
 
 **What this command means:**
-- `uf2conv.py` = the conversion script
+- `uf2conv.py` = the conversion script (in the parent `Embedded-Hacking-main` directory)
 - `--base 0x10000000` = the XIP base address where code runs from
 - `--family 0xe48bff59` = the RP2350 family ID
-- `--output build/hacked.uf2` = the output filename
+- `--output build\hacked.uf2` = the output filename
 
 ### Step 23: Flash the Hacked Binary
 
