@@ -203,7 +203,7 @@ Writing `struct student` everywhere is tedious. The `typedef` keyword creates an
 typedef struct student student_t;
 
 // Now you can write:
-student_t alice;  // Instead of: struct student alice;
+student_t alice; // Instead of: struct student alice;
 ```
 
 ### Forward Declaration
@@ -211,7 +211,7 @@ student_t alice;  // Instead of: struct student alice;
 Sometimes you need to tell the compiler "this struct exists" before defining it:
 
 ```c
-typedef struct i2c_inst i2c_inst_t;  // Forward declaration + alias
+typedef struct i2c_inst i2c_inst_t; // Forward declaration + alias
 
 // Later, the full definition:
 struct i2c_inst {
@@ -497,25 +497,71 @@ arm-none-eabi-gdb build/0x0017_constants.elf
 Let's examine the main function. Disassemble from the entry point:
 
 ```
-x/60i 0x10000234
+x/54i 0x10000234
 ```
 
 You should see output like:
 
 ```
-0x10000234: push {r4, r5, r6, r7, lr}
-0x10000236: sub sp, #12
-0x10000238: bl 0x10003014              ; stdio_init_all
-0x1000023c: ldr r0, [pc, #108]         ; Load i2c1_inst pointer
-0x1000023e: ldr r1, =0x186A0           ; 100000 (baud rate)
-0x10000240: bl 0x100002b4              ; i2c_init
-0x10000244: movs r0, #2                ; GPIO 2 (SDA)
-0x10000246: movs r1, #3                ; GPIO_FUNC_I2C
-0x10000248: bl 0x100002c8              ; gpio_set_function
-0x1000024c: movs r0, #3                ; GPIO 3 (SCL)
-0x1000024e: movs r1, #3                ; GPIO_FUNC_I2C
-0x10000250: bl 0x100002c8              ; gpio_set_function
-...
+   0x10000234 <main>:   push    {r3, lr}
+   0x10000236 <main+2>: bl      0x100037fc <stdio_init_all>
+   0x1000023a <main+6>: ldr     r1, [pc, #104]  @ (0x100002a4 <main+112>)
+   0x1000023c <main+8>: ldr     r0, [pc, #104]  @ (0x100002a8 <main+116>)
+   0x1000023e <main+10>:        bl      0x10003cdc <i2c_init>
+   0x10000242 <main+14>:        movs    r1, #3
+   0x10000244 <main+16>:        movs    r0, #2
+   0x10000246 <main+18>:        bl      0x100008f0 <gpio_set_function>
+   0x1000024a <main+22>:        movs    r1, #3
+   0x1000024c <main+24>:        mov     r0, r1
+   0x1000024e <main+26>:        bl      0x100008f0 <gpio_set_function>
+   0x10000252 <main+30>:        movs    r2, #0
+   0x10000254 <main+32>:        movs    r1, #1
+   0x10000256 <main+34>:        movs    r0, #2
+   0x10000258 <main+36>:        bl      0x1000092c <gpio_set_pulls>
+   0x1000025c <main+40>:        movs    r2, #0
+   0x1000025e <main+42>:        movs    r1, #1
+   0x10000260 <main+44>:        movs    r0, #3
+   0x10000262 <main+46>:        bl      0x1000092c <gpio_set_pulls>
+   0x10000266 <main+50>:        movs    r3, #8
+   0x10000268 <main+52>:        movs    r2, #4
+   0x1000026a <main+54>:        movs    r1, #39 @ 0x27
+   0x1000026c <main+56>:
+    ldr r0, [pc, #56]   @ (0x100002a8 <main+116>)
+   0x1000026e <main+58>:        bl      0x100002bc <lcd_i2c_init>
+   0x10000272 <main+62>:        movs    r1, #0
+   0x10000274 <main+64>:        mov     r0, r1
+   0x10000276 <main+66>:        bl      0x100006f4 <lcd_set_cursor>
+   0x1000027a <main+70>:
+    ldr r0, [pc, #48]   @ (0x100002ac <main+120>)
+   0x1000027c <main+72>:        bl      0x100007f0 <lcd_puts>
+   0x10000280 <main+76>:        movs    r0, #1
+   0x10000282 <main+78>:        movs    r1, #0
+   0x10000284 <main+80>:        bl      0x100006f4 <lcd_set_cursor>
+   0x10000288 <main+84>:
+    ldr r0, [pc, #36]   @ (0x100002b0 <main+124>)
+   0x1000028a <main+86>:        bl      0x100007f0 <lcd_puts>
+   0x1000028e <main+90>:        movs    r1, #42 @ 0x2a
+   0x10000290 <main+92>:
+    ldr r0, [pc, #32]   @ (0x100002b4 <main+128>)
+   0x10000292 <main+94>:        bl      0x1000398c <__wrap_printf>
+   0x10000296 <main+98>:        movw    r1, #1337       @ 0x539
+   0x1000029a <main+102>:
+    ldr r0, [pc, #28]   @ (0x100002b8 <main+132>)
+   0x1000029c <main+104>:       bl      0x1000398c <__wrap_printf>
+   0x100002a0 <main+108>:       b.n     0x1000028e <main+90>
+   0x100002a2 <main+110>:       nop
+   0x100002a4 <main+112>:       strh    r0, [r4, #52]   @ 0x34
+   0x100002a6 <main+114>:       movs    r1, r0
+   0x100002a8 <main+116>:       lsls    r4, r5, #24
+   0x100002aa <main+118>:       movs    r0, #0
+   0x100002ac <main+120>:       subs    r6, #232        @ 0xe8
+   0x100002ae <main+122>:       asrs    r0, r0, #32
+   0x100002b0 <main+124>:       subs    r6, #240        @ 0xf0
+   0x100002b2 <main+126>:       asrs    r0, r0, #32
+   0x100002b4 <main+128>:       subs    r6, #252        @ 0xfc
+   0x100002b6 <main+130>:       asrs    r0, r0, #32
+   0x100002b8 <main+132>:       subs    r7, #12
+   0x100002ba <main+134>:       asrs    r0, r0, #32
 ```
 
 ### Step 5: Set a Breakpoint at Main
@@ -527,11 +573,17 @@ c
 
 GDB responds:
 ```
-Breakpoint 1 at 0x10000234
+Breakpoint 1 at 0x10000234: file C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0017_constants/0x0017_constants.c, line 16.
+Note: automatically using hardware breakpoints for read-only addresses.
+(gdb) c
 Continuing.
 
-Breakpoint 1, 0x10000234 in ?? ()
+Thread 1 "rp2350.cm0" hit Breakpoint 1, main ()
+    at C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0017_constants/0x0017_constants.c:16
+16          stdio_init_all();
 ```
+
+> ⚠️ **Note:** If GDB says `The program is not being run.` when you type `c`, the target hasn't been started yet. Use `monitor reset halt` first, then `c` to continue to your breakpoint.
 
 ### Step 6: Find the #define Constant (FAV_NUM)
 
@@ -543,41 +595,59 @@ x/20i 0x1000028e
 
 Look for:
 ```
-0x1000028e: movs r1,#0x2a    ; 0x2a = 42 decimal (FAV_NUM)
+...
+0x1000028e <main+90>:        movs    r1, #42 @ 0x2a
+...
 ```
 
 The `#define` constant is embedded directly as an immediate value in the instruction!
 
 ### Step 7: Find the const Variable (OTHER_FAV_NUM)
 
-Continue examining the code:
+Continue examining the loop body:
 
-```
-x/10i 0x10000296
-```
-
-Look for a load instruction:
-```
-0x10000296: ldr r1, [pc, #offset]    ; Load OTHER_FAV_NUM from memory
+```gdb
+(gdb) x/5i 0x10000296
 ```
 
-The `const` variable is loaded from a memory address because it actually exists in flash!
-
-### Step 8: Examine the const Value in Memory
-
-Find where OTHER_FAV_NUM is stored:
+Look for this instruction:
 
 ```
-x/1wx 0x100002ac
+...
+0x10000296 <main+98>:   movw    r1, #1337       @ 0x539
+...
 ```
 
-This should show the address pointing to the value. Then examine that address:
+**Surprise!** The `const` variable is ALSO embedded as an immediate value — not loaded from memory! The compiler saw that `OTHER_FAV_NUM` is never address-taken (`&OTHER_FAV_NUM` is never used), so it optimized the `const` the same way as `#define` — as a constant embedded directly in the instruction.
 
-```
-x/1wd 0x10003xxx
+The difference is the instruction encoding:
+- `FAV_NUM` (42): `movs r1, #0x2a` — 16-bit Thumb instruction (values 0-255)
+- `OTHER_FAV_NUM` (1337): `movw r1, #0x539` — 32-bit Thumb-2 instruction (values 0-65535)
+
+> 💡 **Why `movw` instead of `movs`?** The value 1337 doesn't fit in 8 bits (max 255), so the compiler uses `movw` (Move Wide) which can encode any 16-bit immediate (0-65535) in a 32-bit instruction.
+
+### Step 8: Examine the Literal Pool
+
+The literal pool after the loop contains addresses and constants that are too large for regular instruction immediates. Let's examine it:
+
+```gdb
+(gdb) x/6wx 0x100002a4
+0x100002a4 <main+112>:  0x000186a0      0x2000062c      0x10003ee8      0x10003ef0
+0x100002b4 <main+128>:  0x10003efc      0x10003f0c
 ```
 
-You should see `1337` (or `0x539` in hex).
+These are the values that `ldr rN, [pc, #offset]` instructions load:
+
+| Literal Pool Addr | Value          | Used By                        |
+| ----------------- | -------------- | ------------------------------ |
+| `0x100002a4`      | `0x000186A0`   | I2C baudrate (100000)          |
+| `0x100002a8`      | `0x2000062C`   | &i2c1_inst (I2C struct in RAM) |
+| `0x100002ac`      | `0x10003EE8`   | "Reverse" string address       |
+| `0x100002b0`      | `0x10003EF0`   | "Engineering" string address   |
+| `0x100002b4`      | `0x10003EFC`   | "FAV_NUM: %d\r\n" format str  |
+| `0x100002b8`      | `0x10003F0C`   | "OTHER_FAV_NUM: %d\r\n" fmt   |
+
+> 💡 **Why does the disassembly at `0x100002a4` show `strh r0, [r4, #52]` instead of data?** Same reason as Week 6 — GDB's `x/i` tries to decode raw data as instructions. Use `x/wx` to see the actual word values.
 
 ### Step 9: Examine the I²C Struct
 
@@ -589,8 +659,7 @@ x/2wx 0x2000062c
 
 You should see:
 ```
-0x2000062c: 0x40098000    ; hw pointer (I2C1 hardware base)
-0x20000630: 0x00000000    ; restart_on_next = false
+0x2000062c <i2c1_inst>: 0x40098000      0x00000000
 ```
 
 ### Step 10: Examine the LCD String Literals
@@ -624,11 +693,6 @@ si
 i r r0 r1
 ```
 
-Observe how:
-- `r0` gets the i2c_inst pointer
-- `r1` gets the baud rate (100000)
-- The function call happens via `bl`
-
 ---
 
 ## 🔬 Part 9: Understanding the Assembly
@@ -637,21 +701,28 @@ Now that we've explored the binary in GDB, let's make sense of the key patterns 
 
 ### Step 12: Analyze #define vs const in Assembly
 
-From GDB, we discovered a critical difference:
+From GDB, we discovered something interesting — **both constants ended up as instruction immediates!**
 
 **For FAV_NUM (42) — a `#define` macro:**
 ```
-0x1000028e:    movs r1, #0x2a    ; 0x2a = 42 decimal
+0x1000028e:    movs r1, #42 @ 0x2a
 ```
 
-The value is embedded **directly as an immediate** in the instruction. There is no memory location — the preprocessor replaced `FAV_NUM` with `42` before compilation.
+The value 42 is embedded directly in a 16-bit Thumb instruction. This is expected — `#define` is text replacement, so the compiler never sees `FAV_NUM`, only `42`.
 
 **For OTHER_FAV_NUM (1337) — a `const` variable:**
 ```
-0x10000296:    ldr r1, [pc, #offset]    ; Load value from flash
+0x10000296:    movw r1, #1337 @ 0x539
 ```
 
-The value is **loaded from a memory address** because `const` creates a real variable stored in the `.rodata` section of flash.
+The value 1337 is ALSO embedded directly in an instruction — but this time a 32-bit Thumb-2 `movw` because the value doesn't fit in 8 bits.
+
+**Why wasn't `const` stored in memory?** In theory, `const int OTHER_FAV_NUM = 1337` creates a variable in the `.rodata` section. But the compiler optimized it away because:
+1. We never take the address of `OTHER_FAV_NUM` (no `&OTHER_FAV_NUM`)
+2. The value fits in a 16-bit `movw` immediate
+3. Loading from an immediate is faster than loading from memory
+
+> 💡 **Key takeaway for reverse engineering:** Don't assume `const` variables will appear as memory loads. Modern compilers aggressively inline constant values. The C keyword `const` is a **source-level** concept — the compiler may or may not honor it in the final binary.
 
 ### Step 13: Analyze the I²C Struct Layout
 
@@ -659,7 +730,7 @@ In GDB, we examined the `i2c1_inst` struct at `0x2000062c`:
 
 ```gdb
 (gdb) x/2wx 0x2000062c
-0x2000062c: 0x40098000    0x00000000
+0x2000062c <i2c1_inst>: 0x40098000      0x00000000
 ```
 
 This maps to the `i2c_inst_t` struct:
@@ -699,13 +770,13 @@ These are stored consecutively in the `.rodata` section. Note the addresses — 
 
 Now for the fun part — we'll patch the `.bin` file directly using a hex editor!
 
-> 💡 **Why a hex editor?** GDB can modify values in RAM at runtime, but those changes are lost when the device reboots. To make **permanent** changes, we edit the `.bin` file on disk and re-flash it.
+> 💡 **Why a hex editor?** GDB **cannot write to flash memory** — the `0x10000000+` address range where program instructions and read-only data live. Trying `set *(char *)0x1000028e = 0x2b` in GDB gives `Writing to flash memory forbidden in this context`. To make **permanent** patches that survive a power cycle, we edit the `.bin` file directly with a hex editor and re-flash it.
 
 ### Step 15: Open the Binary in a Hex Editor
 
 1. Open **HxD** (or your preferred hex editor: ImHex, 010 Editor, etc.)
 2. Click **File** → **Open**
-3. Navigate to `0x0017_constants/build/`
+3. Navigate to `C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0017_constants\build\`
 4. Open `0x0017_constants.bin`
 
 ### Step 16: Calculate the File Offset
@@ -722,7 +793,7 @@ For example:
 
 ### Step 17: Hack #1 — Change FAV_NUM from 42 to 43
 
-From GDB, we know the instruction at `0x1000028e` is:
+From our GDB analysis, we know the instruction at `0x1000028e` is:
 
 ```
 movs r1, #0x2a    →    bytes: 2a 21
@@ -730,37 +801,59 @@ movs r1, #0x2a    →    bytes: 2a 21
 
 To change the value from 42 (`0x2a`) to 43 (`0x2b`):
 
-1. In HxD, press **Ctrl+G** (Go to offset)
-2. Enter offset: `28E`
-3. You should see the byte `2A` at this position
-4. Change `2A` to `2B`
-5. The instruction is now `movs r1, #0x2b` (43 in decimal)
+1. In HxD, open `C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0017_constants\build\0x0017_constants.bin`
+2. Press **Ctrl+G** (Go to offset)
+3. Enter offset: `28E`
+4. You should see the byte `2A` at this position
+5. Change `2A` to `2B`
+6. The instruction is now `movs r1, #0x2b` (43 in decimal)
 
 > 🔍 **How Thumb encoding works:** In `movs r1, #imm8`, the immediate value is the first byte, and the opcode `21` is the second byte. So the bytes `2a 21` encode `movs r1, #0x2a`.
 
 ### Step 18: Hack #2 — Change OTHER_FAV_NUM from 1337 to 1344
 
-The `const` value 1337 (`0x539`) is stored in the data section, not as an instruction immediate. From GDB, we found its memory address.
+#### Understand the Encoding
 
-Examine the literal pool to find where `0x539` is stored:
+From GDB, we found the `movw r1, #1337` instruction at `0x10000296`. Examine the exact bytes:
 
 ```gdb
-(gdb) x/4wx 0x100002a8
+(gdb) x/4bx 0x10000296
+0x10000296 <main+98>:   0x40    0xf2    0x39    0x51
 ```
 
-Look for the word `0x00000539`. Calculate its file offset and patch it:
+This is the 32-bit Thumb-2 encoding of `movw r1, #0x539` (1337). The bytes break down as:
 
-1. In HxD, go to the offset where `0x539` is stored
-2. The bytes will be `39 05 00 00` (little-endian)
-3. Change to `40 05 00 00` (`0x540` = 1344 in decimal)
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  movw r1, #0x539  →  bytes: 40 F2 39 51                         │
+│                                                                 │
+│  Byte 0: 0x40  ─┐                                               │
+│  Byte 1: 0xF2  ─┘  First halfword (opcode + upper imm bits)     │
+│  Byte 2: 0x39  ──── Lower 8 bits of immediate (imm8) ← CHANGE   │
+│  Byte 3: 0x51  ──── Destination register (r1) + upper imm bits  │
+│                                                                 │
+│  imm16 = 0x0539 = 1337 decimal                                  │
+│  imm8 field = 0x39 (lower 8 bits of the value)                  │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-> 🔍 **Little-endian byte order:** The RP2350 stores multi-byte values with the least significant byte first. So `0x00000539` appears as `39 05 00 00` in memory.
+The file offset is `0x10000296 - 0x10000000 = 0x296`. The imm8 byte is the 3rd byte of the instruction: `0x296 + 2 = 0x298`.
+
+To change `movw r1, #1337` to `movw r1, #1344`:
+
+1. In HxD, press **Ctrl+G** (Go to offset)
+2. Enter offset: `298` (the third byte of the 4-byte instruction)
+3. You should see the byte `39` at this position
+4. Change `39` to `40`
+
+> 🔍 **Why offset `0x298` and not `0x296`?** The lower 8 bits of the immediate (`imm8`) are in the **third byte** of the 4-byte `movw` instruction. The instruction starts at file offset `0x296`, so imm8 is at `0x296 + 2 = 0x298`. Changing `0x39` to `0x40` changes the value from `0x539` (1337) to `0x540` (1344).
 
 ### Step 19: Hack #3 — Change LCD Text from "Reverse" to "Exploit"
 
 **IMPORTANT:** The new string must be the **same length** as the original! "Reverse" and "Exploit" are both 7 characters — perfect!
 
-From GDB, we know "Reverse" is at address `0x10003ee8`:
+From our GDB analysis in Step 10, we found the string at `0x10003ee8`. File offset = `0x10003ee8 - 0x10000000 = 0x3EE8`.
 
 1. In HxD, press **Ctrl+G** and enter offset: `3EE8`
 2. You should see the bytes for "Reverse": `52 65 76 65 72 73 65 00`
@@ -792,14 +885,14 @@ From GDB, we know "Reverse" is at address `0x10003ee8`:
 
 Open a terminal and navigate to your project directory:
 
-```bash
-cd Embedded-Hacking/0x0017_constants
+```powershell
+cd C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0017_constants
 ```
 
 Run the conversion command:
 
-```bash
-python ../uf2conv.py build/0x0017_constants-h.bin --base 0x10000000 --family 0xe48bff59 --output build/hacked.uf2
+```powershell
+python ..\uf2conv.py build\0x0017_constants-h.bin --base 0x10000000 --family 0xe48bff59 --output build\hacked.uf2
 ```
 
 ### Step 22: Flash the Hacked Binary
@@ -839,7 +932,7 @@ OTHER_FAV_NUM: 1344
 3. **Explored C structs** - How the Pico SDK abstracts hardware
 4. **Mastered the macro chain** - From `I2C_PORT` to `0x40098000`
 5. **Examined structs in GDB** - Inspected memory layout of `i2c_inst_t`
-6. **Hacked constant values** - Both immediate and memory-stored using a hex editor
+6. **Hacked constant values** - Both `movs` (8-bit) and `movw` (16-bit) immediates using a hex editor
 7. **Patched string literals** - Changed LCD display text
 
 ### #define vs const Summary
@@ -856,11 +949,11 @@ OTHER_FAV_NUM: 1344
 ├─────────────────────────────────────────────────────────────────┤
 │  const int OTHER_FAV_NUM = 1337                                 │
 │  ──────────────────────────────                                 │
-│  • Real variable in .rodata section                             │
-│  • Takes memory (4 bytes for int)                               │
-│  • Can take address (&OTHER_FAV_NUM is valid)                   │
-│  • In binary: value loaded from memory (ldr r1, [address])      │
-│  • To hack: patch the value in the data section                 │
+│  • Theoretically in .rodata, but compiler optimized it away     │
+│  • Value embedded as immediate: movw r1, #0x539 (32-bit instr)  │
+│  • Optimization: compiler saw &OTHER_FAV_NUM is never used      │
+│  • In binary: immediate in instruction, same as #define!        │
+│  • To hack: patch instruction operand (imm8 byte at offset +2)  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -899,7 +992,7 @@ OTHER_FAV_NUM: 1344
 | ------------ | ---------------------------------- |
 | `0x10000234` | main() entry point                 |
 | `0x1000028e` | FAV_NUM value in instruction       |
-| `0x10000296` | OTHER_FAV_NUM load instruction     |
+| `0x10000296` | OTHER_FAV_NUM value in instruction |
 | `0x10003ee8` | "Reverse" string literal (example) |
 | `0x40098000` | I²C1 hardware registers base       |
 | `0x2000062C` | i2c1_inst struct in SRAM           |

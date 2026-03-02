@@ -724,7 +724,7 @@ This is an **unconditional branch** back to `0x10000264` (the `movs r1, #42` at 
 
 Now for the fun part — we'll patch the `.bin` file directly using a hex editor!
 
-> 💡 **Why a hex editor?** GDB lets you modify values **in RAM** at runtime (e.g., `set *(char *)0x200005a8 = 100`), but those changes are **lost when the device reboots** — GDB has no way to write changes back to the `.bin` file on disk. To make **permanent** patches that survive a power cycle, we edit the `.bin` file directly with a hex editor and re-flash it.
+> 💡 **Why a hex editor?** GDB **cannot write to flash memory** — the `0x10000000+` address range where program instructions live. Trying `set *(char *)0x10000264 = 0x2b` in GDB gives `Writing to flash memory forbidden in this context`. To make **permanent** patches that survive a power cycle, we edit the `.bin` file directly with a hex editor and re-flash it.
 
 ### Step 17: Open the Binary in a Hex Editor
 
@@ -747,30 +747,7 @@ For example:
 
 ### Step 19: Hack #1 — Change regular_fav_num from 42 to 43
 
-#### Test in GDB First (Temporary)
-
-Before touching the binary file, test the change in GDB to make sure it works. From your GDB session (with the breakpoint at `0x10000264`):
-
-```gdb
-(gdb) set *(char *)0x10000264 = 0x2b
-(gdb) x/1i 0x10000264
-0x10000264 <main+48>:   movs    r1, #43 @ 0x2b
-(gdb) c
-```
-
-Check your serial monitor — you should see `regular_fav_num: 43` instead of `42`. It works!
-
-> ⚠️ **This change is temporary.** GDB modified the value in RAM, but the `.bin` file on disk is unchanged. When you reboot the Pico, it will reload the original binary and go back to `42`. To make the change **permanent**, we need to patch the `.bin` file with a hex editor.
-
-#### Make It Permanent in HxD
-
-Now quit GDB and open the hex editor:
-
-```gdb
-(gdb) q
-```
-
-From GDB, we know the instruction at `0x10000264` is:
+From our GDB analysis, we know the instruction at `0x10000264` is:
 
 ```
 movs r1, #0x2a    →    bytes: 2a 21
@@ -812,20 +789,7 @@ This is the 32-bit Thumb-2 encoding of `eor.w r3, r3, #1`. The bytes break down 
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-#### Test in GDB First (Temporary)
-
-```gdb
-(gdb) set *(char *)(0x10000286 + 2) = 0x00
-(gdb) x/4bx 0x10000286
-0x10000286 <main+82>:   0x83    0xf0    0x00    0x03
-(gdb) c
-```
-
-Now test the button — the LED behavior should be **inverted** (ON when not pressed, OFF when pressed). It works!
-
-> ⚠️ Again, this is **temporary** — reboot and it's gone. Let's make it permanent.
-
-#### Make It Permanent in HxD
+To change `eor.w r3, r3, #1` to `eor.w r3, r3, #0` (making XOR do nothing):
 
 The file offset is `0x10000286 - 0x10000000 = 0x286`. The immediate byte is the 3rd byte of the instruction, so: `0x286 + 2 = 0x288`.
 
