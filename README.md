@@ -4,9 +4,9 @@
 
 <br>
 
-# Today's Tutorial [March 6, 2026]
-## Lesson 124: x64 Course (Part 4 - Number Systems)
-This tutorial will discuss number systems.
+# Today's Tutorial [March 7, 2026]
+## Lesson 125: x64 Course (Part 5 - Binary Addition)
+This tutorial will discuss binary addition.
 
 -> Click [HERE](https://0xinfection.github.io/reversing) to read the FREE ebook.
 
