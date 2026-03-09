@@ -4,9 +4,9 @@
 
 <br>
 
-# Today's Tutorial [March 7, 2026]
-## Lesson 125: x64 Course (Part 5 - Binary Addition)
-This tutorial will discuss binary addition.
+# Today's Tutorial [March 9, 2026]
+## Lesson 126: x64 Course (Part 6 - Binary Subtraction)
+This tutorial will discuss binary subtraction.
 
 -> Click [HERE](https://0xinfection.github.io/reversing) to read the FREE ebook.
 
