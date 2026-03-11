@@ -4,9 +4,9 @@
 
 <br>
 
-# Today's Tutorial [March 9, 2026]
-## Lesson 126: x64 Course (Part 6 - Binary Subtraction)
-This tutorial will discuss binary subtraction.
+# Today's Tutorial [March 11, 2026]
+## Lesson 127: x64 Course (Part 7 - Word Lengths)
+This tutorial will discuss word lengths.
 
 -> Click [HERE](https://0xinfection.github.io/reversing) to read the FREE ebook.
 
