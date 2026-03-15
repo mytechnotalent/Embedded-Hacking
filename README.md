@@ -8,7 +8,7 @@
 ## Lesson 130: x64 Course (Part 10 - Boolean Instructions)
 This tutorial will discuss boolean instructions.
 
--> Click [HERE](https://0xinfection.github.io/reversing) to read the FREE ebook. to read the FREE ebook.
+-> Click [HERE](https://0xinfection.github.io/reversing) to read the FREE ebook.
 
 <br>
 
