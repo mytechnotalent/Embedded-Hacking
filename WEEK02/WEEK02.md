@@ -1,10 +1,6 @@
-# Embedded Systems Reverse Engineering
-[Repository](https://github.com/mytechnotalent/Embedded-Hacking)
+﻿# Week 2: Hello, World - Debugging and Hacking Basics: Debugging and Hacking a Basic Program for the Pico 2
 
-## Week 2
-Hello, World - Debugging and Hacking Basics: Debugging and Hacking a Basic Program for the Pico 2
-
-### 🎯 What You'll Learn This Week
+## 🎯 What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
 - Connect to a live embedded system using OpenOCD and GDB
@@ -16,7 +12,7 @@ By the end of this tutorial, you will be able to:
 - Hijack register values to redirect program behavior
 - Modify a running program's output in real-time
 
-### 🔄 Review from Week 1
+## 🔄 Review from Week 1
 This week builds directly on Week 1 concepts. You should already be comfortable with:
 - **Registers** (`r0`-`r12`, SP, LR, PC) - We'll watch them change and manipulate `r0` to change program behavior
 - **Memory Layout** (Flash at `0x10000000`, RAM at `0x20000000`) - Critical for understanding where we can write
@@ -27,7 +23,7 @@ This week builds directly on Week 1 concepts. You should already be comfortable 
 
 ---
 
-### 📚 Part 1: Understanding Live Hacking
+## 📚 Part 1: Understanding Live Hacking
 
 #### What is Live Hacking?
 
@@ -56,7 +52,7 @@ The techniques you'll learn today are *exactly* how this would be done. Understa
 
 ---
 
-### 📚 Part 2: Review - Memory Layout (from Week 1)
+## 📚 Part 2: Review - Memory Layout (from Week 1)
 
 > 🔄 **REVIEW:** In Week 1, we learned about the RP2350's memory layout. This knowledge is essential for our hack!
 
@@ -111,7 +107,7 @@ But SRAM (starting at `0x20000000`) is **read-write**! This is where we'll creat
 
 ---
 
-### 📚 Part 3: The Attack Plan
+## 📚 Part 3: The Attack Plan
 
 Here's our step-by-step attack strategy:
 
@@ -136,7 +132,7 @@ Here's our step-by-step attack strategy:
 
 ---
 
-### 📚 Part 4: Setting Up Your Environment
+## 📚 Part 4: Setting Up Your Environment
 
 #### Prerequisites
 
@@ -156,7 +152,7 @@ You will need **THREE** terminal windows:
 
 ---
 
-### 🔬 Part 5: GDB Deep Dive - Exploring the Binary
+## 🔬 Part 5: GDB Deep Dive - Exploring the Binary
 
 Before we start hacking, let's use GDB to thoroughly understand our program. This hands-on tutorial will teach you to examine memory, step through code, and watch the stack in action.
 
@@ -168,7 +164,7 @@ OpenOCD is the bridge between your computer and the Pico 2's debug interface. It
 
 **Open Terminal 1 and type:**
 
-```bash
+```powershell
 openocd ^
   -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
   -f interface/cmsis-dap.cfg ^
@@ -228,19 +224,19 @@ The program is running and printing `"hello, world"` in an infinite loop!
 
 **Open Terminal 3** and start GDB with your binary:
 
-```bash
-arm-none-eabi-gdb build/0x0001_hello-world.elf
+```powershell
+arm-none-eabi-gdb build\0x0001_hello-world.elf
 ```
 
 **What this command means:**
 - `arm-none-eabi-gdb` = the ARM version of GDB
-- `build/0x0001_hello-world.elf` = our compiled program with debug symbols
+- `build\0x0001_hello-world.elf` = our compiled program with debug symbols
 
 **You should see:**
 
 ```
 GNU gdb (Arm GNU Toolchain 13.2) 13.2
-Reading symbols from build/0x0001_hello-world.elf...
+Reading symbols from build\0x0001_hello-world.elf...
 (gdb) 
 ```
 
@@ -744,7 +740,7 @@ There's our string! The `\r` is a carriage return character (part of `\r\n`).
 
 ---
 
-### 🔬 Part 6: Starting the Debug Session for the Hack
+## 🔬 Part 6: Starting the Debug Session for the Hack
 
 ##### Step 1: Start OpenOCD (Debug Server)
 
@@ -752,7 +748,7 @@ OpenOCD is the bridge between your computer and the Pico 2's debug interface. It
 
 **Open Terminal 1 and type:**
 
-```bash
+```powershell
 openocd ^
   -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
   -f interface/cmsis-dap.cfg ^
@@ -812,19 +808,19 @@ The program is running and printing `"hello, world"` in an infinite loop!
 
 **Open Terminal 3** and start GDB with your binary:
 
-```bash
-arm-none-eabi-gdb build/0x0001_hello-world.elf
+```powershell
+arm-none-eabi-gdb build\0x0001_hello-world.elf
 ```
 
 **What this command means:**
 - `arm-none-eabi-gdb` = the ARM version of GDB
-- `build/0x0001_hello-world.elf` = our compiled program with debug symbols
+- `build\0x0001_hello-world.elf` = our compiled program with debug symbols
 
 **You should see:**
 
 ```
 GNU gdb (Arm GNU Toolchain 13.2) 13.2
-Reading symbols from build/0x0001_hello-world.elf...
+Reading symbols from build\0x0001_hello-world.elf...
 (gdb) 
 ```
 
@@ -884,7 +880,7 @@ xPSR: 0xf9000000 pc: 0x00000088 msp: 0xf0000000
 
 ---
 
-### 🔬 Part 7: Analyzing the Target
+## 🔬 Part 7: Analyzing the Target
 
 > 🔄 **REVIEW:** We're using the same GDB commands we learned earlier. The `x` command examines memory, and `/5i` shows 5 instructions.
 
@@ -949,7 +945,7 @@ If we can change what `r0` points to, we can make it print **anything we want**!
 
 ---
 
-### 🔬 Part 8: Setting the Trap
+## 🔬 Part 8: Setting the Trap
 
 > 🔄 **REVIEW:** In Week 1, we used `b main` and `b *0x10000234` to set breakpoints. Now we'll use the same technique at a more strategic location!
 
@@ -1035,7 +1031,7 @@ Dump of assembler code for function main:
 
 ---
 
-### 🔬 Part 9: Examining the Current State
+## 🔬 Part 9: Examining the Current State
 
 > 🔄 **REVIEW:** In Week 1, we used `x/s $r0` to view the "hello, world" string. We also learned about **little-endian** byte ordering - remember how `0x6c6c6568` spelled "lleh" backwards?
 
@@ -1066,7 +1062,7 @@ There it is! The register `r0` contains `0x100019cc`, which is the address of ou
 
 ---
 
-### 🔬 Part 10: The Failed Hack Attempt (Learning Why)
+## 🔬 Part 10: The Failed Hack Attempt (Learning Why)
 
 ##### Step 11: Try to Directly Change the String (This Will Fail!)
 
@@ -1114,7 +1110,7 @@ The original string is still there. Our hack attempt failed... but we're not giv
 
 ---
 
-### 🔬 Part 11: The Real Hack - Writing to SRAM
+## 🔬 Part 11: The Real Hack - Writing to SRAM
 
 ##### Step 12: Understanding the Solution
 
@@ -1184,7 +1180,7 @@ GDB shows it's at the `ram_vector_table` location - that's just a label from the
 
 ---
 
-### 🔬 Part 12: Hijacking the Register
+## 🔬 Part 12: Hijacking the Register
 
 > 🔄 **REVIEW:** In Week 1, we learned that `r0` holds the first argument to a function. When `puts()` is called, it expects `r0` to contain a pointer to the string it should print. By changing `r0`, we change what gets printed!
 
@@ -1239,7 +1235,7 @@ The value `0x68` is the ASCII code for 'h' - the first character of "hacky"!
 
 ---
 
-### 🔬 Part 13: Executing the Hack
+## 🔬 Part 13: Executing the Hack
 
 ##### Step 17: Continue Execution
 
@@ -1282,7 +1278,7 @@ You just modified a running program on real hardware! The processor executed cod
 
 ---
 
-### 🔬 Part 14: Static Analysis with Ghidra - Understanding the Hack
+## 🔬 Part 14: Static Analysis with Ghidra - Understanding the Hack
 
 Now that we've performed the hack dynamically with GDB, let's use Ghidra to understand the same concepts through static analysis. This shows how you could plan such an attack without even connecting to the hardware!
 
@@ -1542,7 +1538,7 @@ This step helps you understand the mechanics of modifying binary data. Once you'
 
 ---
 
-### 📊 Part 15: Summary and Review
+## 📊 Part 15: Summary and Review
 
 #### What We Accomplished
 
@@ -1613,7 +1609,7 @@ AFTER OUR HACK:
 
 ---
 
-### ✅ Practice Exercises
+## ✅ Practice Exercises
 
 #### Exercise 1: Change the Message
 Try creating a different message! Write your name to SRAM and make the program print it:
@@ -1658,7 +1654,7 @@ Now you can just type `hack` each time!
 
 ---
 
-### 🎓 Key Takeaways
+## 🎓 Key Takeaways
 
 #### Building on Week 1
 
@@ -1682,7 +1678,7 @@ Now you can just type `hack` each time!
 
 ---
 
-### 🔐 Security Implications
+## 🔐 Security Implications
 
 #### How Would This Work in the Real World?
 
@@ -1705,7 +1701,7 @@ Imagine an attacker with physical access to an industrial control system:
 
 ---
 
-### 📖 Glossary
+## 📖 Glossary
 
 #### New Terms This Week
 

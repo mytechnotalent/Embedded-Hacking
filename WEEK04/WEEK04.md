@@ -1,10 +1,6 @@
-# Embedded Systems Reverse Engineering
-[Repository](https://github.com/mytechnotalent/Embedded-Hacking)
+﻿# Week 4: Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Basics
 
-## Week 4
-Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Basics
-
-### 🎯 What You'll Learn This Week
+## 🎯 What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
 - Understand what variables are and how they're stored in memory
@@ -281,7 +277,7 @@ The program is printing `43` because that's what we assigned after the initial `
 
 **Open a terminal and type:**
 
-```bash
+```powershell
 ghidraRun
 ```
 
@@ -479,21 +475,21 @@ The Pico 2 expects UF2 files, not raw BIN files. We need to convert it!
 
 **Open a terminal and navigate to your project directory:**
 
-```bash
-cd Embedded-Hacking/0x0005_intro-to-variables
+```powershell
+cd C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0005_intro-to-variables
 ```
 
 **Run the conversion command:**
 
-```bash
-python ../uf2conv.py build/0x0005_intro-to-variables-h.bin --base 0x10000000 --family 0xe48bff59 --output build/hacked.uf2
+```powershell
+python ..\uf2conv.py build\0x0005_intro-to-variables-h.bin --base 0x10000000 --family 0xe48bff59 --output build\hacked.uf2
 ```
 
 **What this command means:**
 - `uf2conv.py` = the conversion script
 - `--base 0x10000000` = the XIP base address
 - `--family 0xe48bff59` = the RP2350 family ID
-- `--output build/hacked.uf2` = the output filename
+- `--output build\hacked.uf2` = the output filename
 
 ### Step 20: Flash the Hacked Binary
 
@@ -688,9 +684,9 @@ Let's also change the printed value from `0` to `0x42` (66 in decimal):
 
 ### Step 31: Convert to UF2
 
-```bash
-cd Embedded-Hacking/0x0008_uninitialized-variables
-python ../uf2conv.py build/0x0008_uninitialized-variables-h.bin --base 0x10000000 --family 0xe48bff59 --output build/hacked.uf2
+```powershell
+cd C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0008_uninitialized-variables
+python ..\uf2conv.py build\0x0008_uninitialized-variables-h.bin --base 0x10000000 --family 0xe48bff59 --output build\hacked.uf2
 ```
 
 ### Step 32: Flash and Verify

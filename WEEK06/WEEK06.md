@@ -1,4 +1,4 @@
-# Week 6: Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ GPIO Input Basics
+﻿# Week 6: Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ GPIO Input Basics
 
 ## 🎯 What You'll Learn This Week
 
@@ -430,7 +430,7 @@ This demonstrates unsigned integer overflow!
 
 **Terminal 1 - Start OpenOCD:**
 
-```bash
+```powershell
 openocd ^
   -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
   -f interface/cmsis-dap.cfg ^
@@ -440,8 +440,8 @@ openocd ^
 
 **Terminal 2 - Start GDB:**
 
-```bash
-arm-none-eabi-gdb build/0x0014_static-variables.elf
+```powershell
+arm-none-eabi-gdb build\0x0014_static-variables.elf
 ```
 
 **Connect to target:**

@@ -1,10 +1,6 @@
-# Embedded Systems Reverse Engineering
-[Repository](https://github.com/mytechnotalent/Embedded-Hacking)
+﻿# Week 3: Embedded System Analysis: Understanding the RP2350 Architecture w/ Comprehensive Firmware Analysis
 
-## Week 3
-Embedded System Analysis: Understanding the RP2350 Architecture w/ Comprehensive Firmware Analysis
-
-### 🎯 What You'll Learn This Week
+## 🎯 What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
 - Understand how the RP2350 boots from the on-chip bootrom
@@ -16,7 +12,7 @@ By the end of this tutorial, you will be able to:
 - Use Ghidra to statically analyze the boot sequence
 - Understand the difference between Thumb mode addressing and actual addresses
 
-### 🔄 Review from Weeks 1-2
+## 🔄 Review from Weeks 1-2
 This week builds on your GDB and Ghidra skills from previous weeks:
 - **GDB Commands** (`x`, `b`, `c`, `si`, `disas`, `i r`) - We'll use all of these to trace the boot process
 - **Memory Layout** (Flash at `0x10000000`, RAM at `0x20000000`) - Understanding where code and data live
@@ -314,7 +310,7 @@ Before we start, make sure you have:
 
 **Terminal 1 - Start OpenOCD:**
 
-```bash
+```powershell
 openocd ^
   -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
   -f interface/cmsis-dap.cfg ^
@@ -324,8 +320,8 @@ openocd ^
 
 **Terminal 2 - Start GDB:**
 
-```bash
-arm-none-eabi-gdb build/0x0001_hello-world.elf
+```powershell
+arm-none-eabi-gdb build\0x0001_hello-world.elf
 ```
 
 **Connect to target:**
@@ -833,7 +829,7 @@ That's not real code - it's the magic number `0xffffded3` being misinterpreted!
 
 ---
 
-## � Part 15: Static Analysis with Ghidra - Examining the Boot Sequence
+## 🔬 Part 15: Static Analysis with Ghidra - Examining the Boot Sequence
 
 > 🔄 **REVIEW:** In Week 1, we set up a Ghidra project and analyzed our hello-world binary. Now we'll use Ghidra to understand the boot sequence from a static analysis perspective!
 
@@ -1183,7 +1179,7 @@ Ghidra can visualize the call flow:
 
 ---
 
-## � Security Implications
+## 🔐 Security Implications
 
 ### How Boot Sequence Knowledge Applies to Security
 
@@ -1306,7 +1302,7 @@ Understanding how an attacker would analyze and exploit the boot sequence is ess
 
 ---
 
-## �📖 Glossary
+## 📖 Glossary
 
 ### New Terms This Week
 

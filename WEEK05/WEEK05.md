@@ -1,10 +1,6 @@
-# Embedded Systems Reverse Engineering
-[Repository](https://github.com/mytechnotalent/Embedded-Hacking)
+﻿# Week 5: Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floats w/ Intermediate GPIO Output Assembler Analysis
 
-## Week 5
-Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floats w/ Intermediate GPIO Output Assembler Analysis
-
-### 🎯 What You'll Learn This Week
+## 🎯 What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
 - Understand how integers and floating-point numbers are stored in memory
@@ -270,7 +266,7 @@ The program is printing `42.500000` because `printf` with `%f` defaults to 6 dec
 
 **Open a terminal and type:**
 
-```bash
+```powershell
 ghidraRun
 ```
 
@@ -689,14 +685,14 @@ This changes the high word from `0x40454000` (42.5 as double) to `0x4058C000` (9
 
 **Open a terminal and navigate to your project directory:**
 
-```bash
-cd Embedded-Hacking-main\0x000e_floating-point-data-type
+```powershell
+cd C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x000e_floating-point-data-type
 ```
 
 **Run the conversion command:**
 
-```bash
-python ../uf2conv.py build/0x000e_floating-point-data-type-h.bin --base 0x10000000 --family 0xe48bff59 --output build/hacked.uf2
+```powershell
+python ..\uf2conv.py build\0x000e_floating-point-data-type-h.bin --base 0x10000000 --family 0xe48bff59 --output build\hacked.uf2
 ```
 
 ### Step 23: Flash the Hacked Binary
@@ -816,7 +812,7 @@ The program is printing `42.525250` because `printf` with `%lf` defaults to 6 de
 
 **Open a terminal and type:**
 
-```bash
+```powershell
 ghidraRun
 ```
 
@@ -1224,14 +1220,14 @@ This changes the full 64-bit double from `0x4045433B645A1CAC` (42.52525) to `0x4
 
 **Open a terminal and navigate to your project directory:**
 
-```bash
-cd Embedded-Hacking-main\0x0011_double-floating-point-data-type
+```powershell
+cd C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0011_double-floating-point-data-type
 ```
 
 **Run the conversion command:**
 
-```bash
-python ../uf2conv.py build/0x0011_double-floating-point-data-type-h.bin --base 0x10000000 --family 0xe48bff59 --output build/hacked.uf2
+```powershell
+python ..\uf2conv.py build\0x0011_double-floating-point-data-type-h.bin --base 0x10000000 --family 0xe48bff59 --output build\hacked.uf2
 ```
 
 ### Step 23: Flash the Hacked Binary

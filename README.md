@@ -43,7 +43,7 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 ## Week 1
 Introduction and Overview of Embedded Reverse Engineering: Ethics, Scoping, and Basic Concepts
 
-### Week 1 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01.pdf)
+### Week 1 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-SLIDES.pdf)
 
 ### Week 1 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01.md)
 
@@ -68,7 +68,7 @@ This chapter covers the debugging of our firmware for the Pico 2 MCU hello, worl
 ## Week 2
 Hello, World - Debugging and Hacking Basics: Debugging and Hacking a Basic Program for the Pico 2
 
-### Week 2 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02.pdf)
+### Week 2 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-SLIDES.pdf)
 
 ### Week 2 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02.md)
 
@@ -88,6 +88,8 @@ This chapter covers the hacking of our firmware for the Pico 2 MCU hello, world 
 ## Week 3
 Embedded System Analysis: Understanding the RP2350 Architecture w/ Comprehensive Firmware Analysis
 
+### Week 3 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-SLIDES.pdf)
+
 ### Week 3 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03.md)
 
 #### Exercise 1: Trace a Reset [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-01.md)
@@ -96,7 +98,7 @@ Embedded System Analysis: Understanding the RP2350 Architecture w/ Comprehensive
 
 #### Exercise 3: Examine All Vectors [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-03.md)
 
-#### Exercise 4: Find Your Main Function [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-04.md)
+#### Exercise 4: Find Your Main Function and Trace Back [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-04.md)
 
 ### Chapter 4: Embedded System Analysis
 This chapter covers a comprehensive embedded system analysis reviewing parts of the RP2350 datasheet and helpful firmware analysis tools.
@@ -105,6 +107,8 @@ This chapter covers a comprehensive embedded system analysis reviewing parts of 
 
 ## Week 4
 Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Basics
+
+### Week 4 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-SLIDES.pdf)
 
 ### Week 4 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04.md)
 
@@ -148,6 +152,8 @@ This chapter covers hacking uninitialized variables as well as an intro to GPIO 
 
 ## Week 5
 Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floats w/ Intermediate GPIO Output Assembler Analysis
+
+### Week 5 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-SLIDES.pdf)
 
 ### Week 5 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05.md)
 
@@ -207,6 +213,8 @@ This chapter covers hacking the double floating-point data type as it relates to
 ## Week 6
 Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ GPIO Input Basics
 
+### Week 6 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-SLIDES.pdf)
+
 ### Week 6 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06.md)
 
 #### Exercise 1: Change the Static Variable Initial Value from 42 to 100 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-01.md)
@@ -235,6 +243,8 @@ This chapter covers hacking static variables as well as an intro to GPIO inputs 
 ## Week 7
 Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C Basics
 
+### Week 7 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-SLIDES.pdf)
+
 ### Week 7 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07.md)
 
 #### Exercise 1: Change Both LCD Lines [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-01.md)
@@ -258,13 +268,25 @@ This chapter covers debugging constants as well as an intro to I2C as we work a 
 ### Chapter 25: Hacking Constants
 This chapter covers hacking constants as well as an intro to I2C as we work a 1602 LCD as it relates to embedded development on the Pico 2.
 
+-> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
+
 ## Week 8
 ### Midterm Exam
 
 ## Week 9
-Operators in Embedded Systems: Debugging and Hacking Operators w/ DHT11 Temperature & Humidity Sensor Single-Wire Protocol Basics.
+Operators in Embedded Systems: Debugging and Hacking Operators w/ DHT11 Temperature & Humidity Sensor Single-Wire Protocol Basics
 
--> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
+### Week 9 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-SLIDES.pdf)
+
+### Week 9 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09.md)
+
+#### Exercise 1: Change the Sleep Duration [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-01.md)
+
+#### Exercise 2: Invert the Temperature Reading [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-02.md)
+
+#### Exercise 3: Add a Fixed Temperature Offset [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-03.md)
+
+#### Exercise 4: Find All printf Format Strings [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-04.md)
 
 ### Chapter 26: Operators
 This chapter covers operators as well as an intro to single-wire protocol as we work a DHT11 temperature and humidity sensor as it relates to embedded development on the Pico 2.
@@ -282,7 +304,19 @@ This chapter covers hacking operators as well as an intro to single-wire protoco
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Week 10
-Conditionals in Embedded Systems: Debugging and Hacking Conditionals w/ SG90 Servo Motor PWM Basics
+Conditionals in Embedded Systems: Debugging and Hacking Static & Dynamic Conditionals w/ SG90 Servo Motor PWM Basics
+
+### Week 10 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-SLIDES.pdf)
+
+### Week 10 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10.md)
+
+#### Exercise 1: Change Servo Angle Range [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-01.md)
+
+#### Exercise 2: Add a Third Command [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-02.md)
+
+#### Exercise 3: Reverse the Servo Direction [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-03.md)
+
+#### Exercise 4: Speed Profile [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-04.md)
 
 ### Chapter 29: Static Conditionals
 This chapter covers static conditionals as well as an intro to PWM as we work a SG90 servo motor as it relates to embedded development on the Pico 2.
@@ -315,7 +349,19 @@ This chapter covers hacking dynamic conditionals as well as additional PWM examp
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
 
 ## Week 11
-Functions in Embedded Systems: Debugging and Hacking Structs & Functions w/ Infrared Receiver & Transmitter Basics and the Final Project Intro.
+Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote Control and NEC Protocol Basics
+
+### Week 11 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-SLIDES.pdf)
+
+### Week 11 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11.md)
+
+#### Exercise 1: Add a Fourth LED [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-01.md)
+
+#### Exercise 2: Change Blink Count [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-02.md)
+
+#### Exercise 3: Swap All Three LEDs [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-03.md)
+
+#### Exercise 4: Change Blink Speed [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-04.md)
 
 ### Chapter 35: Structures
 This chapter covers structures as well as an intro to infrared basics as we work a infrared receiver and infrared remote controller as it relates to embedded development on the Pico 2.

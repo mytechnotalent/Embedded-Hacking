@@ -1,9 +1,6 @@
-# Embedded Systems Reverse Engineering
-[Repository](https://github.com/mytechnotalent/Embedded-Hacking)
+﻿# Week 1: Introduction and Overview of Embedded Reverse Engineering: Ethics, Scoping, and Basic Concepts
 
-## Week 1: Introduction and Overview of Embedded Reverse Engineering: Ethics, Scoping, and Basic Concepts
-
-### 🎯 What You'll Learn This Week
+## 🎯 What You'll Learn This Week
 
 By the end of this week, you will be able to: 
 - Understand what a microcontroller is and how it works
@@ -16,17 +13,17 @@ By the end of this week, you will be able to:
 
 ---
 
-### 📚 Part 1: Understanding the Basics
+## 📚 Part 1: Understanding the Basics
 
-#### What is a Microcontroller? 
+### What is a Microcontroller? 
 
 Think of a microcontroller as a tiny computer on a single chip. Just like your laptop has a processor, memory, and storage, a microcontroller has all of these packed into one small chip. The **RP2350** is the microcontroller chip that powers the **Raspberry Pi Pico 2**. 
 
-#### What is the ARM Cortex-M33?
+### What is the ARM Cortex-M33?
 
 The RP2350 has two "brains" inside it - we call these **cores**.  One brain uses ARM Cortex-M33 instructions, and the other can use RISC-V instructions. In this course, we'll focus on the **ARM Cortex-M33** core because it's more commonly used in the industry.
 
-#### What is Reverse Engineering?
+### What is Reverse Engineering?
 
 Reverse engineering is like being a detective for code. Instead of writing code and compiling it, we take compiled code (the 1s and 0s that the computer actually runs) and figure out what it does.  This is useful for:
 - Understanding how things work
@@ -35,13 +32,13 @@ Reverse engineering is like being a detective for code. Instead of writing code 
 
 ---
 
-### 📚 Part 2: Understanding Processor Registers
+## 📚 Part 2: Understanding Processor Registers
 
-#### What is a Register? 
+### What is a Register? 
 
 A **register** is like a tiny, super-fast storage box inside the processor. The processor uses registers to hold numbers while it's doing calculations. Think of them like the short-term memory your brain uses when doing math in your head.
 
-#### The ARM Cortex-M33 Registers
+### The ARM Cortex-M33 Registers
 
 The ARM Cortex-M33 has several important registers:
 
@@ -104,9 +101,9 @@ The Program Counter always points to the **next instruction** the processor will
 
 ---
 
-### 📚 Part 3: Understanding Memory Layout
+## 📚 Part 3: Understanding Memory Layout
 
-#### XIP - Execute In Place
+### XIP - Execute In Place
 
 The RP2350 uses something called **XIP (Execute In Place)**. This means the processor can run code directly from the flash memory (where your program is stored) without copying it to RAM first. 
 
@@ -114,7 +111,7 @@ The RP2350 uses something called **XIP (Execute In Place)**. This means the proc
 
 This is where your program code starts in flash memory. Remember this address - we'll use it a lot!
 
-#### Memory Map Overview
+### Memory Map Overview
 
 ```
 ┌─────────────────────────────────────┐
@@ -128,7 +125,7 @@ This is where your program code starts in flash memory. Remember this address - 
 └─────────────────────────────────────┘
 ```
 
-#### Stack vs Heap
+### Stack vs Heap
 
 | Stack                                    | Heap                               |
 | ---------------------------------------- | ---------------------------------- |
@@ -140,7 +137,7 @@ This is where your program code starts in flash memory. Remember this address - 
 
 ---
 
-### 📚 Part 3.5: Reviewing Our Hello World Code
+## 📚 Part 3.5: Reviewing Our Hello World Code
 
 Before we start debugging, let's understand the code we'll be working with. Here's our `0x0001_hello-world.c` program:
 
@@ -156,7 +153,7 @@ int main(void) {
 }
 ```
 
-#### Breaking Down the Code
+### Breaking Down the Code
 
 ##### The Includes
 
@@ -202,14 +199,14 @@ while (true)
 > 
 > In embedded systems, we often use both carriage return (`\r`) and newline (`\n`) together. The `\r` moves the cursor back to the beginning of the line, and `\n` moves to the next line. This ensures proper display across different terminal programs.
 
-#### What Happens When This Runs?
+### What Happens When This Runs?
 
 1. **Power on** - The Pico boots up and starts executing code from flash memory
 2. **`stdio_init_all()`** - Sets up USB and/or UART for communication
 3. **Infinite loop begins** - The program enters the `while(true)` loop
 4. **Print forever** - "hello, world" is sent over and over as fast as possible
 
-#### Why This Code is Perfect for Learning
+### Why This Code is Perfect for Learning
 
 This simple program is ideal for reverse engineering practice because:
 - It has a clear, recognizable function call (`printf`)
@@ -219,7 +216,7 @@ This simple program is ideal for reverse engineering practice because:
 
 When we debug this code, we'll be able to see how the C code translates to ARM assembly instructions!
 
-#### Compiling and Flashing to the Pico 2
+### Compiling and Flashing to the Pico 2
 
 Now that we understand the code, let's get it running on our hardware:
 
@@ -252,9 +249,9 @@ Once flashed, your Pico 2 will immediately start executing the hello-world progr
 
 ---
 
-### 📚 Part 4: Dynamic Analysis with GDB
+## 📚 Part 4: Dynamic Analysis with GDB
 
-#### Prerequisites
+### Prerequisites
 
 Before we start, make sure you have: 
 1. A Raspberry Pi Pico 2 board
@@ -262,11 +259,11 @@ Before we start, make sure you have:
 3. OpenOCD or another debug probe connection
 4. The sample "hello-world" binary loaded on your Pico 2
 
-#### Connecting to Your Pico 2 with OpenOCD
+### Connecting to Your Pico 2 with OpenOCD
 
 Open a terminal and start OpenOCD:
 
-```bash
+```powershell
 openocd ^
   -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
   -f interface/cmsis-dap.cfg ^
@@ -274,22 +271,22 @@ openocd ^
   -c "adapter speed 5000"
 ```
 
-#### Connecting to Your Pico 2 with GDB
+### Connecting to Your Pico 2 with GDB
 
 Open another terminal and start GDB with your binary:
 
-```bash
-arm-none-eabi-gdb -q build/0x0001_hello-world.elf
+```powershell
+arm-none-eabi-gdb build\0x0001_hello-world.elf
 ```
 
 Connect to your target: 
 
-```bash
+```powershell
 (gdb) target extended-remote localhost:3333
 (gdb) monitor reset halt
 ```
 
-#### Basic GDB Commands: Your First Steps
+### Basic GDB Commands: Your First Steps
 
 Now that we're connected, let's learn three essential GDB commands that you'll use constantly in embedded reverse engineering.
 
@@ -378,7 +375,7 @@ xpsr           0x69000000          1761607680
 
 > 💡 **Tip:** You can also use `i r pc sp lr` to show only specific registers you care about.
 
-#### Quick Reference: Essential GDB Commands
+### Quick Reference: Essential GDB Commands
 
 | Command               | Short Form | What It Does                         |
 | --------------------- | ---------- | ------------------------------------ |
@@ -397,9 +394,9 @@ xpsr           0x69000000          1761607680
 
 ---
 
-### 🔬 Part 5: Static Analysis with Ghidra
+## 🔬 Part 5: Static Analysis with Ghidra
 
-#### Setting Up Your First Ghidra Project
+### Setting Up Your First Ghidra Project
 
 Before we dive into GDB debugging, let's set up Ghidra to analyze our hello-world binary. Ghidra is a powerful reverse engineering tool that will help us visualize the disassembly and decompiled code.
 
@@ -435,7 +432,7 @@ When prompted, click **Yes** to auto-analyze the binary. Accept the default anal
 
 Ghidra will now process the binary, identifying functions, strings, and cross-references. This may take a moment.
 
-#### Reviewing the Main Function in Ghidra
+### Reviewing the Main Function in Ghidra
 
 Once analysis is complete, let's find our `main` function:
 
@@ -502,9 +499,9 @@ In future weeks, we'll work with `.bin` files that have been stripped of symbols
 
 ---
 
-### 📊 Part 6: Summary and Review
+## 📊 Part 6: Summary and Review
 
-#### What We Learned
+### What We Learned
 
 1. **Registers**: The ARM Cortex-M33 has 13 general-purpose registers (`r0`-`r12`), plus special registers for the stack pointer (`r13`/SP), link register (`r14`/LR), and program counter (`r15`/PC).
 
@@ -537,7 +534,7 @@ In future weeks, we'll work with `.bin` files that have been stripped of symbols
 
 6. **Little-Endian**: The RP2350 stores multi-byte values with the least significant byte at the lowest address, making them appear "backwards" when viewed as a single value.
 
-#### The Program Flow
+### The Program Flow
 
 ```
 ┌─────────────────────────────────────────────────────┐
@@ -560,27 +557,27 @@ In future weeks, we'll work with `.bin` files that have been stripped of symbols
 
 ---
 
-### ✅ Practice Exercises
+## ✅ Practice Exercises
 
 Try these on your own to reinforce what you learned:
 
-#### Exercise 1: Explore in Ghidra
+### Exercise 1: Explore in Ghidra
 1. Open your `0x0001_hello-world` project in Ghidra
 2. Find the `stdio_init_all` function in the Symbol Tree
 3. Look at its decompiled code - can you understand what it's setting up?
 
-#### Exercise 2: Find Strings in Ghidra
+### Exercise 2: Find Strings in Ghidra
 1. In Ghidra, go to **Window → Defined Strings**
 2. Look for `"hello, world"` - what address is it at?
 3. Double-click to navigate to it in the listing
 
-#### Exercise 3: Cross-References
+### Exercise 3: Cross-References
 1. In Ghidra, navigate to the `main` function
 2. Find the `ldr r0, [DAT_...]` instruction that loads the string
 3. Right-click on `DAT_10000244` and select **References → Show References to**
 4. This shows you where this data is used!
 
-#### Exercise 4: Connect GDB (Preparation for Week 2)
+### Exercise 4: Connect GDB (Preparation for Week 2)
 1. Start OpenOCD and connect GDB as shown in Part 4
 2. Set a breakpoint at main: `b main`
 3. Continue: `c`
@@ -591,7 +588,7 @@ Try these on your own to reinforce what you learned:
 
 ---
 
-### 🎓 Key Takeaways
+## 🎓 Key Takeaways
 
 1. **Reverse engineering combines static and dynamic analysis** - we look at the code (static with Ghidra) and run it to see what happens (dynamic with GDB).
 
@@ -605,7 +602,7 @@ Try these on your own to reinforce what you learned:
 
 ---
 
-### 📖 Glossary
+## 📖 Glossary
 
 | Term                | Definition                                                |
 | ------------------- | --------------------------------------------------------- |

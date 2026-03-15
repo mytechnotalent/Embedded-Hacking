@@ -1,4 +1,4 @@
-# Week 7: Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C Basics
+﻿# Week 7: Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C Basics
 
 ## 🎯 What You'll Learn This Week
 
@@ -471,7 +471,7 @@ OTHER_FAV_NUM: 1337
 
 **Terminal 1 - Start OpenOCD:**
 
-```bash
+```powershell
 openocd ^
   -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
   -f interface/cmsis-dap.cfg ^
@@ -481,8 +481,8 @@ openocd ^
 
 **Terminal 2 - Start GDB:**
 
-```bash
-arm-none-eabi-gdb build/0x0017_constants.elf
+```powershell
+arm-none-eabi-gdb build\0x0017_constants.elf
 ```
 
 **Connect to target:**
