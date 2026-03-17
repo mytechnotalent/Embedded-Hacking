@@ -407,5 +407,17 @@ Forty-two stories beneath frozen tundra, a shadow intelligence alliance called D
 
 <br>
 
+# Additional Resources
+## RP2350_UART_Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver) 
+An RP2350 UART driver written entirely in ARM Assembler.
+## RP2350_UART_Driver_RISCV [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver_RISCV) 
+An RP2350 UART driver written entirely in RISC-V Assembler.
+## RP2350_Blink_Driver [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver) 
+An RP2350 blink driver written entirely in ARM Assembler.
+## RP2350_Blink_Driver_RISCV [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver_RISCV) 
+An RP2350 blink driver written entirely in RISC-V Assembler.
+
+<br>
+
 # License
 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
