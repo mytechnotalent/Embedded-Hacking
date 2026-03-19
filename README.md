@@ -47,13 +47,21 @@ Introduction and Overview of Embedded Reverse Engineering: Ethics, Scoping, and 
 
 ### Week 1 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01.md)
 
-#### Exercise 1: Explore in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-01.md)
+#### Non-Credit Practice Exercise 1: Explore in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-01.md)
 
-#### Exercise 2: Find Strings in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-02.md)
+#### Non-Credit Practice Exercise 1 Solution: Explore in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-01-S.md)
 
-#### Exercise 3: Find Cross-References in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-03.md)
+#### Non-Credit Practice Exercise 2: Find Strings in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-02.md)
 
-#### Exercise 4: Connect GDB & Basic Exploration [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-04.md)
+#### Non-Credit Practice Exercise 2 Solution: Find Strings in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-02-S.md)
+
+#### Non-Credit Practice Exercise 3: Find Cross-References in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-03.md)
+
+#### Non-Credit Practice Exercise 3 Solution: Find Cross-References in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-03-S.md)
+
+#### Non-Credit Practice Exercise 4: Connect GDB & Basic Exploration [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-04.md)
+
+#### Non-Credit Practice Exercise 4 Solution: Connect GDB & Basic Exploration [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01-04-S.md)
 
 ### Chapter 1: hello, world
 This chapter covers the basics of setting up a dev environment and basic template firmware for the Pico 2 MCU in addition to printing hello, world.
@@ -72,13 +80,21 @@ Hello, World - Debugging and Hacking Basics: Debugging and Hacking a Basic Progr
 
 ### Week 2 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02.md)
 
-#### Exercise 1: Change the Message [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-01.md)
+#### Non-Credit Practice Exercise 1: Change the Message [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-01.md)
 
-#### Exercise 2: Use a Different SRAM Address [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-02.md)
+#### Non-Credit Practice Exercise 1 Solution: Change the Message [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-01-S.md)
 
-#### Exercise 3: Examine Memory Around Your String [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-03.md)
+#### Non-Credit Practice Exercise 2: Use a Different SRAM Address [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-02.md)
 
-#### Exercise 4: Automate the Hack [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-04.md)
+#### Non-Credit Practice Exercise 2 Solution: Use a Different SRAM Address [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-02-S.md)
+
+#### Non-Credit Practice Exercise 3: Examine Memory Around Your String [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-03.md)
+
+#### Non-Credit Practice Exercise 3 Solution: Examine Memory Around Your String [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-03-S.md)
+
+#### Non-Credit Practice Exercise 4: Automate the Hack [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-04.md)
+
+#### Non-Credit Practice Exercise 4 Solution: Automate the Hack [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02-04-S.md)
 
 ### Chapter 3: Hacking hello, world
 This chapter covers the hacking of our firmware for the Pico 2 MCU hello, world program.
@@ -92,13 +108,21 @@ Embedded System Analysis: Understanding the RP2350 Architecture w/ Comprehensive
 
 ### Week 3 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03.md)
 
-#### Exercise 1: Trace a Reset [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-01.md)
+#### Non-Credit Practice Exercise 1: Trace a Reset [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-01.md)
 
-#### Exercise 2: Find the Stack Size [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-02.md)
+#### Non-Credit Practice Exercise 1 Solution: Trace a Reset [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-01-S.md)
 
-#### Exercise 3: Examine All Vectors [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-03.md)
+#### Non-Credit Practice Exercise 2: Find the Stack Size [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-02.md)
 
-#### Exercise 4: Find Your Main Function and Trace Back [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-04.md)
+#### Non-Credit Practice Exercise 2 Solution: Find the Stack Size [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-02-S.md)
+
+#### Non-Credit Practice Exercise 3: Examine All Vectors [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-03.md)
+
+#### Non-Credit Practice Exercise 3 Solution: Examine All Vectors [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-03-S.md)
+
+#### Non-Credit Practice Exercise 4: Find Your Main Function and Trace Back [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-04.md)
+
+#### Non-Credit Practice Exercise 4 Solution: Find Your Main Function and Trace Back [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03-04-S.md)
 
 ### Chapter 4: Embedded System Analysis
 This chapter covers a comprehensive embedded system analysis reviewing parts of the RP2350 datasheet and helpful firmware analysis tools.
@@ -112,13 +136,21 @@ Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Ba
 
 ### Week 4 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04.md)
 
-#### Exercise 1: Analyze Variable Storage in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-01.md)
+#### Non-Credit Practice Exercise 1: Analyze Variable Storage in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-01.md)
 
-#### Exercise 2: Patch Binary to Change Variable Value [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-02.md)
+#### Non-Credit Practice Exercise 1 Solution: Analyze Variable Storage in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-01-S.md)
 
-#### Exercise 3: Analyze and Understand GPIO Control [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-03.md)
+#### Non-Credit Practice Exercise 2: Patch Binary to Change Variable Value [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-02.md)
 
-#### Exercise 4: Patch GPIO Binary to Change LED Pin [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-04.md)
+#### Non-Credit Practice Exercise 2 Solution: Patch Binary to Change Variable Value [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-02-S.md)
+
+#### Non-Credit Practice Exercise 3: Analyze and Understand GPIO Control [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-03.md)
+
+#### Non-Credit Practice Exercise 3 Solution: Analyze and Understand GPIO Control [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-03-S.md)
+
+#### Non-Credit Practice Exercise 4: Patch GPIO Binary to Change LED Pin [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-04.md)
+
+#### Non-Credit Practice Exercise 4 Solution: Patch GPIO Binary to Change LED Pin [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-04-S.md)
 
 ### Chapter 5: Intro To Variables
 This chapter covers an introduction to variables as it relates to embedded development on the Pico 2.
@@ -157,13 +189,21 @@ Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floa
 
 ### Week 5 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05.md)
 
-#### Exercise 1: Analyze the Float Binary in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-01.md)
+#### Non-Credit Practice Exercise 1: Analyze the Float Binary in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-01.md)
 
-#### Exercise 2: Patch the Float Binary — Changing 42.5 to 99.0 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-02.md)
+#### Non-Credit Practice Exercise 1 Solution: Analyze the Float Binary in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-01-S.md)
 
-#### Exercise 3: Analyze the Double Binary in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-03.md)
+#### Non-Credit Practice Exercise 2: Patch the Float Binary — Changing 42.5 to 99.0 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-02.md)
 
-#### Exercise 4: Patch the Double Binary — Changing 42.52525 to 99.99 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-04.md)
+#### Non-Credit Practice Exercise 2 Solution: Patch the Float Binary — Changing 42.5 to 99.0 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-02-S.md)
+
+#### Non-Credit Practice Exercise 3: Analyze the Double Binary in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-03.md)
+
+#### Non-Credit Practice Exercise 3 Solution: Analyze the Double Binary in Ghidra [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-03-S.md)
+
+#### Non-Credit Practice Exercise 4: Patch the Double Binary — Changing 42.52525 to 99.99 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-04.md)
+
+#### Non-Credit Practice Exercise 4 Solution: Patch the Double Binary — Changing 42.52525 to 99.99 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-04-S.md)
 
 ### Chapter 11: Integer Data Type
 This chapter covers the integer data type in addition to a deeper assembler dive into GPIO outputs as it relates to embedded development on the Pico 2.
@@ -217,13 +257,21 @@ Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ 
 
 ### Week 6 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06.md)
 
-#### Exercise 1: Change the Static Variable Initial Value from 42 to 100 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-01.md)
+#### Non-Credit Practice Exercise 1: Change the Static Variable Initial Value from 42 to 100 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-01.md)
 
-#### Exercise 2: Reverse Engineer gpio_set_pulls with GDB [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-02.md)
+#### Non-Credit Practice Exercise 1 Solution: Change the Static Variable Initial Value from 42 to 100 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-01-S.md)
 
-#### Exercise 3: Make the Overflow Happen Faster [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-03.md)
+#### Non-Credit Practice Exercise 2: Reverse Engineer gpio_set_pulls with GDB [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-02.md)
 
-#### Exercise 4: Invert the Button Logic with XOR [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-04.md)
+#### Non-Credit Practice Exercise 2 Solution: Reverse Engineer gpio_set_pulls with GDB [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-02-S.md)
+
+#### Non-Credit Practice Exercise 3: Make the Overflow Happen Faster [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-03.md)
+
+#### Non-Credit Practice Exercise 3 Solution: Make the Overflow Happen Faster [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-03-S.md)
+
+#### Non-Credit Practice Exercise 4: Invert the Button Logic with XOR [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-04.md)
+
+#### Non-Credit Practice Exercise 4 Solution: Invert the Button Logic with XOR [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-04-S.md)
 
 ### Chapter 20: Static Variables
 This chapter covers static variables as well as an intro to GPIO inputs as we work with push buttons as it relates to embedded development on the Pico 2.
@@ -247,13 +295,21 @@ Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C B
 
 ### Week 7 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07.md)
 
-#### Exercise 1: Change Both LCD Lines [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-01.md)
+#### Non-Credit Practice Exercise 1: Change Both LCD Lines [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-01.md)
 
-#### Exercise 2: Find All String Literals in the Binary [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-02.md)
+#### Non-Credit Practice Exercise 1 Solution: Change Both LCD Lines [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-01-S.md)
 
-#### Exercise 3: Trace the I²C Struct Pointer Chain [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-03.md)
+#### Non-Credit Practice Exercise 2: Find All String Literals in the Binary [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-02.md)
 
-#### Exercise 4: Display Your Own Custom Message on the LCD [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-04.md)
+#### Non-Credit Practice Exercise 2 Solution: Find All String Literals in the Binary [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-02-S.md)
+
+#### Non-Credit Practice Exercise 3: Trace the I²C Struct Pointer Chain [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-03.md)
+
+#### Non-Credit Practice Exercise 3 Solution: Trace the I²C Struct Pointer Chain [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-03-S.md)
+
+#### Non-Credit Practice Exercise 4: Display Your Own Custom Message on the LCD [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-04.md)
+
+#### Non-Credit Practice Exercise 4 Solution: Display Your Own Custom Message on the LCD [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-04-S.md)
 
 ### Chapter 23: Constants
 This chapter covers constants as well as an intro to I2C as we work a 1602 LCD as it relates to embedded development on the Pico 2.
@@ -280,13 +336,21 @@ Operators in Embedded Systems: Debugging and Hacking Operators w/ DHT11 Temperat
 
 ### Week 9 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09.md)
 
-#### Exercise 1: Change the Sleep Duration [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-01.md)
+#### Non-Credit Practice Exercise 1: Change the Sleep Duration [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-01.md)
 
-#### Exercise 2: Invert the Temperature Reading [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-02.md)
+#### Non-Credit Practice Exercise 1 Solution: Change the Sleep Duration [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-01-S.md)
 
-#### Exercise 3: Add a Fixed Temperature Offset [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-03.md)
+#### Non-Credit Practice Exercise 2: Invert the Temperature Reading [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-02.md)
 
-#### Exercise 4: Find All printf Format Strings [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-04.md)
+#### Non-Credit Practice Exercise 2 Solution: Invert the Temperature Reading [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-02-S.md)
+
+#### Non-Credit Practice Exercise 3: Add a Fixed Temperature Offset [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-03.md)
+
+#### Non-Credit Practice Exercise 3 Solution: Add a Fixed Temperature Offset [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-03-S.md)
+
+#### Non-Credit Practice Exercise 4: Find All printf Format Strings [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-04.md)
+
+#### Non-Credit Practice Exercise 4 Solution: Find All printf Format Strings [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-04-S.md)
 
 ### Chapter 26: Operators
 This chapter covers operators as well as an intro to single-wire protocol as we work a DHT11 temperature and humidity sensor as it relates to embedded development on the Pico 2.
@@ -310,13 +374,21 @@ Conditionals in Embedded Systems: Debugging and Hacking Static & Dynamic Conditi
 
 ### Week 10 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10.md)
 
-#### Exercise 1: Change Servo Angle Range [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-01.md)
+#### Non-Credit Practice Exercise 1: Change Servo Angle Range [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-01.md)
 
-#### Exercise 2: Add a Third Command [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-02.md)
+#### Non-Credit Practice Exercise 1 Solution: Change Servo Angle Range [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-01-S.md)
 
-#### Exercise 3: Reverse the Servo Direction [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-03.md)
+#### Non-Credit Practice Exercise 2: Add a Third Command [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-02.md)
 
-#### Exercise 4: Speed Profile [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-04.md)
+#### Non-Credit Practice Exercise 2 Solution: Add a Third Command [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-02-S.md)
+
+#### Non-Credit Practice Exercise 3: Reverse the Servo Direction [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-03.md)
+
+#### Non-Credit Practice Exercise 3 Solution: Reverse the Servo Direction [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-03-S.md)
+
+#### Non-Credit Practice Exercise 4: Speed Profile [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-04.md)
+
+#### Non-Credit Practice Exercise 4 Solution: Speed Profile [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-04-S.md)
 
 ### Chapter 29: Static Conditionals
 This chapter covers static conditionals as well as an intro to PWM as we work a SG90 servo motor as it relates to embedded development on the Pico 2.
@@ -355,13 +427,21 @@ Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote
 
 ### Week 11 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11.md)
 
-#### Exercise 1: Add a Fourth LED [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-01.md)
+#### Non-Credit Practice Exercise 1: Add a Fourth LED [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-01.md)
 
-#### Exercise 2: Change Blink Count [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-02.md)
+#### Non-Credit Practice Exercise 1 Solution: Add a Fourth LED [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-01-S.md)
 
-#### Exercise 3: Swap All Three LEDs [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-03.md)
+#### Non-Credit Practice Exercise 2: Change Blink Count [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-02.md)
 
-#### Exercise 4: Change Blink Speed [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-04.md)
+#### Non-Credit Practice Exercise 2 Solution: Change Blink Count [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-02-S.md)
+
+#### Non-Credit Practice Exercise 3: Swap All Three LEDs [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-03.md)
+
+#### Non-Credit Practice Exercise 3 Solution: Swap All Three LEDs [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-03-S.md)
+
+#### Non-Credit Practice Exercise 4: Change Blink Speed [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-04.md)
+
+#### Non-Credit Practice Exercise 4 Solution: Change Blink Speed [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-04-S.md)
 
 ### Chapter 35: Structures
 This chapter covers structures as well as an intro to infrared basics as we work a infrared receiver and infrared remote controller as it relates to embedded development on the Pico 2.
