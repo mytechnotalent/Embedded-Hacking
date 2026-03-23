@@ -504,5 +504,28 @@ An RP2350 button driver written entirely in RISC-V Assembler.
 
 <br>
 
+# Drivers
+Self-contained C driver libraries for the Raspberry Pi Pico 2 (RP2350). Each driver folder contains a thin demo (`0xNN_name.c`), a reusable library implementation (`name.c`), and a library header with full Doxygen docstrings (`name.h`).
+
+| Driver | Description | Key Hardware |
+|--------|-------------|--------------|
+| [0x01_uart](drivers/0x01_uart) | Raw UART transmit / receive | `hardware_uart` |
+| [0x02_blink](drivers/0x02_blink) | GPIO output LED blink | `pico_stdlib` |
+| [0x03_button](drivers/0x03_button) | GPIO input with debounce | `pico_stdlib` |
+| [0x04_pwm](drivers/0x04_pwm) | PWM output with frequency & duty control | `hardware_pwm`, `hardware_clocks` |
+| [0x05_servo](drivers/0x05_servo) | SG90 servo angle & pulse control | `hardware_pwm`, `hardware_clocks` |
+| [0x06_adc](drivers/0x06_adc) | ADC voltage & on-chip temperature reading | `hardware_adc` |
+| [0x07_i2c](drivers/0x07_i2c) | I2C bus init, probe & scan | `hardware_i2c` |
+| [0x08_lcd1602](drivers/0x08_lcd1602) | 1602 LCD over I2C (PCF8574 backpack) | `hardware_i2c` |
+| [0x09_dht11](drivers/0x09_dht11) | DHT11 temperature & humidity (single-wire) | `pico_stdlib` |
+| [0x0a_ir](drivers/0x0a_ir) | IR remote NEC protocol decoder | `pico_stdlib` |
+| [0x0b_spi](drivers/0x0b_spi) | SPI bus init & bidirectional transfer | `hardware_spi` |
+| [0x0c_multicore](drivers/0x0c_multicore) | Dual-core launch & FIFO messaging | `pico_multicore` |
+| [0x0d_timer](drivers/0x0d_timer) | Repeating timer callbacks | `pico_stdlib` |
+| [0x0e_watchdog](drivers/0x0e_watchdog) | Watchdog enable, feed & reboot detection | `hardware_watchdog` |
+| [0x0f_flash](drivers/0x0f_flash) | On-board flash erase, write & read | `hardware_flash`, `hardware_sync` |
+
+<br>
+
 # License
 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)

@@ -1,0 +1,66 @@
+/**
+ * @file multicore.h
+ * @brief Header for dual-core (multicore) driver using the FIFO mailbox
+ * @author Kevin Thomas
+ * @date 2025
+ *
+ * MIT License
+ *
+ * Copyright (c) 2025 Kevin Thomas
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+#ifndef MULTICORE_H
+#define MULTICORE_H
+
+#include <stdint.h>
+
+/**
+ * @brief Start the provided function on core 1
+ *
+ * Launches the given entry function on the second RP2350 core using the
+ * Pico SDK multicore_launch_core1() API. The function will run
+ * concurrently with core 0 from the moment this call returns.
+ *
+ * @param core1_entry Pointer to the void(void) function to run on core 1
+ */
+void multicore_driver_launch(void (*core1_entry)(void));
+
+/**
+ * @brief Push a 32-bit value into the inter-core FIFO (blocking)
+ *
+ * Writes @p data to the FIFO that core 1 reads from. Blocks until
+ * there is space in the hardware FIFO.
+ *
+ * @param data 32-bit value to send to core 1
+ */
+void multicore_driver_push(uint32_t data);
+
+/**
+ * @brief Pop a 32-bit value from the inter-core FIFO (blocking)
+ *
+ * Reads one entry from the FIFO that core 1 writes into. Blocks until
+ * a value is available.
+ *
+ * @return uint32_t Value received from core 1
+ */
+uint32_t multicore_driver_pop(void);
+
+#endif // MULTICORE_H
