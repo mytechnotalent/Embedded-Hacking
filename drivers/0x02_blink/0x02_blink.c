@@ -43,15 +43,24 @@
 #define LED_PIN        25
 #define BLINK_DELAY_MS 500
 
+
+/**
+ * @brief Application entry point for the LED blink demo
+ *
+ * Initializes the onboard LED and enters an infinite loop that
+ * toggles the LED state every BLINK_DELAY_MS milliseconds.
+ *
+ * @return int Does not return
+ */
 int main(void) {
     stdio_init_all();
     blink_init(LED_PIN);
-
     printf("Blink driver initialized on GPIO %d\r\n", LED_PIN);
-
     while (true) {
         blink_toggle(LED_PIN);
         printf("LED: %s\r\n", blink_get_state(LED_PIN) ? "ON" : "OFF");
         sleep_ms(BLINK_DELAY_MS);
+    }
+}
     }
 }

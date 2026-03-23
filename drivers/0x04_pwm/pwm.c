@@ -36,6 +36,7 @@ static uint     pwm_slice;
 static uint     pwm_chan;
 static uint32_t pwm_wrap;
 
+
 /**
  * @brief Compute the PWM clock divider that yields the target frequency
  *
@@ -47,23 +48,37 @@ static uint32_t pwm_wrap;
  * @param wrap_val Chosen PWM counter wrap value (period - 1)
  * @return float   Clock divider to program into the PWM slice
  */
-static float calc_clk_div(uint32_t freq_hz, uint32_t wrap_val) {
+static float _calc_clk_div(uint32_t freq_hz, uint32_t wrap_val) {
     uint32_t sys_hz = clock_get_hz(clk_sys);
     return (float)sys_hz / ((float)freq_hz * (float)(wrap_val + 1));
 }
+
+
+/**
+ * @brief Apply the PWM configuration to the active slice
+ *
+ * Builds a default config, sets the clock divider for the target frequency,
+ * programs the wrap value, starts the slice, and zeroes the channel level.
+ *
+ * @param freq_hz Desired PWM output frequency in Hz
+ */
+static void _apply_pwm_config(uint32_t freq_hz) {
+    pwm_config cfg = pwm_get_default_config();
+    pwm_config_set_clkdiv(&cfg, _calc_clk_div(freq_hz, pwm_wrap));
+    pwm_config_set_wrap(&cfg, pwm_wrap);
+    pwm_init(pwm_slice, &cfg, true);
+    pwm_set_chan_level(pwm_slice, pwm_chan, 0);
+}
+
 
 void pwm_driver_init(uint32_t pin, uint32_t freq_hz) {
     gpio_set_function(pin, GPIO_FUNC_PWM);
     pwm_slice = pwm_gpio_to_slice_num(pin);
     pwm_chan  = pwm_gpio_to_channel(pin);
-    pwm_wrap  = 10000 - 1;  // resolution: 0.01% steps
-
-    pwm_config cfg = pwm_get_default_config();
-    pwm_config_set_clkdiv(&cfg, calc_clk_div(freq_hz, pwm_wrap));
-    pwm_config_set_wrap(&cfg, pwm_wrap);
-    pwm_init(pwm_slice, &cfg, true);
-    pwm_set_chan_level(pwm_slice, pwm_chan, 0);
+    pwm_wrap  = 10000 - 1;
+    _apply_pwm_config(freq_hz);
 }
+
 
 void pwm_driver_set_duty_percent(uint8_t percent) {
     if (percent > 100) {

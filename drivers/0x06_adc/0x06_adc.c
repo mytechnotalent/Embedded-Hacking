@@ -45,20 +45,34 @@
 #define ADC_GPIO    26
 #define ADC_CHANNEL 0
 
+
+/**
+ * @brief Read and print ADC voltage and chip temperature over UART
+ *
+ * Samples the ADC channel for voltage in millivolts and reads the
+ * on-chip temperature sensor, then prints both values.
+ */
+static void _print_adc_readings(void) {
+    uint32_t voltage_mv = adc_driver_read_mv();
+    float    temp_c     = adc_driver_read_temp_celsius();
+    printf("ADC0: %4lu mV  |  Chip temp: %.1f C\r\n", voltage_mv, temp_c);
+}
+
+
+/**
+ * @brief Application entry point for the ADC voltage and temperature demo
+ *
+ * Initializes the ADC on GPIO26 channel 0 and prints readings
+ * every 500 ms over UART.
+ *
+ * @return int Does not return
+ */
 int main(void) {
     stdio_init_all();
     adc_driver_init(ADC_GPIO, ADC_CHANNEL);
-
-    printf("ADC driver initialized: GPIO%d (channel %d)\r\n",
-           ADC_GPIO, ADC_CHANNEL);
-
+    printf("ADC driver initialized: GPIO%d (channel %d)\r\n", ADC_GPIO, ADC_CHANNEL);
     while (true) {
-        uint32_t voltage_mv = adc_driver_read_mv();
-        float    temp_c     = adc_driver_read_temp_celsius();
-
-        printf("ADC0: %4lu mV  |  Chip temp: %.1f C\r\n",
-               voltage_mv, temp_c);
-
+        _print_adc_readings();
         sleep_ms(500);
     }
 }

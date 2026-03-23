@@ -44,22 +44,40 @@
 #define PWM_PIN     0
 #define PWM_FREQ_HZ 1000
 
+
+/**
+ * @brief Sweep the PWM duty cycle between start and end in given steps
+ *
+ * Iterates from start to end with the given step increment, updating
+ * the PWM duty cycle and printing each value with a 50 ms delay.
+ *
+ * @param start Starting duty percentage
+ * @param end   Ending duty percentage
+ * @param step  Increment per iteration (negative for descending)
+ */
+static void _sweep_duty(int start, int end, int step) {
+    for (int duty = start; (step > 0) ? duty <= end : duty >= end; duty += step) {
+        pwm_driver_set_duty_percent((uint8_t)duty);
+        printf("Duty: %3d%%\r\n", duty);
+        sleep_ms(50);
+    }
+}
+
+
+/**
+ * @brief Application entry point for the PWM LED breathing demo
+ *
+ * Initializes PWM at 1 kHz and sweeps the duty cycle up and down
+ * to produce a smooth LED breathing effect, reporting over UART.
+ *
+ * @return int Does not return
+ */
 int main(void) {
     stdio_init_all();
     pwm_driver_init(PWM_PIN, PWM_FREQ_HZ);
-
     printf("PWM driver initialized: GPIO%d @ %d Hz\r\n", PWM_PIN, PWM_FREQ_HZ);
-
     while (true) {
-        for (int duty = 0; duty <= 100; duty += 5) {
-            pwm_driver_set_duty_percent((uint8_t)duty);
-            printf("Duty: %3d%%\r\n", duty);
-            sleep_ms(50);
-        }
-        for (int duty = 100; duty >= 0; duty -= 5) {
-            pwm_driver_set_duty_percent((uint8_t)duty);
-            printf("Duty: %3d%%\r\n", duty);
-            sleep_ms(50);
-        }
+        _sweep_duty(0, 100, 5);
+        _sweep_duty(100, 0, -5);
     }
 }

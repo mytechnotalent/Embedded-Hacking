@@ -51,26 +51,45 @@
 #define I2C_BAUD_HZ   100000
 #define LCD_I2C_ADDR  0x27
 
-int main(void) {
-    stdio_init_all();
 
-    lcd_init(I2C_PORT, I2C_SDA_PIN, I2C_SCL_PIN, I2C_BAUD_HZ,
-             LCD_I2C_ADDR, 4, 0x08);
-
+/**
+ * @brief Initialize the LCD, display the title, and log over UART
+ */
+static void _setup_display(void) {
+    lcd_init(I2C_PORT, I2C_SDA_PIN, I2C_SCL_PIN, I2C_BAUD_HZ, LCD_I2C_ADDR, 4, 0x08);
     lcd_set_cursor(0, 0);
     lcd_puts("Reverse Eng.");
-
     printf("LCD 1602 driver initialized at I2C addr 0x%02X\r\n", LCD_I2C_ADDR);
+}
 
-    uint32_t count = 0;
+
+/**
+ * @brief Format and display the next counter value on LCD line 1
+ *
+ * @param count Pointer to the running counter (post-incremented)
+ */
+static void _update_counter(uint32_t *count) {
     char buf[17];
+    snprintf(buf, sizeof(buf), "Count: %6lu", (*count)++);
+    lcd_set_cursor(1, 0);
+    lcd_puts(buf);
+    printf("%s\r\n", buf);
+    sleep_ms(1000);
+}
 
-    while (true) {
-        snprintf(buf, sizeof(buf), "Count: %6lu", count++);
-        lcd_set_cursor(1, 0);
-        lcd_puts(buf);
 
-        printf("%s\r\n", buf);
-        sleep_ms(1000);
-    }
+/**
+ * @brief Application entry point for the LCD 1602 counter demo
+ *
+ * Initializes the LCD over I2C with a static title on line 0 and
+ * continuously increments a counter on line 1 every second.
+ *
+ * @return int Does not return
+ */
+int main(void) {
+    stdio_init_all();
+    _setup_display();
+    uint32_t count = 0;
+    while (true)
+        _update_counter(&count);
 }

@@ -41,21 +41,40 @@
 #include "pico/stdlib.h"
 #include "watchdog.h"
 
+/**
+ * @brief Print whether the system booted normally or from a watchdog reset
+ */
+static void _print_reset_reason(void) {
+    if (watchdog_driver_caused_reboot())
+        printf("System rebooted by watchdog timeout\r\n");
+    else
+        printf("Normal power-on reset\r\n");
+}
+
+
+/**
+ * @brief Feed the watchdog and log over UART, then wait 1 second
+ */
+static void _feed_and_report(void) {
+    watchdog_driver_feed();
+    printf("Watchdog fed\r\n");
+    sleep_ms(1000);
+}
+
+
+/**
+ * @brief Application entry point for the watchdog demo
+ *
+ * Enables the watchdog with a 3-second timeout and feeds it every
+ * 1 second. Reports the reset reason on startup.
+ *
+ * @return int Does not return
+ */
 int main(void) {
     stdio_init_all();
-
-    if (watchdog_driver_caused_reboot()) {
-        printf("System rebooted by watchdog timeout\r\n");
-    } else {
-        printf("Normal power-on reset\r\n");
-    }
-
+    _print_reset_reason();
     watchdog_driver_enable(3000);
     printf("Watchdog enabled (3s timeout). Feeding every 1s...\r\n");
-
-    while (true) {
-        watchdog_driver_feed();
-        printf("Watchdog fed\r\n");
-        sleep_ms(1000);
-    }
+    while (true)
+        _feed_and_report();
 }

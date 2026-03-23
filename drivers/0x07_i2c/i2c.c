@@ -33,13 +33,20 @@
 #include "hardware/i2c.h"
 #include "hardware/gpio.h"
 
-static i2c_inst_t *get_i2c_inst(uint8_t port) {
+/**
+ * @brief Map an I2C port number to its hardware instance pointer
+ *
+ * @param port I2C port number (0 for i2c0, 1 for i2c1)
+ * @return i2c_inst_t* Pointer to the corresponding I2C hardware instance
+ */
+static i2c_inst_t *_get_i2c_inst(uint8_t port) {
     return port == 0 ? i2c0 : i2c1;
 }
 
+
 void i2c_driver_init(uint8_t port, uint32_t sda_pin, uint32_t scl_pin,
                      uint32_t baud_hz) {
-    i2c_inst_t *inst = get_i2c_inst(port);
+    i2c_inst_t *inst = _get_i2c_inst(port);
     i2c_init(inst, baud_hz);
     gpio_set_function(sda_pin, GPIO_FUNC_I2C);
     gpio_set_function(scl_pin, GPIO_FUNC_I2C);
@@ -47,29 +54,44 @@ void i2c_driver_init(uint8_t port, uint32_t sda_pin, uint32_t scl_pin,
     gpio_pull_up(scl_pin);
 }
 
+
 bool i2c_driver_probe(uint8_t port, uint8_t addr) {
-    i2c_inst_t *inst = get_i2c_inst(port);
+    i2c_inst_t *inst = _get_i2c_inst(port);
     uint8_t dummy;
     return i2c_read_blocking(inst, addr, &dummy, 1, false) >= 0;
 }
 
-void i2c_driver_scan(uint8_t port) {
+
+/**
+ * @brief Print the I2C scan table header over UART
+ */
+static void _print_scan_header(void) {
     printf("\r\nI2C bus scan:\r\n");
     printf("     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F\r\n");
+}
 
-    for (uint8_t addr = 0; addr < 128; addr++) {
-        if (addr % 16 == 0) {
-            printf("%02X: ", addr);
-        }
-        if (addr < 0x08 || addr > 0x77) {
-            printf("   ");
-        } else if (i2c_driver_probe(port, addr)) {
-            printf("%02X ", addr);
-        } else {
-            printf("-- ");
-        }
-        if (addr % 16 == 15) {
-            printf("\r\n");
-        }
-    }
+
+/**
+ * @brief Print one cell of the scan table for a given address
+ *
+ * Prints the row label when the address is at a 16-byte boundary, then
+ * prints the address if a device responds, dashes if not, or blank if
+ * the address is in the reserved range. Ends the row at every 16th address.
+ *
+ * @param port I2C port number (0 for i2c0, 1 for i2c1)
+ * @param addr 7-bit I2C address being probed
+ */
+static void _print_scan_entry(uint8_t port, uint8_t addr) {
+    if (addr % 16 == 0) printf("%02X: ", addr);
+    if (addr < 0x08 || addr > 0x77) printf("   ");
+    else if (i2c_driver_probe(port, addr)) printf("%02X ", addr);
+    else printf("-- ");
+    if (addr % 16 == 15) printf("\r\n");
+}
+
+
+void i2c_driver_scan(uint8_t port) {
+    _print_scan_header();
+    for (uint8_t addr = 0; addr < 128; addr++)
+        _print_scan_entry(port, addr);
 }

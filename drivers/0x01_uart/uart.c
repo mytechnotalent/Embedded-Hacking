@@ -34,26 +34,39 @@
 
 #define UART_INST uart0
 
+
 void uart_driver_init(uint32_t tx_pin, uint32_t rx_pin, uint32_t baud_rate) {
     uart_init(UART_INST, baud_rate);
     gpio_set_function(tx_pin, GPIO_FUNC_UART);
     gpio_set_function(rx_pin, GPIO_FUNC_UART);
 }
 
+
 bool uart_driver_is_readable(void) {
     return uart_is_readable(UART_INST);
 }
+
 
 char uart_driver_getchar(void) {
     return (char)uart_getc(UART_INST);
 }
 
+
 void uart_driver_putchar(char c) {
     uart_putc_raw(UART_INST, c);
 }
+
 
 void uart_driver_puts(const char *str) {
     while (*str) {
         uart_putc_raw(UART_INST, *str++);
     }
+}
+
+
+char uart_driver_to_upper(char c) {
+    if (c >= 'a' && c <= 'z') {
+        return (char)(c - 32);
+    }
+    return c;
 }

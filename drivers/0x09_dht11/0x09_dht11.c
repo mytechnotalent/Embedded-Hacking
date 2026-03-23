@@ -45,24 +45,37 @@
 
 #define DHT11_GPIO 4
 
+
+/**
+ * @brief Read the DHT11 sensor and print the result over UART
+ *
+ * Attempts a single read. On success prints humidity and temperature;
+ * on failure prints a wiring-check message. Waits 2 s before returning
+ * to respect the DHT11 minimum polling interval.
+ */
+static void _print_reading(void) {
+    float humidity = 0.0f;
+    float temperature = 0.0f;
+    if (dht11_read(&humidity, &temperature))
+        printf("Humidity: %.1f%%  Temperature: %.1f C\r\n", humidity, temperature);
+    else
+        printf("DHT11 read failed - check wiring on GPIO %d\r\n", DHT11_GPIO);
+    sleep_ms(2000);
+}
+
+
+/**
+ * @brief Application entry point for the DHT11 sensor demo
+ *
+ * Initializes the DHT11 on GPIO4 and continuously reads temperature
+ * and humidity, printing results over UART every 2 seconds.
+ *
+ * @return int Does not return
+ */
 int main(void) {
     stdio_init_all();
     dht11_init(DHT11_GPIO);
-
     printf("DHT11 driver initialized on GPIO %d\r\n", DHT11_GPIO);
-
-    while (true) {
-        float humidity    = 0.0f;
-        float temperature = 0.0f;
-
-        if (dht11_read(&humidity, &temperature)) {
-            printf("Humidity: %.1f%%  Temperature: %.1f C\r\n",
-                   humidity, temperature);
-        } else {
-            printf("DHT11 read failed - check wiring on GPIO %d\r\n",
-                   DHT11_GPIO);
-        }
-
-        sleep_ms(2000);
-    }
+    while (true)
+        _print_reading();
 }

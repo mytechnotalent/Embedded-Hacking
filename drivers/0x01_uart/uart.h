@@ -86,4 +86,15 @@ void uart_driver_putchar(char c);
  */
 void uart_driver_puts(const char *str);
 
+/**
+ * @brief Convert a lowercase ASCII character to uppercase
+ *
+ * Returns the uppercase equivalent if the character is in 'a'-'z';
+ * all other characters are passed through unchanged.
+ *
+ * @param c Input character
+ * @return char Uppercase equivalent, or the original character
+ */
+char uart_driver_to_upper(char c);
+
 #endif // UART_H

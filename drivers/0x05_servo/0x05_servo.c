@@ -47,24 +47,43 @@
 #define STEP_DEGREES   10
 #define STEP_DELAY_MS  150
 
+
+/**
+ * @brief Sweep the servo between start and end angles in given steps
+ *
+ * Iterates from start to end with the given step increment, setting
+ * each angle and printing the current position with a delay between steps.
+ *
+ * @param start Starting angle in degrees
+ * @param end   Ending angle in degrees
+ * @param step  Increment per iteration (negative for descending)
+ */
+static void _sweep_angle(int start, int end, int step) {
+    for (int angle = start; (step > 0) ? angle <= end : angle >= end; angle += step) {
+        servo_set_angle((float)angle);
+        printf("Angle: %3d deg\r\n", angle);
+        sleep_ms(STEP_DELAY_MS);
+    }
+}
+
+
+/**
+ * @brief Application entry point for the servo sweep demo
+ *
+ * Initializes the servo on GPIO and continuously sweeps 0-180-0 degrees
+ * in STEP_DEGREES increments, reporting each angle over UART.
+ *
+ * @return int Does not return
+ */
 int main(void) {
     stdio_init_all();
     servo_init(SERVO_GPIO);
-
     printf("Servo driver initialized on GPIO %d\r\n", SERVO_GPIO);
-    printf("Sweeping 0 -> 180 -> 0 degrees in %d-degree steps\r\n",
-           STEP_DEGREES);
-
+    printf("Sweeping 0 -> 180 -> 0 degrees in %d-degree steps\r\n", STEP_DEGREES);
     while (true) {
-        for (int angle = 0; angle <= 180; angle += STEP_DEGREES) {
-            servo_set_angle((float)angle);
-            printf("Angle: %3d deg\r\n", angle);
-            sleep_ms(STEP_DELAY_MS);
-        }
-        for (int angle = 180; angle >= 0; angle -= STEP_DEGREES) {
-            servo_set_angle((float)angle);
-            printf("Angle: %3d deg\r\n", angle);
-            sleep_ms(STEP_DELAY_MS);
-        }
+        _sweep_angle(0, 180, STEP_DEGREES);
+        _sweep_angle(180, 0, -STEP_DEGREES);
+    }
+}
     }
 }

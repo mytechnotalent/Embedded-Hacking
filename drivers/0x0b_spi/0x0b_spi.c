@@ -50,23 +50,41 @@
 #define PIN_SCK      18
 #define PIN_MOSI     19
 
+
+/**
+ * @brief Perform one SPI loopback transfer and print the result
+ *
+ * Asserts chip-select, transfers the buffer, deasserts chip-select,
+ * prints TX and RX data over UART, then clears the receive buffer.
+ *
+ * @param tx_buf Transmit buffer
+ * @param rx_buf Receive buffer (cleared after printing)
+ * @param len    Number of bytes to transfer
+ */
+static void _loopback_transfer(const uint8_t *tx_buf, uint8_t *rx_buf, size_t len) {
+    spi_driver_cs_select(PIN_CS);
+    spi_driver_transfer(SPI_PORT, tx_buf, rx_buf, len);
+    spi_driver_cs_deselect(PIN_CS);
+    printf("TX: %s\r\n", tx_buf);
+    printf("RX: %s\r\n\r\n", rx_buf);
+    memset(rx_buf, 0, len);
+    sleep_ms(1000);
+}
+
+
+/**
+ * @brief Application entry point for the SPI loopback demo
+ *
+ * Initializes SPI0 in master mode and continuously performs
+ * full-duplex transfers with MOSI wired to MISO for loopback.
+ *
+ * @return int Does not return
+ */
 int main(void) {
     stdio_init_all();
-
     spi_driver_init(SPI_PORT, PIN_MOSI, PIN_MISO, PIN_SCK, PIN_CS, SPI_BAUD_HZ);
-
     const uint8_t tx_buf[] = "SPI loopback OK";
     uint8_t rx_buf[sizeof(tx_buf)] = {0};
-
-    while (true) {
-        spi_driver_cs_select(PIN_CS);
-        spi_driver_transfer(SPI_PORT, tx_buf, rx_buf, sizeof(tx_buf));
-        spi_driver_cs_deselect(PIN_CS);
-
-        printf("TX: %s\r\n", tx_buf);
-        printf("RX: %s\r\n\r\n", rx_buf);
-
-        memset(rx_buf, 0, sizeof(rx_buf));
-        sleep_ms(1000);
-    }
+    while (true)
+        _loopback_transfer(tx_buf, rx_buf, sizeof(tx_buf));
 }

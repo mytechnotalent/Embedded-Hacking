@@ -40,6 +40,7 @@ void flash_driver_write(uint32_t flash_offset, const uint8_t *data, uint32_t len
     restore_interrupts(ints);
 }
 
+
 void flash_driver_read(uint32_t flash_offset, uint8_t *out, uint32_t len) {
     const uint8_t *flash_target_contents = (const uint8_t *)(XIP_BASE + flash_offset);
     memcpy(out, flash_target_contents, len);

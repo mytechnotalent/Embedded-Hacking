@@ -34,9 +34,11 @@ void multicore_driver_launch(void (*core1_entry)(void)) {
     multicore_launch_core1(core1_entry);
 }
 
+
 void multicore_driver_push(uint32_t data) {
     multicore_fifo_push_blocking(data);
 }
+
 
 uint32_t multicore_driver_pop(void) {
     return multicore_fifo_pop_blocking();

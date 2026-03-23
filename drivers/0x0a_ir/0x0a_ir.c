@@ -45,17 +45,30 @@
 
 #define IR_GPIO 5
 
+
+/**
+ * @brief Poll for an NEC frame and print the command if received
+ */
+static void _poll_and_print(void) {
+    int command = ir_getkey();
+    if (command >= 0)
+        printf("NEC command: 0x%02X  (%d)\r\n", command, command);
+}
+
+
+/**
+ * @brief Application entry point for the NEC IR receiver demo
+ *
+ * Initializes the IR receiver on GPIO5 and continuously decodes
+ * NEC frames, printing each command byte over UART.
+ *
+ * @return int Does not return
+ */
 int main(void) {
     stdio_init_all();
     ir_init(IR_GPIO);
-
     printf("NEC IR driver initialized on GPIO %d\r\n", IR_GPIO);
     printf("Press a button on your NEC remote...\r\n");
-
-    while (true) {
-        int command = ir_getkey();
-        if (command >= 0) {
-            printf("NEC command: 0x%02X  (%d)\r\n", command, command);
-        }
-    }
+    while (true)
+        _poll_and_print();
 }

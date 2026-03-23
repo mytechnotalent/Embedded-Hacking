@@ -40,17 +40,28 @@
 #include "pico/stdlib.h"
 #include "timer.h"
 
-static bool heartbeat_callback(void) {
+/**
+ * @brief Heartbeat timer callback that prints a message over UART
+ *
+ * @return bool true to keep the repeating timer active
+ */
+static bool _heartbeat_callback(void) {
     printf("Timer heartbeat\r\n");
     return true;
 }
 
+
+/**
+ * @brief Application entry point for the repeating timer demo
+ *
+ * Starts a 1-second repeating timer whose callback prints a
+ * heartbeat message over UART.
+ *
+ * @return int Does not return
+ */
 int main(void) {
     stdio_init_all();
-
-    timer_driver_start(1000, heartbeat_callback);
-
-    while (true) {
+    timer_driver_start(1000, _heartbeat_callback);
+    while (true)
         tight_loop_contents();
-    }
 }

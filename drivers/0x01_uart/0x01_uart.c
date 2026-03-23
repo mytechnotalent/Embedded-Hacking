@@ -46,32 +46,23 @@
 #define UART_RX_PIN  1
 #define UART_BAUD    115200
 
-/**
- * @brief Convert a lowercase ASCII character to uppercase
- *
- * Returns the uppercase equivalent if the character is in 'a'-'z';
- * all other characters are passed through unchanged.
- *
- * @param c Input character
- * @return char Uppercase equivalent, or the original character
- */
-static char to_upper(char c) {
-    if (c >= 'a' && c <= 'z') {
-        return (char)(c - 32);
-    }
-    return c;
-}
 
+/**
+ * @brief Application entry point for the UART uppercase echo demo
+ *
+ * Initializes UART0 and enters an infinite loop that reads incoming
+ * characters, converts them to uppercase, and echoes them back.
+ *
+ * @return int Does not return
+ */
 int main(void) {
     uart_driver_init(UART_TX_PIN, UART_RX_PIN, UART_BAUD);
-
     uart_driver_puts("UART driver ready (115200 8N1)\r\n");
     uart_driver_puts("Type characters to echo them back in UPPERCASE:\r\n");
-
     while (true) {
         if (uart_driver_is_readable()) {
             char c     = uart_driver_getchar();
-            char upper = to_upper(c);
+            char upper = uart_driver_to_upper(c);
             uart_driver_putchar(upper);
         }
     }
