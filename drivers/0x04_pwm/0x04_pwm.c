@@ -29,21 +29,22 @@
  * -----------------------------------------------------------------------------
  *
  * Demonstrates PWM output using the pwm driver (pwm.h / pwm.c). A 1 kHz
- * signal on GPIO 0 sweeps its duty cycle from 0% to 100% and back to
- * produce a smooth LED breathing effect. The current duty is reported
- * over UART.
+ * signal on GPIO 25 (onboard LED) sweeps its duty cycle from 0% to 100%
+ * and back to produce a smooth breathing effect. The current duty is
+ * reported over UART at 115200 baud.
  *
  * Wiring:
- *   GPIO0 -> LED anode (with 330 ohm series resistor to GND)
+ *   GPIO0  -> UART TX (USB-to-UART adapter RX)
+ *   GPIO1  -> UART RX (USB-to-UART adapter TX)
+ *   GPIO25 -> Onboard LED (no external wiring needed)
  */
 
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "pwm.h"
 
-#define PWM_PIN     0
+#define PWM_PIN     25
 #define PWM_FREQ_HZ 1000
-
 
 /**
  * @brief Sweep the PWM duty cycle between start and end in given steps
@@ -63,19 +64,19 @@ static void _sweep_duty(int start, int end, int step) {
     }
 }
 
-
 /**
  * @brief Application entry point for the PWM LED breathing demo
  *
- * Initializes PWM at 1 kHz and sweeps the duty cycle up and down
- * to produce a smooth LED breathing effect, reporting over UART.
+ * Initializes PWM at 1 kHz on the onboard LED and enters an infinite
+ * loop that sweeps the duty cycle up and down to produce a smooth
+ * breathing effect, reporting each step over UART.
  *
  * @return int Does not return
  */
 int main(void) {
     stdio_init_all();
     pwm_driver_init(PWM_PIN, PWM_FREQ_HZ);
-    printf("PWM driver initialized: GPIO%d @ %d Hz\r\n", PWM_PIN, PWM_FREQ_HZ);
+    printf("PWM initialized: GPIO%d @ %d Hz\r\n", PWM_PIN, PWM_FREQ_HZ);
     while (true) {
         _sweep_duty(0, 100, 5);
         _sweep_duty(100, 0, -5);

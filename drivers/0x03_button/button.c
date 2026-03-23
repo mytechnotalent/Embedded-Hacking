@@ -33,7 +33,6 @@
 
 static uint32_t debounce_delay_ms = 20;
 
-
 /**
  * @brief Confirm a raw active-low pin read by waiting for the debounce period
  *
@@ -49,14 +48,12 @@ static bool _debounce_confirm(uint32_t pin) {
     return !gpio_get(pin);
 }
 
-
 void button_init(uint32_t pin, uint32_t debounce_ms) {
     debounce_delay_ms = debounce_ms;
     gpio_init(pin);
     gpio_set_dir(pin, GPIO_IN);
     gpio_pull_up(pin);
 }
-
 
 bool button_is_pressed(uint32_t pin) {
     if (!gpio_get(pin)) {
@@ -65,16 +62,10 @@ bool button_is_pressed(uint32_t pin) {
     return false;
 }
 
-
 void button_led_init(uint32_t pin) {
     gpio_init(pin);
     gpio_set_dir(pin, GPIO_OUT);
     gpio_put(pin, false);
-}
-
-
-void button_led_set(uint32_t pin, bool on) {
-    gpio_put(pin, on);
 }
 
 void button_led_set(uint32_t pin, bool on) {

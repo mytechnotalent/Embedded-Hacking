@@ -41,7 +41,6 @@ static spi_inst_t *_get_spi_inst(uint8_t port) {
     return port == 0 ? spi0 : spi1;
 }
 
-
 /**
  * @brief Assign GPIO alternate functions for the SPI data and clock pins
  *
@@ -55,7 +54,6 @@ static void _setup_spi_pins(uint32_t mosi, uint32_t miso, uint32_t sck) {
     gpio_set_function(sck, GPIO_FUNC_SPI);
 }
 
-
 void spi_driver_init(uint8_t port, uint32_t mosi, uint32_t miso,
                      uint32_t sck, uint32_t cs, uint32_t baud_hz) {
     spi_inst_t *spi = _get_spi_inst(port);
@@ -66,16 +64,13 @@ void spi_driver_init(uint8_t port, uint32_t mosi, uint32_t miso,
     gpio_put(cs, 1);
 }
 
-
 void spi_driver_cs_select(uint32_t cs) {
     gpio_put(cs, 0);
 }
 
-
 void spi_driver_cs_deselect(uint32_t cs) {
     gpio_put(cs, 1);
 }
-
 
 void spi_driver_transfer(uint8_t port, const uint8_t *tx, uint8_t *rx,
                          uint32_t len) {

@@ -51,7 +51,6 @@ static void _print_reset_reason(void) {
         printf("Normal power-on reset\r\n");
 }
 
-
 /**
  * @brief Feed the watchdog and log over UART, then wait 1 second
  */
@@ -60,7 +59,6 @@ static void _feed_and_report(void) {
     printf("Watchdog fed\r\n");
     sleep_ms(1000);
 }
-
 
 /**
  * @brief Application entry point for the watchdog demo

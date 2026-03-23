@@ -50,7 +50,6 @@ static bool _heartbeat_callback(void) {
     return true;
 }
 
-
 /**
  * @brief Application entry point for the repeating timer demo
  *

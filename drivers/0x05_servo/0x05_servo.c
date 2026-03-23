@@ -47,7 +47,6 @@
 #define STEP_DEGREES   10
 #define STEP_DELAY_MS  150
 
-
 /**
  * @brief Sweep the servo between start and end angles in given steps
  *
@@ -66,7 +65,6 @@ static void _sweep_angle(int start, int end, int step) {
     }
 }
 
-
 /**
  * @brief Application entry point for the servo sweep demo
  *
@@ -83,7 +81,5 @@ int main(void) {
     while (true) {
         _sweep_angle(0, 180, STEP_DEGREES);
         _sweep_angle(180, 0, -STEP_DEGREES);
-    }
-}
     }
 }

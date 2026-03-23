@@ -45,7 +45,6 @@
 
 #define DHT11_GPIO 4
 
-
 /**
  * @brief Read the DHT11 sensor and print the result over UART
  *
@@ -62,7 +61,6 @@ static void _print_reading(void) {
         printf("DHT11 read failed - check wiring on GPIO %d\r\n", DHT11_GPIO);
     sleep_ms(2000);
 }
-
 
 /**
  * @brief Application entry point for the DHT11 sensor demo

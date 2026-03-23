@@ -54,7 +54,6 @@ static void _core1_main(void) {
     }
 }
 
-
 /**
  * @brief Send the counter to core 1 and print the round-trip result
  *
@@ -68,7 +67,6 @@ static void _send_and_print(uint32_t *counter) {
     (*counter)++;
     sleep_ms(1000);
 }
-
 
 /**
  * @brief Application entry point for the multicore FIFO demo

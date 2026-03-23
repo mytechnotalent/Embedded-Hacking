@@ -36,7 +36,6 @@ static uint     pwm_slice;
 static uint     pwm_chan;
 static uint32_t pwm_wrap;
 
-
 /**
  * @brief Compute the PWM clock divider that yields the target frequency
  *
@@ -52,7 +51,6 @@ static float _calc_clk_div(uint32_t freq_hz, uint32_t wrap_val) {
     uint32_t sys_hz = clock_get_hz(clk_sys);
     return (float)sys_hz / ((float)freq_hz * (float)(wrap_val + 1));
 }
-
 
 /**
  * @brief Apply the PWM configuration to the active slice
@@ -70,7 +68,6 @@ static void _apply_pwm_config(uint32_t freq_hz) {
     pwm_set_chan_level(pwm_slice, pwm_chan, 0);
 }
 
-
 void pwm_driver_init(uint32_t pin, uint32_t freq_hz) {
     gpio_set_function(pin, GPIO_FUNC_PWM);
     pwm_slice = pwm_gpio_to_slice_num(pin);
@@ -78,7 +75,6 @@ void pwm_driver_init(uint32_t pin, uint32_t freq_hz) {
     pwm_wrap  = 10000 - 1;
     _apply_pwm_config(freq_hz);
 }
-
 
 void pwm_driver_set_duty_percent(uint8_t percent) {
     if (percent > 100) {

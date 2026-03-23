@@ -45,7 +45,6 @@
 #define ADC_GPIO    26
 #define ADC_CHANNEL 0
 
-
 /**
  * @brief Read and print ADC voltage and chip temperature over UART
  *
@@ -57,7 +56,6 @@ static void _print_adc_readings(void) {
     float    temp_c     = adc_driver_read_temp_celsius();
     printf("ADC0: %4lu mV  |  Chip temp: %.1f C\r\n", voltage_mv, temp_c);
 }
-
 
 /**
  * @brief Application entry point for the ADC voltage and temperature demo

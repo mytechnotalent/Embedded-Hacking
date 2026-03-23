@@ -34,7 +34,6 @@
 
 static unsigned int ir_pin = 0;
 
-
 /**
  * @brief Wait for a GPIO pin to reach a given logic level
  *
@@ -55,7 +54,6 @@ static int64_t _wait_for_level(unsigned int gpio, bool level, uint32_t timeout_u
     return absolute_time_diff_us(start, get_absolute_time());
 }
 
-
 /**
  * @brief Wait for the NEC 9 ms leader pulse and 4.5 ms space
  *
@@ -69,7 +67,6 @@ static bool _wait_leader(void) {
     if (t < 3500 || t > 5000) return false;
     return true;
 }
-
 
 /**
  * @brief Read a single NEC-encoded bit from the IR receiver
@@ -91,7 +88,6 @@ static bool _read_nec_bit(uint8_t *data, int i) {
     return true;
 }
 
-
 /**
  * @brief Read all 32 data bits of an NEC frame
  *
@@ -103,7 +99,6 @@ static bool _read_32_bits(uint8_t *data) {
         if (!_read_nec_bit(data, i)) return false;
     return true;
 }
-
 
 /**
  * @brief Validate an NEC frame and extract the command byte
@@ -119,14 +114,12 @@ static int _validate_nec_frame(const uint8_t *data) {
     return -1;
 }
 
-
 void ir_init(uint8_t pin) {
     ir_pin = pin;
     gpio_init(pin);
     gpio_set_dir(pin, GPIO_IN);
     gpio_pull_up(pin);
 }
-
 
 int ir_getkey(void) {
     if (!_wait_leader()) return -1;

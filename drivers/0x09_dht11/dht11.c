@@ -33,7 +33,6 @@
 
 static uint dht_pin;
 
-
 /**
  * @brief Send the DHT11 start signal on the data pin
  *
@@ -48,7 +47,6 @@ static void _send_start_signal(void) {
     sleep_us(40);
     gpio_set_dir(dht_pin, GPIO_IN);
 }
-
 
 /**
  * @brief Wait for the pin to leave a given logic level
@@ -66,7 +64,6 @@ static bool _wait_for_level(int level) {
     return true;
 }
 
-
 /**
  * @brief Wait for the DHT11 response after the start signal
  *
@@ -81,7 +78,6 @@ static bool _wait_response(void) {
     if (!_wait_for_level(1)) return false;
     return true;
 }
-
 
 /**
  * @brief Read a single bit from the DHT11 data stream
@@ -103,7 +99,6 @@ static bool _read_bit(uint8_t *data, int i) {
     return true;
 }
 
-
 /**
  * @brief Read all 40 data bits from the DHT11
  *
@@ -116,7 +111,6 @@ static bool _read_40_bits(uint8_t *data) {
     return true;
 }
 
-
 /**
  * @brief Verify the DHT11 checksum byte
  *
@@ -127,13 +121,11 @@ static bool _validate_checksum(const uint8_t *data) {
     return data[4] == ((data[0] + data[1] + data[2] + data[3]) & 0xFF);
 }
 
-
 void dht11_init(uint8_t pin) {
     dht_pin = pin;
     gpio_init(pin);
     gpio_pull_up(pin);
 }
-
 
 bool dht11_read(float *humidity, float *temperature) {
     uint8_t data[5] = {0};

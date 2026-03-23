@@ -36,7 +36,6 @@
 
 static uint8_t active_channel = 0;
 
-
 /**
  * @brief Convert a raw 12-bit ADC value to millivolts
  *
@@ -48,7 +47,6 @@ static uint8_t active_channel = 0;
 static uint32_t _raw_to_mv(uint16_t raw) {
     return (uint32_t)raw * ADC_VREF_MV / ADC_FULL_SCALE;
 }
-
 
 /**
  * @brief Convert a raw temperature-sensor ADC value to degrees Celsius
@@ -64,7 +62,6 @@ static float _raw_to_celsius(uint16_t raw) {
     return 27.0f - (voltage - 0.706f) / 0.001721f;
 }
 
-
 void adc_driver_init(uint32_t gpio, uint8_t channel) {
     active_channel = channel;
     adc_init();
@@ -73,11 +70,9 @@ void adc_driver_init(uint32_t gpio, uint8_t channel) {
     adc_select_input(channel);
 }
 
-
 uint32_t adc_driver_read_mv(void) {
     return _raw_to_mv(adc_read());
 }
-
 
 float adc_driver_read_temp_celsius(void) {
     adc_select_input(4);

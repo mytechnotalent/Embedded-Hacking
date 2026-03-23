@@ -46,7 +46,6 @@
 #define UART_RX_PIN  1
 #define UART_BAUD    115200
 
-
 /**
  * @brief Application entry point for the UART uppercase echo demo
  *

@@ -42,7 +42,6 @@ static uint32_t servo_wrap = 20000 - 1;
 static float servo_hz = 50.0f;
 static bool servo_initialized = false;
 
-
 /**
  * @brief Convert a pulse width in microseconds to a PWM counter level
  *
@@ -57,7 +56,6 @@ static uint32_t _pulse_us_to_level(uint32_t pulse_us) {
     float counts_per_us = (servo_wrap + 1) / period_us;
     return (uint32_t)(pulse_us * counts_per_us + 0.5f);
 }
-
 
 /**
  * @brief Build and apply the PWM slice configuration for 50 Hz servo
@@ -75,7 +73,6 @@ static void _apply_servo_config(void) {
     pwm_init(servo_slice, &config, true);
 }
 
-
 void servo_init(uint8_t pin) {
     servo_pin = pin;
     gpio_set_function(servo_pin, GPIO_FUNC_PWM);
@@ -85,7 +82,6 @@ void servo_init(uint8_t pin) {
     servo_initialized = true;
 }
 
-
 void servo_set_pulse_us(uint16_t pulse_us) {
     if (!servo_initialized) return;
     if (pulse_us < SERVO_DEFAULT_MIN_US) pulse_us = SERVO_DEFAULT_MIN_US;
@@ -93,7 +89,6 @@ void servo_set_pulse_us(uint16_t pulse_us) {
     uint32_t level = _pulse_us_to_level(pulse_us);
     pwm_set_chan_level(servo_slice, servo_chan, level);
 }
-
 
 void servo_set_angle(float degrees) {
     if (degrees < 0.0f) degrees = 0.0f;

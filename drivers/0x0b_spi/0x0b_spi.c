@@ -50,7 +50,6 @@
 #define PIN_SCK      18
 #define PIN_MOSI     19
 
-
 /**
  * @brief Perform one SPI loopback transfer and print the result
  *
@@ -70,7 +69,6 @@ static void _loopback_transfer(const uint8_t *tx_buf, uint8_t *rx_buf, size_t le
     memset(rx_buf, 0, len);
     sleep_ms(1000);
 }
-
 
 /**
  * @brief Application entry point for the SPI loopback demo

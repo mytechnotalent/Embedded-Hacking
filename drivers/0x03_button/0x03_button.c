@@ -46,7 +46,6 @@
 #define LED_PIN     25
 #define DEBOUNCE_MS 20
 
-
 /**
  * @brief Poll button state and report edge transitions over UART
  *
@@ -63,7 +62,6 @@ static void _poll_button(bool *last_state) {
         *last_state = pressed;
     }
 }
-
 
 /**
  * @brief Application entry point for the button debounce demo

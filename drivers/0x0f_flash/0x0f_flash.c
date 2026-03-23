@@ -44,7 +44,6 @@
 #define FLASH_TARGET_OFFSET (FLASH_DRIVER_SIZE_BYTES - FLASH_DRIVER_SECTOR_SIZE)
 #define FLASH_WRITE_LEN     FLASH_DRIVER_PAGE_SIZE
 
-
 /**
  * @brief Fill a write buffer with 0xFF and copy the demo string into it
  *
@@ -54,9 +53,8 @@
 static void _prepare_write_buf(uint8_t *buf, size_t buf_size) {
     memset(buf, 0xFF, buf_size);
     const char *msg = "Embedded Hacking flash driver demo";
-    memcpy(buf, msg, strlen(msg));
+    memcpy(buf, msg, strlen(msg) + 1);
 }
-
 
 /**
  * @brief Write the demo string to flash and print the read-back result
@@ -69,7 +67,6 @@ static void _write_and_verify(void) {
     flash_driver_read(FLASH_TARGET_OFFSET, read_buf, FLASH_WRITE_LEN);
     printf("Flash readback: %s\r\n", read_buf);
 }
-
 
 /**
  * @brief Application entry point for the on-chip flash demo

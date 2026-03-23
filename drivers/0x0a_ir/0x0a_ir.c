@@ -45,7 +45,6 @@
 
 #define IR_GPIO 5
 
-
 /**
  * @brief Poll for an NEC frame and print the command if received
  */
@@ -54,7 +53,6 @@ static void _poll_and_print(void) {
     if (command >= 0)
         printf("NEC command: 0x%02X  (%d)\r\n", command, command);
 }
-
 
 /**
  * @brief Application entry point for the NEC IR receiver demo

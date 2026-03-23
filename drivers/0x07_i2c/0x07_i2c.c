@@ -49,7 +49,6 @@
 #define I2C_SCL_PIN 3
 #define I2C_BAUD    100000
 
-
 /**
  * @brief Application entry point for the I2C bus scanner demo
  *

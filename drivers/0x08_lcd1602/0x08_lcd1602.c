@@ -51,7 +51,6 @@
 #define I2C_BAUD_HZ   100000
 #define LCD_I2C_ADDR  0x27
 
-
 /**
  * @brief Initialize the LCD, display the title, and log over UART
  */
@@ -61,7 +60,6 @@ static void _setup_display(void) {
     lcd_puts("Reverse Eng.");
     printf("LCD 1602 driver initialized at I2C addr 0x%02X\r\n", LCD_I2C_ADDR);
 }
-
 
 /**
  * @brief Format and display the next counter value on LCD line 1
@@ -76,7 +74,6 @@ static void _update_counter(uint32_t *count) {
     printf("%s\r\n", buf);
     sleep_ms(1000);
 }
-
 
 /**
  * @brief Application entry point for the LCD 1602 counter demo

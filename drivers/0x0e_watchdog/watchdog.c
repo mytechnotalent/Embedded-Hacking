@@ -34,11 +34,9 @@ void watchdog_driver_enable(uint32_t timeout_ms) {
     watchdog_enable(timeout_ms, true);
 }
 
-
 void watchdog_driver_feed(void) {
     watchdog_update();
 }
-
 
 bool watchdog_driver_caused_reboot(void) {
     return watchdog_caused_reboot();

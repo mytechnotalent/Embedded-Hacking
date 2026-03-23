@@ -43,7 +43,6 @@
 #define LED_PIN        25
 #define BLINK_DELAY_MS 500
 
-
 /**
  * @brief Application entry point for the LED blink demo
  *
@@ -60,7 +59,5 @@ int main(void) {
         blink_toggle(LED_PIN);
         printf("LED: %s\r\n", blink_get_state(LED_PIN) ? "ON" : "OFF");
         sleep_ms(BLINK_DELAY_MS);
-    }
-}
     }
 }

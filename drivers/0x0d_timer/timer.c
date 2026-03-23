@@ -34,7 +34,6 @@ static repeating_timer_t g_timer;
 static bool g_timer_active = false;
 static timer_driver_callback_t g_user_callback = NULL;
 
-
 /**
  * @brief Internal repeating-timer callback that forwards to the user callback
  *
@@ -48,7 +47,6 @@ static bool _timer_shim(repeating_timer_t *rt) {
     return false;
 }
 
-
 void timer_driver_start(int32_t period_ms, timer_driver_callback_t callback) {
     if (g_timer_active) {
         cancel_repeating_timer(&g_timer);
@@ -57,7 +55,6 @@ void timer_driver_start(int32_t period_ms, timer_driver_callback_t callback) {
     g_user_callback = callback;
     g_timer_active = add_repeating_timer_ms(period_ms, _timer_shim, NULL, &g_timer);
 }
-
 
 void timer_driver_cancel(void) {
     if (!g_timer_active)
