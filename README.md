@@ -520,19 +520,17 @@ Rust ports of the C drivers above using `rp235x-hal`. Each Rust driver folder co
 
 <br>
 
-# Additional Resources
-## RP2350 UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver) 
-An RP2350 UART driver written entirely in ARM Assembler.
-## RP2350 UART Driver RISC-V [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver_RISCV) 
-An RP2350 UART driver written entirely in RISC-V Assembler.
-## RP2350 Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver) 
-An RP2350 blink driver written entirely in ARM Assembler.
-## RP2350 Blink Driver RISC-V [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver_RISCV) 
-An RP2350 blink driver written entirely in RISC-V Assembler.
-## RP2350 Button Driver [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver) 
-An RP2350 button driver written entirely in ARM Assembler.
-## RP2350 Button Driver RISC-V [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver_RISCV) 
-An RP2350 button driver written entirely in RISC-V Assembler.
+# Assembler Drivers
+Standalone RP2350 drivers written entirely in ARM or RISC-V assembler.
+
+| Driver | Description | Architecture |
+|--------|-------------|--------------|
+| [RP2350_UART_Driver](https://github.com/mytechnotalent/RP2350_UART_Driver) | Raw UART transmit / receive | ARM |
+| [RP2350_UART_Driver_RISCV](https://github.com/mytechnotalent/RP2350_UART_Driver_RISCV) | Raw UART transmit / receive | RISC-V |
+| [RP2350_Blink_Driver](https://github.com/mytechnotalent/RP2350_Blink_Driver) | GPIO output LED blink | ARM |
+| [RP2350_Blink_Driver_RISCV](https://github.com/mytechnotalent/RP2350_Blink_Driver_RISCV) | GPIO output LED blink | RISC-V |
+| [RP2350_Button_Driver](https://github.com/mytechnotalent/RP2350_Button_Driver) | GPIO input button | ARM |
+| [RP2350_Button_Driver_RISCV](https://github.com/mytechnotalent/RP2350_Button_Driver_RISCV) | GPIO input button | RISC-V |
 
 <br>
 
