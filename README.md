@@ -488,22 +488,6 @@ Forty-two stories beneath frozen tundra, a shadow intelligence alliance called D
 
 <br>
 
-# Additional Resources
-## RP2350 UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver) 
-An RP2350 UART driver written entirely in ARM Assembler.
-## RP2350 UART Driver RISC-V [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver_RISCV) 
-An RP2350 UART driver written entirely in RISC-V Assembler.
-## RP2350 Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver) 
-An RP2350 blink driver written entirely in ARM Assembler.
-## RP2350 Blink Driver RISC-V [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver_RISCV) 
-An RP2350 blink driver written entirely in RISC-V Assembler.
-## RP2350 Button Driver [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver) 
-An RP2350 button driver written entirely in ARM Assembler.
-## RP2350 Button Driver RISC-V [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver_RISCV) 
-An RP2350 button driver written entirely in RISC-V Assembler.
-
-<br>
-
 # Drivers
 Self-contained C driver libraries for the Raspberry Pi Pico 2 (RP2350). Each driver folder contains a thin demo (`0xNN_name.c`), a reusable library implementation (`name.c`), and a library header with full Doxygen docstrings (`name.h`).
 
@@ -524,6 +508,22 @@ Self-contained C driver libraries for the Raspberry Pi Pico 2 (RP2350). Each dri
 | [0x0d_timer](drivers/0x0d_timer) | Repeating timer callbacks | `pico_stdlib` |
 | [0x0e_watchdog](drivers/0x0e_watchdog) | Watchdog enable, feed & reboot detection | `hardware_watchdog` |
 | [0x0f_flash](drivers/0x0f_flash) | On-board flash erase, write & read | `hardware_flash`, `hardware_sync` |
+
+<br>
+
+# Additional Resources
+## RP2350 UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver) 
+An RP2350 UART driver written entirely in ARM Assembler.
+## RP2350 UART Driver RISC-V [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver_RISCV) 
+An RP2350 UART driver written entirely in RISC-V Assembler.
+## RP2350 Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver) 
+An RP2350 blink driver written entirely in ARM Assembler.
+## RP2350 Blink Driver RISC-V [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver_RISCV) 
+An RP2350 blink driver written entirely in RISC-V Assembler.
+## RP2350 Button Driver [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver) 
+An RP2350 button driver written entirely in ARM Assembler.
+## RP2350 Button Driver RISC-V [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver_RISCV) 
+An RP2350 button driver written entirely in RISC-V Assembler.
 
 <br>
 
