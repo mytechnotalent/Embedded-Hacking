@@ -511,6 +511,15 @@ Self-contained C driver libraries for the Raspberry Pi Pico 2 (RP2350). Each dri
 
 <br>
 
+# Rust Drivers
+Rust ports of the C drivers above using `rp235x-hal`. Each Rust driver folder contains a thin demo (`main.rs`) and a reusable library module (`driver.rs`) with full Rust doc comments.
+
+| Driver | Description | Key Crates |
+|--------|-------------|------------|
+| [0x01_uart_rust](drivers/0x01_uart_rust) | Raw UART transmit / receive | `rp235x-hal`, `embedded-hal-nb` |
+
+<br>
+
 # Additional Resources
 ## RP2350 UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver) 
 An RP2350 UART driver written entirely in ARM Assembler.
