@@ -517,6 +517,7 @@ Rust ports of the C drivers above using `rp235x-hal`. Each Rust driver folder co
 | Driver | Description | Key Crates |
 |--------|-------------|------------|
 | [0x01_uart_rust](drivers/0x01_uart_rust) | Raw UART transmit / receive | `rp235x-hal`, `embedded-hal-nb` |
+| [0x02_blink_rust](drivers/0x02_blink_rust) | GPIO output LED blink | `rp235x-hal`, `embedded-hal` |
 
 <br>
 

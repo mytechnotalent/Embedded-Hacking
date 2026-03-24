@@ -1,0 +1,41 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Pico Debug (probe-rs)",
+      "cwd": "${workspaceFolder}",
+      "request": "launch",
+      "type": "probe-rs-debug",
+      "connectUnderReset": false,
+      "speed": 5000,
+      "runtimeExecutable": "probe-rs",
+      "chip": "${command:raspberry-pi-pico.getChip}",
+      "runtimeArgs": [
+        "dap-server"
+      ],
+      "flashingConfig": {
+        "flashingEnabled": true,
+        "haltAfterReset": false
+      },
+      "coreConfigs": [
+        {
+          "coreIndex": 0,
+          "programBinary": "${command:raspberry-pi-pico.launchTargetPath}",
+          "rttEnabled": true,
+          "svdFile": "${command:raspberry-pi-pico.getSVDPath}",
+          "rttChannelFormats": [
+            {
+              "channelNumber": 0,
+              "dataFormat": "Defmt",
+              "mode": "NoBlockSkip",
+              "showTimestamps": true
+            }
+          ]
+        }
+      ],
+      "preLaunchTask": "Build + Generate SBOM (debug)",
+      "consoleLogLevel": "Debug",
+      "wireProtocol": "Swd"
+    }
+  ]
+}
