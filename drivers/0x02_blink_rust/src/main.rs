@@ -37,6 +37,7 @@
 #![no_std]
 #![no_main]
 
+#[allow(dead_code)]
 mod blink;
 
 use defmt_rtt as _;
