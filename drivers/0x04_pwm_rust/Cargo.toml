@@ -1,0 +1,41 @@
+
+[package]
+edition = "2024"
+name = "pwm"
+version = "0.1.0"
+license = "MIT or Apache-2.0"
+
+[lib]
+name = "pwm_lib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "pwm"
+path = "src/main.rs"
+
+[build-dependencies]
+regex = "1.11.0"
+
+[dependencies]
+cortex-m = "0.7"
+cortex-m-rt = "0.7"
+embedded-hal = "1.0.0"
+fugit = "0.3"
+defmt = "1"
+defmt-rtt = "1"
+
+[target.'cfg( target_arch = "arm" )'.dependencies]
+panic-probe = { version = "1", features = ["print-defmt"] }
+
+[target.'cfg( target_arch = "riscv32" )'.dependencies]
+panic-halt = { version = "1.0.0" }
+
+[target.thumbv6m-none-eabi.dependencies]
+rp2040-boot2 = "0.3"
+rp2040-hal = { version = "0.11", features = ["rt", "critical-section-impl"] }
+
+[target.riscv32imac-unknown-none-elf.dependencies]
+rp235x-hal = { version = "0.3", features = ["rt", "critical-section-impl"] }
+
+[target."thumbv8m.main-none-eabihf".dependencies]
+rp235x-hal = { version = "0.3", features = ["rt", "critical-section-impl"] }
