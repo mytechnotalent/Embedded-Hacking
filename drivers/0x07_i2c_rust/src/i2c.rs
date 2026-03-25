@@ -1,3 +1,30 @@
+//! @file i2c.rs
+//! @brief Implementation of the I2C bus scanner driver
+//! @author Kevin Thomas
+//! @date 2025
+//!
+//! MIT License
+//!
+//! Copyright (c) 2025 Kevin Thomas
+//!
+//! Permission is hereby granted, free of charge, to any person obtaining a copy
+//! of this software and associated documentation files (the "Software"), to deal
+//! in the Software without restriction, including without limitation the rights
+//! to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//! copies of the Software, and to permit persons to whom the Software is
+//! furnished to do so, subject to the following conditions:
+//!
+//! The above copyright notice and this permission notice shall be included in
+//! all copies or substantial portions of the Software.
+//!
+//! THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//! IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//! FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//! AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//! LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//! OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//! SOFTWARE.
+
 /// Lowest valid (non-reserved) 7-bit I2C address.
 pub const SCAN_ADDR_MIN: u8 = 0x08;
 
@@ -5,15 +32,40 @@ pub const SCAN_ADDR_MIN: u8 = 0x08;
 pub const SCAN_ADDR_MAX: u8 = 0x77;
 
 /// Return `true` when `addr` falls in a reserved 7-bit I2C range.
+///
+/// # Arguments
+///
+/// * `addr` - 7-bit I2C address to check.
+///
+/// # Returns
+///
+/// `true` if the address is in the reserved low or high range.
 pub fn is_reserved(addr: u8) -> bool {
     addr < SCAN_ADDR_MIN || addr > SCAN_ADDR_MAX
 }
 
+/// Convert a 4-bit value to its uppercase ASCII hex digit.
+///
+/// # Arguments
+///
+/// * `val` - Value in the range 0..=15.
+///
+/// # Returns
+///
+/// ASCII byte `b'0'`..`b'9'` or `b'A'`..`b'F'`.
 fn hex_digit(val: u8) -> u8 {
     if val < 10 { b'0' + val } else { b'A' + val - 10 }
 }
 
 /// Write the scan-table header into `buf` and return the byte count.
+///
+/// # Arguments
+///
+/// * `buf` - Mutable byte slice (must be at least 56 bytes).
+///
+/// # Returns
+///
+/// Number of bytes written into the buffer.
 pub fn format_scan_header(buf: &mut [u8]) -> usize {
     let h = b"\r\nI2C bus scan:\r\n     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F\r\n";
     buf[..h.len()].copy_from_slice(h);
@@ -24,6 +76,16 @@ pub fn format_scan_header(buf: &mut [u8]) -> usize {
 ///
 /// Prepends the row label when `addr` is at a 16-byte boundary and
 /// appends `\r\n` when `addr` is the last column of a row.
+///
+/// # Arguments
+///
+/// * `buf` - Mutable byte slice for formatted output.
+/// * `addr` - 7-bit I2C address being reported.
+/// * `found` - `true` if a device acknowledged at this address.
+///
+/// # Returns
+///
+/// Number of bytes written into the buffer.
 pub fn format_scan_entry(buf: &mut [u8], addr: u8, found: bool) -> usize {
     let mut pos = 0;
     if addr % 16 == 0 {

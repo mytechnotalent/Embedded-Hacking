@@ -40,6 +40,7 @@
 #![no_std]
 #![no_main]
 
+mod board;
 mod uart;
 
 use defmt_rtt as _;
@@ -66,64 +67,6 @@ pub static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 #[cfg(rp2350)]
 pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 
-const XTAL_FREQ_HZ: u32 = 12_000_000u32;
-
-const UART_BAUD: u32 = 115_200;
-
-/// Initialise system clocks and PLLs from the external 12 MHz crystal.
-///
-/// # Arguments
-///
-/// * `xosc` - XOSC peripheral singleton.
-/// * `clocks` - CLOCKS peripheral singleton.
-/// * `pll_sys` - PLL_SYS peripheral singleton.
-/// * `pll_usb` - PLL_USB peripheral singleton.
-/// * `resets` - Mutable reference to the RESETS peripheral.
-/// * `watchdog` - Mutable reference to the watchdog timer.
-///
-/// # Returns
-///
-/// Configured clocks manager.
-///
-/// # Panics
-///
-/// Panics if clock initialisation fails.
-fn init_clocks(
-    xosc: hal::pac::XOSC,
-    clocks: hal::pac::CLOCKS,
-    pll_sys: hal::pac::PLL_SYS,
-    pll_usb: hal::pac::PLL_USB,
-    resets: &mut hal::pac::RESETS,
-    watchdog: &mut hal::Watchdog,
-) -> hal::clocks::ClocksManager {
-    hal::clocks::init_clocks_and_plls(
-        XTAL_FREQ_HZ, xosc, clocks, pll_sys, pll_usb, resets, watchdog,
-    )
-    .unwrap()
-}
-
-/// Unlock the GPIO bank and return the pin set.
-///
-/// # Arguments
-///
-/// * `io_bank0` - IO_BANK0 peripheral singleton.
-/// * `pads_bank0` - PADS_BANK0 peripheral singleton.
-/// * `sio` - SIO peripheral singleton.
-/// * `resets` - Mutable reference to the RESETS peripheral.
-///
-/// # Returns
-///
-/// GPIO pin set for the entire bank.
-fn init_pins(
-    io_bank0: hal::pac::IO_BANK0,
-    pads_bank0: hal::pac::PADS_BANK0,
-    sio: hal::pac::SIO,
-    resets: &mut hal::pac::RESETS,
-) -> hal::gpio::Pins {
-    let sio = hal::Sio::new(sio);
-    hal::gpio::Pins::new(io_bank0, pads_bank0, sio.gpio_bank0, resets)
-}
-
 /// Application entry point for the UART uppercase echo demo.
 ///
 /// Initializes UART0 and enters an infinite loop that reads incoming
@@ -136,12 +79,12 @@ fn init_pins(
 fn main() -> ! {
     let mut pac = hal::pac::Peripherals::take().unwrap();
     let mut watchdog = hal::Watchdog::new(pac.WATCHDOG);
-    let clocks = init_clocks(
+    let clocks = board::init_clocks(
         pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut watchdog,
     );
-    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let pins = board::init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
     let mut drv = uart::UartDriver::init(
-        pac.UART0, pins.gpio0, pins.gpio1, UART_BAUD, &mut pac.RESETS, &clocks,
+        pac.UART0, pins.gpio0, pins.gpio1, board::UART_BAUD, &mut pac.RESETS, &clocks,
     );
     drv.puts(b"UART driver ready (115200 8N1)\r\n");
     drv.puts(b"Type characters to echo them back in UPPERCASE:\r\n");
