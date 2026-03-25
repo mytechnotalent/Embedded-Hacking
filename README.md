@@ -514,12 +514,9 @@ Self-contained C driver libraries for the Raspberry Pi Pico 2 (RP2350). Each dri
 # Rust Drivers
 Rust ports of the C drivers above using `rp235x-hal`. Each Rust driver folder contains a thin demo (`main.rs`) and a reusable library module (`driver.rs`) with full Rust doc comments.
 
-### Building & Testing
+### Testing
 
 ```bash
-# Build for the RP2350 target (from any driver folder)
-cargo build
-
 # Run unit tests on the host
 cargo test --lib --target x86_64-pc-windows-msvc
 ```
@@ -530,6 +527,7 @@ cargo test --lib --target x86_64-pc-windows-msvc
 | [0x02_blink_rust](drivers/0x02_blink_rust) | GPIO output LED blink | `rp235x-hal`, `embedded-hal` |
 | [0x03_button_rust](drivers/0x03_button_rust) | Push-button input with debounce | `rp235x-hal`, `embedded-hal` |
 | [0x04_pwm_rust](drivers/0x04_pwm_rust) | Generic PWM output | `rp235x-hal`, `embedded-hal` |
+| [0x05_servo_rust](drivers/0x05_servo_rust) | SG90 servo motor control | `rp235x-hal`, `embedded-hal` |
 
 <br>
 
