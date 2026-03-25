@@ -518,6 +518,7 @@ Rust ports of the C drivers above using `rp235x-hal`. Each Rust driver folder co
 |--------|-------------|------------|
 | [0x01_uart_rust](drivers/0x01_uart_rust) | Raw UART transmit / receive | `rp235x-hal`, `embedded-hal-nb` |
 | [0x02_blink_rust](drivers/0x02_blink_rust) | GPIO output LED blink | `rp235x-hal`, `embedded-hal` |
+| [0x03_button_rust](drivers/0x03_button_rust) | Push-button input with debounce | `rp235x-hal`, `embedded-hal` |
 
 <br>
 
