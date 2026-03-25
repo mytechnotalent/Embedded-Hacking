@@ -5,4 +5,5 @@
 
 #![no_std]
 
+// Blink driver module
 pub mod blink;

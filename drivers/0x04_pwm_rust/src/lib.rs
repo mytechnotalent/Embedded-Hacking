@@ -5,4 +5,5 @@
 
 #![no_std]
 
+// PWM driver module
 pub mod pwm;

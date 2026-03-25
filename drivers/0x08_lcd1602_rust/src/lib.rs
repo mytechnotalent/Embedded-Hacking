@@ -5,4 +5,5 @@
 
 #![no_std]
 
+// LCD 1602 driver module
 pub mod lcd1602;

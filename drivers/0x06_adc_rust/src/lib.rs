@@ -5,4 +5,5 @@
 
 #![no_std]
 
+// ADC driver module
 pub mod adc;

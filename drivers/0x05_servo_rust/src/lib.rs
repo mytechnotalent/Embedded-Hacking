@@ -5,4 +5,5 @@
 
 #![no_std]
 
+// Servo driver module
 pub mod servo;

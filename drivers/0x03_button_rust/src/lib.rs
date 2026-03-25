@@ -5,4 +5,5 @@
 
 #![no_std]
 
+// Button driver module
 pub mod button;

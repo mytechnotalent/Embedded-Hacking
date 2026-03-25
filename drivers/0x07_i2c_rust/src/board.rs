@@ -1,5 +1,5 @@
 //! @file board.rs
-//! @brief Board-level initialisation helpers for the I2C scanner demo
+//! @brief Board-level HAL helpers for the I2C driver
 //! @author Kevin Thomas
 //! @date 2025
 //!
@@ -24,11 +24,6 @@
 //! LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //! OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //! SOFTWARE.
-
-//! @file board.rs
-//! @brief Board-level HAL helpers for the I2C driver
-//! @author Kevin Thomas
-//! @date 2025
 
 // I2C bus trait for device probing
 use embedded_hal::i2c::I2c;

@@ -5,4 +5,5 @@
 
 #![no_std]
 
+// I2C driver module
 pub mod i2c;

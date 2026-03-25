@@ -1,5 +1,5 @@
 //! @file board.rs
-//! @brief Board-level initialisation helpers for the button demo
+//! @brief Board-level HAL helpers for the button driver
 //! @author Kevin Thomas
 //! @date 2025
 //!
@@ -24,11 +24,6 @@
 //! LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //! OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //! SOFTWARE.
-
-//! @file board.rs
-//! @brief Board-level HAL helpers for the button driver
-//! @author Kevin Thomas
-//! @date 2025
 
 // Rate extension trait for .Hz() baud rate construction
 use fugit::RateExtU32;
