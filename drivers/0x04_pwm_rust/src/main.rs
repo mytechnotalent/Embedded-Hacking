@@ -40,30 +40,39 @@
 #![no_std]
 #![no_main]
 
+// Board-level helpers: constants, type aliases, and init functions
 mod board;
+// PWM driver module — suppress warnings for unused public API functions
 #[allow(dead_code)]
 mod pwm;
 
+// Debugging output over RTT
 use defmt_rtt as _;
+// Panic handler for RISC-V targets
 #[cfg(target_arch = "riscv32")]
 use panic_halt as _;
+// Panic handler for ARM targets
 #[cfg(target_arch = "arm")]
 use panic_probe as _;
 
+// Clock trait for accessing system clock frequency
 use hal::Clock;
+// HAL entry-point macro
 use hal::entry;
 
+// Alias our HAL crate
 #[cfg(rp2350)]
 use rp235x_hal as hal;
-
 #[cfg(rp2040)]
 use rp2040_hal as hal;
 
+// Second-stage boot loader for RP2040
 #[unsafe(link_section = ".boot2")]
 #[used]
 #[cfg(rp2040)]
 pub static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 
+// Boot metadata for the RP2350 Boot ROM
 #[unsafe(link_section = ".start_block")]
 #[used]
 #[cfg(rp2350)]
@@ -106,6 +115,7 @@ fn main() -> ! {
     }
 }
 
+// Picotool binary info metadata
 #[unsafe(link_section = ".bi_entries")]
 #[used]
 pub static PICOTOOL_ENTRIES: [hal::binary_info::EntryAddr; 5] = [

@@ -25,9 +25,14 @@
 //! OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //! SOFTWARE.
 
+//! @file board.rs
+//! @brief Board-level HAL helpers for the UART driver
+//! @author Kevin Thomas
+//! @date 2025
+
+// Alias our HAL crate
 #[cfg(rp2350)]
 use rp235x_hal as hal;
-
 #[cfg(rp2040)]
 use rp2040_hal as hal;
 

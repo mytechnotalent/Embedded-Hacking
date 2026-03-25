@@ -25,15 +25,25 @@
 //! OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //! SOFTWARE.
 
+//! @file board.rs
+//! @brief Board-level HAL helpers for the LCD 1602 driver
+//! @author Kevin Thomas
+//! @date 2025
+
+// I2C bus trait for LCD communication
 use embedded_hal::i2c::I2c;
+// Rate extension trait for .Hz() baud rate construction
 use fugit::RateExtU32;
+// Clock trait for accessing system clock frequency
 use hal::Clock;
+// GPIO pin types and function selectors
 use hal::gpio::{FunctionNull, FunctionUart, Pin, PullDown, PullNone};
+// UART configuration and peripheral types
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
 
+// Alias our HAL crate
 #[cfg(rp2350)]
 use rp235x_hal as hal;
-
 #[cfg(rp2040)]
 use rp2040_hal as hal;
 
