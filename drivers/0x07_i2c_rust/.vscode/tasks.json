@@ -1,0 +1,124 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Compile Project",
+      "type": "process",
+      "isBuildCommand": true,
+      "command": "cargo",
+      "args": [
+        "build",
+        "--release"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": "$rustc",
+      "options": {
+        "env": {
+          "PICOTOOL_PATH": "${command:raspberry-pi-pico.getPicotoolPath}",
+          "CHIP": "${command:raspberry-pi-pico.getChip}"
+        }
+      }
+    },
+    {
+      "label": "Build + Generate SBOM (release)",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "cargo sbom > ${command:raspberry-pi-pico.sbomTargetPathRelease}"
+      ],
+      "windows": {
+        "command": "powershell",
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-Command",
+          "cargo sbom | Set-Content -Encoding utf8 ${command:raspberry-pi-pico.sbomTargetPathRelease}"
+        ]
+      },
+      "dependsOn": "Compile Project",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Compile Project (debug)",
+      "type": "process",
+      "isBuildCommand": true,
+      "command": "cargo",
+      "args": [
+        "build"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": "$rustc",
+      "options": {
+        "env": {
+          "PICOTOOL_PATH": "${command:raspberry-pi-pico.getPicotoolPath}",
+          "CHIP": "${command:raspberry-pi-pico.getChip}"
+        }
+      }
+    },
+    {
+      "label": "Build + Generate SBOM (debug)",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-lc",
+        "cargo sbom > ${command:raspberry-pi-pico.sbomTargetPathDebug}"
+      ],
+      "windows": {
+        "command": "powershell",
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-Command",
+          "cargo sbom | Set-Content -Encoding utf8 ${command:raspberry-pi-pico.sbomTargetPathDebug}"
+        ]
+      },
+      "dependsOn": "Compile Project (debug)",
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Project",
+      "type": "shell",
+      "dependsOn": [
+        "Build + Generate SBOM (release)"
+      ],
+      "command": "${command:raspberry-pi-pico.getPicotoolPath}",
+      "args": [
+        "load",
+        "-x",
+        "${command:raspberry-pi-pico.launchTargetPathRelease}",
+        "-t",
+        "elf"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

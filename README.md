@@ -529,6 +529,7 @@ cargo test --lib --target x86_64-pc-windows-msvc
 | [0x04_pwm_rust](drivers/0x04_pwm_rust) | Generic PWM output | `rp235x-hal`, `embedded-hal` |
 | [0x05_servo_rust](drivers/0x05_servo_rust) | SG90 servo motor control | `rp235x-hal`, `embedded-hal` |
 | [0x06_adc_rust](drivers/0x06_adc_rust) | 12-bit ADC voltage + temperature | `rp235x-hal`, `embedded-hal` |
+| [0x07_i2c_rust](drivers/0x07_i2c_rust) | I2C bus scanner (7-bit addresses) | `rp235x-hal`, `embedded-hal` |
 
 <br>
 
