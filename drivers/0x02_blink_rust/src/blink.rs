@@ -26,29 +26,25 @@
 //! SOFTWARE.
 
 use embedded_hal::digital::{OutputPin, StatefulOutputPin};
-use rp235x_hal as hal;
-use hal::gpio::{FunctionNull, FunctionSio, FunctionSioOutput, Pin, PullDown, SioOutput, ValidFunction};
 
 /// GPIO output / LED blink driver that owns a single output pin.
-pub struct BlinkDriver<I: hal::gpio::PinId> {
-    pin: Pin<I, FunctionSioOutput, PullDown>,
+pub struct BlinkDriver<P: OutputPin + StatefulOutputPin> {
+    pin: P,
 }
 
-impl<I: hal::gpio::PinId + ValidFunction<FunctionSio<SioOutput>>> BlinkDriver<I> {
+impl<P: OutputPin + StatefulOutputPin> BlinkDriver<P> {
     /// Initialize a GPIO pin as a push-pull digital output.
     ///
-    /// Calls into_push_pull_output() to configure the pin for output.
     /// The initial drive level is low (LED off).
     ///
     /// # Arguments
     ///
-    /// * `pin` - GPIO pin number to configure as a digital output.
+    /// * `pin` - GPIO pin configured as a digital output.
     ///
     /// # Returns
     ///
     /// A new BlinkDriver instance owning the configured pin.
-    pub fn init(pin: Pin<I, FunctionNull, PullDown>) -> Self {
-        let mut pin = pin.into_push_pull_output();
+    pub fn init(mut pin: P) -> Self {
         pin.set_low().unwrap();
         Self { pin }
     }
@@ -94,6 +90,110 @@ impl<I: hal::gpio::PinId + ValidFunction<FunctionSio<SioOutput>>> BlinkDriver<I>
     /// `true` if the pin is driven high, `false` if driven low.
     pub fn get_state(&mut self) -> bool {
         self.pin.is_set_high().unwrap()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use core::convert::Infallible;
+    use embedded_hal::digital::ErrorType;
+
+    struct MockPin {
+        state: bool,
+    }
+
+    impl MockPin {
+        fn new() -> Self {
+            Self { state: false }
+        }
+    }
+
+    impl ErrorType for MockPin {
+        type Error = Infallible;
+    }
+
+    impl OutputPin for MockPin {
+        fn set_low(&mut self) -> Result<(), Self::Error> {
+            self.state = false;
+            Ok(())
+        }
+        fn set_high(&mut self) -> Result<(), Self::Error> {
+            self.state = true;
+            Ok(())
+        }
+    }
+
+    impl StatefulOutputPin for MockPin {
+        fn is_set_high(&mut self) -> Result<bool, Self::Error> {
+            Ok(self.state)
+        }
+        fn is_set_low(&mut self) -> Result<bool, Self::Error> {
+            Ok(!self.state)
+        }
+        fn toggle(&mut self) -> Result<(), Self::Error> {
+            self.state = !self.state;
+            Ok(())
+        }
+    }
+
+    #[test]
+    fn init_starts_low() {
+        let drv = BlinkDriver::init(MockPin::new());
+        assert!(!drv.pin.state);
+    }
+
+    #[test]
+    fn on_sets_high() {
+        let mut drv = BlinkDriver::init(MockPin::new());
+        drv.on();
+        assert!(drv.pin.state);
+    }
+
+    #[test]
+    fn off_sets_low() {
+        let mut drv = BlinkDriver::init(MockPin::new());
+        drv.on();
+        drv.off();
+        assert!(!drv.pin.state);
+    }
+
+    #[test]
+    fn toggle_from_low_goes_high() {
+        let mut drv = BlinkDriver::init(MockPin::new());
+        drv.toggle();
+        assert!(drv.pin.state);
+    }
+
+    #[test]
+    fn toggle_from_high_goes_low() {
+        let mut drv = BlinkDriver::init(MockPin::new());
+        drv.on();
+        drv.toggle();
+        assert!(!drv.pin.state);
+    }
+
+    #[test]
+    fn get_state_reflects_on() {
+        let mut drv = BlinkDriver::init(MockPin::new());
+        drv.on();
+        assert!(drv.get_state());
+    }
+
+    #[test]
+    fn get_state_reflects_off() {
+        let mut drv = BlinkDriver::init(MockPin::new());
+        drv.on();
+        drv.off();
+        assert!(!drv.get_state());
+    }
+
+    #[test]
+    fn double_toggle_returns_to_original() {
+        let mut drv = BlinkDriver::init(MockPin::new());
+        drv.toggle();
+        drv.toggle();
+        assert!(!drv.get_state());
     }
 }
 

@@ -5,6 +5,14 @@ name = "blink"
 version = "0.1.0"
 license = "MIT or Apache-2.0"
 
+[lib]
+name = "blink_lib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "blink"
+path = "src/main.rs"
+
 [build-dependencies]
 regex = "1.11.0"
 

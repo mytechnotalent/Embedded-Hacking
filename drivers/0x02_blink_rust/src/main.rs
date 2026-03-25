@@ -207,7 +207,7 @@ fn main() -> ! {
     let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
     let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
     let mut delay = init_delay(&clocks);
-    let mut led = blink::BlinkDriver::init(pins.gpio25);
+    let mut led = blink::BlinkDriver::init(pins.gpio25.into_push_pull_output());
     uart.write_full_blocking(b"Blink driver initialized on GPIO 25\r\n");
     loop {
         led.toggle();
