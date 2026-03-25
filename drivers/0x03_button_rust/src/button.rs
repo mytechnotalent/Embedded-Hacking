@@ -25,6 +25,7 @@
 //! OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //! SOFTWARE.
 
+// Embedded HAL digital I/O traits for GPIO pin control
 use embedded_hal::digital::{InputPin, OutputPin, StatefulOutputPin};
 
 /// Push-button GPIO input driver with debounce.
@@ -123,8 +124,11 @@ impl<L: OutputPin + StatefulOutputPin> ButtonLed<L> {
 
 #[cfg(test)]
 mod tests {
+    // Import all parent module items
     use super::*;
+    // Infallible error type for mock pin implementations
     use core::convert::Infallible;
+    // Error type trait for mock pin implementations
     use embedded_hal::digital::ErrorType;
 
     struct MockInputPin {

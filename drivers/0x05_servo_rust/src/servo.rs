@@ -124,6 +124,7 @@ pub fn calc_clk_div(sys_hz: u32, servo_hz: f32, wrap: u32) -> f32 {
 
 #[cfg(test)]
 mod tests {
+    // Import all parent module items
     use super::*;
 
     #[test]

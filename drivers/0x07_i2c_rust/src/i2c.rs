@@ -116,6 +116,7 @@ pub fn format_scan_entry(buf: &mut [u8], addr: u8, found: bool) -> usize {
 
 #[cfg(test)]
 mod tests {
+    // Import all parent module items
     use super::*;
 
     #[test]

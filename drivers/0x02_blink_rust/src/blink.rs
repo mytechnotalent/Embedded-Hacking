@@ -25,6 +25,7 @@
 //! OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //! SOFTWARE.
 
+// Embedded HAL digital output traits for GPIO pin control
 use embedded_hal::digital::{OutputPin, StatefulOutputPin};
 
 /// GPIO output / LED blink driver that owns a single output pin.
@@ -95,8 +96,11 @@ impl<P: OutputPin + StatefulOutputPin> BlinkDriver<P> {
 
 #[cfg(test)]
 mod tests {
+    // Import all parent module items
     use super::*;
+    // Infallible error type for mock pin implementations
     use core::convert::Infallible;
+    // Error type trait for mock pin implementations
     use embedded_hal::digital::ErrorType;
 
     struct MockPin {

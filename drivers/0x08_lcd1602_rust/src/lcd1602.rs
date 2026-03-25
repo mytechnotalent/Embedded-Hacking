@@ -130,6 +130,7 @@ pub fn format_counter(buf: &mut [u8], count: u32) -> usize {
 
 #[cfg(test)]
 mod tests {
+    // Import all parent module items
     use super::*;
 
     #[test]

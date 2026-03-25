@@ -25,12 +25,19 @@
 //! OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //! SOFTWARE.
 
+// Rate extension trait for .Hz() baud rate construction
 use fugit::RateExtU32;
+// Non-blocking I/O helper for UART read/write
 use nb::block;
+// Alias our HAL crate
 use rp235x_hal as hal;
+// Clock trait for accessing system clock frequency
 use hal::Clock;
+// UART configuration and peripheral types
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
+// GPIO pin types and function selectors
 use hal::gpio::{FunctionNull, FunctionUart, Pin, PullDown, PullNone};
+// UART0 peripheral singleton type
 use hal::pac::UART0;
 
 /// Type alias for the configured TX pin (GPIO 0, UART function, no pull).
@@ -158,6 +165,7 @@ impl UartDriver {
 
 #[cfg(test)]
 mod tests {
+    // Import all parent module items
     use super::*;
 
     #[test]

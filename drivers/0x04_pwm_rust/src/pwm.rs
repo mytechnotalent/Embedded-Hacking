@@ -79,6 +79,7 @@ pub fn duty_to_level(percent: u8, wrap: u32) -> u32 {
 
 #[cfg(test)]
 mod tests {
+    // Import all parent module items
     use super::*;
 
     #[test]

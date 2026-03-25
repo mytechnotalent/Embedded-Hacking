@@ -65,6 +65,7 @@ pub fn raw_to_celsius(raw: u16) -> f32 {
 
 #[cfg(test)]
 mod tests {
+    // Import all parent module items
     use super::*;
 
     #[test]
