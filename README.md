@@ -531,20 +531,22 @@ cargo test --lib --target x86_64-pc-windows-msvc
 | [0x06_adc_rust](drivers/0x06_adc_rust) | 12-bit ADC voltage + temperature | `rp235x-hal`, `embedded-hal` |
 | [0x07_i2c_rust](drivers/0x07_i2c_rust) | I2C bus scanner (7-bit addresses) | `rp235x-hal`, `embedded-hal` |
 | [0x08_lcd1602_rust](drivers/0x08_lcd1602_rust) | HD44780 16x2 LCD (PCF8574 I2C) | `rp235x-hal`, `embedded-hal` |
+| [0x09_dht11_rust](drivers/0x09_dht11_rust) | DHT11 temperature & humidity (single-wire) | `rp235x-hal`, `fugit` |
+| [0x0a_ir_rust](drivers/0x0a_ir_rust) | IR remote NEC protocol decoder | `rp235x-hal`, `fugit` |
+| [0x0b_spi_rust](drivers/0x0b_spi_rust) | SPI bus init & bidirectional transfer | `rp235x-hal`, `embedded-hal` |
+| [0x0c_multicore_rust](drivers/0x0c_multicore_rust) | Dual-core launch & FIFO messaging | `rp235x-hal` |
+| [0x0d_timer_rust](drivers/0x0d_timer_rust) | Repeating timer callbacks | `rp235x-hal`, `fugit` |
+| [0x0e_watchdog_rust](drivers/0x0e_watchdog_rust) | Watchdog enable, feed & reboot detection | `rp235x-hal` |
+| [0x0f_flash_rust](drivers/0x0f_flash_rust) | On-board flash erase, write & read | `rp235x-hal` |
 
 <br>
 
 # Assembler Drivers
-Standalone RP2350 drivers written entirely in ARM or RISC-V assembler.
+Standalone RP2350 drivers written entirely in assembler and maintained in this repository.
 
 | Driver | Description | Architecture |
 |--------|-------------|--------------|
-| [RP2350_UART_Driver](https://github.com/mytechnotalent/RP2350_UART_Driver) | Raw UART transmit / receive | ARM |
-| [RP2350_UART_Driver_RISCV](https://github.com/mytechnotalent/RP2350_UART_Driver_RISCV) | Raw UART transmit / receive | RISC-V |
-| [RP2350_Blink_Driver](https://github.com/mytechnotalent/RP2350_Blink_Driver) | GPIO output LED blink | ARM |
-| [RP2350_Blink_Driver_RISCV](https://github.com/mytechnotalent/RP2350_Blink_Driver_RISCV) | GPIO output LED blink | RISC-V |
-| [RP2350_Button_Driver](https://github.com/mytechnotalent/RP2350_Button_Driver) | GPIO input button | ARM |
-| [RP2350_Button_Driver_RISCV](https://github.com/mytechnotalent/RP2350_Button_Driver_RISCV) | GPIO input button | RISC-V |
+| [0x01_uart_asm_arm](drivers/0x01_uart_asm_arm) | Raw UART transmit / receive | ARM (Cortex-M33) |
 
 <br>
 
