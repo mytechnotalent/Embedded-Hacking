@@ -42,10 +42,10 @@ use rp235x_hal as hal;
 #[cfg(rp2040)]
 use rp2040_hal as hal;
 
-// Timer device type for the HAL timer peripheral
+/// Timer device type for the HAL timer peripheral.
 #[cfg(rp2350)]
 pub(crate) type HalTimer = hal::Timer<hal::timer::CopyableTimer0>;
-// Timer type alias for RP2040 (non-generic)
+/// Timer type alias for RP2040 (non-generic).
 #[cfg(rp2040)]
 pub(crate) type HalTimer = hal::Timer;
 

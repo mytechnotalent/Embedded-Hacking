@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "marus25.cortex-debug",
+    "rust-lang.rust-analyzer",
+    "probe-rs.probe-rs-debugger",
+    "raspberry-pi.raspberry-pi-pico"
+  ]
+}

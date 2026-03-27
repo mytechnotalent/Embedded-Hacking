@@ -1,0 +1,1946 @@
+﻿{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "creationInfo": {
+    "created": "2026-03-26T02:52:58Z",
+    "creators": [
+      "Tool: cargo-sbom-v0.10.0"
+    ]
+  },
+  "dataLicense": "CC0-1.0",
+  "documentNamespace": "https://spdx.org/spdxdocs/0x0a_ir_rust-ac2d23c9-d725-48a1-b6c2-5e02deeff7f4",
+  "files": [
+    {
+      "SPDXID": "SPDXRef-File-ir_lib",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5321b871b63221ab8fb0f10c4213a8e1fa4264a3"
+        }
+      ],
+      "fileName": ".\\Cargo.lock",
+      "fileTypes": [
+        "SOURCE",
+        "TEXT"
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-File-ir",
+      "checksums": [
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "5321b871b63221ab8fb0f10c4213a8e1fa4264a3"
+        }
+      ],
+      "fileName": ".\\Cargo.lock",
+      "fileTypes": [
+        "SOURCE",
+        "TEXT"
+      ]
+    }
+  ],
+  "name": "0x0a_ir_rust",
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-bitfield-0.13.2",
+      "description": "This crate provides macros to generate bitfield-like struct.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/bitfield@0.13.2",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "bitfield",
+      "versionInfo": "0.13.2"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-embedded-dma-0.2.0",
+      "description": "Traits to aid in the creation of sound DMA abstractions",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/embedded-dma@0.2.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "embedded-dma",
+      "versionInfo": "0.2.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rp2040-hal-macros-0.1.0",
+      "description": "Macros used by rp2040-hal",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/rp2040-hal-macros@0.1.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "rp2040-hal-macros",
+      "versionInfo": "0.1.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-volatile-register-0.2.2",
+      "description": "Volatile access to memory mapped hardware registers",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/volatile-register@0.2.2",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "volatile-register",
+      "versionInfo": "0.2.2"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rp2040-hal-0.11.0",
+      "description": "A Rust Embedded-HAL impl for the rp2040 microcontroller",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/rp2040-hal@0.11.0",
+          "referenceType": "purl"
+        }
+      ],
+      "homepage": "https://github.com/rp-rs/rp-hal",
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "rp2040-hal",
+      "versionInfo": "0.11.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-itertools-0.13.0",
+      "description": "Extra iterator adaptors, iterator methods, free functions, and macros.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/itertools@0.13.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "itertools",
+      "versionInfo": "0.13.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-frunk--core-0.4.4",
+      "description": "Frunk core provides developers with HList, Coproduct, LabelledGeneric and Generic",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/frunk_core@0.4.4",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "name": "frunk_core",
+      "versionInfo": "0.4.4"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-riscv-rt-macros-0.2.2",
+      "description": "Attributes re-exported in `riscv-rt`",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/riscv-rt-macros@0.2.2",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "riscv-rt-macros",
+      "versionInfo": "0.2.2"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rp-binary-info-0.1.2",
+      "description": "Code and types for creating Picotool compatible Binary Info metadata",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/rp-binary-info@0.1.2",
+          "referenceType": "purl"
+        }
+      ],
+      "homepage": "https://github.com/rp-rs/rp-hal",
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "rp-binary-info",
+      "versionInfo": "0.1.2"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-stable--deref--trait-1.2.1",
+      "description": "An unsafe marker trait for types like Box and Rc that dereference to a stable address even when moved, and hence can be used with libraries such as owning_ref and rental.\n",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/stable_deref_trait@1.2.1",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "stable_deref_trait",
+      "versionInfo": "1.2.1"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-bare-metal-0.2.5",
+      "description": "Abstractions common to bare metal systems",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/bare-metal@0.2.5",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "bare-metal",
+      "versionInfo": "0.2.5"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-cortex-m-rt-0.7.5",
+      "description": "Minimal runtime / startup for Cortex-M microcontrollers",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/cortex-m-rt@0.7.5",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "cortex-m-rt",
+      "versionInfo": "0.7.5"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-defmt-1.0.1",
+      "description": "A highly efficient logging framework that targets resource-constrained devices, like microcontrollers",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/defmt@1.0.1",
+          "referenceType": "purl"
+        }
+      ],
+      "homepage": "https://knurling.ferrous-systems.com/",
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "defmt",
+      "versionInfo": "1.0.1"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-defmt-parser-1.0.0",
+      "description": "Parsing library for defmt format strings",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/defmt-parser@1.0.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "defmt-parser",
+      "versionInfo": "1.0.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-thiserror-impl-2.0.18",
+      "description": "Implementation detail of the `thiserror` crate",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/thiserror-impl@2.0.18",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "thiserror-impl",
+      "versionInfo": "2.0.18"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-frunk-0.4.4",
+      "description": "Frunk provides developers with a number of functional programming tools like HList, Coproduct, Generic, LabelledGeneric, Validated, Monoid, Semigroup and friends.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/frunk@0.4.4",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "name": "frunk",
+      "versionInfo": "0.4.4"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nb-1.1.0",
+      "description": "Minimal non-blocking I/O layer",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/nb@1.1.0",
+          "referenceType": "purl"
+        }
+      ],
+      "homepage": "https://github.com/rust-embedded/nb",
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "nb",
+      "versionInfo": "1.1.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-vcell-0.1.3",
+      "description": "`Cell` with volatile read / write operations",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/vcell@0.1.3",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "vcell",
+      "versionInfo": "0.1.3"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-unicode-ident-1.0.24",
+      "description": "Determine whether characters have the XID_Start or XID_Continue properties according to Unicode Standard Annex #31",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/unicode-ident@1.0.24",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "(MIT OR Apache-2.0) AND Unicode-3.0",
+      "licenseDeclared": "(MIT OR Apache-2.0) AND Unicode-3.0",
+      "name": "unicode-ident",
+      "versionInfo": "1.0.24"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-embedded-io-0.6.1",
+      "description": "Embedded IO traits",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/embedded-io@0.6.1",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "embedded-io",
+      "versionInfo": "0.6.1"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-either-1.15.0",
+      "description": "The enum `Either` with variants `Left` and `Right` is a general purpose sum type with two cases.\n",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/either@1.15.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "either",
+      "versionInfo": "1.15.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-thiserror-2.0.18",
+      "description": "derive(Error)",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/thiserror@2.0.18",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "thiserror",
+      "versionInfo": "2.0.18"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-syn-1.0.109",
+      "description": "Parser for Rust source code",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/syn@1.0.109",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "syn",
+      "versionInfo": "1.0.109"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-riscv-rt-0.12.2",
+      "description": "Minimal runtime / startup for RISC-V CPU's",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/riscv-rt@0.12.2",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "ISC",
+      "licenseDeclared": "ISC",
+      "name": "riscv-rt",
+      "versionInfo": "0.12.2"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-embedded-hal-async-1.0.0",
+      "description": "An asynchronous Hardware Abstraction Layer (HAL) for embedded systems",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/embedded-hal-async@1.0.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "embedded-hal-async",
+      "versionInfo": "1.0.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-frunk--derives-0.4.4",
+      "description": "frunk_derives contains the custom derivations for certain traits in Frunk.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/frunk_derives@0.4.4",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "name": "frunk_derives",
+      "versionInfo": "0.4.4"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-panic-halt-1.0.0",
+      "description": "Set panicking behavior to halt",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/panic-halt@1.0.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "panic-halt",
+      "versionInfo": "1.0.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-cortex-m-0.7.7",
+      "description": "Low level access to Cortex-M processors",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/cortex-m@0.7.7",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "cortex-m",
+      "versionInfo": "0.7.7"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-critical-section-1.2.0",
+      "description": "Cross-platform critical section",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/critical-section@1.2.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "critical-section",
+      "versionInfo": "1.2.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-embedded-hal-0.2.7",
+      "description": " A Hardware Abstraction Layer (HAL) for embedded systems ",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/embedded-hal@0.2.7",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "embedded-hal",
+      "versionInfo": "0.2.7"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-proc-macro-error2-2.0.1",
+      "description": "Almost drop-in replacement to panics in proc-macros",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/proc-macro-error2@2.0.1",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "proc-macro-error2",
+      "versionInfo": "2.0.1"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rp2040-boot2-0.3.0",
+      "description": "Raspberry Pi RP2040 SoC second stage bootloader.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/rp2040-boot2@0.3.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "name": "rp2040-boot2",
+      "versionInfo": "0.3.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-defmt-macros-1.0.1",
+      "description": "defmt macros",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/defmt-macros@1.0.1",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "defmt-macros",
+      "versionInfo": "1.0.1"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rp-hal-common-0.1.0",
+      "description": "Shared HAL code for the Raspberry Pi microcontrollers",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/rp-hal-common@0.1.0",
+          "referenceType": "purl"
+        }
+      ],
+      "homepage": "https://github.com/rp-rs/rp-hal",
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "rp-hal-common",
+      "versionInfo": "0.1.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-byteorder-1.5.0",
+      "description": "Library for reading/writing numbers in big-endian and little-endian.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/byteorder@1.5.0",
+          "referenceType": "purl"
+        }
+      ],
+      "homepage": "https://github.com/BurntSushi/byteorder",
+      "licenseConcluded": "Unlicense OR MIT",
+      "licenseDeclared": "Unlicense OR MIT",
+      "name": "byteorder",
+      "versionInfo": "1.5.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-frunk--proc--macro--helpers-0.1.4",
+      "description": "Common internal functions for frunk's proc macros",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/frunk_proc_macro_helpers@0.1.4",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "name": "frunk_proc_macro_helpers",
+      "versionInfo": "0.1.4"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-bitflags-1.3.2",
+      "description": "A macro to generate structures which behave like bitflags.\n",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/bitflags@1.3.2",
+          "referenceType": "purl"
+        }
+      ],
+      "homepage": "https://github.com/bitflags/bitflags",
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "bitflags",
+      "versionInfo": "1.3.2"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-proc-macro-error-attr2-2.0.0",
+      "description": "Attribute macro for the proc-macro-error2 crate",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/proc-macro-error-attr2@2.0.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "proc-macro-error-attr2",
+      "versionInfo": "2.0.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-hash32-0.3.1",
+      "description": "32-bit hashing algorithms",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/hash32@0.3.1",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "hash32",
+      "versionInfo": "0.3.1"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-sha2-const-stable-0.1.0",
+      "description": "const fn implementation of the SHA-2 family of hash functions. Based on sha2-const, but updated to use only stable rust",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/sha2-const-stable@0.1.0",
+          "referenceType": "purl"
+        }
+      ],
+      "homepage": "https://github.com/saleemrashid/sha2-const",
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "sha2-const-stable",
+      "versionInfo": "0.1.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-void-1.0.2",
+      "description": "The uninhabited void type for use in statically impossible cases.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/void@1.0.2",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "name": "void",
+      "versionInfo": "1.0.2"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-proc-macro2-1.0.106",
+      "description": "A substitute implementation of the compiler's `proc_macro` API to decouple token-based libraries from the procedural macro use case.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/proc-macro2@1.0.106",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "proc-macro2",
+      "versionInfo": "1.0.106"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-paste-1.0.15",
+      "description": "Macros for all your token pasting needs",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/paste@1.0.15",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "paste",
+      "versionInfo": "1.0.15"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-portable-atomic-1.13.1",
+      "description": "Portable atomic types including support for 128-bit atomics, atomic float, etc.\n",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/portable-atomic@1.13.1",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "Apache-2.0 OR MIT",
+      "licenseDeclared": "Apache-2.0 OR MIT",
+      "name": "portable-atomic",
+      "versionInfo": "1.13.1"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-bitfield-0.14.0",
+      "description": "This crate provides macros to generate bitfield-like struct.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/bitfield@0.14.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "bitfield",
+      "versionInfo": "0.14.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-riscv-0.11.1",
+      "description": "Low level access to RISC-V processors",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/riscv@0.11.1",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "ISC",
+      "licenseDeclared": "ISC",
+      "name": "riscv",
+      "versionInfo": "0.11.1"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rp235x-hal-macros-0.1.0",
+      "description": "Macros used by rp235x-hal",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/rp235x-hal-macros@0.1.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "rp235x-hal-macros",
+      "versionInfo": "0.1.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-embedded-hal-nb-1.0.0",
+      "description": "Non-blocking Hardware Abstraction Layer (HAL) for embedded systems using the `nb` crate.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/embedded-hal-nb@1.0.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "embedded-hal-nb",
+      "versionInfo": "1.0.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-embedded-hal-1.0.0",
+      "description": " A Hardware Abstraction Layer (HAL) for embedded systems ",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/embedded-hal@1.0.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "embedded-hal",
+      "versionInfo": "1.0.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rp235x-hal-0.3.0",
+      "description": "A Rust Embeded-HAL impl for the RP2350 microcontroller",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/rp235x-hal@0.3.0",
+          "referenceType": "purl"
+        }
+      ],
+      "homepage": "https://github.com/rp-rs/rp-hal",
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "rp235x-hal",
+      "versionInfo": "0.3.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rp235x-pac-0.1.0",
+      "description": "A Peripheral Access Crate for the Raspberry Pi RP235x microcontrollers",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/rp235x-pac@0.1.0",
+          "referenceType": "purl"
+        }
+      ],
+      "homepage": "https://github.com/rp-rs/rp235x-pac",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "name": "rp235x-pac",
+      "versionInfo": "0.1.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-pio-0.2.1",
+      "description": "Support for the Raspberry Silicon RP2040's PIO State Machines.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/pio@0.2.1",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "name": "pio",
+      "versionInfo": "0.2.1"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rand--core-0.6.4",
+      "description": "Core random number generator traits and tools for implementation.\n",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/rand_core@0.6.4",
+          "referenceType": "purl"
+        }
+      ],
+      "homepage": "https://rust-random.github.io/book",
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "rand_core",
+      "versionInfo": "0.6.4"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-ir-0.1.0",
+      "downloadLocation": "NONE",
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "ir",
+      "versionInfo": "0.1.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-rp2040-pac-0.6.0",
+      "description": "A Peripheral Access Crate for the Raspberry Pi RP2040 SoC",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/rp2040-pac@0.6.0",
+          "referenceType": "purl"
+        }
+      ],
+      "homepage": "https://github.com/rp-rs/rp2040-pac",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "name": "rp2040-pac",
+      "versionInfo": "0.6.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-quote-1.0.45",
+      "description": "Quasi-quoting macro quote!(...)",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/quote@1.0.45",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "quote",
+      "versionInfo": "1.0.45"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-arrayvec-0.7.6",
+      "description": "A vector with fixed capacity, backed by an array (it can be stored on the stack too). Implements fixed capacity ArrayVec and ArrayString.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/arrayvec@0.7.6",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "arrayvec",
+      "versionInfo": "0.7.6"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-itertools-0.10.5",
+      "description": "Extra iterator adaptors, iterator methods, free functions, and macros.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/itertools@0.10.5",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "itertools",
+      "versionInfo": "0.10.5"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-defmt-rtt-1.1.0",
+      "description": "Transmit defmt log messages over the RTT (Real-Time Transfer) protocol",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/defmt-rtt@1.1.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "defmt-rtt",
+      "versionInfo": "1.1.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-cortex-m-rt-macros-0.7.5",
+      "description": "Attributes re-exported in `cortex-m-rt`",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/cortex-m-rt-macros@0.7.5",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "cortex-m-rt-macros",
+      "versionInfo": "0.7.5"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-heapless-0.8.0",
+      "description": "`static` friendly data structures that don't require dynamic memory allocation",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/heapless@0.8.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "heapless",
+      "versionInfo": "0.8.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-syn-2.0.117",
+      "description": "Parser for Rust source code",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/syn@2.0.117",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "syn",
+      "versionInfo": "2.0.117"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-panic-probe-1.0.0",
+      "description": "Panic handler that exits `probe-run` with an error code",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/panic-probe@1.0.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "panic-probe",
+      "versionInfo": "1.0.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-nb-0.1.3",
+      "description": "Minimal non-blocking I/O layer",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/nb@0.1.3",
+          "referenceType": "purl"
+        }
+      ],
+      "homepage": "https://github.com/rust-embedded/nb",
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "nb",
+      "versionInfo": "0.1.3"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-usb-device-0.3.2",
+      "description": "USB stack for embedded devices.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/usb-device@0.3.2",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "name": "usb-device",
+      "versionInfo": "0.3.2"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-fugit-0.3.9",
+      "description": "Time library for embedded targets with ease-of-use and performance first.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/fugit@0.3.9",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "fugit",
+      "versionInfo": "0.3.9"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-gcd-2.3.0",
+      "description": "Calculate the greatest common divisor",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/gcd@2.3.0",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "MIT OR Apache-2.0",
+      "licenseDeclared": "MIT OR Apache-2.0",
+      "name": "gcd",
+      "versionInfo": "2.3.0"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-num--enum-0.5.11",
+      "description": "Procedural macros to make inter-operation between primitives and enums easier.",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/num_enum@0.5.11",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "BSD-3-Clause OR MIT OR Apache-2.0",
+      "licenseDeclared": "BSD-3-Clause OR MIT OR Apache-2.0",
+      "name": "num_enum",
+      "versionInfo": "0.5.11"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-num--enum--derive-0.5.11",
+      "description": "Internal implementation details for ::num_enum (Procedural macros to make inter-operation between primitives and enums easier)",
+      "downloadLocation": "registry+https://github.com/rust-lang/crates.io-index",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:cargo/num_enum_derive@0.5.11",
+          "referenceType": "purl"
+        }
+      ],
+      "licenseConcluded": "BSD-3-Clause OR MIT OR Apache-2.0",
+      "licenseDeclared": "BSD-3-Clause OR MIT OR Apache-2.0",
+      "name": "num_enum_derive",
+      "versionInfo": "0.5.11"
+    }
+  ],
+  "relationships": [
+    {
+      "relatedSpdxElement": "SPDXRef-Package-gcd-2.3.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-cortex-m-rt-0.7.5",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-riscv-rt-macros-0.2.2",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-riscv-rt-0.12.2"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-rp2040-pac-0.6.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-quote-1.0.45",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-num--enum--derive-0.5.11"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-syn-1.0.109",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-macros-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro2-1.0.106",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-quote-1.0.45"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-rp-hal-common-0.1.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-unicode-ident-1.0.24",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-syn-2.0.117"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-defmt-macros-1.0.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-defmt-1.0.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-hal-0.2.7",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-cortex-m-0.7.7"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro2-1.0.106",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-syn-1.0.109"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-rp-hal-common-0.1.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-vcell-0.1.3",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-pac-0.6.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-defmt-1.0.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-ir-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-cortex-m-rt-0.7.5",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-ir-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-num--enum-0.5.11",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-pio-0.2.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-bitfield-0.14.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-quote-1.0.45",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-frunk--proc--macro--helpers-0.1.4"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-panic-probe-1.0.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-ir-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-cortex-m-0.7.7",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro2-1.0.106",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-frunk--proc--macro--helpers-0.1.4"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-paste-1.0.15",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-rp2040-hal-0.11.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-ir-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-hal-nb-1.0.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-cortex-m-0.7.7",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-panic-probe-1.0.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-riscv-rt-0.12.2",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-cortex-m-0.7.7",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-pac-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-void-1.0.2",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-embedded-hal-0.2.7"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-bitfield-0.13.2",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-cortex-m-0.7.7"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-thiserror-2.0.18",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-defmt-parser-1.0.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-cortex-m-rt-0.7.5",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-pac-0.6.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-defmt-parser-1.0.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-defmt-macros-1.0.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-hal-nb-1.0.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-rand--core-0.6.4",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-itertools-0.13.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-riscv-0.11.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-riscv-rt-0.12.2"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-ir-0.1.0",
+      "relationshipType": "GENERATED_FROM",
+      "spdxElementId": "SPDXRef-File-ir"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro-error2-2.0.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-defmt-macros-1.0.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-rp2040-boot2-0.3.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-ir-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-rp-binary-info-0.1.2",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-bitflags-1.3.2",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-defmt-1.0.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-dma-0.2.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-heapless-0.8.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-usb-device-0.3.2"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-pio-0.2.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-hal-0.2.7",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-vcell-0.1.3",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-frunk--core-0.4.4",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-frunk--proc--macro--helpers-0.1.4"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-quote-1.0.45",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-syn-2.0.117"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-quote-1.0.45",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-syn-1.0.109"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-hal-1.0.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-either-1.15.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-itertools-0.10.5"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-cortex-m-0.7.7",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-pac-0.6.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-fugit-0.3.9",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp-hal-common-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-hash32-0.3.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-heapless-0.8.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-usb-device-0.3.2",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-frunk-0.4.4",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-hal-1.0.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-riscv-0.11.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-quote-1.0.45",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-riscv-rt-macros-0.2.2"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-File-ir",
+      "relationshipType": "DESCRIBES",
+      "spdxElementId": "SPDXRef-DOCUMENT"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-paste-1.0.15",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-riscv-0.11.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-quote-1.0.45",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-frunk--derives-0.4.4"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-defmt-rtt-1.1.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-ir-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-unicode-ident-1.0.24",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-proc-macro2-1.0.106"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-cortex-m-0.7.7",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-fugit-0.3.9",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-ir-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro2-1.0.106",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-macros-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-paste-1.0.15",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-pio-0.2.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-bare-metal-0.2.5",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-cortex-m-0.7.7"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-quote-1.0.45",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-macros-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro-error-attr2-2.0.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-proc-macro-error2-2.0.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-quote-1.0.45",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-thiserror-impl-2.0.18"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-critical-section-1.2.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-pac-0.6.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-nb-1.1.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-cortex-m-rt-macros-0.7.5",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-cortex-m-rt-0.7.5"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-usb-device-0.3.2",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-frunk--core-0.4.4",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-frunk-0.4.4"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-quote-1.0.45",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-proc-macro-error-attr2-2.0.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-stable--deref--trait-1.2.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-embedded-dma-0.2.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-quote-1.0.45",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-defmt-macros-1.0.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-io-0.6.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro2-1.0.106",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-proc-macro-error-attr2-2.0.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-syn-2.0.117",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-cortex-m-rt-macros-0.7.5"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-nb-0.1.3",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-embedded-hal-0.2.7"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-vcell-0.1.3",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-pac-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-rp2040-hal-macros-0.1.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-io-0.6.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-critical-section-1.2.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-portable-atomic-1.13.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-usb-device-0.3.2"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-critical-section-1.2.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-riscv-0.11.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-frunk--derives-0.4.4",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-frunk-0.4.4"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-thiserror-impl-2.0.18",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-thiserror-2.0.18"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-defmt-1.0.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-defmt-rtt-1.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-nb-1.1.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro2-1.0.106",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-macros-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-defmt-1.0.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-panic-probe-1.0.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-hal-async-1.0.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-arrayvec-0.7.6",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-pio-0.2.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-rand--core-0.6.4",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-unicode-ident-1.0.24",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-syn-1.0.109"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-syn-2.0.117",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-thiserror-impl-2.0.18"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-rp235x-pac-0.1.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-critical-section-1.2.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-defmt-rtt-1.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro2-1.0.106",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-riscv-rt-macros-0.2.2"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-rp235x-hal-0.3.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-ir-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-pio-0.2.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-syn-2.0.117",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-frunk--derives-0.4.4"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-syn-2.0.117",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-frunk--proc--macro--helpers-0.1.4"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-num--enum--derive-0.5.11",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-num--enum-0.5.11"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro2-1.0.106",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-thiserror-impl-2.0.18"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-void-1.0.2",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-fugit-0.3.9",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-panic-halt-1.0.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-ir-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-syn-2.0.117",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-proc-macro-error2-2.0.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-hal-1.0.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-hal-0.2.7",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-quote-1.0.45",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-proc-macro-error2-2.0.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-dma-0.2.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-bitfield-0.14.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-sha2-const-stable-0.1.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-rp235x-hal-macros-0.1.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-gcd-2.3.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-fugit-0.3.9"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-nb-1.1.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-nb-0.1.3"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-cortex-m-rt-0.7.5",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-macros-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-rp-binary-info-0.1.2",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-hal-async-1.0.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-syn-2.0.117",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-macros-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-frunk-0.4.4",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-critical-section-1.2.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-pac-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-syn-1.0.109",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-num--enum--derive-0.5.11"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro2-1.0.106",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-proc-macro-error2-2.0.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-ir-0.1.0",
+      "relationshipType": "GENERATED_FROM",
+      "spdxElementId": "SPDXRef-File-ir_lib"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-syn-2.0.117",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-defmt-macros-1.0.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-vcell-0.1.3",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-syn-2.0.117",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-riscv-rt-macros-0.2.2"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-hal-1.0.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-embedded-hal-async-1.0.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-fugit-0.3.9",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-itertools-0.10.5",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-frunk--proc--macro--helpers-0.1.4",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-frunk--derives-0.4.4"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-cortex-m-rt-0.7.5",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-pac-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro2-1.0.106",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-syn-2.0.117"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-quote-1.0.45",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-cortex-m-rt-macros-0.7.5"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-byteorder-1.5.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-hash32-0.3.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-cortex-m-0.7.7",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-ir-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-nb-1.1.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-embedded-hal-nb-1.0.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-quote-1.0.45",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-macros-0.1.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-either-1.15.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-itertools-0.13.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-vcell-0.1.3",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-volatile-register-0.2.2"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro2-1.0.106",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-defmt-macros-1.0.1"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro2-1.0.106",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-num--enum--derive-0.5.11"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-void-1.0.2",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp235x-hal-0.3.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-proc-macro2-1.0.106",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-cortex-m-rt-macros-0.7.5"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-File-ir_lib",
+      "relationshipType": "DESCRIBES",
+      "spdxElementId": "SPDXRef-DOCUMENT"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-critical-section-1.2.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-rp2040-hal-0.11.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-stable--deref--trait-1.2.1",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-heapless-0.8.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-embedded-hal-1.0.0",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-embedded-hal-nb-1.0.0"
+    },
+    {
+      "relatedSpdxElement": "SPDXRef-Package-volatile-register-0.2.2",
+      "relationshipType": "DEPENDS_ON",
+      "spdxElementId": "SPDXRef-Package-cortex-m-0.7.7"
+    }
+  ],
+  "spdxVersion": "SPDX-2.3"
+}

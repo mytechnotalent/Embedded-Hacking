@@ -1,0 +1,3 @@
+cargo:rustc-link-search=C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\drivers\0x0d_timer_rust\target\thumbv8m.main-none-eabihf\release\build\rp235x-pac-76b934600a7c0368\out
+cargo:rerun-if-changed=device.x
+cargo:rerun-if-changed=build.rs

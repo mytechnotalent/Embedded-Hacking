@@ -1,0 +1,32 @@
+[build]
+target = "thumbv8m.main-none-eabihf"
+
+[target.thumbv6m-none-eabi]
+linker = "flip-link"
+rustflags = [
+	"-C", "link-arg=--nmagic",
+	"-C", "link-arg=-Tlink.x",
+	"-C", "link-arg=-Tdefmt.x",
+	"-C", "no-vectorize-loops",
+]
+runner = "${PICOTOOL_PATH} load -u -v -x -t elf"
+
+[target.thumbv8m.main-none-eabihf]
+rustflags = [
+	"-C", "link-arg=--nmagic",
+	"-C", "link-arg=-Tlink.x",
+	"-C", "link-arg=-Tdefmt.x",
+	"-C", "target-cpu=cortex-m33",
+]
+runner = "${PICOTOOL_PATH} load -u -v -x -t elf"
+
+[target.riscv32imac-unknown-none-elf]
+rustflags = [
+	"-C", "link-arg=--nmagic",
+	"-C", "link-arg=-Trp2350_riscv.x",
+	"-C", "link-arg=-Tdefmt.x",
+]
+runner = "${PICOTOOL_PATH} load -u -v -x -t elf"
+
+[env]
+DEFMT_LOG = "debug"

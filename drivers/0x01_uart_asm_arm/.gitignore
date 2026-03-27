@@ -1,0 +1,11 @@
+# Object files
+*.o
+
+# Executable and Linkable Format files
+*.elf
+
+# Binary files
+*.bin
+
+# UF2 files
+*.uf2
