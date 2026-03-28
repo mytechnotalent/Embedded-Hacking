@@ -488,7 +488,7 @@ Forty-two stories beneath frozen tundra, a shadow intelligence alliance called D
 
 <br>
 
-# Drivers
+# C Drivers
 Self-contained C driver libraries for the Raspberry Pi Pico 2 (RP2350). Each driver folder contains a thin demo (`0xNN_name.c`), a reusable library implementation (`name.c`), and a library header with full Doxygen docstrings (`name.h`).
 
 | Driver | Description | Key Hardware |
@@ -538,6 +538,16 @@ cargo test --lib --target x86_64-pc-windows-msvc
 | [0x0d_timer_rust](drivers/0x0d_timer_rust) | Repeating timer callbacks | `rp235x-hal`, `fugit` |
 | [0x0e_watchdog_rust](drivers/0x0e_watchdog_rust) | Watchdog enable, feed & reboot detection | `rp235x-hal` |
 | [0x0f_flash_rust](drivers/0x0f_flash_rust) | On-board flash erase, write & read | `rp235x-hal` |
+
+<br>
+
+# Wasm Drivers
+Bare-metal WebAssembly Component Model projects running Wasmtime's Pulley interpreter directly on the RP2350 with no OS and no standard library. Hardware capabilities are exposed through typed WIT interfaces.
+
+| Driver | Description | Key Crates |
+|--------|-------------|------------|
+| [embedded-wasm-uart](https://github.com/mytechnotalent/embedded-wasm-uart) | UART echo via WIT `uart` imports | `wasmtime`, `rp235x-hal`, `wit-bindgen` |
+| [embedded-wasm-blinky](https://github.com/mytechnotalent/embedded-wasm-blinky) | GPIO LED blink via WIT `gpio` + `timing` imports | `wasmtime`, `rp235x-hal`, `wit-bindgen` |
 
 <br>
 
