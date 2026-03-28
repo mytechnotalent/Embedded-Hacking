@@ -553,8 +553,8 @@ cargo test --target aarch64-apple-darwin
 
 | Driver | Description | Key Crates |
 |--------|-------------|------------|
-| [embedded-wasm-uart](https://github.com/mytechnotalent/embedded-wasm-uart) | UART echo via WIT `uart` imports | `wasmtime`, `rp235x-hal`, `wit-bindgen` |
-| [embedded-wasm-blinky](https://github.com/mytechnotalent/embedded-wasm-blinky) | GPIO LED blink via WIT `gpio` + `timing` imports | `wasmtime`, `rp235x-hal`, `wit-bindgen` |
+| [embedded-wasm-uart-rp2350](https://github.com/mytechnotalent/embedded-wasm-uart-rp2350) | UART echo via WIT `uart` imports | `wasmtime`, `rp235x-hal`, `wit-bindgen` |
+| [embedded-wasm-blinky-rp2350](https://github.com/mytechnotalent/embedded-wasm-blinky-rp2350) | GPIO LED blink via WIT `gpio` + `timing` imports | `wasmtime`, `rp235x-hal`, `wit-bindgen` |
 
 <br>
 
