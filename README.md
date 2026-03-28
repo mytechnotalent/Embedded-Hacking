@@ -544,6 +544,13 @@ cargo test --lib --target x86_64-pc-windows-msvc
 # Wasm Drivers
 Bare-metal WebAssembly Component Model projects running Wasmtime's Pulley interpreter directly on the RP2350 with no OS and no standard library. Hardware capabilities are exposed through typed WIT interfaces.
 
+### Testing
+
+```bash
+# Run integration tests on the host
+cargo test --target aarch64-apple-darwin
+```
+
 | Driver | Description | Key Crates |
 |--------|-------------|------------|
 | [embedded-wasm-uart](https://github.com/mytechnotalent/embedded-wasm-uart) | UART echo via WIT `uart` imports | `wasmtime`, `rp235x-hal`, `wit-bindgen` |
