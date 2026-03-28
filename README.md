@@ -558,14 +558,5 @@ cargo test --target aarch64-apple-darwin
 
 <br>
 
-# Assembler Drivers
-Standalone RP2350 drivers written entirely in Assembler.
-
-| Driver | Description | Architecture |
-|--------|-------------|--------------|
-| [0x01_uart_asm_arm](drivers/0x01_uart_asm_arm) | Raw UART transmit / receive | ARM (Cortex-M33) |
-
-<br>
-
 # License
 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
