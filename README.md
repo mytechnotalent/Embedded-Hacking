@@ -559,7 +559,7 @@ cargo test --target aarch64-apple-darwin
 <br>
 
 # Assembler Drivers
-Standalone RP2350 drivers written entirely in assembler and maintained in this repository.
+Standalone RP2350 drivers written entirely in Assembler.
 
 | Driver | Description | Architecture |
 |--------|-------------|--------------|
