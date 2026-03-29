@@ -4,8 +4,8 @@
 
 <br>
 
-# Today's Tutorial [March 28, 2026]
-## Lesson 142: x64 Course (Part 22 - Boot Sector Basics [Part 5])
+# Today's Tutorial [March 29, 2026]
+## Lesson 143: x64 Course (Part 23 - Boot Sector Basics [Part 6])
 This tutorial will discuss more boot sector basics.
 
 -> Click [HERE](https://0xinfection.github.io/reversing) to read the FREE ebook.
