@@ -479,12 +479,16 @@ Unknown Firmware Debugging and Hacking
 ## Week 13
 Final Review – Embedded Debugging and Hacking Techniques w/ Advanced Firmware Analysis Q&A
 
-## Week 14
+## Final
 ### Final Project Option 1: The InfuSafe Pro Incident
 In the aftermath of a catastrophic medical device failure, you are thrust into the role of an FDA forensic investigator facing an impossible crisis: 23 patients dead, 100 million recalled insulin pumps sitting in warehouses worldwide, and 2.3 million lives hanging in the balance all while the only evidence remaining is raw binary firmware after a rogue engineer destroyed every line of source code before fleeing to Montenegro. Armed only with GDB, Ghidra, and the reverse engineering skills honed over the first seven weeks of this course, you must excavate the truth from machine code, identify the lethal bugs spawned by an AI code generator called "OopsieGPT," and determine whether these devices can be salvaged to save millions in underserved communities or if $4.7 billion in humanitarian medical technology must be incinerated. This is not a simulation; this is triage at the intersection of embedded systems security and human survival.
 
+#### Final Project Option 1 Requirements & Grading Criteria [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/FINAL/FINAL-01.md)
+
 ### Final Project Option 2: Operation Dark Eclipse
 Forty-two stories beneath frozen tundra, a shadow intelligence alliance called Dark Eyes operates centrifuges enriching weapons-grade material for a first strike against Washington, D.C. and Agent NIGHTINGALE gave her life to extract the single firmware file that now sits before you. Conventional warfare cannot reach this fortress buried beneath rock and concrete, but you can: as the architect of a precision cyber weapon in the tradition of Stuxnet, you must reverse engineer the RP2350-based centrifuge controller, craft binary patches that double the spin speed while falsifying every sensor readout to show nominal operation, and execute the sabotage that will cascade-destroy their enrichment program and set their nuclear ambitions back a decade. Every skill from the entire semester ARM assembly, Ghidra analysis, IEEE-754 floating-point manipulation, branch modification, log desynchronization converges in this final mission. Agent NIGHTINGALE's seven-year-old daughter still watches the driveway, waiting for a mother who will never return. Honor that sacrifice. Complete the mission. Do not fail.
+
+#### Final Project Option 2 Requirements & Grading Criteria [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/FINAL/FINAL-02.md)
 
 <br>
 
