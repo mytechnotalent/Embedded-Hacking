@@ -545,24 +545,5 @@ cargo test --lib --target x86_64-pc-windows-msvc
 
 <br>
 
-# Wasm Drivers
-Bare-metal WebAssembly Component Model projects running Wasmtime's Pulley interpreter directly on the RP2350 with no OS and no standard library. Hardware capabilities are exposed through typed WIT interfaces.
-
-### Testing
-
-```bash
-# Run integration tests on the host
-cargo test --target aarch64-apple-darwin
-```
-
-| Driver | Description | Key Crates |
-|--------|-------------|------------|
-| [embedded-wasm-uart-rp2350](https://github.com/mytechnotalent/embedded-wasm-uart-rp2350) | UART echo via WIT `uart` imports | `wasmtime`, `rp235x-hal`, `wit-bindgen` |
-| [embedded-wasm-blinky-rp2350](https://github.com/mytechnotalent/embedded-wasm-blinky-rp2350) | GPIO LED blink via WIT `gpio` + `timing` imports | `wasmtime`, `rp235x-hal`, `wit-bindgen` |
-| [embedded-wasm-button-rp2350](https://github.com/mytechnotalent/embedded-wasm-button-rp2350) | Button-controlled LED via WIT `gpio` + `button` + `timing` imports | `wasmtime`, `rp235x-hal`, `wit-bindgen` |
-| [embedded-wasm-servo-rp2350](https://github.com/mytechnotalent/embedded-wasm-servo-rp2350) | SG90 servo sweep via WIT `servo` + `timing` imports | `wasmtime`, `rp235x-hal`, `wit-bindgen` |
-
-<br>
-
 # License
 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
