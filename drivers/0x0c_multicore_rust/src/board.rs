@@ -165,3 +165,21 @@ pub(crate) fn send_and_print(
     *counter = counter.wrapping_add(1);
     delay.delay_ms(POLL_MS);
 }
+
+/// Initialise all peripherals and run the multicore FIFO demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let (pins, mut fifo) = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
+    let mut delay = init_delay(&clocks);
+    spawn_core1(&mut pac.PSM, &mut pac.PPB, &mut fifo);
+    let mut counter = 0u32;
+    loop { send_and_print(&mut fifo, &uart, &mut counter, &mut delay); }
+}
+
+// End of file

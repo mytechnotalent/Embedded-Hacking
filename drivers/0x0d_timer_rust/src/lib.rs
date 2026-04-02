@@ -6,4 +6,4 @@
 #![no_std]
 
 // Timer driver module
-pub mod timer_driver;
+pub mod timer;

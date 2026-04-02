@@ -32,7 +32,7 @@ use fugit::RateExtU32;
 // Clock trait for accessing system clock frequency
 use hal::Clock;
 // GPIO pin types and function selectors
-use hal::gpio::{FunctionNull, FunctionUart, Pin, PullDown, PullNone};
+use hal::gpio::{FunctionI2C, FunctionNull, FunctionUart, Pin, PullDown, PullNone, PullUp};
 // UART configuration and peripheral types
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
 
@@ -188,6 +188,79 @@ pub(crate) fn init_delay(clocks: &hal::clocks::ClocksManager) -> cortex_m::delay
 pub(crate) fn probe_addr(i2c: &mut impl I2c, addr: u8) -> bool {
     let mut dummy = [0u8; 1];
     i2c.read(addr, &mut dummy).is_ok()
+}
+
+/// Initialise all peripherals and run the I2C bus scanner demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
+    let mut delay = init_delay(&clocks);
+    let mut i2c = init_i2c(pac.I2C1, pins.gpio2, pins.gpio3, &mut pac.RESETS, &clocks);
+    uart.write_full_blocking(b"I2C driver initialized: I2C1 @ 100000 Hz  SDA=GPIO2  SCL=GPIO3\r\n");
+    scan_loop(&uart, &mut i2c, &mut delay)
+}
+
+/// Initialise I2C1 on SDA=GPIO2 / SCL=GPIO3.
+///
+/// # Arguments
+///
+/// * `i2c1` - PAC I2C1 peripheral singleton.
+/// * `sda` - Default GPIO 2 pin (will be reconfigured for I2C).
+/// * `scl` - Default GPIO 3 pin (will be reconfigured for I2C).
+/// * `resets` - Mutable reference to the RESETS peripheral.
+/// * `clocks` - Reference to the initialised clock configuration.
+///
+/// # Returns
+///
+/// Configured I2C1 bus controller.
+fn init_i2c(
+    i2c1: hal::pac::I2C1,
+    sda: Pin<hal::gpio::bank0::Gpio2, FunctionNull, PullDown>,
+    scl: Pin<hal::gpio::bank0::Gpio3, FunctionNull, PullDown>,
+    resets: &mut hal::pac::RESETS,
+    clocks: &hal::clocks::ClocksManager,
+) -> impl I2c {
+    let sda = sda.reconfigure::<FunctionI2C, PullUp>();
+    let scl = scl.reconfigure::<FunctionI2C, PullUp>();
+    hal::I2C::i2c1(i2c1, sda, scl, I2C_BAUD.Hz(), resets, clocks.system_clock.freq())
+}
+
+/// Run the I2C address scan loop forever.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+/// * `i2c` - Mutable reference to the I2C bus controller.
+/// * `delay` - Mutable reference to the blocking delay provider.
+fn scan_loop(uart: &EnabledUart, i2c: &mut impl I2c, delay: &mut cortex_m::delay::Delay) -> ! {
+    let mut buf = [0u8; 80];
+    loop {
+        let n = crate::i2c::format_scan_header(&mut buf);
+        uart.write_full_blocking(&buf[..n]);
+        scan_addresses(uart, i2c, &mut buf);
+        delay.delay_ms(SCAN_DELAY_MS);
+    }
+}
+
+/// Scan all 128 addresses and print the formatted result.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+/// * `i2c` - Mutable reference to the I2C bus controller.
+/// * `buf` - Scratch buffer for formatting output.
+fn scan_addresses(uart: &EnabledUart, i2c: &mut impl I2c, buf: &mut [u8; 80]) {
+    for addr in 0u8..128 {
+        let found = !crate::i2c::is_reserved(addr) && probe_addr(i2c, addr);
+        let n = crate::i2c::format_scan_entry(buf, addr, found);
+        uart.write_full_blocking(&buf[..n]);
+    }
 }
 
 // End of file

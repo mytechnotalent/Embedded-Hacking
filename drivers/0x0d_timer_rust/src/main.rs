@@ -1,5 +1,5 @@
 //! @file main.rs
-//! @brief Repeating timer demo using timer_driver.rs
+//! @brief Repeating timer demo using timer.rs
 //! @author Kevin Thomas
 //! @date 2025
 //!
@@ -28,7 +28,7 @@
 //! -----------------------------------------------------------------------------
 //!
 //! Demonstrates repeating timer callbacks using the timer driver
-//! (timer_driver.rs). A one-second heartbeat timer prints a message
+//! (timer.rs). A one-second heartbeat timer prints a message
 //! over UART to confirm the timer is firing.
 //!
 //! Wiring:
@@ -41,7 +41,7 @@
 mod board;
 // Timer driver module — suppress warnings for unused public API functions
 #[allow(dead_code)]
-mod timer_driver;
+mod timer;
 
 // Debugging output over RTT
 use defmt_rtt as _;
@@ -76,24 +76,7 @@ pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 /// Application entry point for the repeating timer demo.
 #[entry]
 fn main() -> ! {
-    let mut pac = hal::pac::Peripherals::take().unwrap();
-    let clocks = board::init_clocks(
-        pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS,
-        &mut hal::Watchdog::new(pac.WATCHDOG),
-    );
-    let pins = board::init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
-    let uart = board::init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
-    let mut delay = board::init_delay(&clocks);
-    #[cfg(rp2350)]
-    let timer = hal::Timer::new_timer0(pac.TIMER0, &mut pac.RESETS, &clocks);
-    #[cfg(rp2040)]
-    let timer = hal::Timer::new(pac.TIMER, &mut pac.RESETS);
-    let mut state = timer_driver::TimerDriverState::new();
-    state.start(timer_driver::DEFAULT_PERIOD_MS);
-    let mut buf = [0u8; 64];
-    let n = timer_driver::format_started(&mut buf, timer_driver::DEFAULT_PERIOD_MS);
-    uart.write_full_blocking(&buf[..n]);
-    board::heartbeat_loop(&uart, &timer, &mut delay, &mut state);
+    board::run(hal::pac::Peripherals::take().unwrap())
 }
 
 // Picotool binary info metadata

@@ -54,8 +54,6 @@ use panic_halt as _;
 #[cfg(target_arch = "arm")]
 use panic_probe as _;
 
-// Interior mutability for shared peripheral access
-use core::cell::RefCell;
 // HAL entry-point macro
 use hal::entry;
 
@@ -78,44 +76,9 @@ pub static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 
 /// Application entry point for the button debounce demo.
-///
-/// Initializes button and LED, then continuously polls button state
-/// and mirrors it to the LED with UART reporting on edge transitions.
-///
-/// # Returns
-///
-/// Does not return.
 #[entry]
 fn main() -> ! {
-    let mut pac = hal::pac::Peripherals::take().unwrap();
-    let clocks = board::init_clocks(
-        pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS,
-        &mut hal::Watchdog::new(pac.WATCHDOG),
-    );
-    let pins = board::init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
-    let uart = board::init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
-    let delay = RefCell::new(board::init_delay(&clocks));
-    let btn_pin = pins.gpio15.into_pull_up_input();
-    let led_pin = pins.gpio25.into_push_pull_output();
-    let mut btn = button::ButtonDriver::init(btn_pin, board::DEBOUNCE_MS, |ms| {
-        delay.borrow_mut().delay_ms(ms);
-    });
-    let mut led = button::ButtonLed::init(led_pin);
-    uart.write_full_blocking(b"Button driver initialized: button=GPIO15  led=GPIO25\r\n");
-    let mut last_state = false;
-    loop {
-        let pressed = btn.is_pressed();
-        led.set(pressed);
-        if pressed != last_state {
-            if pressed {
-                uart.write_full_blocking(b"Button: PRESSED\r\n");
-            } else {
-                uart.write_full_blocking(b"Button: RELEASED\r\n");
-            }
-            last_state = pressed;
-        }
-        delay.borrow_mut().delay_ms(board::POLL_MS);
-    }
+    board::run(hal::pac::Peripherals::take().unwrap())
 }
 
 // Picotool binary info metadata

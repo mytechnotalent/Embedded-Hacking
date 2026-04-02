@@ -79,40 +79,9 @@ pub static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 
 /// Application entry point for the PWM LED breathing demo.
-///
-/// Initializes PWM at 1 kHz on the onboard LED and enters an infinite
-/// loop that sweeps the duty cycle up and down to produce a smooth
-/// breathing effect, reporting each step over UART.
-///
-/// # Returns
-///
-/// Does not return.
 #[entry]
 fn main() -> ! {
-    let mut pac = hal::pac::Peripherals::take().unwrap();
-    let clocks = board::init_clocks(
-        pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS,
-        &mut hal::Watchdog::new(pac.WATCHDOG),
-    );
-    let pins = board::init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
-    let uart = board::init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
-    let mut delay = board::init_delay(&clocks);
-    uart.write_full_blocking(b"PWM initialized: GPIO25 @ 1000 Hz\r\n");
-    let pwm_slices = hal::pwm::Slices::new(pac.PWM, &mut pac.RESETS);
-    let mut pwm_slice = pwm_slices.pwm4;
-    let sys_hz = clocks.system_clock.freq().to_Hz();
-    let div = pwm::calc_clk_div(sys_hz, board::PWM_FREQ_HZ, board::PWM_WRAP);
-    let div_int = div as u8;
-    pwm_slice.set_div_int(div_int);
-    pwm_slice.set_div_frac((((div - div_int as f32) * 16.0) as u8).min(15));
-    pwm_slice.set_top(board::PWM_WRAP as u16);
-    pwm_slice.enable();
-    pwm_slice.channel_b.output_to(pins.gpio25);
-    let mut buf = [0u8; 16];
-    loop {
-        board::sweep_up(&uart, &mut pwm_slice.channel_b, &mut delay, &mut buf);
-        board::sweep_down(&uart, &mut pwm_slice.channel_b, &mut delay, &mut buf);
-    }
+    board::run(hal::pac::Peripherals::take().unwrap())
 }
 
 // Picotool binary info metadata

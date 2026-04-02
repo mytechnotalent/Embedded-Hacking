@@ -78,32 +78,9 @@ pub static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 
 /// Application entry point for the DHT11 sensor demo.
-///
-/// Initializes the DHT11 on GPIO4 and continuously reads temperature
-/// and humidity, printing results over UART every 2 seconds.
-///
-/// # Returns
-///
-/// Does not return.
 #[entry]
 fn main() -> ! {
-    let mut pac = hal::pac::Peripherals::take().unwrap();
-    let clocks = board::init_clocks(
-        pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS,
-        &mut hal::Watchdog::new(pac.WATCHDOG),
-    );
-    let pins = board::init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
-    let uart = board::init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
-    let mut delay = board::init_delay(&clocks);
-    #[cfg(rp2350)]
-    let timer = hal::Timer::new_timer0(pac.TIMER0, &mut pac.RESETS, &clocks);
-    #[cfg(rp2040)]
-    let timer = hal::Timer::new(pac.TIMER, &mut pac.RESETS);
-    let _dht_pin = pins.gpio4.into_pull_up_input();
-    uart.write_full_blocking(b"DHT11 driver initialized on GPIO 4\r\n");
-    loop {
-        board::poll_sensor(&uart, &timer, &mut delay);
-    }
+    board::run(hal::pac::Peripherals::take().unwrap())
 }
 
 // Picotool binary info metadata

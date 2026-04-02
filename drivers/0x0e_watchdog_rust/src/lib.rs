@@ -6,4 +6,4 @@
 #![no_std]
 
 // Watchdog driver module
-pub mod watchdog_driver;
+pub mod watchdog;

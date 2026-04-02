@@ -186,26 +186,25 @@ pub(crate) fn init_delay(clocks: &hal::clocks::ClocksManager) -> cortex_m::delay
 ///
 /// Number of bytes written into the buffer.
 pub(crate) fn format_duty(buf: &mut [u8], duty: u8) -> usize {
-    let prefix = b"Duty: ";
-    buf[..6].copy_from_slice(prefix);
+    buf[..6].copy_from_slice(b"Duty: ");
     let mut pos = 6;
-    if duty >= 100 {
-        buf[pos] = b'1'; pos += 1;
-        buf[pos] = b'0'; pos += 1;
-        buf[pos] = b'0'; pos += 1;
-    } else if duty >= 10 {
-        buf[pos] = b' '; pos += 1;
-        buf[pos] = b'0' + duty / 10; pos += 1;
-        buf[pos] = b'0' + duty % 10; pos += 1;
-    } else {
-        buf[pos] = b' '; pos += 1;
-        buf[pos] = b' '; pos += 1;
-        buf[pos] = b'0' + duty; pos += 1;
-    }
+    pos += write_duty_digits(&mut buf[pos..], duty);
     buf[pos] = b'%'; pos += 1;
     buf[pos] = b'\r'; pos += 1;
     buf[pos] = b'\n'; pos += 1;
     pos
+}
+
+/// Write the 3-character right-justified duty digits into `buf`.
+fn write_duty_digits(buf: &mut [u8], duty: u8) -> usize {
+    if duty >= 100 {
+        buf[0] = b'1'; buf[1] = b'0'; buf[2] = b'0';
+    } else if duty >= 10 {
+        buf[0] = b' '; buf[1] = b'0' + duty / 10; buf[2] = b'0' + duty % 10;
+    } else {
+        buf[0] = b' '; buf[1] = b' '; buf[2] = b'0' + duty;
+    }
+    3
 }
 
 /// Sweep the PWM duty cycle from 0% to 100% in steps of 5.
@@ -224,11 +223,7 @@ pub(crate) fn sweep_up(
 ) {
     let mut duty: u8 = 0;
     while duty <= 100 {
-        let level = crate::pwm::duty_to_level(duty, PWM_WRAP) as u16;
-        channel.set_duty_cycle(level).ok();
-        let n = format_duty(buf, duty);
-        uart.write_full_blocking(&buf[..n]);
-        delay.delay_ms(50u32);
+        apply_duty(uart, channel, delay, buf, duty);
         duty += 5;
     }
 }
@@ -249,12 +244,98 @@ pub(crate) fn sweep_down(
 ) {
     let mut duty: i8 = 100;
     while duty >= 0 {
-        let level = crate::pwm::duty_to_level(duty as u8, PWM_WRAP) as u16;
-        channel.set_duty_cycle(level).ok();
-        let n = format_duty(buf, duty as u8);
-        uart.write_full_blocking(&buf[..n]);
-        delay.delay_ms(50u32);
+        apply_duty(uart, channel, delay, buf, duty as u8);
         duty -= 5;
+    }
+}
+
+/// Apply a single duty step: set PWM level, format, print, and delay.
+fn apply_duty(
+    uart: &EnabledUart,
+    channel: &mut impl SetDutyCycle,
+    delay: &mut cortex_m::delay::Delay,
+    buf: &mut [u8; 16],
+    duty: u8,
+) {
+    let level = crate::pwm::duty_to_level(duty, PWM_WRAP) as u16;
+    channel.set_duty_cycle(level).ok();
+    let n = format_duty(buf, duty);
+    uart.write_full_blocking(&buf[..n]);
+    delay.delay_ms(50u32);
+}
+
+/// Type alias for PWM slice 4 (onboard LED, GPIO 25).
+type PwmSlice4 = hal::pwm::Slice<hal::pwm::Pwm4, hal::pwm::FreeRunning>;
+
+/// Initialise all peripherals and run the PWM breathing demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
+    let mut delay = init_delay(&clocks);
+    let mut pwm = init_pwm(pac.PWM, &mut pac.RESETS, &clocks, pins.gpio25);
+    uart.write_full_blocking(b"PWM initialized: GPIO25 @ 1000 Hz\r\n");
+    pwm_loop(&uart, &mut pwm, &mut delay)
+}
+
+/// Configure PWM slice 4 for 1 kHz output on channel B (GPIO 25).
+///
+/// # Arguments
+///
+/// * `pwm_pac` - PAC PWM peripheral singleton.
+/// * `resets` - Mutable reference to the RESETS peripheral.
+/// * `clocks` - Reference to the initialised clock configuration.
+/// * `led_pin` - Default GPIO 25 pin to bind to PWM channel B.
+///
+/// # Returns
+///
+/// Configured PWM slice 4 in free-running mode.
+fn init_pwm(
+    pwm_pac: hal::pac::PWM,
+    resets: &mut hal::pac::RESETS,
+    clocks: &hal::clocks::ClocksManager,
+    led_pin: Pin<hal::gpio::bank0::Gpio25, FunctionNull, PullDown>,
+) -> PwmSlice4 {
+    let slices = hal::pwm::Slices::new(pwm_pac, resets);
+    let mut slice = slices.pwm4;
+    configure_pwm_div(&mut slice, clocks);
+    slice.set_top(PWM_WRAP as u16);
+    slice.enable();
+    slice.channel_b.output_to(led_pin);
+    slice
+}
+
+/// Set the clock divider for a PWM slice based on the system clock.
+///
+/// # Arguments
+///
+/// * `slice` - Mutable reference to the PWM slice to configure.
+/// * `clocks` - Reference to the initialised clock configuration.
+fn configure_pwm_div(slice: &mut PwmSlice4, clocks: &hal::clocks::ClocksManager) {
+    let sys_hz = clocks.system_clock.freq().to_Hz();
+    let div = crate::pwm::calc_clk_div(sys_hz, PWM_FREQ_HZ, PWM_WRAP);
+    let div_int = div as u8;
+    slice.set_div_int(div_int);
+    slice.set_div_frac((((div - div_int as f32) * 16.0) as u8).min(15));
+}
+
+/// Run the PWM duty-cycle sweep loop forever.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+/// * `pwm` - Mutable reference to the configured PWM slice.
+/// * `delay` - Mutable reference to the blocking delay provider.
+fn pwm_loop(uart: &EnabledUart, pwm: &mut PwmSlice4, delay: &mut cortex_m::delay::Delay) -> ! {
+    let mut buf = [0u8; 16];
+    loop {
+        sweep_up(uart, &mut pwm.channel_b, delay, &mut buf);
+        sweep_down(uart, &mut pwm.channel_b, delay, &mut buf);
     }
 }
 

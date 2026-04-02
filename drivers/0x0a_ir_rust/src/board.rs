@@ -217,3 +217,35 @@ pub(crate) fn poll_receiver(
     }
     delay.delay_ms(POLL_MS);
 }
+
+/// Initialise all peripherals and run the NEC IR receiver demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
+    let mut delay = init_delay(&clocks);
+    #[cfg(rp2350)]
+    let timer = hal::Timer::new_timer0(pac.TIMER0, &mut pac.RESETS, &clocks);
+    #[cfg(rp2040)]
+    let timer = hal::Timer::new(pac.TIMER, &mut pac.RESETS);
+    let _ = pins.gpio5.into_pull_up_input();
+    announce_ir(&uart);
+    loop { poll_receiver(&uart, &timer, &mut delay); }
+}
+
+/// Print the IR driver initialisation banner over UART.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+fn announce_ir(uart: &EnabledUart) {
+    uart.write_full_blocking(b"NEC IR driver initialized on GPIO 5\r\n");
+    uart.write_full_blocking(b"Press a button on your NEC remote...\r\n");
+}
+
+// End of file

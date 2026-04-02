@@ -77,20 +77,23 @@ fn format_line(buf: &mut [u8], prefix: &[u8], text: &[u8], extra_blank_line: boo
     let mut pos = 0;
     buf[pos..pos + prefix.len()].copy_from_slice(prefix);
     pos += prefix.len();
-    let text_len = c_string_len(text);
-    buf[pos..pos + text_len].copy_from_slice(&text[..text_len]);
-    pos += text_len;
-    buf[pos] = b'\r';
-    pos += 1;
-    buf[pos] = b'\n';
-    pos += 1;
-    if extra_blank_line {
-        buf[pos] = b'\r';
-        pos += 1;
-        buf[pos] = b'\n';
-        pos += 1;
-    }
+    pos += copy_c_string(&mut buf[pos..], text);
+    pos += append_crlf(&mut buf[pos..], extra_blank_line);
     pos
+}
+
+/// Copy bytes from `text` up to the first NUL into `buf`.
+fn copy_c_string(buf: &mut [u8], text: &[u8]) -> usize {
+    let len = c_string_len(text);
+    buf[..len].copy_from_slice(&text[..len]);
+    len
+}
+
+/// Append CRLF (and optionally a second blank CRLF) to `buf`.
+fn append_crlf(buf: &mut [u8], extra: bool) -> usize {
+    buf[0] = b'\r';
+    buf[1] = b'\n';
+    if extra { buf[2] = b'\r'; buf[3] = b'\n'; 4 } else { 2 }
 }
 
 /// Return the length up to the first NUL byte or full slice length.

@@ -1,5 +1,5 @@
 //! @file main.rs
-//! @brief On-chip flash write/read demo using flash_driver.rs
+//! @brief On-chip flash write/read demo using flash.rs
 //! @author Kevin Thomas
 //! @date 2025
 //!
@@ -28,7 +28,7 @@
 //! -----------------------------------------------------------------------------
 //!
 //! Demonstrates on-chip flash read/write using the flash driver
-//! (flash_driver.rs). A string is written to the last sector of flash
+//! (flash.rs). A string is written to the last sector of flash
 //! and then read back to verify. The result is printed over UART.
 //!
 //! Wiring:
@@ -41,7 +41,7 @@
 mod board;
 // Flash driver module — suppress warnings for unused public API functions
 #[allow(dead_code)]
-mod flash_driver;
+mod flash;
 
 // Debugging output over RTT
 use defmt_rtt as _;
@@ -76,24 +76,7 @@ pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 /// Application entry point for the on-chip flash demo.
 #[entry]
 fn main() -> ! {
-    let mut pac = hal::pac::Peripherals::take().unwrap();
-    let clocks = board::init_clocks(
-        pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS,
-        &mut hal::Watchdog::new(pac.WATCHDOG),
-    );
-    let pins = board::init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
-    let uart = board::init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
-    let mut write_buf = [0u8; flash_driver::FLASH_WRITE_LEN];
-    flash_driver::prepare_write_buf(&mut write_buf);
-    board::flash_write(flash_driver::FLASH_TARGET_OFFSET, &write_buf);
-    let mut read_buf = [0u8; flash_driver::FLASH_WRITE_LEN];
-    board::flash_read(flash_driver::FLASH_TARGET_OFFSET, &mut read_buf);
-    let mut out = [0u8; 128];
-    let n = flash_driver::format_readback(&mut out, &read_buf);
-    uart.write_full_blocking(&out[..n]);
-    loop {
-        cortex_m::asm::wfe();
-    }
+    board::run(hal::pac::Peripherals::take().unwrap())
 }
 
 // Picotool binary info metadata

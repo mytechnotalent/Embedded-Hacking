@@ -76,33 +76,9 @@ pub static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 
 /// Application entry point for the UART uppercase echo demo.
-///
-/// Initializes UART0 and enters an infinite loop that reads incoming
-/// characters, converts them to uppercase, and echoes them back.
-///
-/// # Returns
-///
-/// Does not return.
 #[entry]
 fn main() -> ! {
-    let mut pac = hal::pac::Peripherals::take().unwrap();
-    let mut watchdog = hal::Watchdog::new(pac.WATCHDOG);
-    let clocks = board::init_clocks(
-        pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut watchdog,
-    );
-    let pins = board::init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
-    let mut drv = uart::UartDriver::init(
-        pac.UART0, pins.gpio0, pins.gpio1, board::UART_BAUD, &mut pac.RESETS, &clocks,
-    );
-    drv.puts(b"UART driver ready (115200 8N1)\r\n");
-    drv.puts(b"Type characters to echo them back in UPPERCASE:\r\n");
-    loop {
-        if drv.is_readable() {
-            let c = drv.getchar();
-            let upper = uart::UartDriver::to_upper(c);
-            drv.putchar(upper);
-        }
-    }
+    board::run(hal::pac::Peripherals::take().unwrap())
 }
 
 // Picotool binary info metadata

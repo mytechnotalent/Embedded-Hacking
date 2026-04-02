@@ -382,4 +382,24 @@ pub(crate) fn poll_sensor(
     delay.delay_ms(POLL_MS);
 }
 
+/// Initialise all peripherals and run the DHT11 sensor demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
+    let mut delay = init_delay(&clocks);
+    #[cfg(rp2350)]
+    let timer = hal::Timer::new_timer0(pac.TIMER0, &mut pac.RESETS, &clocks);
+    #[cfg(rp2040)]
+    let timer = hal::Timer::new(pac.TIMER, &mut pac.RESETS);
+    let _ = pins.gpio4.into_pull_up_input();
+    uart.write_full_blocking(b"DHT11 driver initialized on GPIO 4\r\n");
+    loop { poll_sensor(&uart, &timer, &mut delay); }
+}
+
 // End of file

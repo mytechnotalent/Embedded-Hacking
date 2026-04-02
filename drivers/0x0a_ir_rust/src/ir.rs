@@ -98,39 +98,38 @@ pub fn validate_nec_frame(data: &[u8; 4]) -> Option<u8> {
 
 /// Format the decoded command as hexadecimal and decimal followed by CRLF.
 pub fn format_command(buf: &mut [u8], command: u8) -> usize {
-    let mut pos = 0;
     let prefix = b"NEC command: 0x";
-    buf[pos..pos + prefix.len()].copy_from_slice(prefix);
-    pos += prefix.len();
+    let mut pos = copy_slice(buf, 0, prefix);
     pos += format_hex_u8(buf, pos, command);
-    let middle = b"  (";
-    buf[pos..pos + middle.len()].copy_from_slice(middle);
-    pos += middle.len();
+    pos += copy_slice(buf, pos, b"  (");
     pos += format_u8(buf, pos, command);
-    buf[pos] = b')';
-    pos += 1;
-    buf[pos] = b'\r';
-    pos += 1;
-    buf[pos] = b'\n';
-    pos += 1;
+    pos += copy_slice(buf, pos, b")\r\n");
     pos
+}
+
+/// Copy a byte slice into `buf` at the given offset, returning bytes written.
+fn copy_slice(buf: &mut [u8], offset: usize, src: &[u8]) -> usize {
+    buf[offset..offset + src.len()].copy_from_slice(src);
+    src.len()
 }
 
 /// Format an unsigned 8-bit integer at the given buffer offset.
 fn format_u8(buf: &mut [u8], pos: usize, value: u8) -> usize {
-    if value >= 100 {
-        buf[pos] = b'0' + value / 100;
-        buf[pos + 1] = b'0' + (value / 10) % 10;
-        buf[pos + 2] = b'0' + value % 10;
-        3
-    } else if value >= 10 {
-        buf[pos] = b'0' + value / 10;
-        buf[pos + 1] = b'0' + value % 10;
-        2
-    } else {
-        buf[pos] = b'0' + value;
-        1
-    }
+    let n = u8_digit_count(value);
+    write_u8_digits(buf, pos, value, n);
+    n
+}
+
+/// Return the number of decimal digits in a u8.
+fn u8_digit_count(value: u8) -> usize {
+    if value >= 100 { 3 } else if value >= 10 { 2 } else { 1 }
+}
+
+/// Write the decimal digits of a u8 into `buf` at `pos`.
+fn write_u8_digits(buf: &mut [u8], pos: usize, value: u8, n: usize) {
+    if n >= 3 { buf[pos] = b'0' + value / 100; }
+    if n >= 2 { buf[pos + n - 2] = b'0' + (value / 10) % 10; }
+    buf[pos + n - 1] = b'0' + value % 10;
 }
 
 /// Format an unsigned 8-bit integer as two uppercase hexadecimal digits.

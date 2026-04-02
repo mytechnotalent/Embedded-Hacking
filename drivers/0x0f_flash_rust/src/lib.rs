@@ -6,4 +6,4 @@
 #![no_std]
 
 // Flash driver module
-pub mod flash_driver;
+pub mod flash;

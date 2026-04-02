@@ -25,12 +25,14 @@
 //! OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //! SOFTWARE.
 
+// Interior mutability for shared delay access
+use core::cell::RefCell;
 // Rate extension trait for .Hz() baud rate construction
 use fugit::RateExtU32;
 // Clock trait for accessing system clock frequency
 use hal::Clock;
 // GPIO pin types and function selectors
-use hal::gpio::{FunctionNull, FunctionUart, Pin, PullDown, PullNone};
+use hal::gpio::{FunctionNull, FunctionSioInput, FunctionSioOutput, FunctionUart, Pin, PullDown, PullNone, PullUp};
 // UART configuration and peripheral types
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
 
@@ -171,6 +173,82 @@ pub(crate) fn init_uart(
 pub(crate) fn init_delay(clocks: &hal::clocks::ClocksManager) -> cortex_m::delay::Delay {
     let core = cortex_m::Peripherals::take().unwrap();
     cortex_m::delay::Delay::new(core.SYST, clocks.system_clock.freq().to_Hz())
+}
+
+/// Type alias for the button input pin (GPIO 15, pull-up).
+type BtnPin = Pin<hal::gpio::bank0::Gpio15, FunctionSioInput, PullUp>;
+
+/// Type alias for the LED output pin (GPIO 25, push-pull).
+type LedPin = Pin<hal::gpio::bank0::Gpio25, FunctionSioOutput, PullDown>;
+
+/// Initialise all peripherals and run the button debounce demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
+    let delay = RefCell::new(init_delay(&clocks));
+    uart.write_full_blocking(b"Button driver initialized: button=GPIO15  led=GPIO25\r\n");
+    button_demo(&uart, pins.gpio15, pins.gpio25, &delay)
+}
+
+/// Create button and LED drivers, then run the polling loop.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+/// * `btn_pin` - Default GPIO 15 pin for the button input.
+/// * `led_pin` - Default GPIO 25 pin for the LED output.
+/// * `delay` - Shared reference to the delay provider.
+fn button_demo(
+    uart: &EnabledUart,
+    btn_pin: Pin<hal::gpio::bank0::Gpio15, FunctionNull, PullDown>,
+    led_pin: Pin<hal::gpio::bank0::Gpio25, FunctionNull, PullDown>,
+    delay: &RefCell<cortex_m::delay::Delay>,
+) -> ! {
+    let mut btn = crate::button::ButtonDriver::init(
+        btn_pin.into_pull_up_input(), DEBOUNCE_MS, |ms| delay.borrow_mut().delay_ms(ms),
+    );
+    let mut led = crate::button::ButtonLed::init(led_pin.into_push_pull_output());
+    let mut last = false;
+    loop { poll_button(uart, &mut btn, &mut led, &mut last, delay); }
+}
+
+/// Poll button state, update LED, and report edge transitions.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+/// * `btn` - Mutable reference to the button driver.
+/// * `led` - Mutable reference to the LED driver.
+/// * `last` - Mutable reference to the previous button state.
+/// * `delay` - Shared reference to the delay provider.
+fn poll_button<F: Fn(u32)>(
+    uart: &EnabledUart,
+    btn: &mut crate::button::ButtonDriver<BtnPin, F>,
+    led: &mut crate::button::ButtonLed<LedPin>,
+    last: &mut bool,
+    delay: &RefCell<cortex_m::delay::Delay>,
+) {
+    let pressed = btn.is_pressed();
+    led.set(pressed);
+    if pressed != *last { report_edge(uart, pressed); *last = pressed; }
+    delay.borrow_mut().delay_ms(POLL_MS);
+}
+
+/// Print button press/release message over UART.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+/// * `pressed` - `true` if the button is pressed, `false` if released.
+fn report_edge(uart: &EnabledUart, pressed: bool) {
+    let msg = if pressed { b"Button: PRESSED\r\n" as &[u8] } else { b"Button: RELEASED\r\n" };
+    uart.write_full_blocking(msg);
 }
 
 // End of file

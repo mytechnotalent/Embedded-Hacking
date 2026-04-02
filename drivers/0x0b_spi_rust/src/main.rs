@@ -78,27 +78,7 @@ pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 /// Application entry point for the SPI loopback demo.
 #[entry]
 fn main() -> ! {
-    let mut pac = hal::pac::Peripherals::take().unwrap();
-    let clocks = board::init_clocks(
-        pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS,
-        &mut hal::Watchdog::new(pac.WATCHDOG),
-    );
-    let pins = board::init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
-    let uart = board::init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
-    let mut delay = board::init_delay(&clocks);
-    let (mut spi_dev, mut cs) = board::init_spi(
-        pac.SPI0,
-        pins.gpio16,
-        pins.gpio17,
-        pins.gpio18,
-        pins.gpio19,
-        &mut pac.RESETS,
-        &clocks,
-    );
-    uart.write_full_blocking(b"SPI driver initialized on SPI0 at 1000000 Hz\r\n");
-    loop {
-        board::loopback_transfer(&mut spi_dev, &mut cs, &uart, &mut delay);
-    }
+    board::run(hal::pac::Peripherals::take().unwrap())
 }
 
 // Picotool binary info metadata

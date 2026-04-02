@@ -87,31 +87,34 @@ pub fn format_scan_header(buf: &mut [u8]) -> usize {
 ///
 /// Number of bytes written into the buffer.
 pub fn format_scan_entry(buf: &mut [u8], addr: u8, found: bool) -> usize {
-    let mut pos = 0;
-    if addr % 16 == 0 {
-        buf[pos] = hex_digit((addr >> 4) & 0x0F); pos += 1;
-        buf[pos] = hex_digit(addr & 0x0F); pos += 1;
-        buf[pos] = b':'; pos += 1;
-        buf[pos] = b' '; pos += 1;
-    }
-    if is_reserved(addr) {
-        buf[pos] = b' '; pos += 1;
-        buf[pos] = b' '; pos += 1;
-        buf[pos] = b' '; pos += 1;
-    } else if found {
-        buf[pos] = hex_digit((addr >> 4) & 0x0F); pos += 1;
-        buf[pos] = hex_digit(addr & 0x0F); pos += 1;
-        buf[pos] = b' '; pos += 1;
-    } else {
-        buf[pos] = b'-'; pos += 1;
-        buf[pos] = b'-'; pos += 1;
-        buf[pos] = b' '; pos += 1;
-    }
-    if addr % 16 == 15 {
-        buf[pos] = b'\r'; pos += 1;
-        buf[pos] = b'\n'; pos += 1;
-    }
+    let mut pos = format_row_prefix(buf, addr);
+    pos += format_cell(&mut buf[pos..], addr, found);
+    if addr % 16 == 15 { buf[pos] = b'\r'; pos += 1; buf[pos] = b'\n'; pos += 1; }
     pos
+}
+
+/// Write the row prefix ("XX: ") if addr is at a 16-byte boundary.
+fn format_row_prefix(buf: &mut [u8], addr: u8) -> usize {
+    if addr % 16 != 0 { return 0; }
+    buf[0] = hex_digit((addr >> 4) & 0x0F);
+    buf[1] = hex_digit(addr & 0x0F);
+    buf[2] = b':';
+    buf[3] = b' ';
+    4
+}
+
+/// Write a single cell: "XX " if found, "-- " if not, "   " if reserved.
+fn format_cell(buf: &mut [u8], addr: u8, found: bool) -> usize {
+    let cell = cell_bytes(addr, found);
+    buf[..3].copy_from_slice(&cell);
+    3
+}
+
+/// Return the 3-byte cell content for an I2C scan address.
+fn cell_bytes(addr: u8, found: bool) -> [u8; 3] {
+    if is_reserved(addr) { return [b' ', b' ', b' ']; }
+    if found { [hex_digit((addr >> 4) & 0x0F), hex_digit(addr & 0x0F), b' '] }
+    else { [b'-', b'-', b' '] }
 }
 
 #[cfg(test)]

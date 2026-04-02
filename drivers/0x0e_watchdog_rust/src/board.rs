@@ -26,7 +26,7 @@
 //! SOFTWARE.
 
 // Watchdog driver pure-logic functions and constants
-use crate::watchdog_driver;
+use crate::watchdog;
 // Microsecond duration type for watchdog timeout
 use fugit::ExtU32;
 // Rate extension trait for .Hz() baud rate construction
@@ -227,16 +227,64 @@ pub(crate) fn feed_loop(
     uart: &EnabledUart,
     watchdog: &hal::Watchdog,
     delay: &mut cortex_m::delay::Delay,
-    state: &mut watchdog_driver::WatchdogDriverState,
+    state: &mut watchdog::WatchdogDriverState,
 ) -> ! {
     loop {
         watchdog_feed(watchdog);
         state.feed();
         let mut buf = [0u8; 32];
-        let n = watchdog_driver::format_fed(&mut buf);
+        let n = watchdog::format_fed(&mut buf);
         uart.write_full_blocking(&buf[..n]);
-        delay.delay_ms(watchdog_driver::FEED_INTERVAL_MS);
+        delay.delay_ms(watchdog::FEED_INTERVAL_MS);
     }
+}
+
+/// Initialise all peripherals and run the watchdog feed demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
+    let mut delay = init_delay(&clocks);
+    report_reset_reason(&uart);
+    let mut state = start_watchdog(&uart, &mut wd);
+    feed_loop(&uart, &wd, &mut delay, &mut state)
+}
+
+/// Print whether the last reset was caused by the watchdog.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+fn report_reset_reason(uart: &EnabledUart) {
+    let mut buf = [0u8; 64];
+    let caused = watchdog_caused_reboot();
+    let n = watchdog::format_reset_reason(&mut buf, caused);
+    uart.write_full_blocking(&buf[..n]);
+}
+
+/// Create the driver state, enable the hardware watchdog, and report.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+/// * `wd` - Mutable reference to the HAL watchdog.
+///
+/// # Returns
+///
+/// Initialised watchdog driver state.
+fn start_watchdog(uart: &EnabledUart, wd: &mut hal::Watchdog) -> watchdog::WatchdogDriverState {
+    let mut state = watchdog::WatchdogDriverState::new();
+    state.enable(watchdog::DEFAULT_TIMEOUT_MS);
+    watchdog_enable(wd, watchdog::DEFAULT_TIMEOUT_MS);
+    let mut buf = [0u8; 64];
+    let n = watchdog::format_enabled(&mut buf, watchdog::DEFAULT_TIMEOUT_MS);
+    uart.write_full_blocking(&buf[..n]);
+    state
 }
 
 // End of file

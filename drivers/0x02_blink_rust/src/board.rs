@@ -30,7 +30,7 @@ use fugit::RateExtU32;
 // Clock trait for accessing system clock frequency
 use hal::Clock;
 // GPIO pin types and function selectors
-use hal::gpio::{FunctionNull, FunctionUart, Pin, PullDown, PullNone};
+use hal::gpio::{FunctionNull, FunctionSioOutput, FunctionUart, Pin, PullDown, PullNone};
 // UART configuration and peripheral types
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
 
@@ -168,6 +168,45 @@ pub(crate) fn init_uart(
 pub(crate) fn init_delay(clocks: &hal::clocks::ClocksManager) -> cortex_m::delay::Delay {
     let core = cortex_m::Peripherals::take().unwrap();
     cortex_m::delay::Delay::new(core.SYST, clocks.system_clock.freq().to_Hz())
+}
+
+/// Type alias for the onboard LED pin configured as push-pull output.
+type LedPin = Pin<hal::gpio::bank0::Gpio25, FunctionSioOutput, PullDown>;
+
+/// Initialise all peripherals and run the blink demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
+    let mut delay = init_delay(&clocks);
+    let mut led = crate::blink::BlinkDriver::init(pins.gpio25.into_push_pull_output());
+    uart.write_full_blocking(b"Blink driver initialized on GPIO 25\r\n");
+    blink_loop(&uart, &mut delay, &mut led)
+}
+
+/// Toggle LED, report state, and delay in a loop forever.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+/// * `delay` - Mutable reference to the blocking delay provider.
+/// * `led` - Mutable reference to the blink driver.
+fn blink_loop(
+    uart: &EnabledUart,
+    delay: &mut cortex_m::delay::Delay,
+    led: &mut crate::blink::BlinkDriver<LedPin>,
+) -> ! {
+    loop {
+        led.toggle();
+        let msg = if led.get_state() { b"LED: ON\r\n" as &[u8] } else { b"LED: OFF\r\n" };
+        uart.write_full_blocking(msg);
+        delay.delay_ms(BLINK_DELAY_MS);
+    }
 }
 
 // End of file

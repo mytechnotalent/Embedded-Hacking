@@ -31,6 +31,9 @@ use rp235x_hal as hal;
 #[cfg(rp2040)]
 use rp2040_hal as hal;
 
+// UART driver for echo demo
+use crate::uart;
+
 /// External crystal frequency in Hz (12 MHz).
 pub(crate) const XTAL_FREQ_HZ: u32 = 12_000_000u32;
 
@@ -89,6 +92,35 @@ pub(crate) fn init_pins(
 ) -> hal::gpio::Pins {
     let sio = hal::Sio::new(sio);
     hal::gpio::Pins::new(io_bank0, pads_bank0, sio.gpio_bank0, resets)
+}
+
+/// Initialise all peripherals and run the UART echo demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let mut drv = uart::UartDriver::init(pac.UART0, pins.gpio0, pins.gpio1, UART_BAUD, &mut pac.RESETS, &clocks);
+    drv.puts(b"UART driver ready (115200 8N1)\r\n");
+    drv.puts(b"Type characters to echo them back in UPPERCASE:\r\n");
+    echo_loop(&mut drv)
+}
+
+/// Run the uppercase echo loop forever.
+///
+/// # Arguments
+///
+/// * `drv` - Mutable reference to the UART driver.
+fn echo_loop(drv: &mut uart::UartDriver) -> ! {
+    loop {
+        if drv.is_readable() {
+            let c = drv.getchar();
+            drv.putchar(uart::UartDriver::to_upper(c));
+        }
+    }
 }
 
 // End of file

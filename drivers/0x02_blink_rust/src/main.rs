@@ -74,34 +74,9 @@ pub static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 
 /// Application entry point for the LED blink demo.
-///
-/// Initializes the onboard LED and enters an infinite loop that
-/// toggles the LED state every BLINK_DELAY_MS milliseconds.
-///
-/// # Returns
-///
-/// Does not return.
 #[entry]
 fn main() -> ! {
-    let mut pac = hal::pac::Peripherals::take().unwrap();
-    let clocks = board::init_clocks(
-        pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS,
-        &mut hal::Watchdog::new(pac.WATCHDOG),
-    );
-    let pins = board::init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
-    let uart = board::init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
-    let mut delay = board::init_delay(&clocks);
-    let mut led = blink::BlinkDriver::init(pins.gpio25.into_push_pull_output());
-    uart.write_full_blocking(b"Blink driver initialized on GPIO 25\r\n");
-    loop {
-        led.toggle();
-        if led.get_state() {
-            uart.write_full_blocking(b"LED: ON\r\n");
-        } else {
-            uart.write_full_blocking(b"LED: OFF\r\n");
-        }
-        delay.delay_ms(board::BLINK_DELAY_MS);
-    }
+    board::run(hal::pac::Peripherals::take().unwrap())
 }
 
 // Picotool binary info metadata

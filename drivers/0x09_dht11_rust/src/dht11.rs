@@ -111,19 +111,18 @@ pub fn parse_temperature(data: &[u8; 5]) -> f32 {
 ///
 /// Number of bytes written into the buffer.
 pub fn format_reading(buf: &mut [u8], humidity: f32, temperature: f32) -> usize {
-    let mut pos = 0;
-    let prefix = b"Humidity: ";
-    buf[pos..pos + prefix.len()].copy_from_slice(prefix);
-    pos += prefix.len();
+    let mut pos = copy_slice(buf, 0, b"Humidity: ");
     pos += format_f32_1(&mut buf[pos..], humidity);
-    let mid = b"%  Temperature: ";
-    buf[pos..pos + mid.len()].copy_from_slice(mid);
-    pos += mid.len();
+    pos += copy_slice(buf, pos, b"%  Temperature: ");
     pos += format_f32_1(&mut buf[pos..], temperature);
-    let suffix = b" C";
-    buf[pos..pos + suffix.len()].copy_from_slice(suffix);
-    pos += suffix.len();
+    pos += copy_slice(buf, pos, b" C");
     pos
+}
+
+/// Copy a byte slice into `buf` at the given offset, returning bytes written.
+fn copy_slice(buf: &mut [u8], offset: usize, src: &[u8]) -> usize {
+    buf[offset..offset + src.len()].copy_from_slice(src);
+    src.len()
 }
 
 /// Format a failed-read error message.
@@ -185,22 +184,27 @@ fn format_f32_1(buf: &mut [u8], val: f32) -> usize {
     let scaled = (val * 10.0) as u32;
     let integer = scaled / 10;
     let frac = (scaled % 10) as u8;
-    let mut pos = 0;
-    if integer >= 100 {
-        buf[pos] = b'0' + (integer / 100) as u8;
-        pos += 1;
-    }
-    if integer >= 10 {
-        buf[pos] = b'0' + ((integer / 10) % 10) as u8;
-        pos += 1;
-    }
-    buf[pos] = b'0' + (integer % 10) as u8;
-    pos += 1;
+    let mut pos = format_u32_minimal(buf, integer);
     buf[pos] = b'.';
     pos += 1;
     buf[pos] = b'0' + frac;
     pos += 1;
     pos
+}
+
+/// Format a u32 as minimal decimal digits (no leading zeros).
+fn format_u32_minimal(buf: &mut [u8], value: u32) -> usize {
+    let mut pos = 0;
+    if value >= 100 {
+        buf[pos] = b'0' + (value / 100) as u8;
+        pos += 1;
+    }
+    if value >= 10 {
+        buf[pos] = b'0' + ((value / 10) % 10) as u8;
+        pos += 1;
+    }
+    buf[pos] = b'0' + (value % 10) as u8;
+    pos + 1
 }
 
 #[cfg(test)]

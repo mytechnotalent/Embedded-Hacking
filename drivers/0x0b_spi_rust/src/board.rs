@@ -197,3 +197,23 @@ pub(crate) fn loopback_transfer(
     spi::clear_rx_buffer(&mut rx);
     delay.delay_ms(POLL_MS);
 }
+
+/// Initialise all peripherals and run the SPI loopback demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
+    let mut delay = init_delay(&clocks);
+    let (mut spi, mut cs) = init_spi(
+        pac.SPI0, pins.gpio16, pins.gpio17, pins.gpio18, pins.gpio19, &mut pac.RESETS, &clocks,
+    );
+    uart.write_full_blocking(b"SPI driver initialized on SPI0 at 1000000 Hz\r\n");
+    loop { loopback_transfer(&mut spi, &mut cs, &uart, &mut delay); }
+}
+
+// End of file

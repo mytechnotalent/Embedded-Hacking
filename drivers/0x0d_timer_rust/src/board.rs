@@ -26,7 +26,7 @@
 //! SOFTWARE.
 
 // Timer driver pure-logic functions and constants
-use crate::timer_driver;
+use crate::timer;
 // Rate extension trait for .Hz() baud rate construction
 use fugit::RateExtU32;
 // Clock trait for accessing system clock frequency
@@ -193,23 +193,67 @@ pub(crate) fn heartbeat_loop(
     uart: &EnabledUart,
     timer: &HalTimer,
     delay: &mut cortex_m::delay::Delay,
-    state: &mut timer_driver::TimerDriverState,
+    state: &mut timer::TimerDriverState,
 ) -> ! {
     let mut last_us = timer.get_counter().ticks() as u32;
     let period_us = state.period_ms() as u64 * 1_000;
     loop {
-        let now_us = timer.get_counter().ticks() as u32;
-        let elapsed = now_us.wrapping_sub(last_us) as u64;
-        if elapsed >= period_us {
-            last_us = now_us;
-            if state.on_fire() {
-                let mut buf = [0u8; 32];
-                let n = timer_driver::format_heartbeat(&mut buf);
-                uart.write_full_blocking(&buf[..n]);
-            }
-        }
+        let (now, elapsed) = tick_elapsed(timer, last_us);
+        if elapsed >= period_us { last_us = now; fire_heartbeat(uart, state); }
         delay.delay_us(100);
     }
+}
+
+/// Compute elapsed microseconds since last checkpoint.
+fn tick_elapsed(timer: &HalTimer, last_us: u32) -> (u32, u64) {
+    let now_us = timer.get_counter().ticks() as u32;
+    (now_us, now_us.wrapping_sub(last_us) as u64)
+}
+
+/// Fire the heartbeat callback and print the message over UART.
+fn fire_heartbeat(uart: &EnabledUart, state: &mut timer::TimerDriverState) {
+    if state.on_fire() {
+        let mut buf = [0u8; 32];
+        let n = timer::format_heartbeat(&mut buf);
+        uart.write_full_blocking(&buf[..n]);
+    }
+}
+
+/// Initialise all peripherals and run the repeating timer demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
+    let mut delay = init_delay(&clocks);
+    #[cfg(rp2350)]
+    let timer = hal::Timer::new_timer0(pac.TIMER0, &mut pac.RESETS, &clocks);
+    #[cfg(rp2040)]
+    let timer = hal::Timer::new(pac.TIMER, &mut pac.RESETS);
+    let mut state = start_timer(&uart);
+    heartbeat_loop(&uart, &timer, &mut delay, &mut state)
+}
+
+/// Create the timer driver state, start it, and report over UART.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+///
+/// # Returns
+///
+/// Initialised timer driver state.
+fn start_timer(uart: &EnabledUart) -> timer::TimerDriverState {
+    let mut state = timer::TimerDriverState::new();
+    state.start(timer::DEFAULT_PERIOD_MS);
+    let mut buf = [0u8; 64];
+    let n = timer::format_started(&mut buf, timer::DEFAULT_PERIOD_MS);
+    uart.write_full_blocking(&buf[..n]);
+    state
 }
 
 // End of file

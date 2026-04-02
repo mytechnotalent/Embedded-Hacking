@@ -78,40 +78,9 @@ pub static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 
 /// Application entry point for the servo sweep demo.
-///
-/// Initializes the servo on GPIO 6 and continuously sweeps 0-180-0
-/// degrees in 10-degree increments, reporting each angle over UART.
-///
-/// # Returns
-///
-/// Does not return.
 #[entry]
 fn main() -> ! {
-    let mut pac = hal::pac::Peripherals::take().unwrap();
-    let clocks = board::init_clocks(
-        pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS,
-        &mut hal::Watchdog::new(pac.WATCHDOG),
-    );
-    let pins = board::init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
-    let uart = board::init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
-    let mut delay = board::init_delay(&clocks);
-    let pwm_slices = hal::pwm::Slices::new(pac.PWM, &mut pac.RESETS);
-    let mut pwm = pwm_slices.pwm3;
-    let sys_hz = clocks.system_clock.freq().to_Hz();
-    let div = servo::calc_clk_div(sys_hz, servo::SERVO_HZ, servo::SERVO_WRAP);
-    let div_int = div as u8;
-    pwm.set_div_int(div_int);
-    pwm.set_div_frac((((div - div_int as f32) * 16.0) as u8).min(15));
-    pwm.set_top(servo::SERVO_WRAP as u16);
-    pwm.enable();
-    pwm.channel_a.output_to(pins.gpio6);
-    uart.write_full_blocking(b"Servo driver initialized on GPIO 6\r\n");
-    uart.write_full_blocking(b"Sweeping 0 -> 180 -> 0 degrees in 10-degree steps\r\n");
-    let mut buf = [0u8; 20];
-    loop {
-        board::sweep_angle_up(&uart, &mut pwm.channel_a, &mut delay, &mut buf);
-        board::sweep_angle_down(&uart, &mut pwm.channel_a, &mut delay, &mut buf);
-    }
+    board::run(hal::pac::Peripherals::take().unwrap())
 }
 
 // Picotool binary info metadata

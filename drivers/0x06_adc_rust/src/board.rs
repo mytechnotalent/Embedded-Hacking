@@ -183,37 +183,133 @@ pub(crate) fn init_delay(clocks: &hal::clocks::ClocksManager) -> cortex_m::delay
 ///
 /// Number of bytes written into the buffer.
 pub(crate) fn format_adc_line(buf: &mut [u8], mv: u32, temp_int: i32, temp_frac: u8) -> usize {
-    let prefix = b"ADC0: ";
-    buf[..6].copy_from_slice(prefix);
+    buf[..6].copy_from_slice(b"ADC0: ");
     let mut pos = 6;
-    let thousands = ((mv / 1000) % 10) as u8;
-    let hundreds = ((mv / 100) % 10) as u8;
-    let tens = ((mv / 10) % 10) as u8;
-    let ones = (mv % 10) as u8;
-    buf[pos] = b'0' + thousands; pos += 1;
-    buf[pos] = b'0' + hundreds; pos += 1;
-    buf[pos] = b'0' + tens; pos += 1;
-    buf[pos] = b'0' + ones; pos += 1;
-    let mid = b" mV  |  Chip temp: ";
-    buf[pos..pos + 19].copy_from_slice(mid);
+    pos += write_mv_digits(&mut buf[pos..], mv);
+    buf[pos..pos + 19].copy_from_slice(b" mV  |  Chip temp: ");
     pos += 19;
-    let abs_temp = if temp_int < 0 { -temp_int } else { temp_int } as u32;
-    if temp_int < 0 {
-        buf[pos] = b'-'; pos += 1;
-    }
-    if abs_temp >= 100 {
-        buf[pos] = b'0' + ((abs_temp / 100) % 10) as u8; pos += 1;
-    }
-    if abs_temp >= 10 {
-        buf[pos] = b'0' + ((abs_temp / 10) % 10) as u8; pos += 1;
-    }
-    buf[pos] = b'0' + (abs_temp % 10) as u8; pos += 1;
+    pos += write_temp(&mut buf[pos..], temp_int, temp_frac);
+    buf[pos..pos + 4].copy_from_slice(b" C\r\n");
+    pos + 4
+}
+
+/// Write 4-digit millivolt value into `buf`.
+fn write_mv_digits(buf: &mut [u8], mv: u32) -> usize {
+    buf[0] = b'0' + ((mv / 1000) % 10) as u8;
+    buf[1] = b'0' + ((mv / 100) % 10) as u8;
+    buf[2] = b'0' + ((mv / 10) % 10) as u8;
+    buf[3] = b'0' + (mv % 10) as u8;
+    4
+}
+
+/// Write temperature as "[-]NN.F" into `buf`.
+fn write_temp(buf: &mut [u8], temp_int: i32, temp_frac: u8) -> usize {
+    let mut pos = 0;
+    let abs_temp = if temp_int < 0 { buf[pos] = b'-'; pos += 1; -temp_int } else { temp_int } as u32;
+    pos += write_min_digits(&mut buf[pos..], abs_temp);
     buf[pos] = b'.'; pos += 1;
     buf[pos] = b'0' + temp_frac; pos += 1;
-    let suffix = b" C\r\n";
-    buf[pos..pos + 4].copy_from_slice(suffix);
-    pos += 4;
     pos
+}
+
+/// Write a u32 with minimum digits (no leading zeros).
+fn write_min_digits(buf: &mut [u8], val: u32) -> usize {
+    let mut pos = 0;
+    if val >= 100 { buf[pos] = b'0' + ((val / 100) % 10) as u8; pos += 1; }
+    if val >= 10 { buf[pos] = b'0' + ((val / 10) % 10) as u8; pos += 1; }
+    buf[pos] = b'0' + (val % 10) as u8;
+    pos + 1
+}
+
+/// Type alias for the ADC input pin on GPIO 26.
+type Gpio26Adc = hal::adc::AdcPin<Pin<hal::gpio::bank0::Gpio26, FunctionNull, PullDown>>;
+
+/// Initialise all peripherals and run the ADC demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
+    let mut delay = init_delay(&clocks);
+    let (mut adc, mut adc_pin, mut temp) = init_adc(pac.ADC, pins.gpio26, &mut pac.RESETS);
+    uart.write_full_blocking(b"ADC driver initialized: GPIO26 (channel 0)\r\n");
+    adc_loop(&uart, &mut adc, &mut adc_pin, &mut temp, &mut delay)
+}
+
+/// Create the ADC peripheral, GPIO 26 input channel, and temperature sensor.
+///
+/// # Arguments
+///
+/// * `adc_pac` - PAC ADC peripheral singleton.
+/// * `gpio26` - Default GPIO 26 pin to use as ADC input.
+/// * `resets` - Mutable reference to the RESETS peripheral.
+///
+/// # Returns
+///
+/// Tuple of (ADC driver, ADC pin channel, temperature sensor channel).
+fn init_adc(
+    adc_pac: hal::pac::ADC,
+    gpio26: Pin<hal::gpio::bank0::Gpio26, FunctionNull, PullDown>,
+    resets: &mut hal::pac::RESETS,
+) -> (hal::Adc, Gpio26Adc, hal::adc::TempSense) {
+    let mut adc = hal::Adc::new(adc_pac, resets);
+    let pin = hal::adc::AdcPin::new(gpio26).unwrap();
+    let temp = adc.take_temp_sensor().unwrap();
+    (adc, pin, temp)
+}
+
+/// Sample voltage and temperature, format, and print in a loop.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+/// * `adc` - Mutable reference to the ADC driver.
+/// * `adc_pin` - Mutable reference to the GPIO 26 ADC channel.
+/// * `temp` - Mutable reference to the temperature sensor channel.
+/// * `delay` - Mutable reference to the blocking delay provider.
+fn adc_loop(
+    uart: &EnabledUart,
+    adc: &mut hal::Adc,
+    adc_pin: &mut Gpio26Adc,
+    temp: &mut hal::adc::TempSense,
+    delay: &mut cortex_m::delay::Delay,
+) -> ! {
+    let mut buf = [0u8; 48];
+    loop {
+        let (mv, temp_int, temp_frac) = read_adc(adc, adc_pin, temp);
+        let n = format_adc_line(&mut buf, mv, temp_int, temp_frac);
+        uart.write_full_blocking(&buf[..n]);
+        delay.delay_ms(POLL_MS);
+    }
+}
+
+/// Read voltage and temperature from the ADC.
+///
+/// # Arguments
+///
+/// * `adc` - Mutable reference to the ADC driver.
+/// * `adc_pin` - Mutable reference to the GPIO 26 ADC channel.
+/// * `temp` - Mutable reference to the temperature sensor channel.
+///
+/// # Returns
+///
+/// Tuple of (millivolts, integer temperature, fractional temperature digit).
+fn read_adc(
+    adc: &mut hal::Adc,
+    adc_pin: &mut Gpio26Adc,
+    temp: &mut hal::adc::TempSense,
+) -> (u32, i32, u8) {
+    let raw_v: u16 = adc.read(adc_pin).unwrap();
+    let mv = crate::adc::raw_to_mv(raw_v);
+    let raw_t: u16 = adc.read(temp).unwrap();
+    let celsius = crate::adc::raw_to_celsius(raw_t);
+    let temp_int = celsius as i32;
+    let temp_frac = (((celsius - temp_int as f32) * 10.0) as u8).min(9);
+    (mv, temp_int, temp_frac)
 }
 
 // End of file

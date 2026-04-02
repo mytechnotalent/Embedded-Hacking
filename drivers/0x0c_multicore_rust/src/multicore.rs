@@ -37,17 +37,27 @@ fn format_u32(buf: &mut [u8], value: u32) -> usize {
         return 1;
     }
     let mut tmp = [0u8; 10];
-    let mut pos = 0usize;
-    let mut v = value;
-    while v > 0 {
-        tmp[pos] = b'0' + (v % 10) as u8;
-        v /= 10;
-        pos += 1;
+    let n = u32_to_digits_reversed(&mut tmp, value);
+    reverse_copy(buf, &tmp, n);
+    n
+}
+
+/// Convert a u32 to reversed decimal digits in a temporary buffer.
+fn u32_to_digits_reversed(tmp: &mut [u8; 10], mut value: u32) -> usize {
+    let mut n = 0usize;
+    while value > 0 {
+        tmp[n] = b'0' + (value % 10) as u8;
+        value /= 10;
+        n += 1;
     }
-    for i in 0..pos {
-        buf[i] = tmp[pos - 1 - i];
+    n
+}
+
+/// Copy digits from a reversed temporary buffer into the output buffer.
+fn reverse_copy(buf: &mut [u8], tmp: &[u8], n: usize) {
+    for i in 0..n {
+        buf[i] = tmp[n - 1 - i];
     }
-    pos
 }
 
 /// Format the round-trip message for UART output.

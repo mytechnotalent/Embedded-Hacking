@@ -56,14 +56,8 @@ use panic_halt as _;
 #[cfg(target_arch = "arm")]
 use panic_probe as _;
 
-// Rate extension trait for .Hz() baud rate construction
-use fugit::RateExtU32;
-// Clock trait for accessing system clock frequency
-use hal::Clock;
 // HAL entry-point macro
 use hal::entry;
-// GPIO traits for I2C pin reconfiguration
-use hal::gpio::{FunctionI2C, PullUp};
 
 // Alias our HAL crate
 #[cfg(rp2350)]
@@ -84,34 +78,9 @@ pub static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 
 /// Application entry point for the LCD 1602 counter demo.
-///
-/// Initializes the LCD over I2C with a static title on line 0 and
-/// continuously increments a counter on line 1 every second.
-///
-/// # Returns
-///
-/// Does not return.
 #[entry]
 fn main() -> ! {
-    let mut pac = hal::pac::Peripherals::take().unwrap();
-    let clocks = board::init_clocks(
-        pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS,
-        &mut hal::Watchdog::new(pac.WATCHDOG),
-    );
-    let pins = board::init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
-    let uart = board::init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
-    let mut delay = board::init_delay(&clocks);
-    let sda_pin = pins.gpio2.reconfigure::<FunctionI2C, PullUp>();
-    let scl_pin = pins.gpio3.reconfigure::<FunctionI2C, PullUp>();
-    let mut i2c = hal::I2C::i2c1(
-        pac.I2C1, sda_pin, scl_pin, board::I2C_BAUD.Hz(),
-        &mut pac.RESETS, clocks.system_clock.freq(),
-    );
-    board::setup_display(&mut i2c, &uart, &mut delay);
-    let mut count: u32 = 0;
-    loop {
-        board::update_counter(&mut i2c, &uart, &mut delay, &mut count);
-    }
+    board::run(hal::pac::Peripherals::take().unwrap())
 }
 
 // Picotool binary info metadata

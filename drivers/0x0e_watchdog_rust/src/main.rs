@@ -1,5 +1,5 @@
 //! @file main.rs
-//! @brief Watchdog feed demo using watchdog_driver.rs
+//! @brief Watchdog feed demo using watchdog.rs
 //! @author Kevin Thomas
 //! @date 2025
 //!
@@ -28,7 +28,7 @@
 //! -----------------------------------------------------------------------------
 //!
 //! Demonstrates the hardware watchdog using the watchdog driver
-//! (watchdog_driver.rs). The watchdog is enabled with a 3-second
+//! (watchdog.rs). The watchdog is enabled with a 3-second
 //! timeout and fed every second. If the feed loop were removed, the
 //! chip would automatically reboot after 3 seconds.
 //!
@@ -42,7 +42,7 @@
 mod board;
 // Watchdog driver module — suppress warnings for unused public API functions
 #[allow(dead_code)]
-mod watchdog_driver;
+mod watchdog;
 
 // Debugging output over RTT
 use defmt_rtt as _;
@@ -77,25 +77,7 @@ pub static IMAGE_DEF: hal::block::ImageDef = hal::block::ImageDef::secure_exe();
 /// Application entry point for the watchdog demo.
 #[entry]
 fn main() -> ! {
-    let mut pac = hal::pac::Peripherals::take().unwrap();
-    let mut watchdog = hal::Watchdog::new(pac.WATCHDOG);
-    let clocks = board::init_clocks(
-        pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS,
-        &mut watchdog,
-    );
-    let pins = board::init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
-    let uart = board::init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
-    let mut delay = board::init_delay(&clocks);
-    let mut buf = [0u8; 64];
-    let caused = board::watchdog_caused_reboot();
-    let n = watchdog_driver::format_reset_reason(&mut buf, caused);
-    uart.write_full_blocking(&buf[..n]);
-    let mut state = watchdog_driver::WatchdogDriverState::new();
-    state.enable(watchdog_driver::DEFAULT_TIMEOUT_MS);
-    board::watchdog_enable(&mut watchdog, watchdog_driver::DEFAULT_TIMEOUT_MS);
-    let n = watchdog_driver::format_enabled(&mut buf, watchdog_driver::DEFAULT_TIMEOUT_MS);
-    uart.write_full_blocking(&buf[..n]);
-    board::feed_loop(&uart, &watchdog, &mut delay, &mut state);
+    board::run(hal::pac::Peripherals::take().unwrap())
 }
 
 // Picotool binary info metadata

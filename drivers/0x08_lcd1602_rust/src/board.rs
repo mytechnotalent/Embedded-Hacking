@@ -32,7 +32,7 @@ use fugit::RateExtU32;
 // Clock trait for accessing system clock frequency
 use hal::Clock;
 // GPIO pin types and function selectors
-use hal::gpio::{FunctionNull, FunctionUart, Pin, PullDown, PullNone};
+use hal::gpio::{FunctionI2C, FunctionNull, FunctionUart, Pin, PullDown, PullNone, PullUp};
 // UART configuration and peripheral types
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
 
@@ -246,13 +246,18 @@ fn lcd_send(i2c: &mut impl I2c, addr: u8, value: u8, mode: u8, delay: &mut corte
 /// * `addr` - 7-bit I2C address of the PCF8574.
 /// * `delay` - Delay provider for timing.
 fn lcd_hd44780_reset(i2c: &mut impl I2c, addr: u8, delay: &mut cortex_m::delay::Delay) {
+    lcd_reset_pulse_3x(i2c, addr, delay);
+    lcd_write4(i2c, addr, 0x02, 0, delay);
+    delay.delay_us(150);
+}
+
+/// Send three 0x03 nibbles with required power-on delays.
+fn lcd_reset_pulse_3x(i2c: &mut impl I2c, addr: u8, delay: &mut cortex_m::delay::Delay) {
     lcd_write4(i2c, addr, 0x03, 0, delay);
     delay.delay_ms(5);
     lcd_write4(i2c, addr, 0x03, 0, delay);
     delay.delay_us(150);
     lcd_write4(i2c, addr, 0x03, 0, delay);
-    delay.delay_us(150);
-    lcd_write4(i2c, addr, 0x02, 0, delay);
     delay.delay_us(150);
 }
 
@@ -312,9 +317,14 @@ pub(crate) fn setup_display(
 ) {
     lcd_hd44780_reset(i2c, LCD_I2C_ADDR, delay);
     lcd_hd44780_configure(i2c, LCD_I2C_ADDR, delay);
+    lcd_show_title(i2c, delay);
+    uart.write_full_blocking(b"LCD 1602 driver initialized at I2C addr 0x27\r\n");
+}
+
+/// Write the title text on LCD row 0.
+fn lcd_show_title(i2c: &mut impl I2c, delay: &mut cortex_m::delay::Delay) {
     lcd_set_cursor(i2c, LCD_I2C_ADDR, 0, 0, delay);
     lcd_puts(i2c, LCD_I2C_ADDR, b"Reverse Eng.", delay);
-    uart.write_full_blocking(b"LCD 1602 driver initialized at I2C addr 0x27\r\n");
 }
 
 /// Format and display the next counter value on LCD line 1.
@@ -334,11 +344,78 @@ pub(crate) fn update_counter(
     let mut buf = [0u8; 16];
     let n = crate::lcd1602::format_counter(&mut buf, *count);
     *count += 1;
-    lcd_set_cursor(i2c, LCD_I2C_ADDR, 1, 0, delay);
-    lcd_puts(i2c, LCD_I2C_ADDR, &buf[..n], delay);
-    uart.write_full_blocking(&buf[..n]);
-    uart.write_full_blocking(b"\r\n");
+    lcd_display_counter(i2c, delay, &buf[..n]);
+    uart_log_counter(uart, &buf[..n]);
     delay.delay_ms(COUNTER_DELAY_MS);
+}
+
+/// Write counter text to LCD line 1.
+fn lcd_display_counter(i2c: &mut impl I2c, delay: &mut cortex_m::delay::Delay, text: &[u8]) {
+    lcd_set_cursor(i2c, LCD_I2C_ADDR, 1, 0, delay);
+    lcd_puts(i2c, LCD_I2C_ADDR, text, delay);
+}
+
+/// Log counter text over UART with trailing CRLF.
+fn uart_log_counter(uart: &EnabledUart, text: &[u8]) {
+    uart.write_full_blocking(text);
+    uart.write_full_blocking(b"\r\n");
+}
+
+/// Initialise all peripherals and run the LCD 1602 counter demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
+    let mut delay = init_delay(&clocks);
+    let mut i2c = init_i2c(pac.I2C1, pins.gpio2, pins.gpio3, &mut pac.RESETS, &clocks);
+    setup_display(&mut i2c, &uart, &mut delay);
+    counter_loop(&mut i2c, &uart, &mut delay)
+}
+
+/// Initialise I2C1 on SDA=GPIO2 / SCL=GPIO3.
+///
+/// # Arguments
+///
+/// * `i2c1` - PAC I2C1 peripheral singleton.
+/// * `sda` - Default GPIO 2 pin (will be reconfigured for I2C).
+/// * `scl` - Default GPIO 3 pin (will be reconfigured for I2C).
+/// * `resets` - Mutable reference to the RESETS peripheral.
+/// * `clocks` - Reference to the initialised clock configuration.
+///
+/// # Returns
+///
+/// Configured I2C1 bus controller.
+fn init_i2c(
+    i2c1: hal::pac::I2C1,
+    sda: Pin<hal::gpio::bank0::Gpio2, FunctionNull, PullDown>,
+    scl: Pin<hal::gpio::bank0::Gpio3, FunctionNull, PullDown>,
+    resets: &mut hal::pac::RESETS,
+    clocks: &hal::clocks::ClocksManager,
+) -> impl I2c {
+    let sda = sda.reconfigure::<FunctionI2C, PullUp>();
+    let scl = scl.reconfigure::<FunctionI2C, PullUp>();
+    hal::I2C::i2c1(i2c1, sda, scl, I2C_BAUD.Hz(), resets, clocks.system_clock.freq())
+}
+
+/// Run the counter display loop forever.
+///
+/// # Arguments
+///
+/// * `i2c` - Mutable reference to the I2C bus controller.
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+/// * `delay` - Mutable reference to the blocking delay provider.
+fn counter_loop(
+    i2c: &mut impl I2c,
+    uart: &EnabledUart,
+    delay: &mut cortex_m::delay::Delay,
+) -> ! {
+    let mut count: u32 = 0;
+    loop { update_counter(i2c, uart, delay, &mut count); }
 }
 
 // End of file

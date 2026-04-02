@@ -26,7 +26,7 @@
 //! SOFTWARE.
 
 // Flash driver pure-logic functions and constants
-use crate::flash_driver;
+use crate::flash;
 // Rate extension trait for .Hz() baud rate construction
 use fugit::RateExtU32;
 // Clock trait for accessing system clock frequency
@@ -176,8 +176,8 @@ pub(crate) fn flash_write(flash_offset: u32, data: &[u8]) {
         rom_data::flash_exit_xip();
         rom_data::flash_range_erase(
             flash_offset,
-            flash_driver::FLASH_SECTOR_SIZE as usize,
-            flash_driver::FLASH_SECTOR_SIZE,
+            flash::FLASH_SECTOR_SIZE as usize,
+            flash::FLASH_SECTOR_SIZE,
             0x20,
         );
         rom_data::flash_range_program(flash_offset, data.as_ptr(), len);
@@ -198,10 +198,50 @@ pub(crate) fn flash_write(flash_offset: u32, data: &[u8]) {
 /// * `flash_offset` - Byte offset from the start of flash.
 /// * `out` - Destination buffer.
 pub(crate) fn flash_read(flash_offset: u32, out: &mut [u8]) {
-    let addr = (flash_driver::XIP_BASE + flash_offset) as *const u8;
+    let addr = (flash::XIP_BASE + flash_offset) as *const u8;
     for (i, byte) in out.iter_mut().enumerate() {
         *byte = unsafe { core::ptr::read_volatile(addr.add(i)) };
     }
+}
+
+/// Initialise all peripherals and run the flash demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
+    flash_demo(&uart);
+    loop { cortex_m::asm::wfe(); }
+}
+
+/// Execute the flash write / read-back / report sequence.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+fn flash_demo(uart: &EnabledUart) {
+    let mut write_buf = [0u8; flash::FLASH_WRITE_LEN];
+    flash::prepare_write_buf(&mut write_buf);
+    flash_write(flash::FLASH_TARGET_OFFSET, &write_buf);
+    let mut read_buf = [0u8; flash::FLASH_WRITE_LEN];
+    flash_read(flash::FLASH_TARGET_OFFSET, &mut read_buf);
+    report_readback(uart, &read_buf);
+}
+
+/// Format and print the flash read-back result over UART.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+/// * `read_buf` - Buffer containing the data read back from flash.
+fn report_readback(uart: &EnabledUart, read_buf: &[u8]) {
+    let mut out = [0u8; 128];
+    let n = flash::format_readback(&mut out, read_buf);
+    uart.write_full_blocking(&out[..n]);
 }
 
 // End of file

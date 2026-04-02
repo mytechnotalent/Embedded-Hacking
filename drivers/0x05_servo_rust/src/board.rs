@@ -186,26 +186,26 @@ pub(crate) fn init_delay(clocks: &hal::clocks::ClocksManager) -> cortex_m::delay
 ///
 /// Number of bytes written into the buffer.
 pub(crate) fn format_angle(buf: &mut [u8], angle: i32) -> usize {
-    let prefix = b"Angle: ";
-    buf[..7].copy_from_slice(prefix);
+    buf[..7].copy_from_slice(b"Angle: ");
     let mut pos = 7;
     let a = if angle < 0 { 0 } else { angle as u32 };
-    if a >= 100 {
-        buf[pos] = b'0' + (a / 100) as u8; pos += 1;
-        buf[pos] = b'0' + ((a / 10) % 10) as u8; pos += 1;
-        buf[pos] = b'0' + (a % 10) as u8; pos += 1;
-    } else if a >= 10 {
-        buf[pos] = b' '; pos += 1;
-        buf[pos] = b'0' + (a / 10) as u8; pos += 1;
-        buf[pos] = b'0' + (a % 10) as u8; pos += 1;
-    } else {
-        buf[pos] = b' '; pos += 1;
-        buf[pos] = b' '; pos += 1;
-        buf[pos] = b'0' + a as u8; pos += 1;
-    }
-    let suffix = b" deg\r\n";
-    buf[pos..pos + 6].copy_from_slice(suffix);
+    pos += write_angle_digits(&mut buf[pos..], a);
+    buf[pos..pos + 6].copy_from_slice(b" deg\r\n");
     pos + 6
+}
+
+/// Write 3-character right-justified angle digits into `buf`.
+fn write_angle_digits(buf: &mut [u8], a: u32) -> usize {
+    if a >= 100 {
+        buf[0] = b'0' + (a / 100) as u8;
+        buf[1] = b'0' + ((a / 10) % 10) as u8;
+        buf[2] = b'0' + (a % 10) as u8;
+    } else if a >= 10 {
+        buf[0] = b' '; buf[1] = b'0' + (a / 10) as u8; buf[2] = b'0' + (a % 10) as u8;
+    } else {
+        buf[0] = b' '; buf[1] = b' '; buf[2] = b'0' + a as u8;
+    }
+    3
 }
 
 /// Sweep the servo angle upward from 0 to 180 in STEP_DEGREES increments.
@@ -224,12 +224,7 @@ pub(crate) fn sweep_angle_up(
 ) {
     let mut angle: i32 = 0;
     while angle <= 180 {
-        let pulse = crate::servo::angle_to_pulse_us(angle as f32, crate::servo::SERVO_DEFAULT_MIN_US, crate::servo::SERVO_DEFAULT_MAX_US);
-        let level = crate::servo::pulse_us_to_level(pulse as u32, crate::servo::SERVO_WRAP, crate::servo::SERVO_HZ) as u16;
-        channel.set_duty_cycle(level).ok();
-        let n = format_angle(buf, angle);
-        uart.write_full_blocking(&buf[..n]);
-        delay.delay_ms(STEP_DELAY_MS);
+        apply_angle(uart, channel, delay, buf, angle);
         angle += STEP_DEGREES;
     }
 }
@@ -250,13 +245,114 @@ pub(crate) fn sweep_angle_down(
 ) {
     let mut angle: i32 = 180;
     while angle >= 0 {
-        let pulse = crate::servo::angle_to_pulse_us(angle as f32, crate::servo::SERVO_DEFAULT_MIN_US, crate::servo::SERVO_DEFAULT_MAX_US);
-        let level = crate::servo::pulse_us_to_level(pulse as u32, crate::servo::SERVO_WRAP, crate::servo::SERVO_HZ) as u16;
-        channel.set_duty_cycle(level).ok();
-        let n = format_angle(buf, angle);
-        uart.write_full_blocking(&buf[..n]);
-        delay.delay_ms(STEP_DELAY_MS);
+        apply_angle(uart, channel, delay, buf, angle);
         angle -= STEP_DEGREES;
+    }
+}
+
+/// Apply a single angle step: compute pulse, set PWM, format, print, delay.
+fn apply_angle(
+    uart: &EnabledUart,
+    channel: &mut impl SetDutyCycle,
+    delay: &mut cortex_m::delay::Delay,
+    buf: &mut [u8; 20],
+    angle: i32,
+) {
+    let level = compute_servo_level(angle) as u16;
+    channel.set_duty_cycle(level).ok();
+    let n = format_angle(buf, angle);
+    uart.write_full_blocking(&buf[..n]);
+    delay.delay_ms(STEP_DELAY_MS);
+}
+
+/// Compute the PWM level for a given angle using servo constants.
+fn compute_servo_level(angle: i32) -> u32 {
+    let pulse = crate::servo::angle_to_pulse_us(angle as f32, crate::servo::SERVO_DEFAULT_MIN_US, crate::servo::SERVO_DEFAULT_MAX_US);
+    crate::servo::pulse_us_to_level(pulse as u32, crate::servo::SERVO_WRAP, crate::servo::SERVO_HZ)
+}
+
+/// Type alias for PWM slice 3 (servo on GPIO 6, channel A).
+type PwmSlice3 = hal::pwm::Slice<hal::pwm::Pwm3, hal::pwm::FreeRunning>;
+
+/// Initialise all peripherals and run the servo sweep demo.
+///
+/// # Arguments
+///
+/// * `pac` - PAC Peripherals singleton (consumed).
+pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
+    let mut wd = hal::Watchdog::new(pac.WATCHDOG);
+    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
+    let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
+    let mut delay = init_delay(&clocks);
+    let mut pwm = init_servo_pwm(pac.PWM, &mut pac.RESETS, &clocks, pins.gpio6);
+    announce_servo(&uart);
+    servo_loop(&uart, &mut pwm, &mut delay)
+}
+
+/// Configure PWM slice 3 for 50 Hz servo output on channel A (GPIO 6).
+///
+/// # Arguments
+///
+/// * `pwm_pac` - PAC PWM peripheral singleton.
+/// * `resets` - Mutable reference to the RESETS peripheral.
+/// * `clocks` - Reference to the initialised clock configuration.
+/// * `servo_pin` - Default GPIO 6 pin to bind to PWM channel A.
+///
+/// # Returns
+///
+/// Configured PWM slice 3 in free-running mode.
+fn init_servo_pwm(
+    pwm_pac: hal::pac::PWM,
+    resets: &mut hal::pac::RESETS,
+    clocks: &hal::clocks::ClocksManager,
+    servo_pin: Pin<hal::gpio::bank0::Gpio6, FunctionNull, PullDown>,
+) -> PwmSlice3 {
+    let slices = hal::pwm::Slices::new(pwm_pac, resets);
+    let mut slice = slices.pwm3;
+    configure_servo_div(&mut slice, clocks);
+    slice.enable();
+    slice.channel_a.output_to(servo_pin);
+    slice
+}
+
+/// Set the clock divider and wrap for a servo PWM slice.
+///
+/// # Arguments
+///
+/// * `slice` - Mutable reference to the PWM slice to configure.
+/// * `clocks` - Reference to the initialised clock configuration.
+fn configure_servo_div(slice: &mut PwmSlice3, clocks: &hal::clocks::ClocksManager) {
+    let sys_hz = clocks.system_clock.freq().to_Hz();
+    let div = crate::servo::calc_clk_div(sys_hz, crate::servo::SERVO_HZ, crate::servo::SERVO_WRAP);
+    let div_int = div as u8;
+    slice.set_div_int(div_int);
+    slice.set_div_frac((((div - div_int as f32) * 16.0) as u8).min(15));
+    slice.set_top(crate::servo::SERVO_WRAP as u16);
+}
+
+/// Print the servo initialisation banner over UART.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+fn announce_servo(uart: &EnabledUart) {
+    uart.write_full_blocking(b"Servo driver initialized on GPIO 6\r\n");
+    uart.write_full_blocking(b"Sweeping 0 -> 180 -> 0 degrees in 10-degree steps\r\n");
+}
+
+/// Run the servo angle sweep loop forever.
+///
+/// # Arguments
+///
+/// * `uart` - Reference to the enabled UART peripheral for serial output.
+/// * `pwm` - Mutable reference to the configured PWM slice.
+/// * `delay` - Mutable reference to the blocking delay provider.
+fn servo_loop(uart: &EnabledUart, pwm: &mut PwmSlice3, delay: &mut cortex_m::delay::Delay) -> ! {
+    let mut buf = [0u8; 20];
+    loop {
+        sweep_angle_up(uart, &mut pwm.channel_a, delay, &mut buf);
+        sweep_angle_down(uart, &mut pwm.channel_a, delay, &mut buf);
     }
 }
 
