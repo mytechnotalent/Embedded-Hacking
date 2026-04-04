@@ -1,0 +1,11 @@
+# C files
+*.c linguist-language=C
+
+# Exclude from language statistics
+*.ld linguist-vendored
+*.bat linguist-vendored
+*.py linguist-vendored
+linker.ld linguist-vendored
+build.bat linguist-vendored
+clean.bat linguist-vendored
+uf2conv.py linguist-vendored

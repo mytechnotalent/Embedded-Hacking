@@ -1,0 +1,10 @@
+# Build artifacts
+*.o
+*.elf
+*.bin
+*.uf2
+compile_commands.json
+
+# OS files
+.DS_Store
+Thumbs.db
