@@ -5,7 +5,7 @@
   * @brief   UART0 driver implementation for RP2350.
   *
   *          Configures UART0 on GPIO 0 (TX) and GPIO 1 (RX) at 115200
-  *          baud using the 14.5 MHz XOSC clock.
+  *          baud using the 12 MHz XOSC clock.
   *
   ******************************************************************************
   * @attention
@@ -59,7 +59,7 @@ static void _uart_configure_pins(void)
 }
 
 /**
-  * @brief  Set UART0 baud rate divisors for 115200 at 14.5 MHz.
+  * @brief  Set UART0 baud rate divisors for 115200 at 12 MHz.
   * @retval None
   */
 static void _uart_set_baud(void)

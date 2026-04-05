@@ -4,7 +4,7 @@
   * @author  Kevin Thomas
   * @brief   Delay driver implementation for RP2350.
   *
-  *          Busy-wait millisecond delay calibrated for a 14.5 MHz clock
+  *          Busy-wait millisecond delay calibrated for a 12 MHz clock
   *          (3600 loop iterations per millisecond).
   *
   ******************************************************************************

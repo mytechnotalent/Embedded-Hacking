@@ -5,7 +5,7 @@
   * @brief   UART0 driver header for RP2350.
   *
   *          Bare-metal UART0 driver supporting TX/RX on GPIO 0/1 at
-  *          115200 baud (14.5 MHz XOSC clock).
+  *          115200 baud (12 MHz XOSC clock).
   *
   ******************************************************************************
   * @attention

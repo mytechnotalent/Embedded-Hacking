@@ -4,7 +4,7 @@
   * @author  Kevin Thomas
   * @brief   Delay driver header for RP2350.
   *
-  *          Millisecond busy-wait delay calibrated for a 14.5 MHz clock.
+  *          Millisecond busy-wait delay calibrated for a 12 MHz clock.
   *
   ******************************************************************************
   * @attention

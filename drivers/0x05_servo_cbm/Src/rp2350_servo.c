@@ -6,8 +6,7 @@
   *
   *          Configures PWM slice 3, channel A on GPIO 6 at 50 Hz for
   *          standard hobby servo control. Uses a wrap of 19999 and a
-  *          fractional clock divider of 14.5 (14.5 MHz XOSC / 50 Hz /
-  *          20000 = 14.5).
+  *          clock divider of 12 (12 MHz XOSC / 50 Hz / 20000 = 12).
   *
   ******************************************************************************
   * @attention
@@ -32,14 +31,14 @@
 #define SERVO_SLICE   3U
 
 /**
-  * @brief  Wrap value for 50 Hz at 14.5 MHz with divider 14.5.
+  * @brief  Wrap value for 50 Hz at 12 MHz with divider 12.
   */
 #define SERVO_WRAP    19999U
 
 /**
-  * @brief  Clock divider register value for 14.5 (INT=14, FRAC=8).
+  * @brief  Clock divider register value for 12 (INT=12, FRAC=0).
   */
-#define SERVO_DIV_VAL ((14U << PWM_DIV_INT_SHIFT) | 8U)
+#define SERVO_DIV_VAL ((12U << PWM_DIV_INT_SHIFT) | 0U)
 
 /**
   * @brief  Minimum pulse width in microseconds (0 degrees).
