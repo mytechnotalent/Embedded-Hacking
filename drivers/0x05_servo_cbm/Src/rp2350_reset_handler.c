@@ -31,6 +31,17 @@
 
 extern int main(void);
 
+/**
+  * @brief  Initialize late peripherals (servo and coprocessor).
+  * @retval None
+  */
+void _late_init(void)
+{
+  servo_release_reset();
+  servo_init();
+  coprocessor_enable();
+}
+
 void __attribute__((naked, noreturn)) Reset_Handler(void)
 {
   __asm__ volatile (
@@ -40,9 +51,7 @@ void __attribute__((naked, noreturn)) Reset_Handler(void)
     "bl reset_init_subsystem\n\t"
     "bl uart_release_reset\n\t"
     "bl uart_init\n\t"
-    "bl servo_release_reset\n\t"
-    "bl servo_init\n\t"
-    "bl coprocessor_enable\n\t"
+    "bl _late_init\n\t"
     "b main\n\t"
   );
 }

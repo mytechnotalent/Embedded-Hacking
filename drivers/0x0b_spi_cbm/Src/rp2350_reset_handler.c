@@ -31,6 +31,16 @@
 
 extern int main(void);
 
+/**
+  * @brief  Initialize late peripherals (SPI reset and coprocessor).
+  * @retval None
+  */
+void _late_init(void)
+{
+  spi_release_reset();
+  coprocessor_enable();
+}
+
 void __attribute__((naked, noreturn)) Reset_Handler(void)
 {
   __asm__ volatile (
@@ -38,10 +48,9 @@ void __attribute__((naked, noreturn)) Reset_Handler(void)
     "bl xosc_init\n\t"
     "bl xosc_enable_peri_clk\n\t"
     "bl reset_init_subsystem\n\t"
-    "bl spi_release_reset\n\t"
     "bl uart_release_reset\n\t"
     "bl uart_init\n\t"
-    "bl coprocessor_enable\n\t"
+    "bl _late_init\n\t"
     "b main\n\t"
   );
 }

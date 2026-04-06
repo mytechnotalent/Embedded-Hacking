@@ -50,7 +50,7 @@ extern uint32_t __data_end;
   * @brief  Copy initialized data and RAM-resident code from flash to RAM.
   * @retval None
   */
-void data_copy_init(void)
+static void _data_copy_init(void)
 {
   uint32_t *src = &__data_lma;
   uint32_t *dst = &__data_start;
@@ -58,11 +58,20 @@ void data_copy_init(void)
     *dst++ = *src++;
 }
 
+/**
+  * @brief  Initialize stack pointers and copy .data section to RAM.
+  * @retval None
+  */
+void ram_init(void)
+{
+  stack_init();
+  _data_copy_init();
+}
+
 void __attribute__((naked, noreturn)) Reset_Handler(void)
 {
   __asm__ volatile (
-    "bl stack_init\n\t"
-    "bl data_copy_init\n\t"
+    "bl ram_init\n\t"
     "bl xosc_init\n\t"
     "bl xosc_enable_peri_clk\n\t"
     "bl reset_init_subsystem\n\t"
