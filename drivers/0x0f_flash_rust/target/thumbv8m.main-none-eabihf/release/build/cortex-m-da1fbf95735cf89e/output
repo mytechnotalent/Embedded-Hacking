@@ -1,6 +1,0 @@
-cargo:rustc-link-lib=static=cortex-m
-cargo:rustc-link-search=C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\drivers\0x0f_flash_rust\target\thumbv8m.main-none-eabihf\release\build\cortex-m-da1fbf95735cf89e\out
-cargo:rustc-cfg=cortex_m
-cargo:rustc-cfg=armv8m
-cargo:rustc-cfg=armv8m_main
-cargo:rustc-cfg=has_fpu

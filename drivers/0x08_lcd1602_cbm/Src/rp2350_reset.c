@@ -22,6 +22,10 @@
 
 #include "rp2350_reset.h"
 
+/**
+  * @brief  Release IO_BANK0 from reset and wait until ready.
+  * @retval None
+  */
 void reset_init_subsystem(void)
 {
   uint32_t value;

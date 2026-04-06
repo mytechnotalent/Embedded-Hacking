@@ -37,10 +37,10 @@ use hal::gpio::{FunctionNull, FunctionUart, Pin, PullDown, PullNone};
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
 
 // Alias our HAL crate
-#[cfg(rp2350)]
-use rp235x_hal as hal;
 #[cfg(rp2040)]
 use rp2040_hal as hal;
+#[cfg(rp2350)]
+use rp235x_hal as hal;
 
 /// Timer device type for the HAL timer peripheral.
 #[cfg(rp2350)]
@@ -103,7 +103,13 @@ pub(crate) fn init_clocks(
     watchdog: &mut hal::Watchdog,
 ) -> hal::clocks::ClocksManager {
     hal::clocks::init_clocks_and_plls(
-        XTAL_FREQ_HZ, xosc, clocks, pll_sys, pll_usb, resets, watchdog,
+        XTAL_FREQ_HZ,
+        xosc,
+        clocks,
+        pll_sys,
+        pll_usb,
+        resets,
+        watchdog,
     )
     .unwrap()
 }
@@ -182,6 +188,17 @@ pub(crate) fn init_delay(clocks: &hal::clocks::ClocksManager) -> cortex_m::delay
     cortex_m::delay::Delay::new(core.SYST, clocks.system_clock.freq().to_Hz())
 }
 
+/// Set or clear the DHT11 GPIO output level via SIO registers.
+fn sio_set_level(sio: &hal::pac::sio::RegisterBlock, high: bool) {
+    if high {
+        sio.gpio_out_set()
+            .write(|w| unsafe { w.bits(1u32 << DHT11_GPIO) });
+    } else {
+        sio.gpio_out_clr()
+            .write(|w| unsafe { w.bits(1u32 << DHT11_GPIO) });
+    }
+}
+
 /// Drive the DHT11 data pin to a given level (enables output).
 ///
 /// # Arguments
@@ -190,11 +207,7 @@ pub(crate) fn init_delay(clocks: &hal::clocks::ClocksManager) -> cortex_m::delay
 fn gpio_drive(high: bool) {
     unsafe {
         let sio = &*hal::pac::SIO::PTR;
-        if high {
-            sio.gpio_out_set().write(|w| w.bits(1u32 << DHT11_GPIO));
-        } else {
-            sio.gpio_out_clr().write(|w| w.bits(1u32 << DHT11_GPIO));
-        }
+        sio_set_level(sio, high);
         sio.gpio_oe_set().write(|w| w.bits(1u32 << DHT11_GPIO));
     }
 }
@@ -277,6 +290,26 @@ fn wait_response() -> bool {
     wait_for_level(true) && wait_for_level(false) && wait_for_level(true)
 }
 
+/// Measure the high-period duration for a single DHT11 bit.
+///
+/// # Arguments
+///
+/// * `timer` - Reference to the HAL timer for microsecond measurement.
+///
+/// # Returns
+///
+/// Duration in microseconds, or `None` on timeout.
+fn measure_bit_duration(timer: &HalTimer) -> Option<u32> {
+    if !wait_for_level(false) {
+        return None;
+    }
+    let start = time_us_32(timer);
+    if !wait_for_level(true) {
+        return None;
+    }
+    Some(time_us_32(timer).wrapping_sub(start))
+}
+
 /// Read a single bit from the DHT11 data stream.
 ///
 /// Waits for the low-period to end, measures the high-period duration,
@@ -293,14 +326,9 @@ fn wait_response() -> bool {
 ///
 /// `true` on success, `false` on timeout.
 fn read_bit(data: &mut [u8; 5], i: usize, timer: &HalTimer) -> bool {
-    if !wait_for_level(false) {
+    let Some(duration) = measure_bit_duration(timer) else {
         return false;
-    }
-    let start = time_us_32(timer);
-    if !wait_for_level(true) {
-        return false;
-    }
-    let duration = time_us_32(timer).wrapping_sub(start);
+    };
     dht11::accumulate_bit(data, i, duration);
     true
 }
@@ -324,6 +352,12 @@ fn read_40_bits(data: &mut [u8; 5], timer: &HalTimer) -> bool {
     true
 }
 
+/// Run the full DHT11 acquisition sequence (start, response, 40 bits, checksum).
+fn acquire_data(timer: &HalTimer, delay: &mut cortex_m::delay::Delay, data: &mut [u8; 5]) -> bool {
+    send_start_signal(delay);
+    wait_response() && read_40_bits(data, timer) && dht11::validate_checksum(data)
+}
+
 /// Execute the full DHT11 read protocol.
 ///
 /// Sends the start signal, waits for the sensor response, reads 40 bits
@@ -342,17 +376,24 @@ pub(crate) fn read_sensor(
     delay: &mut cortex_m::delay::Delay,
 ) -> Option<(f32, f32)> {
     let mut data = [0u8; 5];
-    send_start_signal(delay);
-    if !wait_response() {
+    if !acquire_data(timer, delay, &mut data) {
         return None;
     }
-    if !read_40_bits(&mut data, timer) {
-        return None;
-    }
-    if !dht11::validate_checksum(&data) {
-        return None;
-    }
-    Some((dht11::parse_humidity(&data), dht11::parse_temperature(&data)))
+    Some((
+        dht11::parse_humidity(&data),
+        dht11::parse_temperature(&data),
+    ))
+}
+
+/// Format the sensor result (or error) with CRLF into `buf`.
+fn format_sensor_output(buf: &mut [u8], result: Option<(f32, f32)>) -> usize {
+    let n = match result {
+        Some((h, t)) => dht11::format_reading(buf, h, t),
+        None => dht11::format_error(buf, DHT11_GPIO),
+    };
+    buf[n] = b'\r';
+    buf[n + 1] = b'\n';
+    n + 2
 }
 
 /// Read the sensor, format the result, write it over UART, and wait.
@@ -372,13 +413,9 @@ pub(crate) fn poll_sensor(
     delay: &mut cortex_m::delay::Delay,
 ) {
     let mut buf = [0u8; 64];
-    let n = match read_sensor(timer, delay) {
-        Some((h, t)) => dht11::format_reading(&mut buf, h, t),
-        None => dht11::format_error(&mut buf, DHT11_GPIO),
-    };
-    buf[n] = b'\r';
-    buf[n + 1] = b'\n';
-    uart.write_full_blocking(&buf[..n + 2]);
+    let result = read_sensor(timer, delay);
+    let n = format_sensor_output(&mut buf, result);
+    uart.write_full_blocking(&buf[..n]);
     delay.delay_ms(POLL_MS);
 }
 
@@ -389,7 +426,14 @@ pub(crate) fn poll_sensor(
 /// * `pac` - PAC Peripherals singleton (consumed).
 pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
     let mut wd = hal::Watchdog::new(pac.WATCHDOG);
-    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let clocks = init_clocks(
+        pac.XOSC,
+        pac.CLOCKS,
+        pac.PLL_SYS,
+        pac.PLL_USB,
+        &mut pac.RESETS,
+        &mut wd,
+    );
     let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
     let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
     let mut delay = init_delay(&clocks);
@@ -399,7 +443,9 @@ pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
     let timer = hal::Timer::new(pac.TIMER, &mut pac.RESETS);
     let _ = pins.gpio4.into_pull_up_input();
     uart.write_full_blocking(b"DHT11 driver initialized on GPIO 4\r\n");
-    loop { poll_sensor(&uart, &timer, &mut delay); }
+    loop {
+        poll_sensor(&uart, &timer, &mut delay);
+    }
 }
 
 // End of file

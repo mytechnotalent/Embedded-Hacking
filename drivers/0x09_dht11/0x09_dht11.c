@@ -43,6 +43,7 @@
 #include "pico/stdlib.h"
 #include "dht11.h"
 
+/** @brief GPIO pin connected to the DHT11 data line */
 #define DHT11_GPIO 4
 
 /**

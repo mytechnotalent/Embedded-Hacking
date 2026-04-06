@@ -110,6 +110,7 @@ mod tests {
     // Import all parent module items
     use super::*;
 
+    /// Valid ports are zero and one.
     #[test]
     fn valid_ports_are_zero_and_one() {
         assert!(is_valid_port(0));
@@ -117,6 +118,7 @@ mod tests {
         assert!(!is_valid_port(2));
     }
 
+    /// Clear rx buffer zeroes all bytes.
     #[test]
     fn clear_rx_buffer_zeroes_all_bytes() {
         let mut rx = [1u8, 2, 3, 4];
@@ -124,6 +126,7 @@ mod tests {
         assert_eq!(rx, [0u8; 4]);
     }
 
+    /// Copy transfer result copies common prefix.
     #[test]
     fn copy_transfer_result_copies_common_prefix() {
         let src = b"abcd";
@@ -132,6 +135,7 @@ mod tests {
         assert_eq!(&dst, b"abc");
     }
 
+    /// Format tx line omits trailing nul.
     #[test]
     fn format_tx_line_omits_trailing_nul() {
         let mut buf = [0u8; 32];
@@ -139,6 +143,7 @@ mod tests {
         assert_eq!(&buf[..n], b"TX: SPI loopback OK\r\n");
     }
 
+    /// Format rx line adds blank line.
     #[test]
     fn format_rx_line_adds_blank_line() {
         let mut buf = [0u8; 32];
@@ -146,6 +151,7 @@ mod tests {
         assert_eq!(&buf[..n], b"RX: SPI loopback OK\r\n\r\n");
     }
 
+    /// C string len stops at nul.
     #[test]
     fn c_string_len_stops_at_nul() {
         assert_eq!(c_string_len(b"abc\0xyz"), 3);

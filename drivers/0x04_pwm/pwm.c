@@ -32,8 +32,11 @@
 #include "hardware/pwm.h"
 #include "hardware/clocks.h"
 
+/** @brief PWM hardware slice index */
 static uint     pwm_slice;
+/** @brief PWM channel (A or B) within the slice */
 static uint     pwm_chan;
+/** @brief PWM counter wrap value */
 static uint32_t pwm_wrap;
 
 /**
@@ -68,6 +71,12 @@ static void _apply_pwm_config(uint32_t freq_hz) {
     pwm_set_chan_level(pwm_slice, pwm_chan, 0);
 }
 
+/**
+ * @brief Initialize PWM output on the specified GPIO pin
+ *
+ * @param pin     GPIO pin number to drive with PWM output
+ * @param freq_hz Desired PWM frequency in Hz
+ */
 void pwm_driver_init(uint32_t pin, uint32_t freq_hz) {
     gpio_set_function(pin, GPIO_FUNC_PWM);
     pwm_slice = pwm_gpio_to_slice_num(pin);
@@ -76,6 +85,11 @@ void pwm_driver_init(uint32_t pin, uint32_t freq_hz) {
     _apply_pwm_config(freq_hz);
 }
 
+/**
+ * @brief Set the PWM duty cycle as an integer percentage
+ *
+ * @param percent Duty cycle from 0 (always low) to 100 (always high)
+ */
 void pwm_driver_set_duty_percent(uint8_t percent) {
     if (percent > 100) {
         percent = 100;

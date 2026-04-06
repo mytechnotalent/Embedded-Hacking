@@ -6,7 +6,7 @@
   *
   *          Entry point after reset. Performs stack initialization, XOSC
   *          setup, subsystem reset release, UART initialization,
-  *          coprocessor enable, and branches to main().
+  *          and branches to main().
   *
   ******************************************************************************
   * @attention

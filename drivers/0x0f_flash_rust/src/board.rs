@@ -39,10 +39,10 @@ use hal::rom_data;
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
 
 // Alias our HAL crate
-#[cfg(rp2350)]
-use rp235x_hal as hal;
 #[cfg(rp2040)]
 use rp2040_hal as hal;
+#[cfg(rp2350)]
+use rp235x_hal as hal;
 
 /// External crystal frequency in Hz (12 MHz).
 pub(crate) const XTAL_FREQ_HZ: u32 = 12_000_000u32;
@@ -92,7 +92,13 @@ pub(crate) fn init_clocks(
     watchdog: &mut hal::Watchdog,
 ) -> hal::clocks::ClocksManager {
     hal::clocks::init_clocks_and_plls(
-        XTAL_FREQ_HZ, xosc, clocks, pll_sys, pll_usb, resets, watchdog,
+        XTAL_FREQ_HZ,
+        xosc,
+        clocks,
+        pll_sys,
+        pll_usb,
+        resets,
+        watchdog,
     )
     .unwrap()
 }
@@ -153,6 +159,37 @@ pub(crate) fn init_uart(
         .unwrap()
 }
 
+/// Transition flash out of XIP mode and erase the target sector.
+///
+/// # Safety
+///
+/// Must be called with interrupts disabled and no other flash access active.
+unsafe fn flash_prepare_sector(flash_offset: u32) {
+    unsafe {
+        rom_data::connect_internal_flash();
+        rom_data::flash_exit_xip();
+        rom_data::flash_range_erase(
+            flash_offset,
+            flash::FLASH_SECTOR_SIZE as usize,
+            flash::FLASH_SECTOR_SIZE,
+            0x20,
+        );
+    }
+}
+
+/// Program data into the erased sector and restore XIP mode.
+///
+/// # Safety
+///
+/// Must be called with interrupts disabled and no other flash access active.
+unsafe fn flash_program_and_restore(flash_offset: u32, data: &[u8]) {
+    unsafe {
+        rom_data::flash_range_program(flash_offset, data.as_ptr(), data.len());
+        rom_data::flash_flush_cache();
+        rom_data::flash_enter_cmd_xip();
+    }
+}
+
 /// Erase one 4096-byte sector and write data to on-chip flash.
 ///
 /// Disables interrupts, transitions the flash device out of XIP mode,
@@ -170,19 +207,9 @@ pub(crate) fn init_uart(
 /// Caller must ensure no other core or DMA is accessing flash/XIP during
 /// this operation.
 pub(crate) fn flash_write(flash_offset: u32, data: &[u8]) {
-    let len = data.len();
     cortex_m::interrupt::free(|_| unsafe {
-        rom_data::connect_internal_flash();
-        rom_data::flash_exit_xip();
-        rom_data::flash_range_erase(
-            flash_offset,
-            flash::FLASH_SECTOR_SIZE as usize,
-            flash::FLASH_SECTOR_SIZE,
-            0x20,
-        );
-        rom_data::flash_range_program(flash_offset, data.as_ptr(), len);
-        rom_data::flash_flush_cache();
-        rom_data::flash_enter_cmd_xip();
+        flash_prepare_sector(flash_offset);
+        flash_program_and_restore(flash_offset, data);
     });
 }
 
@@ -211,11 +238,20 @@ pub(crate) fn flash_read(flash_offset: u32, out: &mut [u8]) {
 /// * `pac` - PAC Peripherals singleton (consumed).
 pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
     let mut wd = hal::Watchdog::new(pac.WATCHDOG);
-    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let clocks = init_clocks(
+        pac.XOSC,
+        pac.CLOCKS,
+        pac.PLL_SYS,
+        pac.PLL_USB,
+        &mut pac.RESETS,
+        &mut wd,
+    );
     let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
     let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
     flash_demo(&uart);
-    loop { cortex_m::asm::wfe(); }
+    loop {
+        cortex_m::asm::wfe();
+    }
 }
 
 /// Execute the flash write / read-back / report sequence.

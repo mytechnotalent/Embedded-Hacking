@@ -1,1 +1,0 @@
-(rp235x_hal::gpio::Pin<Gpio16, FunctionSpi, PullNone>, rp235x_hal::gpio::Pin<Gpio19, FunctionSpi, PullNone>, rp235x_hal::gpio::Pin<Gpio18, FunctionSpi, PullNone>)

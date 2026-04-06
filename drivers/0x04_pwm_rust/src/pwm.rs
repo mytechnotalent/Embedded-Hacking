@@ -82,58 +82,69 @@ mod tests {
     // Import all parent module items
     use super::*;
 
+    /// Calc clk div 1khz.
     #[test]
     fn calc_clk_div_1khz() {
         let div = calc_clk_div(150_000_000, 1000, 9999);
         assert!((div - 15.0).abs() < 0.01);
     }
 
+    /// Calc clk div 10khz.
     #[test]
     fn calc_clk_div_10khz() {
         let div = calc_clk_div(150_000_000, 10000, 9999);
         assert!((div - 1.5).abs() < 0.01);
     }
 
+    /// Clamp percent within range.
     #[test]
     fn clamp_percent_within_range() {
         assert_eq!(clamp_percent(50), 50);
     }
 
+    /// Clamp percent at 100.
     #[test]
     fn clamp_percent_at_100() {
         assert_eq!(clamp_percent(100), 100);
     }
 
+    /// Clamp percent above 100.
     #[test]
     fn clamp_percent_above_100() {
         assert_eq!(clamp_percent(255), 100);
     }
 
+    /// Clamp percent zero.
     #[test]
     fn clamp_percent_zero() {
         assert_eq!(clamp_percent(0), 0);
     }
 
+    /// Duty to level zero.
     #[test]
     fn duty_to_level_zero() {
         assert_eq!(duty_to_level(0, 9999), 0);
     }
 
+    /// Duty to level 100.
     #[test]
     fn duty_to_level_100() {
         assert_eq!(duty_to_level(100, 9999), 10000);
     }
 
+    /// Duty to level 50.
     #[test]
     fn duty_to_level_50() {
         assert_eq!(duty_to_level(50, 9999), 5000);
     }
 
+    /// Duty to level clamped.
     #[test]
     fn duty_to_level_clamped() {
         assert_eq!(duty_to_level(200, 9999), 10000);
     }
 
+    /// Duty to level 5.
     #[test]
     fn duty_to_level_5() {
         assert_eq!(duty_to_level(5, 9999), 500);

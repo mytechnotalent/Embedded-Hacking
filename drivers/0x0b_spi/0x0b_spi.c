@@ -43,11 +43,17 @@
 #include "pico/stdlib.h"
 #include "spi.h"
 
+/** @brief SPI port number (0 or 1) */
 #define SPI_PORT     0
+/** @brief SPI bus clock rate in Hz */
 #define SPI_BAUD_HZ  (1000 * 1000)
+/** @brief GPIO pin for SPI MISO */
 #define PIN_MISO     16
+/** @brief GPIO pin for SPI chip select */
 #define PIN_CS       17
+/** @brief GPIO pin for SPI clock */
 #define PIN_SCK      18
+/** @brief GPIO pin for SPI MOSI */
 #define PIN_MOSI     19
 
 /**

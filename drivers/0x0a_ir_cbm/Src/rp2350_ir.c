@@ -64,25 +64,53 @@ static int32_t _wait_for_level(bool level, uint32_t timeout_us)
 }
 
 /**
+  * @brief  Validate the 9 ms leader mark pulse duration.
+  * @retval bool true if within expected range, false on timeout or invalid
+  */
+static bool _validate_leader_mark(void)
+{
+  int32_t t = _wait_for_level(true, NEC_LEADER_MARK_TIMEOUT_US);
+  if (t < (int32_t)NEC_LEADER_MARK_MIN_US)
+    return false;
+  return t <= (int32_t)NEC_LEADER_MARK_MAX_US;
+}
+
+/**
+  * @brief  Validate the 4.5 ms leader space duration.
+  * @retval bool true if within expected range, false on timeout or invalid
+  */
+static bool _validate_leader_space(void)
+{
+  int32_t t = _wait_for_level(false, NEC_LEADER_SPACE_TIMEOUT_US);
+  if (t < (int32_t)NEC_LEADER_SPACE_MIN_US)
+    return false;
+  return t <= (int32_t)NEC_LEADER_SPACE_MAX_US;
+}
+
+/**
   * @brief  Wait for the NEC 9 ms leader pulse and 4.5 ms space.
   * @retval bool true if valid leader detected, false on timeout
   */
 static bool _wait_leader(void)
 {
-  int32_t t;
   if (_wait_for_level(false, NEC_LEADER_WAIT_US) < 0)
     return false;
-  t = _wait_for_level(true, NEC_LEADER_MARK_TIMEOUT_US);
-  if (t < (int32_t)NEC_LEADER_MARK_MIN_US)
+  if (!_validate_leader_mark())
     return false;
-  if (t > (int32_t)NEC_LEADER_MARK_MAX_US)
+  return _validate_leader_space();
+}
+
+/**
+  * @brief  Wait for the bit mark, then measure the space duration.
+  * @param  duration_out pointer to store the space duration
+  * @retval bool true on success, false on timeout or invalid
+  */
+static bool _measure_bit_space(int32_t *duration_out)
+{
+  if (_wait_for_level(true, NEC_BIT_MARK_TIMEOUT_US) < 0)
     return false;
-  t = _wait_for_level(false, NEC_LEADER_SPACE_TIMEOUT_US);
-  if (t < (int32_t)NEC_LEADER_SPACE_MIN_US)
-    return false;
-  if (t > (int32_t)NEC_LEADER_SPACE_MAX_US)
-    return false;
-  return true;
+  *duration_out = _wait_for_level(false, NEC_BIT_SPACE_TIMEOUT_US);
+  return *duration_out >= (int32_t)NEC_BIT_SPACE_MIN_US;
 }
 
 /**
@@ -94,10 +122,7 @@ static bool _wait_leader(void)
 static bool _read_nec_bit(uint8_t *data, uint8_t bit)
 {
   int32_t t;
-  if (_wait_for_level(true, NEC_BIT_MARK_TIMEOUT_US) < 0)
-    return false;
-  t = _wait_for_level(false, NEC_BIT_SPACE_TIMEOUT_US);
-  if (t < (int32_t)NEC_BIT_SPACE_MIN_US)
+  if (!_measure_bit_space(&t))
     return false;
   if (t > (int32_t)NEC_BIT_ONE_THRESHOLD_US)
     data[bit / 8U] |= (1U << (bit % 8U));
@@ -186,18 +211,30 @@ static void _set_input(void)
   SIO[SIO_GPIO_OE_CLR_OFFSET] = IR_PIN_MASK;
 }
 
+/**
+  * @brief  Release TIMER0 from reset in the reset controller.
+  * @retval None
+  */
 void ir_timer_release_reset(void)
 {
   _timer_clear_reset();
   _timer_wait_reset_done();
 }
 
+/**
+  * @brief  Start the TIMER0 tick generator for 1 us ticks at 12 MHz.
+  * @retval None
+  */
 void ir_timer_start_tick(void)
 {
   TICKS[TICKS_TIMER0_CYCLES_OFFSET] = TICKS_TIMER0_CYCLES_12MHZ;
   TICKS[TICKS_TIMER0_CTRL_OFFSET] = TICKS_TIMER0_ENABLE;
 }
 
+/**
+  * @brief  Configure GPIO5 pad and funcsel for SIO input with pull-up.
+  * @retval None
+  */
 void ir_init(void)
 {
   _configure_pad();
@@ -205,6 +242,10 @@ void ir_init(void)
   _set_input();
 }
 
+/**
+  * @brief  Block until a valid NEC frame is received or timeout.
+  * @retval int command byte (0-255) on success, -1 on failure
+  */
 int ir_getkey(void)
 {
   uint8_t data[NEC_DATA_BYTES] = {0};

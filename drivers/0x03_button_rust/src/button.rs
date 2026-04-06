@@ -131,69 +131,87 @@ mod tests {
     // Error type trait for mock pin implementations
     use embedded_hal::digital::ErrorType;
 
+    /// Mock input pin for testing.
     struct MockInputPin {
         low: bool,
     }
 
     impl MockInputPin {
+        /// New.
         fn new(low: bool) -> Self {
             Self { low }
         }
     }
 
+    /// ErrorType implementation for MockInputPin.
     impl ErrorType for MockInputPin {
         type Error = Infallible;
     }
 
+    /// InputPin implementation for MockInputPin.
     impl InputPin for MockInputPin {
+        /// Is high.
         fn is_high(&mut self) -> Result<bool, Self::Error> {
             Ok(!self.low)
         }
+        /// Is low.
         fn is_low(&mut self) -> Result<bool, Self::Error> {
             Ok(self.low)
         }
     }
 
+    /// Mock output pin for testing.
     struct MockOutputPin {
         state: bool,
     }
 
     impl MockOutputPin {
+        /// New.
         fn new() -> Self {
             Self { state: false }
         }
     }
 
+    /// ErrorType implementation for MockOutputPin.
     impl ErrorType for MockOutputPin {
         type Error = Infallible;
     }
 
+    /// OutputPin implementation for MockOutputPin.
     impl OutputPin for MockOutputPin {
+        /// Set low.
         fn set_low(&mut self) -> Result<(), Self::Error> {
             self.state = false;
             Ok(())
         }
+        /// Set high.
         fn set_high(&mut self) -> Result<(), Self::Error> {
             self.state = true;
             Ok(())
         }
     }
 
+    /// StatefulOutputPin implementation for MockOutputPin.
     impl StatefulOutputPin for MockOutputPin {
+        /// Is set high.
         fn is_set_high(&mut self) -> Result<bool, Self::Error> {
             Ok(self.state)
         }
+        /// Is set low.
         fn is_set_low(&mut self) -> Result<bool, Self::Error> {
             Ok(!self.state)
         }
+        /// Toggle.
         fn toggle(&mut self) -> Result<(), Self::Error> {
             self.state = !self.state;
             Ok(())
         }
     }
 
+    /// Noop delay.
     fn noop_delay(_ms: u32) {}
 
+    /// Is pressed when low and confirmed.
     #[test]
     fn is_pressed_when_low_and_confirmed() {
         let pin = MockInputPin::new(true);
@@ -201,6 +219,7 @@ mod tests {
         assert!(drv.is_pressed());
     }
 
+    /// Is not pressed when high.
     #[test]
     fn is_not_pressed_when_high() {
         let pin = MockInputPin::new(false);
@@ -208,6 +227,7 @@ mod tests {
         assert!(!drv.is_pressed());
     }
 
+    /// Debounce ms stored.
     #[test]
     fn debounce_ms_stored() {
         let pin = MockInputPin::new(false);
@@ -215,6 +235,7 @@ mod tests {
         assert_eq!(drv.debounce_ms, 50);
     }
 
+    /// Debounce calls delay.
     #[test]
     fn debounce_calls_delay() {
         let mut called_with: u32 = 0;
@@ -224,12 +245,14 @@ mod tests {
         assert_eq!(called_with, 25);
     }
 
+    /// Led init starts off.
     #[test]
     fn led_init_starts_off() {
         let led = ButtonLed::init(MockOutputPin::new());
         assert!(!led.led_pin.state);
     }
 
+    /// Led set on.
     #[test]
     fn led_set_on() {
         let mut led = ButtonLed::init(MockOutputPin::new());
@@ -237,6 +260,7 @@ mod tests {
         assert!(led.led_pin.state);
     }
 
+    /// Led set off.
     #[test]
     fn led_set_off() {
         let mut led = ButtonLed::init(MockOutputPin::new());
@@ -245,6 +269,7 @@ mod tests {
         assert!(!led.led_pin.state);
     }
 
+    /// Led set on then off then on.
     #[test]
     fn led_set_on_then_off_then_on() {
         let mut led = ButtonLed::init(MockOutputPin::new());

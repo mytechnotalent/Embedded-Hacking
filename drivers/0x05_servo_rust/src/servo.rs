@@ -81,6 +81,17 @@ pub fn clamp_pulse_us(pulse_us: u16, min_us: u16, max_us: u16) -> u16 {
     }
 }
 
+/// Clamp a floating-point angle to the valid servo range [0.0, 180.0].
+fn clamp_degrees(degrees: f32) -> f32 {
+    if degrees < 0.0f32 {
+        0.0f32
+    } else if degrees > 180.0f32 {
+        180.0f32
+    } else {
+        degrees
+    }
+}
+
 /// Map a servo angle in degrees to a pulse width in microseconds.
 ///
 /// Clamps degrees to [0, 180], then linearly maps to the pulse range.
@@ -95,13 +106,7 @@ pub fn clamp_pulse_us(pulse_us: u16, min_us: u16, max_us: u16) -> u16 {
 ///
 /// Pulse width in microseconds corresponding to the given angle.
 pub fn angle_to_pulse_us(degrees: f32, min_us: u16, max_us: u16) -> u16 {
-    let d = if degrees < 0.0f32 {
-        0.0f32
-    } else if degrees > 180.0f32 {
-        180.0f32
-    } else {
-        degrees
-    };
+    let d = clamp_degrees(degrees);
     let ratio = d / 180.0f32;
     let span = (max_us - min_us) as f32;
     (min_us as f32 + ratio * span + 0.5f32) as u16
@@ -127,75 +132,97 @@ mod tests {
     // Import all parent module items
     use super::*;
 
+    /// Pulse us to level 1000us.
     #[test]
     fn pulse_us_to_level_1000us() {
         let level = pulse_us_to_level(1000, SERVO_WRAP, SERVO_HZ);
         assert_eq!(level, 1000);
     }
 
+    /// Pulse us to level 2000us.
     #[test]
     fn pulse_us_to_level_2000us() {
         let level = pulse_us_to_level(2000, SERVO_WRAP, SERVO_HZ);
         assert_eq!(level, 2000);
     }
 
+    /// Pulse us to level 1500us.
     #[test]
     fn pulse_us_to_level_1500us() {
         let level = pulse_us_to_level(1500, SERVO_WRAP, SERVO_HZ);
         assert_eq!(level, 1500);
     }
 
+    /// Pulse us to level zero.
     #[test]
     fn pulse_us_to_level_zero() {
         let level = pulse_us_to_level(0, SERVO_WRAP, SERVO_HZ);
         assert_eq!(level, 0);
     }
 
+    /// Clamp pulse us below min.
     #[test]
     fn clamp_pulse_us_below_min() {
-        assert_eq!(clamp_pulse_us(500, SERVO_DEFAULT_MIN_US, SERVO_DEFAULT_MAX_US), 1000);
+        assert_eq!(
+            clamp_pulse_us(500, SERVO_DEFAULT_MIN_US, SERVO_DEFAULT_MAX_US),
+            1000
+        );
     }
 
+    /// Clamp pulse us above max.
     #[test]
     fn clamp_pulse_us_above_max() {
-        assert_eq!(clamp_pulse_us(3000, SERVO_DEFAULT_MIN_US, SERVO_DEFAULT_MAX_US), 2000);
+        assert_eq!(
+            clamp_pulse_us(3000, SERVO_DEFAULT_MIN_US, SERVO_DEFAULT_MAX_US),
+            2000
+        );
     }
 
+    /// Clamp pulse us within range.
     #[test]
     fn clamp_pulse_us_within_range() {
-        assert_eq!(clamp_pulse_us(1500, SERVO_DEFAULT_MIN_US, SERVO_DEFAULT_MAX_US), 1500);
+        assert_eq!(
+            clamp_pulse_us(1500, SERVO_DEFAULT_MIN_US, SERVO_DEFAULT_MAX_US),
+            1500
+        );
     }
 
+    /// Angle to pulse us zero.
     #[test]
     fn angle_to_pulse_us_zero() {
         let pulse = angle_to_pulse_us(0.0, SERVO_DEFAULT_MIN_US, SERVO_DEFAULT_MAX_US);
         assert_eq!(pulse, 1000);
     }
 
+    /// Angle to pulse us 180.
     #[test]
     fn angle_to_pulse_us_180() {
         let pulse = angle_to_pulse_us(180.0, SERVO_DEFAULT_MIN_US, SERVO_DEFAULT_MAX_US);
         assert_eq!(pulse, 2000);
     }
 
+    /// Angle to pulse us 90.
     #[test]
     fn angle_to_pulse_us_90() {
         let pulse = angle_to_pulse_us(90.0, SERVO_DEFAULT_MIN_US, SERVO_DEFAULT_MAX_US);
         assert_eq!(pulse, 1500);
     }
 
+    /// Angle to pulse us clamped negative.
     #[test]
     fn angle_to_pulse_us_clamped_negative() {
         let pulse = angle_to_pulse_us(-10.0, SERVO_DEFAULT_MIN_US, SERVO_DEFAULT_MAX_US);
         assert_eq!(pulse, 1000);
     }
 
+    /// Angle to pulse us clamped above.
     #[test]
     fn angle_to_pulse_us_clamped_above() {
         let pulse = angle_to_pulse_us(200.0, SERVO_DEFAULT_MIN_US, SERVO_DEFAULT_MAX_US);
         assert_eq!(pulse, 2000);
     }
 
+    /// Calc clk div 150mhz.
     #[test]
     fn calc_clk_div_150mhz() {
         let div = calc_clk_div(150_000_000, SERVO_HZ, SERVO_WRAP);

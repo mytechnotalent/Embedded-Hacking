@@ -153,36 +153,43 @@ mod tests {
     // Import all parent module items
     use super::*;
 
+    /// Leader mark accepts lower bound.
     #[test]
     fn leader_mark_accepts_lower_bound() {
         assert!(is_valid_leader_mark(8_000));
     }
 
+    /// Leader mark rejects below lower bound.
     #[test]
     fn leader_mark_rejects_below_lower_bound() {
         assert!(!is_valid_leader_mark(7_999));
     }
 
+    /// Leader space accepts upper bound.
     #[test]
     fn leader_space_accepts_upper_bound() {
         assert!(is_valid_leader_space(5_000));
     }
 
+    /// Leader space rejects above upper bound.
     #[test]
     fn leader_space_rejects_above_upper_bound() {
         assert!(!is_valid_leader_space(5_001));
     }
 
+    /// Bit space rejects short pulse.
     #[test]
     fn bit_space_rejects_short_pulse() {
         assert!(!is_valid_bit_space(199));
     }
 
+    /// Bit space accepts threshold.
     #[test]
     fn bit_space_accepts_threshold() {
         assert!(is_valid_bit_space(200));
     }
 
+    /// Accumulate zero bit leaves byte clear.
     #[test]
     fn accumulate_zero_bit_leaves_byte_clear() {
         let mut data = [0u8; 4];
@@ -190,6 +197,7 @@ mod tests {
         assert_eq!(data[0], 0);
     }
 
+    /// Accumulate one bit sets lsb.
     #[test]
     fn accumulate_one_bit_sets_lsb() {
         let mut data = [0u8; 4];
@@ -197,6 +205,7 @@ mod tests {
         assert_eq!(data[0], 1);
     }
 
+    /// Accumulate crosses into next byte.
     #[test]
     fn accumulate_crosses_into_next_byte() {
         let mut data = [0u8; 4];
@@ -205,18 +214,21 @@ mod tests {
         assert_eq!(data[1], 1);
     }
 
+    /// Validate frame returns command.
     #[test]
     fn validate_frame_returns_command() {
         let data = [0x00, 0xFF, 0x45, 0xBA];
         assert_eq!(validate_nec_frame(&data), Some(0x45));
     }
 
+    /// Validate frame rejects bad inverse.
     #[test]
     fn validate_frame_rejects_bad_inverse() {
         let data = [0x00, 0xFE, 0x45, 0xBA];
         assert_eq!(validate_nec_frame(&data), None);
     }
 
+    /// Format command single digit.
     #[test]
     fn format_command_single_digit() {
         let mut buf = [0u8; 24];
@@ -224,6 +236,7 @@ mod tests {
         assert_eq!(&buf[..n], b"NEC command: 0x07  (7)\r\n");
     }
 
+    /// Format command three digits.
     #[test]
     fn format_command_three_digits() {
         let mut buf = [0u8; 26];
@@ -231,6 +244,7 @@ mod tests {
         assert_eq!(&buf[..n], b"NEC command: 0xFF  (255)\r\n");
     }
 
+    /// Format hex digit alpha.
     #[test]
     fn format_hex_digit_alpha() {
         assert_eq!(hex_digit(0x0A), b'A');

@@ -144,6 +144,18 @@ pub fn format_error(buf: &mut [u8], gpio: u8) -> usize {
     pos
 }
 
+/// Return the number of decimal digits needed for a `u8`.
+fn u8_digit_count(val: u8) -> usize {
+    if val >= 100 { 3 } else if val >= 10 { 2 } else { 1 }
+}
+
+/// Write `count` decimal digits of `val` into `buf`.
+fn write_u8_digits(buf: &mut [u8], val: u8, count: usize) {
+    if count >= 3 { buf[0] = b'0' + val / 100; }
+    if count >= 2 { buf[count - 2] = b'0' + (val / 10) % 10; }
+    buf[count - 1] = b'0' + val % 10;
+}
+
 /// Format a `u8` as decimal ASCII digits.
 ///
 /// # Arguments
@@ -155,19 +167,9 @@ pub fn format_error(buf: &mut [u8], gpio: u8) -> usize {
 ///
 /// Number of bytes written.
 fn format_u8(buf: &mut [u8], val: u8) -> usize {
-    if val >= 100 {
-        buf[0] = b'0' + val / 100;
-        buf[1] = b'0' + (val / 10) % 10;
-        buf[2] = b'0' + val % 10;
-        3
-    } else if val >= 10 {
-        buf[0] = b'0' + val / 10;
-        buf[1] = b'0' + val % 10;
-        2
-    } else {
-        buf[0] = b'0' + val;
-        1
-    }
+    let n = u8_digit_count(val);
+    write_u8_digits(buf, val, n);
+    n
 }
 
 /// Format an `f32` with one decimal place (e.g. `"25.3"`).
@@ -182,27 +184,26 @@ fn format_u8(buf: &mut [u8], val: u8) -> usize {
 /// Number of bytes written.
 fn format_f32_1(buf: &mut [u8], val: f32) -> usize {
     let scaled = (val * 10.0) as u32;
-    let integer = scaled / 10;
     let frac = (scaled % 10) as u8;
-    let mut pos = format_u32_minimal(buf, integer);
+    let pos = format_u32_minimal(buf, scaled / 10);
     buf[pos] = b'.';
-    pos += 1;
-    buf[pos] = b'0' + frac;
-    pos += 1;
-    pos
+    buf[pos + 1] = b'0' + frac;
+    pos + 2
+}
+
+/// Write a conditional digit into `buf` if `val` meets the threshold.
+fn write_digit_if(buf: &mut [u8], pos: &mut usize, val: u32, threshold: u32, divisor: u32) {
+    if val >= threshold {
+        buf[*pos] = b'0' + ((val / divisor) % 10) as u8;
+        *pos += 1;
+    }
 }
 
 /// Format a u32 as minimal decimal digits (no leading zeros).
 fn format_u32_minimal(buf: &mut [u8], value: u32) -> usize {
     let mut pos = 0;
-    if value >= 100 {
-        buf[pos] = b'0' + (value / 100) as u8;
-        pos += 1;
-    }
-    if value >= 10 {
-        buf[pos] = b'0' + ((value / 10) % 10) as u8;
-        pos += 1;
-    }
+    write_digit_if(buf, &mut pos, value, 100, 100);
+    write_digit_if(buf, &mut pos, value, 10, 10);
     buf[pos] = b'0' + (value % 10) as u8;
     pos + 1
 }
@@ -212,6 +213,7 @@ mod tests {
     // Import all parent module items
     use super::*;
 
+    /// Accumulate bit zero short pulse.
     #[test]
     fn accumulate_bit_zero_short_pulse() {
         let mut data = [0u8; 5];
@@ -219,6 +221,7 @@ mod tests {
         assert_eq!(data[0], 0);
     }
 
+    /// Accumulate bit one long pulse.
     #[test]
     fn accumulate_bit_one_long_pulse() {
         let mut data = [0u8; 5];
@@ -226,6 +229,7 @@ mod tests {
         assert_eq!(data[0], 1);
     }
 
+    /// Accumulate bit threshold exact.
     #[test]
     fn accumulate_bit_threshold_exact() {
         let mut data = [0u8; 5];
@@ -233,6 +237,7 @@ mod tests {
         assert_eq!(data[0], 0);
     }
 
+    /// Accumulate bit two bits.
     #[test]
     fn accumulate_bit_two_bits() {
         let mut data = [0u8; 5];
@@ -241,6 +246,7 @@ mod tests {
         assert_eq!(data[0], 0b10);
     }
 
+    /// Accumulate bit crosses byte.
     #[test]
     fn accumulate_bit_crosses_byte() {
         let mut data = [0u8; 5];
@@ -250,24 +256,28 @@ mod tests {
         assert_eq!(data[1], 1);
     }
 
+    /// Validate checksum valid.
     #[test]
     fn validate_checksum_valid() {
         let data = [0x28, 0x00, 0x1A, 0x00, 0x42];
         assert!(validate_checksum(&data));
     }
 
+    /// Validate checksum invalid.
     #[test]
     fn validate_checksum_invalid() {
         let data = [0x28, 0x00, 0x1A, 0x00, 0xFF];
         assert!(!validate_checksum(&data));
     }
 
+    /// Validate checksum wraps.
     #[test]
     fn validate_checksum_wraps() {
         let data = [0xFF, 0x01, 0x00, 0x00, 0x00];
         assert!(validate_checksum(&data));
     }
 
+    /// Parse humidity integer only.
     #[test]
     fn parse_humidity_integer_only() {
         let data = [0x41, 0x00, 0x00, 0x00, 0x41];
@@ -275,6 +285,7 @@ mod tests {
         assert!((h - 65.0).abs() < 0.01);
     }
 
+    /// Parse humidity with fraction.
     #[test]
     fn parse_humidity_with_fraction() {
         let data = [0x41, 0x03, 0x00, 0x00, 0x44];
@@ -282,6 +293,7 @@ mod tests {
         assert!((h - 65.3).abs() < 0.01);
     }
 
+    /// Parse temperature integer only.
     #[test]
     fn parse_temperature_integer_only() {
         let data = [0x00, 0x00, 0x19, 0x00, 0x19];
@@ -289,6 +301,7 @@ mod tests {
         assert!((t - 25.0).abs() < 0.01);
     }
 
+    /// Parse temperature with fraction.
     #[test]
     fn parse_temperature_with_fraction() {
         let data = [0x00, 0x00, 0x19, 0x05, 0x1E];
@@ -296,6 +309,7 @@ mod tests {
         assert!((t - 25.5).abs() < 0.01);
     }
 
+    /// Format reading typical.
     #[test]
     fn format_reading_typical() {
         let mut buf = [0u8; 48];
@@ -303,6 +317,7 @@ mod tests {
         assert_eq!(&buf[..n], b"Humidity: 65.0%  Temperature: 25.0 C");
     }
 
+    /// Format reading with fractions.
     #[test]
     fn format_reading_with_fractions() {
         let mut buf = [0u8; 48];
@@ -310,6 +325,7 @@ mod tests {
         assert_eq!(&buf[..n], b"Humidity: 65.3%  Temperature: 25.5 C");
     }
 
+    /// Format error gpio4.
     #[test]
     fn format_error_gpio4() {
         let mut buf = [0u8; 48];
@@ -317,6 +333,7 @@ mod tests {
         assert_eq!(&buf[..n], b"DHT11 read failed - check wiring on GPIO 4");
     }
 
+    /// Format error gpio15.
     #[test]
     fn format_error_gpio15() {
         let mut buf = [0u8; 48];
@@ -324,6 +341,7 @@ mod tests {
         assert_eq!(&buf[..n], b"DHT11 read failed - check wiring on GPIO 15");
     }
 
+    /// Format u8 single digit.
     #[test]
     fn format_u8_single_digit() {
         let mut buf = [0u8; 4];
@@ -331,6 +349,7 @@ mod tests {
         assert_eq!(&buf[..n], b"4");
     }
 
+    /// Format u8 two digits.
     #[test]
     fn format_u8_two_digits() {
         let mut buf = [0u8; 4];
@@ -338,6 +357,7 @@ mod tests {
         assert_eq!(&buf[..n], b"15");
     }
 
+    /// Format u8 three digits.
     #[test]
     fn format_u8_three_digits() {
         let mut buf = [0u8; 4];

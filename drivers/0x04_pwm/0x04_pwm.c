@@ -43,7 +43,9 @@
 #include "pico/stdlib.h"
 #include "pwm.h"
 
+/** @brief GPIO pin for PWM output */
 #define PWM_PIN     25
+/** @brief Target PWM frequency in Hz */
 #define PWM_FREQ_HZ 1000
 
 /**

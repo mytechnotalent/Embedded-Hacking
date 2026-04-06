@@ -37,10 +37,10 @@ use hal::gpio::{FunctionNull, FunctionUart, Pin, PullDown, PullNone};
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
 
 // Alias our HAL crate
-#[cfg(rp2350)]
-use rp235x_hal as hal;
 #[cfg(rp2040)]
 use rp2040_hal as hal;
+#[cfg(rp2350)]
+use rp235x_hal as hal;
 
 /// External crystal frequency in Hz (12 MHz).
 pub(crate) const XTAL_FREQ_HZ: u32 = 12_000_000u32;
@@ -96,7 +96,13 @@ pub(crate) fn init_clocks(
     watchdog: &mut hal::Watchdog,
 ) -> hal::clocks::ClocksManager {
     hal::clocks::init_clocks_and_plls(
-        XTAL_FREQ_HZ, xosc, clocks, pll_sys, pll_usb, resets, watchdog,
+        XTAL_FREQ_HZ,
+        xosc,
+        clocks,
+        pll_sys,
+        pll_usb,
+        resets,
+        watchdog,
     )
     .unwrap()
 }
@@ -189,20 +195,29 @@ pub(crate) fn format_duty(buf: &mut [u8], duty: u8) -> usize {
     buf[..6].copy_from_slice(b"Duty: ");
     let mut pos = 6;
     pos += write_duty_digits(&mut buf[pos..], duty);
-    buf[pos] = b'%'; pos += 1;
-    buf[pos] = b'\r'; pos += 1;
-    buf[pos] = b'\n'; pos += 1;
+    buf[pos] = b'%';
+    pos += 1;
+    buf[pos] = b'\r';
+    pos += 1;
+    buf[pos] = b'\n';
+    pos += 1;
     pos
 }
 
 /// Write the 3-character right-justified duty digits into `buf`.
 fn write_duty_digits(buf: &mut [u8], duty: u8) -> usize {
     if duty >= 100 {
-        buf[0] = b'1'; buf[1] = b'0'; buf[2] = b'0';
+        buf[0] = b'1';
+        buf[1] = b'0';
+        buf[2] = b'0';
     } else if duty >= 10 {
-        buf[0] = b' '; buf[1] = b'0' + duty / 10; buf[2] = b'0' + duty % 10;
+        buf[0] = b' ';
+        buf[1] = b'0' + duty / 10;
+        buf[2] = b'0' + duty % 10;
     } else {
-        buf[0] = b' '; buf[1] = b' '; buf[2] = b'0' + duty;
+        buf[0] = b' ';
+        buf[1] = b' ';
+        buf[2] = b'0' + duty;
     }
     3
 }
@@ -274,7 +289,14 @@ type PwmSlice4 = hal::pwm::Slice<hal::pwm::Pwm4, hal::pwm::FreeRunning>;
 /// * `pac` - PAC Peripherals singleton (consumed).
 pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
     let mut wd = hal::Watchdog::new(pac.WATCHDOG);
-    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let clocks = init_clocks(
+        pac.XOSC,
+        pac.CLOCKS,
+        pac.PLL_SYS,
+        pac.PLL_USB,
+        &mut pac.RESETS,
+        &mut wd,
+    );
     let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
     let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
     let mut delay = init_delay(&clocks);

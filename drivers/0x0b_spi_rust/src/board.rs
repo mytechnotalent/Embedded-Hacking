@@ -43,10 +43,10 @@ use hal::spi::Spi;
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
 
 // Alias our HAL crate
-#[cfg(rp2350)]
-use rp235x_hal as hal;
 #[cfg(rp2040)]
 use rp2040_hal as hal;
+#[cfg(rp2350)]
+use rp235x_hal as hal;
 
 /// External crystal frequency in Hz (12 MHz).
 pub(crate) const XTAL_FREQ_HZ: u32 = 12_000_000u32;
@@ -85,12 +85,7 @@ pub(crate) type MosiPin = Pin<hal::gpio::bank0::Gpio19, FunctionSpi, PullNone>;
 pub(crate) type EnabledUart = UartPeripheral<Enabled, hal::pac::UART0, (TxPin, RxPin)>;
 
 /// Type alias for the SPI0 peripheral configured in 8-bit master mode.
-pub(crate) type EnabledSpi = Spi<
-    hal::spi::Enabled,
-    hal::pac::SPI0,
-    (MosiPin, MisoPin, SckPin),
-    8,
->;
+pub(crate) type EnabledSpi = Spi<hal::spi::Enabled, hal::pac::SPI0, (MosiPin, MisoPin, SckPin), 8>;
 
 /// Initialise system clocks and PLLs from the external 12 MHz crystal.
 pub(crate) fn init_clocks(
@@ -102,7 +97,13 @@ pub(crate) fn init_clocks(
     watchdog: &mut hal::Watchdog,
 ) -> hal::clocks::ClocksManager {
     hal::clocks::init_clocks_and_plls(
-        XTAL_FREQ_HZ, xosc, clocks, pll_sys, pll_usb, resets, watchdog,
+        XTAL_FREQ_HZ,
+        xosc,
+        clocks,
+        pll_sys,
+        pll_usb,
+        resets,
+        watchdog,
     )
     .unwrap()
 }
@@ -142,6 +143,28 @@ pub(crate) fn init_delay(clocks: &hal::clocks::ClocksManager) -> cortex_m::delay
     cortex_m::delay::Delay::new(core.SYST, clocks.system_clock.freq().to_Hz())
 }
 
+/// Reconfigure MISO, SCK, and MOSI pins from default to SPI function.
+fn reconfigure_data_pins(
+    miso: hal::gpio::Pin<hal::gpio::bank0::Gpio16, FunctionNull, PullDown>,
+    sck: hal::gpio::Pin<hal::gpio::bank0::Gpio18, FunctionNull, PullDown>,
+    mosi: hal::gpio::Pin<hal::gpio::bank0::Gpio19, FunctionNull, PullDown>,
+) -> (MosiPin, MisoPin, SckPin) {
+    (
+        mosi.reconfigure::<FunctionSpi, PullNone>(),
+        miso.reconfigure::<FunctionSpi, PullNone>(),
+        sck.reconfigure::<FunctionSpi, PullNone>(),
+    )
+}
+
+/// Reconfigure a pin as digital output and de-assert chip select (drive high).
+fn init_cs_pin(
+    cs: hal::gpio::Pin<hal::gpio::bank0::Gpio17, FunctionNull, PullDown>,
+) -> CsPin {
+    let mut cs = cs.reconfigure::<FunctionSio<hal::gpio::SioOutput>, PullNone>();
+    let _ = cs.set_high();
+    cs
+}
+
 /// Configure SPI0 and the software-controlled chip-select pin.
 pub(crate) fn init_spi(
     spi0: hal::pac::SPI0,
@@ -152,11 +175,8 @@ pub(crate) fn init_spi(
     resets: &mut hal::pac::RESETS,
     clocks: &hal::clocks::ClocksManager,
 ) -> (EnabledSpi, CsPin) {
-    let miso = miso.reconfigure::<FunctionSpi, PullNone>();
-    let sck = sck.reconfigure::<FunctionSpi, PullNone>();
-    let mosi = mosi.reconfigure::<FunctionSpi, PullNone>();
-    let mut cs = cs.reconfigure::<FunctionSio<hal::gpio::SioOutput>, PullNone>();
-    let _ = cs.set_high();
+    let (mosi, miso, sck) = reconfigure_data_pins(miso, sck, mosi);
+    let cs = init_cs_pin(cs);
     let spi = Spi::<_, _, _, 8>::new(spi0, (mosi, miso, sck)).init(
         resets,
         clocks.peripheral_clock.freq(),
@@ -176,6 +196,22 @@ fn cs_deselect(cs: &mut CsPin) {
     let _ = cs.set_high();
 }
 
+/// Execute a full-duplex SPI transfer with chip-select framing.
+fn execute_transfer(spi_dev: &mut EnabledSpi, cs: &mut CsPin, rx: &mut [u8]) {
+    cs_select(cs);
+    let _ = spi_dev.transfer(rx, spi::TX_MESSAGE);
+    cs_deselect(cs);
+}
+
+/// Format and print the TX and RX lines over UART.
+fn print_transfer_result(uart: &EnabledUart, rx: &[u8]) {
+    let mut line_buf = [0u8; 24];
+    let tx_len = spi::format_tx_line(&mut line_buf, spi::TX_MESSAGE);
+    uart.write_full_blocking(&line_buf[..tx_len]);
+    let rx_len = spi::format_rx_line(&mut line_buf, rx);
+    uart.write_full_blocking(&line_buf[..rx_len]);
+}
+
 /// Perform one SPI loopback transfer and print TX/RX text over UART.
 pub(crate) fn loopback_transfer(
     spi_dev: &mut EnabledSpi,
@@ -183,17 +219,9 @@ pub(crate) fn loopback_transfer(
     uart: &EnabledUart,
     delay: &mut cortex_m::delay::Delay,
 ) {
-    let tx = spi::TX_MESSAGE;
     let mut rx = [0u8; spi::TX_MESSAGE.len()];
-    cs_select(cs);
-    let _ = spi_dev.transfer(&mut rx, tx);
-    cs_deselect(cs);
-
-    let mut line_buf = [0u8; 24];
-    let tx_len = spi::format_tx_line(&mut line_buf, tx);
-    uart.write_full_blocking(&line_buf[..tx_len]);
-    let rx_len = spi::format_rx_line(&mut line_buf, &rx);
-    uart.write_full_blocking(&line_buf[..rx_len]);
+    execute_transfer(spi_dev, cs, &mut rx);
+    print_transfer_result(uart, &rx);
     spi::clear_rx_buffer(&mut rx);
     delay.delay_ms(POLL_MS);
 }
@@ -205,15 +233,30 @@ pub(crate) fn loopback_transfer(
 /// * `pac` - PAC Peripherals singleton (consumed).
 pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
     let mut wd = hal::Watchdog::new(pac.WATCHDOG);
-    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let clocks = init_clocks(
+        pac.XOSC,
+        pac.CLOCKS,
+        pac.PLL_SYS,
+        pac.PLL_USB,
+        &mut pac.RESETS,
+        &mut wd,
+    );
     let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
     let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
     let mut delay = init_delay(&clocks);
     let (mut spi, mut cs) = init_spi(
-        pac.SPI0, pins.gpio16, pins.gpio17, pins.gpio18, pins.gpio19, &mut pac.RESETS, &clocks,
+        pac.SPI0,
+        pins.gpio16,
+        pins.gpio17,
+        pins.gpio18,
+        pins.gpio19,
+        &mut pac.RESETS,
+        &clocks,
     );
     uart.write_full_blocking(b"SPI driver initialized on SPI0 at 1000000 Hz\r\n");
-    loop { loopback_transfer(&mut spi, &mut cs, &uart, &mut delay); }
+    loop {
+        loopback_transfer(&mut spi, &mut cs, &uart, &mut delay);
+    }
 }
 
 // End of file

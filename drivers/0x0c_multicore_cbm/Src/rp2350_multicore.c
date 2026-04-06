@@ -131,17 +131,44 @@ static void _launch_handshake(void (*entry)(void))
   } while (idx < 6);
 }
 
+/**
+  * @brief  Launch a function on processor core 1.
+  *
+  *         Resets core 1 via the PSM, then performs the FIFO handshake
+  *         protocol described in RP2350 datasheet Section 5.3 to pass
+  *         the vector table, stack pointer, and entry point.
+  *
+  * @param  entry pointer to the void(void) function to run on core 1
+  * @retval None
+  */
 void multicore_launch(void (*entry)(void))
 {
   _reset_core1();
   _launch_handshake(entry);
 }
 
+/**
+  * @brief  Push a 32-bit value into the inter-core FIFO (blocking).
+  *
+  *         Blocks until there is space in the TX FIFO, then writes the
+  *         value and signals the other core with SEV.
+  *
+  * @param  data 32-bit value to send
+  * @retval None
+  */
 void multicore_fifo_push(uint32_t data)
 {
   _fifo_push_blocking(data);
 }
 
+/**
+  * @brief  Pop a 32-bit value from the inter-core FIFO (blocking).
+  *
+  *         Blocks with WFE until a value is available in the RX FIFO,
+  *         then returns it.
+  *
+  * @retval uint32_t value received from the other core
+  */
 uint32_t multicore_fifo_pop(void)
 {
   return _fifo_pop_blocking();

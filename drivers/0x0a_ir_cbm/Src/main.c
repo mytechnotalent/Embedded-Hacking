@@ -51,6 +51,23 @@ static void _print_hex(uint8_t value)
 }
 
 /**
+  * @brief  Convert a uint8_t to a decimal string.
+  * @param  value number to convert (0-255)
+  * @param  buf   output buffer (at least 4 bytes)
+  * @retval None
+  */
+static void _uint8_to_str(uint8_t value, char *buf)
+{
+  uint8_t idx = 0;
+  if (value >= 100)
+    buf[idx++] = (char)('0' + value / 100);
+  if (value >= 10)
+    buf[idx++] = (char)('0' + (value / 10) % 10);
+  buf[idx++] = (char)('0' + value % 10);
+  buf[idx] = '\0';
+}
+
+/**
   * @brief  Print a byte as a decimal string over UART.
   * @param  value byte to print (0-255)
   * @retval None
@@ -58,18 +75,7 @@ static void _print_hex(uint8_t value)
 static void _print_dec(uint8_t value)
 {
   char buf[4];
-  uint8_t idx = 0;
-  if (value >= 100) {
-    buf[idx++] = (char)('0' + value / 100);
-    buf[idx++] = (char)('0' + (value / 10) % 10);
-    buf[idx++] = (char)('0' + value % 10);
-  } else if (value >= 10) {
-    buf[idx++] = (char)('0' + value / 10);
-    buf[idx++] = (char)('0' + value % 10);
-  } else {
-    buf[idx++] = (char)('0' + value);
-  }
-  buf[idx] = '\0';
+  _uint8_to_str(value, buf);
   uart_puts(buf);
 }
 
@@ -88,18 +94,27 @@ static void _print_command(uint8_t command)
 }
 
 /**
-  * @brief  Application entry point for the NEC IR receiver demo.
-  * @retval int does not return
+  * @brief  Initialize clocks, timer, IR receiver, and announce over UART.
+  * @retval None
   */
-int main(void)
+static void _ir_setup(void)
 {
-  int command;
   xosc_set_clk_ref();
   ir_timer_release_reset();
   ir_timer_start_tick();
   ir_init();
   uart_puts("NEC IR driver initialized on GPIO5\r\n");
   uart_puts("Press a button on your NEC remote...\r\n");
+}
+
+/**
+  * @brief  Application entry point for the NEC IR receiver demo.
+  * @retval int does not return
+  */
+int main(void)
+{
+  int command;
+  _ir_setup();
   while (1) {
     command = ir_getkey();
     if (command >= 0)

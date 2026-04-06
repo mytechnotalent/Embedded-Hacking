@@ -64,13 +64,13 @@ use rp235x_hal as hal;
 #[cfg(rp2040)]
 use rp2040_hal as hal;
 
-// Second-stage boot loader for RP2040
+/// Second-stage boot loader for RP2040
 #[unsafe(link_section = ".boot2")]
 #[used]
 #[cfg(rp2040)]
 pub static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
 
-// Boot metadata for the RP2350 Boot ROM
+/// Boot metadata for the RP2350 Boot ROM
 #[unsafe(link_section = ".start_block")]
 #[used]
 #[cfg(rp2350)]
@@ -82,7 +82,7 @@ fn main() -> ! {
     board::run(hal::pac::Peripherals::take().unwrap())
 }
 
-// Picotool binary info metadata
+/// Picotool binary info metadata
 #[unsafe(link_section = ".bi_entries")]
 #[used]
 pub static PICOTOOL_ENTRIES: [hal::binary_info::EntryAddr; 5] = [

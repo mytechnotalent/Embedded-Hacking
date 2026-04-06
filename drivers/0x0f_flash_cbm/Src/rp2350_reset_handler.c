@@ -66,6 +66,10 @@ void ram_init(void)
   _data_copy_init();
 }
 
+/**
+  * @brief  Reset handler entry point (naked, noreturn).
+  * @retval None
+  */
 void __attribute__((naked, noreturn)) Reset_Handler(void)
 {
   __asm__ volatile (

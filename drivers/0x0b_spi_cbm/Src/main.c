@@ -100,6 +100,18 @@ static void _clear_buffer(uint8_t *buf, uint32_t len)
 }
 
 /**
+  * @brief  Initialize clocks, SPI peripheral, and announce over UART.
+  * @retval None
+  */
+static void _spi_setup(void)
+{
+  xosc_set_clk_ref();
+  spi_release_reset();
+  spi_init();
+  uart_puts("SPI loopback initialized (MOSI->MISO on GPIO19->GPIO16)\r\n");
+}
+
+/**
   * @brief  Application entry point for the SPI loopback demo.
   * @retval int does not return
   */
@@ -110,10 +122,7 @@ int main(void)
   /** @brief  Buffer length for SPI loopback transfer. */
   static const uint32_t len = sizeof(tx);
   uint8_t rx[sizeof(tx)] = {0};
-  xosc_set_clk_ref();
-  spi_release_reset();
-  spi_init();
-  uart_puts("SPI loopback initialized (MOSI->MISO on GPIO19->GPIO16)\r\n");
+  _spi_setup();
   while (1) {
     _loopback_transfer(tx, rx, len);
     _clear_buffer(rx, len);

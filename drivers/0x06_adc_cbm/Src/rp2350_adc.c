@@ -121,6 +121,14 @@ static int32_t _raw_to_temp_tenths(uint16_t raw)
   return 270 - (v_mv10 - 7060) * 1000 / 1721;
 }
 
+/**
+  * @brief  Release the ADC subsystem from reset.
+  *
+  *         Clears the ADC bit in the RESETS register and waits until
+  *         RESET_DONE confirms the subsystem is running.
+  *
+  * @retval None
+  */
 void adc_release_reset(void)
 {
   RESETS->RESET |= (1U << RESETS_RESET_ADC_SHIFT);
@@ -131,25 +139,62 @@ void adc_release_reset(void)
   }
 }
 
+/**
+  * @brief  Enable the ADC block and wait until it is ready.
+  * @retval None
+  */
+static void _adc_enable(void)
+{
+  ADC->CS = (1U << ADC_CS_EN_SHIFT);
+  uint32_t timeout = ADC_READY_TIMEOUT;
+  while (!(ADC->CS & (1U << ADC_CS_READY_SHIFT)) && timeout > 0U)
+    timeout--;
+  ADC->CS |= (1U << ADC_CS_TS_EN_SHIFT);
+}
+
+/**
+  * @brief  Initialise the ADC peripheral for GPIO26 (channel 0).
+  *
+  *         Configures GPIO26 pad for analog input (disables digital I/O,
+  *         pulls, and pad isolation), sets the IO mux function to NULL,
+  *         powers on the ADC, enables the temperature sensor, and selects
+  *         channel 0 as the default input.
+  *
+  * @retval None
+  */
 void adc_init(void)
 {
   _adc_config_pad();
   _adc_config_gpio();
-  ADC->CS = (1U << ADC_CS_EN_SHIFT);
-  uint32_t timeout = ADC_READY_TIMEOUT;
-  while (!(ADC->CS & (1U << ADC_CS_READY_SHIFT)) && timeout > 0U) {
-    timeout--;
-  }
-  ADC->CS |= (1U << ADC_CS_TS_EN_SHIFT);
+  _adc_enable();
   active_channel = ADC_CHANNEL;
   _adc_select_input(active_channel);
 }
 
+/**
+  * @brief  Perform a single ADC conversion and return millivolts.
+  *
+  *         Triggers a one-shot conversion on the currently selected channel,
+  *         waits for the result, and scales the 12-bit value against the
+  *         3.3 V reference.
+  *
+  * @retval uint32_t measured voltage in millivolts (0-3300)
+  */
 uint32_t adc_read_mv(void)
 {
   return _raw_to_mv(_adc_read_raw());
 }
 
+/**
+  * @brief  Read the on-chip temperature sensor in tenths of degrees Celsius.
+  *
+  *         Temporarily switches to ADC channel 4 (temperature sensor),
+  *         performs a conversion, applies the RP2350 datasheet formula
+  *         T = 27 - (V - 0.706) / 0.001721 using integer arithmetic,
+  *         and restores the previously active channel.
+  *
+  * @retval int32_t die temperature in tenths of degrees (e.g. 270 = 27.0 C)
+  */
 int32_t adc_read_temp_tenths(void)
 {
   _adc_select_input(ADC_TEMP_CHANNEL);

@@ -41,10 +41,10 @@ use hal::sio::{Sio, SioFifo};
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
 
 // Alias our HAL crate
-#[cfg(rp2350)]
-use rp235x_hal as hal;
 #[cfg(rp2040)]
 use rp2040_hal as hal;
+#[cfg(rp2350)]
+use rp235x_hal as hal;
 
 /// External crystal frequency in Hz (12 MHz).
 pub(crate) const XTAL_FREQ_HZ: u32 = 12_000_000u32;
@@ -86,7 +86,13 @@ pub(crate) fn init_clocks(
     watchdog: &mut hal::Watchdog,
 ) -> hal::clocks::ClocksManager {
     hal::clocks::init_clocks_and_plls(
-        XTAL_FREQ_HZ, xosc, clocks, pll_sys, pll_usb, resets, watchdog,
+        XTAL_FREQ_HZ,
+        xosc,
+        clocks,
+        pll_sys,
+        pll_usb,
+        resets,
+        watchdog,
     )
     .unwrap()
 }
@@ -127,18 +133,6 @@ pub(crate) fn init_delay(clocks: &hal::clocks::ClocksManager) -> cortex_m::delay
     cortex_m::delay::Delay::new(core.SYST, clocks.system_clock.freq().to_Hz())
 }
 
-/// Launch core 1 with its FIFO echo task.
-pub(crate) fn spawn_core1(
-    psm: &mut hal::pac::PSM,
-    ppb: &mut hal::pac::PPB,
-    fifo: &mut SioFifo,
-) {
-    let mut mc = Multicore::new(psm, ppb, fifo);
-    let cores = mc.cores();
-    let core1 = &mut cores[1];
-    let _ = core1.spawn(CORE1_STACK.take().unwrap(), move || core1_entry());
-}
-
 /// Core 1 entry point: receive values via FIFO, increment, and return.
 fn core1_entry() -> ! {
     let pac = unsafe { hal::pac::Peripherals::steal() };
@@ -148,6 +142,14 @@ fn core1_entry() -> ! {
         let value = fifo.read_blocking();
         fifo.write_blocking(multicore::increment_value(value));
     }
+}
+
+/// Launch core 1 with its FIFO echo task.
+pub(crate) fn spawn_core1(psm: &mut hal::pac::PSM, ppb: &mut hal::pac::PPB, fifo: &mut SioFifo) {
+    let mut mc = Multicore::new(psm, ppb, fifo);
+    let cores = mc.cores();
+    let core1 = &mut cores[1];
+    let _ = core1.spawn(CORE1_STACK.take().unwrap(), move || core1_entry());
 }
 
 /// Send the counter to core 1 via FIFO and print the round-trip result.
@@ -173,13 +175,22 @@ pub(crate) fn send_and_print(
 /// * `pac` - PAC Peripherals singleton (consumed).
 pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
     let mut wd = hal::Watchdog::new(pac.WATCHDOG);
-    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let clocks = init_clocks(
+        pac.XOSC,
+        pac.CLOCKS,
+        pac.PLL_SYS,
+        pac.PLL_USB,
+        &mut pac.RESETS,
+        &mut wd,
+    );
     let (pins, mut fifo) = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
     let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
     let mut delay = init_delay(&clocks);
     spawn_core1(&mut pac.PSM, &mut pac.PPB, &mut fifo);
     let mut counter = 0u32;
-    loop { send_and_print(&mut fifo, &uart, &mut counter, &mut delay); }
+    loop {
+        send_and_print(&mut fifo, &uart, &mut counter, &mut delay);
+    }
 }
 
 // End of file

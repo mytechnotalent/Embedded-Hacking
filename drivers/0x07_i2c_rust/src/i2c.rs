@@ -122,33 +122,39 @@ mod tests {
     // Import all parent module items
     use super::*;
 
+    /// Is reserved below min.
     #[test]
     fn is_reserved_below_min() {
         assert!(is_reserved(0x00));
         assert!(is_reserved(0x07));
     }
 
+    /// Is reserved at min boundary.
     #[test]
     fn is_reserved_at_min_boundary() {
         assert!(!is_reserved(0x08));
     }
 
+    /// Is reserved mid range.
     #[test]
     fn is_reserved_mid_range() {
         assert!(!is_reserved(0x50));
     }
 
+    /// Is reserved at max boundary.
     #[test]
     fn is_reserved_at_max_boundary() {
         assert!(!is_reserved(0x77));
     }
 
+    /// Is reserved above max.
     #[test]
     fn is_reserved_above_max() {
         assert!(is_reserved(0x78));
         assert!(is_reserved(0x7F));
     }
 
+    /// Format scan header content.
     #[test]
     fn format_scan_header_content() {
         let mut buf = [0u8; 80];
@@ -159,6 +165,7 @@ mod tests {
         assert!(s.contains("D  E  F\r\n"));
     }
 
+    /// Format scan entry reserved row start.
     #[test]
     fn format_scan_entry_reserved_row_start() {
         let mut buf = [0u8; 16];
@@ -166,6 +173,7 @@ mod tests {
         assert_eq!(&buf[..n], b"00:    ");
     }
 
+    /// Format scan entry found.
     #[test]
     fn format_scan_entry_found() {
         let mut buf = [0u8; 16];
@@ -173,6 +181,7 @@ mod tests {
         assert_eq!(&buf[..n], b"51 ");
     }
 
+    /// Format scan entry not found.
     #[test]
     fn format_scan_entry_not_found() {
         let mut buf = [0u8; 16];
@@ -180,6 +189,7 @@ mod tests {
         assert_eq!(&buf[..n], b"-- ");
     }
 
+    /// Format scan entry row start valid.
     #[test]
     fn format_scan_entry_row_start_valid() {
         let mut buf = [0u8; 16];
@@ -187,6 +197,7 @@ mod tests {
         assert_eq!(&buf[..n], b"10: -- ");
     }
 
+    /// Format scan entry row end.
     #[test]
     fn format_scan_entry_row_end() {
         let mut buf = [0u8; 16];
@@ -194,6 +205,7 @@ mod tests {
         assert_eq!(&buf[..n], b"-- \r\n");
     }
 
+    /// Hex digit values.
     #[test]
     fn hex_digit_values() {
         assert_eq!(hex_digit(0), b'0');

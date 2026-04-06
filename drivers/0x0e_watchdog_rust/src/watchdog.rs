@@ -193,6 +193,16 @@ fn copy_slice(buf: &mut [u8], offset: usize, src: &[u8]) -> usize {
     n
 }
 
+/// Format zero into `buf`, returning 1 if the buffer is non-empty, else 0.
+fn format_zero(buf: &mut [u8]) -> usize {
+    if !buf.is_empty() {
+        buf[0] = b'0';
+        1
+    } else {
+        0
+    }
+}
+
 /// Format a `u32` as decimal ASCII into `buf`.
 ///
 /// # Arguments
@@ -205,11 +215,7 @@ fn copy_slice(buf: &mut [u8], offset: usize, src: &[u8]) -> usize {
 /// Number of bytes written.
 pub fn format_u32(buf: &mut [u8], value: u32) -> usize {
     if value == 0 {
-        if !buf.is_empty() {
-            buf[0] = b'0';
-            return 1;
-        }
-        return 0;
+        return format_zero(buf);
     }
     let mut tmp = [0u8; 10];
     let n = u32_to_digits_reversed(&mut tmp, value);
@@ -241,6 +247,7 @@ mod tests {
     // Import all parent module items
     use super::*;
 
+    /// New state is disabled.
     #[test]
     fn new_state_is_disabled() {
         let state = WatchdogDriverState::new();
@@ -249,6 +256,7 @@ mod tests {
         assert_eq!(state.feed_count(), 0);
     }
 
+    /// Enable activates watchdog.
     #[test]
     fn enable_activates_watchdog() {
         let mut state = WatchdogDriverState::new();
@@ -258,6 +266,7 @@ mod tests {
         assert_eq!(state.feed_count(), 0);
     }
 
+    /// Feed increments count.
     #[test]
     fn feed_increments_count() {
         let mut state = WatchdogDriverState::new();
@@ -268,6 +277,7 @@ mod tests {
         assert_eq!(state.feed_count(), 2);
     }
 
+    /// Feed returns false when disabled.
     #[test]
     fn feed_returns_false_when_disabled() {
         let mut state = WatchdogDriverState::new();
@@ -275,6 +285,7 @@ mod tests {
         assert_eq!(state.feed_count(), 0);
     }
 
+    /// Enable resets feed count.
     #[test]
     fn enable_resets_feed_count() {
         let mut state = WatchdogDriverState::new();
@@ -287,21 +298,25 @@ mod tests {
         assert_eq!(state.timeout_ms(), 5000);
     }
 
+    /// Default timeout matches c demo.
     #[test]
     fn default_timeout_matches_c_demo() {
         assert_eq!(DEFAULT_TIMEOUT_MS, 3000);
     }
 
+    /// Feed interval matches c demo.
     #[test]
     fn feed_interval_matches_c_demo() {
         assert_eq!(FEED_INTERVAL_MS, 1000);
     }
 
+    /// Max timeout is 8388.
     #[test]
     fn max_timeout_is_8388() {
         assert_eq!(MAX_TIMEOUT_MS, 8388);
     }
 
+    /// Format fed matches c output.
     #[test]
     fn format_fed_matches_c_output() {
         let mut buf = [0u8; 32];
@@ -309,6 +324,7 @@ mod tests {
         assert_eq!(&buf[..n], b"Watchdog fed\r\n");
     }
 
+    /// Format reset reason watchdog.
     #[test]
     fn format_reset_reason_watchdog() {
         let mut buf = [0u8; 64];
@@ -316,6 +332,7 @@ mod tests {
         assert_eq!(&buf[..n], b"System rebooted by watchdog timeout\r\n");
     }
 
+    /// Format reset reason normal.
     #[test]
     fn format_reset_reason_normal() {
         let mut buf = [0u8; 64];
@@ -323,6 +340,7 @@ mod tests {
         assert_eq!(&buf[..n], b"Normal power-on reset\r\n");
     }
 
+    /// Format enabled 3s.
     #[test]
     fn format_enabled_3s() {
         let mut buf = [0u8; 64];
@@ -333,6 +351,7 @@ mod tests {
         );
     }
 
+    /// Format enabled 5s.
     #[test]
     fn format_enabled_5s() {
         let mut buf = [0u8; 64];
@@ -343,6 +362,7 @@ mod tests {
         );
     }
 
+    /// Format u32 zero.
     #[test]
     fn format_u32_zero() {
         let mut buf = [0u8; 16];
@@ -350,6 +370,7 @@ mod tests {
         assert_eq!(&buf[..n], b"0");
     }
 
+    /// Format u32 large value.
     #[test]
     fn format_u32_large_value() {
         let mut buf = [0u8; 16];

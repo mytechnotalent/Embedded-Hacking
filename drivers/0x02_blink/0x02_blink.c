@@ -40,7 +40,9 @@
 #include "pico/stdlib.h"
 #include "blink.h"
 
+/** @brief GPIO pin for the onboard LED */
 #define LED_PIN        25
+/** @brief Delay between blink toggles in milliseconds */
 #define BLINK_DELAY_MS 500
 
 /**

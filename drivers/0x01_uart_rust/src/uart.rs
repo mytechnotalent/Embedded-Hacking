@@ -60,6 +60,14 @@ pub struct UartDriver {
     uart: EnabledUart,
 }
 
+/// Reconfigure TX and RX pins from their default state to UART function.
+fn reconfigure_pins(tx_pin: TxPinDefault, rx_pin: RxPinDefault) -> (TxPin, RxPin) {
+    (
+        tx_pin.reconfigure::<FunctionUart, PullNone>(),
+        rx_pin.reconfigure::<FunctionUart, PullNone>(),
+    )
+}
+
 impl UartDriver {
     /// Initialize hardware UART0 on the specified TX and RX GPIO pins.
     ///
@@ -86,10 +94,7 @@ impl UartDriver {
         resets: &mut hal::pac::RESETS,
         clocks: &hal::clocks::ClocksManager,
     ) -> Self {
-        let pins = (
-            tx_pin.reconfigure::<FunctionUart, PullNone>(),
-            rx_pin.reconfigure::<FunctionUart, PullNone>(),
-        );
+        let pins = reconfigure_pins(tx_pin, rx_pin);
         let cfg = UartConfig::new(baud_rate.Hz(), DataBits::Eight, None, StopBits::One);
         let uart = UartPeripheral::new(uart0, pins, resets)
             .enable(cfg, clocks.peripheral_clock.freq())
@@ -168,41 +173,49 @@ mod tests {
     // Import all parent module items
     use super::*;
 
+    /// To upper lowercase a.
     #[test]
     fn to_upper_lowercase_a() {
         assert_eq!(UartDriver::to_upper(b'a'), b'A');
     }
 
+    /// To upper lowercase z.
     #[test]
     fn to_upper_lowercase_z() {
         assert_eq!(UartDriver::to_upper(b'z'), b'Z');
     }
 
+    /// To upper lowercase m.
     #[test]
     fn to_upper_lowercase_m() {
         assert_eq!(UartDriver::to_upper(b'm'), b'M');
     }
 
+    /// To upper already uppercase.
     #[test]
     fn to_upper_already_uppercase() {
         assert_eq!(UartDriver::to_upper(b'A'), b'A');
     }
 
+    /// To upper digit unchanged.
     #[test]
     fn to_upper_digit_unchanged() {
         assert_eq!(UartDriver::to_upper(b'5'), b'5');
     }
 
+    /// To upper space unchanged.
     #[test]
     fn to_upper_space_unchanged() {
         assert_eq!(UartDriver::to_upper(b' '), b' ');
     }
 
+    /// To upper newline unchanged.
     #[test]
     fn to_upper_newline_unchanged() {
         assert_eq!(UartDriver::to_upper(b'\n'), b'\n');
     }
 
+    /// To upper null unchanged.
     #[test]
     fn to_upper_null_unchanged() {
         assert_eq!(UartDriver::to_upper(0), 0);

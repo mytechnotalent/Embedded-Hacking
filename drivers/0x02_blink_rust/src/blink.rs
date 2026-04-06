@@ -103,50 +103,62 @@ mod tests {
     // Error type trait for mock pin implementations
     use embedded_hal::digital::ErrorType;
 
+    /// Mock GPIO pin for testing.
     struct MockPin {
         state: bool,
     }
 
     impl MockPin {
+        /// New.
         fn new() -> Self {
             Self { state: false }
         }
     }
 
+    /// ErrorType implementation for MockPin.
     impl ErrorType for MockPin {
         type Error = Infallible;
     }
 
+    /// OutputPin implementation for MockPin.
     impl OutputPin for MockPin {
+        /// Set low.
         fn set_low(&mut self) -> Result<(), Self::Error> {
             self.state = false;
             Ok(())
         }
+        /// Set high.
         fn set_high(&mut self) -> Result<(), Self::Error> {
             self.state = true;
             Ok(())
         }
     }
 
+    /// StatefulOutputPin implementation for MockPin.
     impl StatefulOutputPin for MockPin {
+        /// Is set high.
         fn is_set_high(&mut self) -> Result<bool, Self::Error> {
             Ok(self.state)
         }
+        /// Is set low.
         fn is_set_low(&mut self) -> Result<bool, Self::Error> {
             Ok(!self.state)
         }
+        /// Toggle.
         fn toggle(&mut self) -> Result<(), Self::Error> {
             self.state = !self.state;
             Ok(())
         }
     }
 
+    /// Init starts low.
     #[test]
     fn init_starts_low() {
         let drv = BlinkDriver::init(MockPin::new());
         assert!(!drv.pin.state);
     }
 
+    /// On sets high.
     #[test]
     fn on_sets_high() {
         let mut drv = BlinkDriver::init(MockPin::new());
@@ -154,6 +166,7 @@ mod tests {
         assert!(drv.pin.state);
     }
 
+    /// Off sets low.
     #[test]
     fn off_sets_low() {
         let mut drv = BlinkDriver::init(MockPin::new());
@@ -162,6 +175,7 @@ mod tests {
         assert!(!drv.pin.state);
     }
 
+    /// Toggle from low goes high.
     #[test]
     fn toggle_from_low_goes_high() {
         let mut drv = BlinkDriver::init(MockPin::new());
@@ -169,6 +183,7 @@ mod tests {
         assert!(drv.pin.state);
     }
 
+    /// Toggle from high goes low.
     #[test]
     fn toggle_from_high_goes_low() {
         let mut drv = BlinkDriver::init(MockPin::new());
@@ -177,6 +192,7 @@ mod tests {
         assert!(!drv.pin.state);
     }
 
+    /// Get state reflects on.
     #[test]
     fn get_state_reflects_on() {
         let mut drv = BlinkDriver::init(MockPin::new());
@@ -184,6 +200,7 @@ mod tests {
         assert!(drv.get_state());
     }
 
+    /// Get state reflects off.
     #[test]
     fn get_state_reflects_off() {
         let mut drv = BlinkDriver::init(MockPin::new());
@@ -192,6 +209,7 @@ mod tests {
         assert!(!drv.get_state());
     }
 
+    /// Double toggle returns to original.
     #[test]
     fn double_toggle_returns_to_original() {
         let mut drv = BlinkDriver::init(MockPin::new());

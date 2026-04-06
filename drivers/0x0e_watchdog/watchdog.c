@@ -30,14 +30,37 @@
 #include "watchdog.h"
 #include "hardware/watchdog.h"
 
+/**
+ * @brief Enable the hardware watchdog with the specified timeout
+ *
+ * Starts the watchdog timer. If watchdog_driver_feed() is not called within
+ * timeout_ms milliseconds, the RP2350 will perform a hard reset.
+ * The maximum supported timeout is 8388 ms.
+ *
+ * @param timeout_ms Watchdog timeout in milliseconds (1 - 8388)
+ */
 void watchdog_driver_enable(uint32_t timeout_ms) {
     watchdog_enable(timeout_ms, true);
 }
 
+/**
+ * @brief Reset ("feed") the watchdog timer to prevent a reboot
+ *
+ * Must be called periodically within the timeout window configured by
+ * watchdog_driver_enable(). Each call restarts the countdown.
+ */
 void watchdog_driver_feed(void) {
     watchdog_update();
 }
 
+/**
+ * @brief Check whether the last reset was caused by the watchdog
+ *
+ * Reads the reset reason register to determine if the watchdog timer
+ * expired and forced the most recent reboot.
+ *
+ * @return bool true if the watchdog triggered the last reset, false otherwise
+ */
 bool watchdog_driver_caused_reboot(void) {
     return watchdog_caused_reboot();
 }

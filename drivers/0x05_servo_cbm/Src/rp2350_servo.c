@@ -132,12 +132,20 @@ static uint32_t _pulse_us_to_level(uint16_t pulse_us)
   return ((uint32_t)pulse_us * (SERVO_WRAP + 1)) / 20000U;
 }
 
+/**
+  * @brief  Release PWM from reset and wait until ready.
+  * @retval None
+  */
 void servo_release_reset(void)
 {
   _servo_clear_reset_bit();
   _servo_wait_reset_done();
 }
 
+/**
+  * @brief  Initialize servo PWM on GPIO 6 at 50 Hz.
+  * @retval None
+  */
 void servo_init(void)
 {
   _servo_configure_pin();
@@ -146,6 +154,11 @@ void servo_init(void)
   _servo_enable();
 }
 
+/**
+  * @brief  Set the servo pulse width in microseconds (clamped 1000-2000).
+  * @param  pulse_us pulse width in microseconds
+  * @retval None
+  */
 void servo_set_pulse_us(uint16_t pulse_us)
 {
   uint32_t level;
@@ -157,6 +170,11 @@ void servo_set_pulse_us(uint16_t pulse_us)
   PWM[SERVO_REG(PWM_CH_CC_OFFSET)] = level;
 }
 
+/**
+  * @brief  Set the servo angle in degrees (clamped 0-180).
+  * @param  degrees angle from 0 to 180
+  * @retval None
+  */
 void servo_set_angle(uint8_t degrees)
 {
   uint16_t pulse;

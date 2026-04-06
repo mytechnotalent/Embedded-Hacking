@@ -97,6 +97,23 @@ static void _print_hex8(uint8_t val)
 }
 
 /**
+  * @brief  Print probe result: address if found, dashes if not, blank if reserved.
+  * @param  addr 7-bit I2C address
+  * @retval None
+  */
+static void _print_probe_result(uint8_t addr)
+{
+  if (addr < 0x08 || addr > 0x77) {
+    uart_puts("   ");
+  } else if (i2c_probe(addr)) {
+    _print_hex8(addr);
+    uart_puts(" ");
+  } else {
+    uart_puts("-- ");
+  }
+}
+
+/**
   * @brief  Print a single scan table entry for the given address.
   *
   *         Prints the row header at 16-byte boundaries, then the address
@@ -109,17 +126,15 @@ static void _print_hex8(uint8_t val)
 static void _print_scan_entry(uint8_t addr)
 {
   if (addr % 16 == 0) { _print_hex8(addr); uart_puts(": "); }
-  if (addr < 0x08 || addr > 0x77) {
-    uart_puts("   ");
-  } else if (i2c_probe(addr)) {
-    _print_hex8(addr);
-    uart_puts(" ");
-  } else {
-    uart_puts("-- ");
-  }
-  if (addr % 16 == 15) { uart_puts("\r\n"); }
+  _print_probe_result(addr);
+  if (addr % 16 == 15)
+    uart_puts("\r\n");
 }
 
+/**
+  * @brief  Release I2C1 from reset and wait for completion.
+  * @retval None
+  */
 void i2c_release_reset(void)
 {
   RESETS->RESET |= (1U << RESETS_RESET_I2C1_SHIFT);
@@ -128,6 +143,15 @@ void i2c_release_reset(void)
   }
 }
 
+/**
+  * @brief  Initialize I2C1 as a 100 kHz master on SDA=GPIO2 / SCL=GPIO3.
+  *
+  *         Configures GPIO pads with pull-ups, sets FUNCSEL to I2C,
+  *         programs SCL timing for 100 kHz at 12 MHz clk_sys, and
+  *         enables the controller in master mode with 7-bit addressing.
+  *
+  * @retval None
+  */
 void i2c_init(void)
 {
   _i2c_config_pads();
@@ -140,35 +164,86 @@ void i2c_init(void)
   I2C1->ENABLE = 1U;
 }
 
-bool i2c_probe(uint8_t addr)
+/**
+  * @brief  Set the I2C1 target address for a probe transaction.
+  * @param  addr 7-bit target address
+  * @retval None
+  */
+static void _probe_set_target(uint8_t addr)
 {
   I2C1->ENABLE = 0U;
   I2C1->TAR = addr;
   I2C1->ENABLE = 1U;
-  (void)I2C1->CLR_TX_ABRT;
-  I2C1->DATA_CMD = (1U << I2C_DATA_CMD_CMD_SHIFT) | (1U << I2C_DATA_CMD_STOP_SHIFT);
-  uint32_t timeout = I2C_TIMEOUT;
-  bool aborted = false;
-  while (timeout > 0U) {
-    if (I2C1->RAW_INTR_STAT & I2C_RAW_INTR_TX_ABRT) {
-      aborted = true;
-      break;
-    }
-    if (I2C1->RXFLR) {
-      break;
-    }
-    timeout--;
-  }
-  if (aborted) {
-    (void)I2C1->CLR_TX_ABRT;
-  }
-  (void)I2C1->CLR_STOP_DET;
-  if (!aborted && I2C1->RXFLR) {
-    (void)I2C1->DATA_CMD;
-  }
-  return !aborted && timeout > 0U;
 }
 
+/**
+  * @brief  Issue a single read command with stop to probe the target.
+  * @retval None
+  */
+static void _probe_send_read(void)
+{
+  (void)I2C1->CLR_TX_ABRT;
+  I2C1->DATA_CMD = (1U << I2C_DATA_CMD_CMD_SHIFT) | (1U << I2C_DATA_CMD_STOP_SHIFT);
+}
+
+/**
+  * @brief  Wait for probe response, checking for abort or RX data.
+  * @retval bool true if transaction was aborted
+  */
+static bool _probe_wait_response(void)
+{
+  uint32_t timeout = I2C_TIMEOUT;
+  while (timeout > 0U) {
+    if (I2C1->RAW_INTR_STAT & I2C_RAW_INTR_TX_ABRT)
+      return true;
+    if (I2C1->RXFLR)
+      return false;
+    timeout--;
+  }
+  return true;
+}
+
+/**
+  * @brief  Clean up after a probe: clear abort, stop, and drain RX.
+  * @param  aborted true if the probe was aborted
+  * @retval None
+  */
+static void _probe_cleanup(bool aborted)
+{
+  if (aborted)
+    (void)I2C1->CLR_TX_ABRT;
+  (void)I2C1->CLR_STOP_DET;
+  if (!aborted && I2C1->RXFLR)
+    (void)I2C1->DATA_CMD;
+}
+
+/**
+  * @brief  Probe a 7-bit I2C address and return whether a device responds.
+  *
+  *         Sends a 1-byte read to the target address. Returns true if
+  *         the device acknowledges, false otherwise.
+  *
+  * @param  addr 7-bit I2C address (0x08-0x77)
+  * @retval bool true if a device acknowledged, false otherwise
+  */
+bool i2c_probe(uint8_t addr)
+{
+  _probe_set_target(addr);
+  _probe_send_read();
+  bool aborted = _probe_wait_response();
+  _probe_cleanup(aborted);
+  return !aborted;
+}
+
+/**
+  * @brief  Scan all valid 7-bit addresses and print a formatted table.
+  *
+  *         Iterates addresses 0x00 through 0x7F, probes each valid one
+  *         via i2c_probe(), and prints a 16-column hex grid showing
+  *         discovered device addresses over UART.
+  *
+  * @retval None
+  */
 void i2c_scan(void)
 {
   uart_puts("\r\nI2C bus scan:\r\n");

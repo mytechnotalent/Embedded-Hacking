@@ -1,3 +1,0 @@
-cargo:rustc-link-search=C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\drivers\0x0a_ir_rust\target\thumbv8m.main-none-eabihf\debug\build\rp235x-pac-ff09d25f9771574d\out
-cargo:rerun-if-changed=device.x
-cargo:rerun-if-changed=build.rs

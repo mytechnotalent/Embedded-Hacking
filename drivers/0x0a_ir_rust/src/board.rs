@@ -37,10 +37,10 @@ use hal::gpio::{FunctionNull, FunctionUart, Pin, PullDown, PullNone};
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
 
 // Alias our HAL crate
-#[cfg(rp2350)]
-use rp235x_hal as hal;
 #[cfg(rp2040)]
 use rp2040_hal as hal;
+#[cfg(rp2350)]
+use rp235x_hal as hal;
 
 /// Timer device type for the HAL timer peripheral.
 #[cfg(rp2350)]
@@ -86,7 +86,13 @@ pub(crate) fn init_clocks(
     watchdog: &mut hal::Watchdog,
 ) -> hal::clocks::ClocksManager {
     hal::clocks::init_clocks_and_plls(
-        XTAL_FREQ_HZ, xosc, clocks, pll_sys, pll_usb, resets, watchdog,
+        XTAL_FREQ_HZ,
+        xosc,
+        clocks,
+        pll_sys,
+        pll_usb,
+        resets,
+        watchdog,
     )
     .unwrap()
 }
@@ -148,34 +154,49 @@ fn wait_for_level(timer: &HalTimer, level: bool, timeout_us: u32) -> Option<i64>
     Some(time_us_32(timer).wrapping_sub(start) as i64)
 }
 
+/// Wait for the IR receiver to go idle (LOW).
+fn wait_for_idle(timer: &HalTimer) -> bool {
+    wait_for_level(timer, false, ir::LEADER_START_TIMEOUT_US).is_some()
+}
+
+/// Validate the NEC leader mark pulse width.
+fn validate_leader_mark(timer: &HalTimer) -> bool {
+    let Some(w) = wait_for_level(timer, true, ir::LEADER_MARK_TIMEOUT_US) else {
+        return false;
+    };
+    ir::is_valid_leader_mark(w)
+}
+
+/// Validate the NEC leader space width.
+fn validate_leader_space(timer: &HalTimer) -> bool {
+    let Some(w) = wait_for_level(timer, false, ir::LEADER_SPACE_TIMEOUT_US) else {
+        return false;
+    };
+    ir::is_valid_leader_space(w)
+}
+
 /// Wait for the NEC leader burst and space.
 fn wait_leader(timer: &HalTimer) -> bool {
-    if wait_for_level(timer, false, ir::LEADER_START_TIMEOUT_US).is_none() {
-        return false;
+    wait_for_idle(timer) && validate_leader_mark(timer) && validate_leader_space(timer)
+}
+
+/// Wait for the bit mark and measure the bit space width.
+fn measure_bit_space(timer: &HalTimer) -> Option<i64> {
+    if wait_for_level(timer, true, ir::BIT_MARK_TIMEOUT_US).is_none() {
+        return None;
     }
-    let Some(mark_width) = wait_for_level(timer, true, ir::LEADER_MARK_TIMEOUT_US) else {
-        return false;
-    };
-    if !ir::is_valid_leader_mark(mark_width) {
-        return false;
+    let w = wait_for_level(timer, false, ir::BIT_SPACE_TIMEOUT_US)?;
+    if !ir::is_valid_bit_space(w) {
+        return None;
     }
-    let Some(space_width) = wait_for_level(timer, false, ir::LEADER_SPACE_TIMEOUT_US) else {
-        return false;
-    };
-    ir::is_valid_leader_space(space_width)
+    Some(w)
 }
 
 /// Read one NEC bit and store it in the frame buffer.
 fn read_nec_bit(timer: &HalTimer, data: &mut [u8; 4], bit_index: usize) -> bool {
-    if wait_for_level(timer, true, ir::BIT_MARK_TIMEOUT_US).is_none() {
-        return false;
-    }
-    let Some(space_width) = wait_for_level(timer, false, ir::BIT_SPACE_TIMEOUT_US) else {
+    let Some(space_width) = measure_bit_space(timer) else {
         return false;
     };
-    if !ir::is_valid_bit_space(space_width) {
-        return false;
-    }
     ir::accumulate_nec_bit(data, bit_index, space_width);
     true
 }
@@ -225,7 +246,14 @@ pub(crate) fn poll_receiver(
 /// * `pac` - PAC Peripherals singleton (consumed).
 pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
     let mut wd = hal::Watchdog::new(pac.WATCHDOG);
-    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let clocks = init_clocks(
+        pac.XOSC,
+        pac.CLOCKS,
+        pac.PLL_SYS,
+        pac.PLL_USB,
+        &mut pac.RESETS,
+        &mut wd,
+    );
     let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
     let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
     let mut delay = init_delay(&clocks);
@@ -235,7 +263,9 @@ pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
     let timer = hal::Timer::new(pac.TIMER, &mut pac.RESETS);
     let _ = pins.gpio5.into_pull_up_input();
     announce_ir(&uart);
-    loop { poll_receiver(&uart, &timer, &mut delay); }
+    loop {
+        poll_receiver(&uart, &timer, &mut delay);
+    }
 }
 
 /// Print the IR driver initialisation banner over UART.

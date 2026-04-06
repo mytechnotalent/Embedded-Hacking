@@ -128,6 +128,23 @@ static bool _wait_response(void)
 }
 
 /**
+  * @brief  Wait for low-to-high transition and measure high-pulse width.
+  * @param  duration_out pointer to store the pulse duration in microseconds
+  * @retval bool true on success, false on timeout
+  */
+static bool _measure_high_pulse(uint32_t *duration_out)
+{
+  uint32_t start;
+  if (!_wait_for_level(false))
+    return false;
+  start = _time_us();
+  if (!_wait_for_level(true))
+    return false;
+  *duration_out = _time_us() - start;
+  return true;
+}
+
+/**
   * @brief  Read a single bit by measuring the high-pulse duration.
   * @param  data 5-byte array accumulating received bits
   * @param  bit  bit index (0-39)
@@ -135,14 +152,9 @@ static bool _wait_response(void)
   */
 static bool _read_bit(uint8_t *data, uint8_t bit)
 {
-  uint32_t start;
   uint32_t duration;
-  if (!_wait_for_level(false))
+  if (!_measure_high_pulse(&duration))
     return false;
-  start = _time_us();
-  if (!_wait_for_level(true))
-    return false;
-  duration = _time_us() - start;
   data[bit / 8U] <<= 1;
   if (duration > DHT11_BIT_THRESHOLD_US)
     data[bit / 8U] |= 1U;
@@ -220,18 +232,30 @@ static void _configure_funcsel(void)
   IO_BANK0->GPIO[DHT11_PIN].CTRL = IO_BANK0_CTRL_FUNCSEL_SIO;
 }
 
+/**
+  * @brief  Release TIMER0 from reset in the reset controller.
+  * @retval None
+  */
 void dht11_timer_release_reset(void)
 {
   _timer_clear_reset();
   _timer_wait_reset_done();
 }
 
+/**
+  * @brief  Start the TIMER0 tick generator for 1 us ticks at 12 MHz.
+  * @retval None
+  */
 void dht11_timer_start_tick(void)
 {
   TICKS[TICKS_TIMER0_CYCLES_OFFSET] = TICKS_TIMER0_CYCLES_12MHZ;
   TICKS[TICKS_TIMER0_CTRL_OFFSET] = TICKS_TIMER0_ENABLE;
 }
 
+/**
+  * @brief  Configure GPIO4 pad and funcsel for SIO with pull-up.
+  * @retval None
+  */
 void dht11_init(void)
 {
   _configure_pad();
@@ -239,15 +263,31 @@ void dht11_init(void)
   _set_input();
 }
 
-bool dht11_read(uint8_t *humidity, uint8_t *temperature)
+/**
+  * @brief  Acquire 40 bits from the DHT11 and validate the checksum.
+  * @param  data 5-byte output array for sensor data
+  * @retval bool true on success, false on timeout or checksum error
+  */
+static bool _acquire_data(uint8_t *data)
 {
-  uint8_t data[DHT11_DATA_BYTES] = {0};
   _send_start_signal();
   if (!_wait_response())
     return false;
   if (!_read_40_bits(data))
     return false;
-  if (!_validate_checksum(data))
+  return _validate_checksum(data);
+}
+
+/**
+  * @brief  Read temperature and humidity from the DHT11 sensor.
+  * @param  humidity    pointer to store humidity integer percentage
+  * @param  temperature pointer to store temperature integer Celsius
+  * @retval bool true on success, false on timeout or checksum error
+  */
+bool dht11_read(uint8_t *humidity, uint8_t *temperature)
+{
+  uint8_t data[DHT11_DATA_BYTES] = {0};
+  if (!_acquire_data(data))
     return false;
   *humidity = data[0];
   *temperature = data[2];

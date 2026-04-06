@@ -60,24 +60,28 @@ fn reverse_copy(buf: &mut [u8], tmp: &[u8], n: usize) {
     }
 }
 
+/// Copy a byte slice into `buf` at the given offset, returning bytes written.
+fn copy_slice(buf: &mut [u8], offset: usize, src: &[u8]) -> usize {
+    buf[offset..offset + src.len()].copy_from_slice(src);
+    src.len()
+}
+
+/// Append a CRLF sequence at `pos` in `buf` and return the new position.
+fn append_crlf(buf: &mut [u8], pos: usize) -> usize {
+    buf[pos] = b'\r';
+    buf[pos + 1] = b'\n';
+    pos + 2
+}
+
 /// Format the round-trip message for UART output.
 ///
 /// Produces: `core0 sent: N, core1 returned: N\r\n`
 pub fn format_round_trip(buf: &mut [u8], sent: u32, returned: u32) -> usize {
-    let prefix = b"core0 sent: ";
-    let middle = b", core1 returned: ";
-    let mut pos = 0usize;
-    buf[pos..pos + prefix.len()].copy_from_slice(prefix);
-    pos += prefix.len();
+    let mut pos = copy_slice(buf, 0, b"core0 sent: ");
     pos += format_u32(&mut buf[pos..], sent);
-    buf[pos..pos + middle.len()].copy_from_slice(middle);
-    pos += middle.len();
+    pos += copy_slice(buf, pos, b", core1 returned: ");
     pos += format_u32(&mut buf[pos..], returned);
-    buf[pos] = b'\r';
-    pos += 1;
-    buf[pos] = b'\n';
-    pos += 1;
-    pos
+    append_crlf(buf, pos)
 }
 
 #[cfg(test)]
@@ -85,17 +89,20 @@ mod tests {
     // Import all parent module items
     use super::*;
 
+    /// Increment value adds one.
     #[test]
     fn increment_value_adds_one() {
         assert_eq!(increment_value(0), 1);
         assert_eq!(increment_value(41), 42);
     }
 
+    /// Increment value wraps at max.
     #[test]
     fn increment_value_wraps_at_max() {
         assert_eq!(increment_value(u32::MAX), 0);
     }
 
+    /// Format u32 zero.
     #[test]
     fn format_u32_zero() {
         let mut buf = [0u8; 10];
@@ -103,6 +110,7 @@ mod tests {
         assert_eq!(&buf[..n], b"0");
     }
 
+    /// Format u32 single digit.
     #[test]
     fn format_u32_single_digit() {
         let mut buf = [0u8; 10];
@@ -110,6 +118,7 @@ mod tests {
         assert_eq!(&buf[..n], b"7");
     }
 
+    /// Format u32 multi digit.
     #[test]
     fn format_u32_multi_digit() {
         let mut buf = [0u8; 10];
@@ -117,6 +126,7 @@ mod tests {
         assert_eq!(&buf[..n], b"12345");
     }
 
+    /// Format u32 max.
     #[test]
     fn format_u32_max() {
         let mut buf = [0u8; 10];
@@ -124,6 +134,7 @@ mod tests {
         assert_eq!(&buf[..n], b"4294967295");
     }
 
+    /// Format round trip small values.
     #[test]
     fn format_round_trip_small_values() {
         let mut buf = [0u8; 52];
@@ -131,6 +142,7 @@ mod tests {
         assert_eq!(&buf[..n], b"core0 sent: 0, core1 returned: 1\r\n");
     }
 
+    /// Format round trip larger values.
     #[test]
     fn format_round_trip_larger_values() {
         let mut buf = [0u8; 52];
@@ -138,6 +150,7 @@ mod tests {
         assert_eq!(&buf[..n], b"core0 sent: 42, core1 returned: 43\r\n");
     }
 
+    /// Format round trip max values.
     #[test]
     fn format_round_trip_max_values() {
         let mut buf = [0u8; 52];

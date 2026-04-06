@@ -31,9 +31,12 @@
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 
+/** @brief ADC reference voltage in millivolts */
 #define ADC_VREF_MV    3300
+/** @brief Maximum 12-bit ADC raw value */
 #define ADC_FULL_SCALE 4095
 
+/** @brief Currently selected ADC input channel */
 static uint8_t active_channel = 0;
 
 /**
@@ -62,6 +65,12 @@ static float _raw_to_celsius(uint16_t raw) {
     return 27.0f - (voltage - 0.706f) / 0.001721f;
 }
 
+/**
+ * @brief Initialize the ADC peripheral and configure an analog GPIO pin
+ *
+ * @param gpio    GPIO pin number for the analog input
+ * @param channel ADC channel number corresponding to the GPIO
+ */
 void adc_driver_init(uint32_t gpio, uint8_t channel) {
     active_channel = channel;
     adc_init();
@@ -70,10 +79,20 @@ void adc_driver_init(uint32_t gpio, uint8_t channel) {
     adc_select_input(channel);
 }
 
+/**
+ * @brief Perform a single ADC conversion and return millivolts
+ *
+ * @return uint32_t Measured voltage in millivolts (0 to 3300)
+ */
 uint32_t adc_driver_read_mv(void) {
     return _raw_to_mv(adc_read());
 }
 
+/**
+ * @brief Read the on-chip temperature sensor in degrees Celsius
+ *
+ * @return float Die temperature in degrees Celsius
+ */
 float adc_driver_read_temp_celsius(void) {
     adc_select_input(4);
     float result = _raw_to_celsius(adc_read());

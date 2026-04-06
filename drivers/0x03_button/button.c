@@ -31,6 +31,7 @@
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
 
+/** @brief Debounce settling time stored from button_init() */
 static uint32_t debounce_delay_ms = 20;
 
 /**
@@ -48,6 +49,12 @@ static bool _debounce_confirm(uint32_t pin) {
     return !gpio_get(pin);
 }
 
+/**
+ * @brief Initialize a GPIO pin as an active-low button input with pull-up
+ *
+ * @param pin         GPIO pin number to configure as a button input
+ * @param debounce_ms Debounce settling time in milliseconds
+ */
 void button_init(uint32_t pin, uint32_t debounce_ms) {
     debounce_delay_ms = debounce_ms;
     gpio_init(pin);
@@ -55,6 +62,12 @@ void button_init(uint32_t pin, uint32_t debounce_ms) {
     gpio_pull_up(pin);
 }
 
+/**
+ * @brief Read the debounced state of the button
+ *
+ * @param pin GPIO pin number previously initialized with button_init()
+ * @return bool true if the button is firmly pressed, false if released
+ */
 bool button_is_pressed(uint32_t pin) {
     if (!gpio_get(pin)) {
         return _debounce_confirm(pin);
@@ -62,12 +75,23 @@ bool button_is_pressed(uint32_t pin) {
     return false;
 }
 
+/**
+ * @brief Initialize a GPIO pin as a push-pull digital output for an indicator LED
+ *
+ * @param pin GPIO pin number to configure as an LED output
+ */
 void button_led_init(uint32_t pin) {
     gpio_init(pin);
     gpio_set_dir(pin, GPIO_OUT);
     gpio_put(pin, false);
 }
 
+/**
+ * @brief Set the indicator LED state
+ *
+ * @param pin GPIO pin number
+ * @param on  true to turn the LED on, false to turn it off
+ */
 void button_led_set(uint32_t pin, bool on) {
     gpio_put(pin, on);
 }

@@ -1,3 +1,0 @@
-cargo:rustc-link-search=C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\drivers\0x0f_flash_rust\target\thumbv8m.main-none-eabihf\release\build\defmt-ec4ba2ef4974f3a7\out
-cargo:rustc-check-cfg=cfg(c_variadic)
-cargo:rustc-check-cfg=cfg(no_cas)

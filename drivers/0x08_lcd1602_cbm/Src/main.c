@@ -39,6 +39,20 @@
 #define COUNT_DELAY_MS 1000
 
 /**
+  * @brief  Copy reversed digits from tmp into buf in correct order.
+  * @param  tmp reversed digit buffer
+  * @param  len number of digits
+  * @param  buf output buffer
+  * @retval None
+  */
+static void _reverse_copy(const char *tmp, int len, char *buf)
+{
+  for (int j = 0; j < len; j++)
+    buf[j] = tmp[len - 1 - j];
+  buf[len] = '\0';
+}
+
+/**
   * @brief  Convert an unsigned 32-bit integer to a decimal string.
   *
   *         Writes at most 10 decimal digits plus a null terminator
@@ -53,18 +67,26 @@ static void _uint_to_str(uint32_t val, char *buf)
 {
   char tmp[11];
   int i = 0;
-  if (val == 0) {
-    buf[0] = '0';
-    buf[1] = '\0';
-    return;
-  }
+  if (val == 0) { buf[0] = '0'; buf[1] = '\0'; return; }
   while (val > 0) {
     tmp[i++] = (char)('0' + (val % 10));
     val /= 10;
   }
-  for (int j = 0; j < i; j++)
-    buf[j] = tmp[i - 1 - j];
-  buf[i] = '\0';
+  _reverse_copy(tmp, i, buf);
+}
+
+/**
+  * @brief  Copy a null-terminated string into buf at a given offset.
+  * @param  dst destination buffer
+  * @param  off starting offset in destination
+  * @param  src source string
+  * @retval int new offset past the copied characters
+  */
+static int _copy_str(char *dst, int off, const char *src)
+{
+  while (*src)
+    dst[off++] = *src++;
+  return off;
 }
 
 /**
@@ -81,20 +103,17 @@ static void _format_counter(uint32_t count, char *buf)
 {
   char num[11];
   _uint_to_str(count, num);
-  const char *prefix = "Count: ";
-  int i = 0;
-  while (prefix[i]) { buf[i] = prefix[i]; i++; }
-  int j = 0;
-  while (num[j]) buf[i++] = num[j++];
+  int i = _copy_str(buf, 0, "Count: ");
+  i = _copy_str(buf, i, num);
   while (i < 16) buf[i++] = ' ';
   buf[i] = '\0';
 }
 
 /**
-  * @brief  Application entry point for the LCD 1602 counter demo.
-  * @retval int does not return
+  * @brief  Initialize clocks, I2C, LCD, UART, and display the static title.
+  * @retval None
   */
-int main(void)
+static void _lcd_setup(void)
 {
   xosc_set_clk_ref();
   i2c_release_reset();
@@ -103,14 +122,33 @@ int main(void)
   uart_puts("LCD 1602 driver initialized at I2C addr 0x27\r\n");
   lcd_set_cursor(0, 0);
   lcd_puts("Reverse Eng.");
+}
+
+/**
+  * @brief  Format, display, and print the current counter value.
+  * @param  count current counter value
+  * @retval None
+  */
+static void _display_count(uint32_t count)
+{
+  char buf[17];
+  _format_counter(count, buf);
+  lcd_set_cursor(1, 0);
+  lcd_puts(buf);
+  uart_puts(buf);
+  uart_puts("\r\n");
+}
+
+/**
+  * @brief  Application entry point for the LCD 1602 counter demo.
+  * @retval int does not return
+  */
+int main(void)
+{
   uint32_t count = 0;
+  _lcd_setup();
   while (1) {
-    char buf[17];
-    _format_counter(count, buf);
-    lcd_set_cursor(1, 0);
-    lcd_puts(buf);
-    uart_puts(buf);
-    uart_puts("\r\n");
+    _display_count(count);
     count++;
     delay_ms(COUNT_DELAY_MS);
   }

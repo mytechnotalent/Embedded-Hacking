@@ -238,6 +238,16 @@ fn lcd_send(i2c: &mut impl I2c, addr: u8, value: u8, mode: u8, delay: &mut corte
     lcd_write4(i2c, addr, value & 0x0F, mode, delay);
 }
 
+/// Send three 0x03 nibbles with required power-on delays.
+fn lcd_reset_pulse_3x(i2c: &mut impl I2c, addr: u8, delay: &mut cortex_m::delay::Delay) {
+    lcd_write4(i2c, addr, 0x03, 0, delay);
+    delay.delay_ms(5);
+    lcd_write4(i2c, addr, 0x03, 0, delay);
+    delay.delay_us(150);
+    lcd_write4(i2c, addr, 0x03, 0, delay);
+    delay.delay_us(150);
+}
+
 /// Execute the HD44780 4-bit mode power-on reset sequence.
 ///
 /// # Arguments
@@ -248,16 +258,6 @@ fn lcd_send(i2c: &mut impl I2c, addr: u8, value: u8, mode: u8, delay: &mut corte
 fn lcd_hd44780_reset(i2c: &mut impl I2c, addr: u8, delay: &mut cortex_m::delay::Delay) {
     lcd_reset_pulse_3x(i2c, addr, delay);
     lcd_write4(i2c, addr, 0x02, 0, delay);
-    delay.delay_us(150);
-}
-
-/// Send three 0x03 nibbles with required power-on delays.
-fn lcd_reset_pulse_3x(i2c: &mut impl I2c, addr: u8, delay: &mut cortex_m::delay::Delay) {
-    lcd_write4(i2c, addr, 0x03, 0, delay);
-    delay.delay_ms(5);
-    lcd_write4(i2c, addr, 0x03, 0, delay);
-    delay.delay_us(150);
-    lcd_write4(i2c, addr, 0x03, 0, delay);
     delay.delay_us(150);
 }
 

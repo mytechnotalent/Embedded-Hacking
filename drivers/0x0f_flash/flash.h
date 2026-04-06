@@ -33,8 +33,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+/** @brief Total on-chip flash size in bytes (4 MB) */
 #define FLASH_DRIVER_SIZE_BYTES   (4 * 1024 * 1024)
+/** @brief Flash erase sector size in bytes */
 #define FLASH_DRIVER_SECTOR_SIZE  4096
+/** @brief Flash program page size in bytes */
 #define FLASH_DRIVER_PAGE_SIZE    256
 
 /**

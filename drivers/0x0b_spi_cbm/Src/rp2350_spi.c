@@ -162,38 +162,88 @@ static void _wait_rx_not_empty(void)
   }
 }
 
+/**
+  * @brief  Release SPI0 from reset in the RESETS controller.
+  * @retval None
+  */
 void spi_release_reset(void)
 {
   _spi_clear_reset();
   _spi_wait_reset_done();
 }
 
-void spi_init(void)
+/**
+  * @brief  Configure all SPI and CS GPIO pads.
+  * @retval None
+  */
+static void _configure_all_pads(void)
 {
   _configure_spi_pad(SPI_MOSI_PIN);
   _configure_spi_pad(SPI_MISO_PIN);
   _configure_spi_pad(SPI_SCK_PIN);
   _configure_cs_pad(SPI_CS_PIN);
+}
+
+/**
+  * @brief  Assign SPI and SIO alternate functions to all GPIO pins.
+  * @retval None
+  */
+static void _configure_all_funcsel(void)
+{
   _set_funcsel_spi(SPI_MOSI_PIN);
   _set_funcsel_spi(SPI_MISO_PIN);
   _set_funcsel_spi(SPI_SCK_PIN);
   _set_funcsel_sio(SPI_CS_PIN);
+}
+
+/**
+  * @brief  Initialise SPI0 in master mode at 1 MHz, 8-bit, CPOL=0/CPHA=0.
+  *
+  *         Configures SSPCR0, SSPCPSR, and SSPCR1 then enables the port.
+  *         Also configures GPIO16-19 pads and IO funcsel for SPI.
+  *
+  * @retval None
+  */
+void spi_init(void)
+{
+  _configure_all_pads();
+  _configure_all_funcsel();
   _cs_init();
   _configure_cr0();
   _configure_prescaler();
   _enable_spi();
 }
 
+/**
+  * @brief  Assert the chip-select line (drive CS low).
+  * @retval None
+  */
 void spi_cs_select(void)
 {
   SIO[SIO_GPIO_OUT_CLR_OFFSET] = CS_PIN_MASK;
 }
 
+/**
+  * @brief  Deassert the chip-select line (drive CS high).
+  * @retval None
+  */
 void spi_cs_deselect(void)
 {
   SIO[SIO_GPIO_OUT_SET_OFFSET] = CS_PIN_MASK;
 }
 
+/**
+  * @brief  Perform a full-duplex SPI transfer.
+  *
+  *         Sends @p len bytes from @p tx while simultaneously receiving
+  *         @p len bytes into @p rx. The caller is responsible for
+  *         asserting and deasserting CS around this call.
+  *
+  * @param  tx  pointer to transmit buffer (must be @p len bytes)
+  * @param  rx  pointer to receive buffer  (must be @p len bytes)
+  * @param  len number of bytes to transfer
+  * @retval None
+  */
 void spi_transfer(const uint8_t *tx, uint8_t *rx, uint32_t len)
 {
   for (uint32_t i = 0; i < len; i++) {

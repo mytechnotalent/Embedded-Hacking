@@ -68,34 +68,40 @@ mod tests {
     // Import all parent module items
     use super::*;
 
+    /// Raw to mv zero.
     #[test]
     fn raw_to_mv_zero() {
         assert_eq!(raw_to_mv(0), 0);
     }
 
+    /// Raw to mv full scale.
     #[test]
     fn raw_to_mv_full_scale() {
         assert_eq!(raw_to_mv(4095), 3300);
     }
 
+    /// Raw to mv half.
     #[test]
     fn raw_to_mv_half() {
         let mv = raw_to_mv(2048);
         assert!(mv >= 1649 && mv <= 1651);
     }
 
+    /// Raw to mv quarter.
     #[test]
     fn raw_to_mv_quarter() {
         let mv = raw_to_mv(1024);
         assert!(mv >= 824 && mv <= 826);
     }
 
+    /// Raw to celsius room temp.
     #[test]
     fn raw_to_celsius_room_temp() {
         let temp = raw_to_celsius(876);
         assert!(temp > 20.0 && temp < 35.0);
     }
 
+    /// Raw to celsius known voltage.
     #[test]
     fn raw_to_celsius_known_voltage() {
         let raw = (0.706f32 / 3.3f32 * ADC_FULL_SCALE as f32 + 0.5f32) as u16;
@@ -103,6 +109,7 @@ mod tests {
         assert!((temp - 27.0).abs() < 1.0);
     }
 
+    /// Raw to celsius higher voltage.
     #[test]
     fn raw_to_celsius_higher_voltage() {
         let temp_low = raw_to_celsius(1000);
@@ -110,11 +117,13 @@ mod tests {
         assert!(temp_high > temp_low);
     }
 
+    /// Raw to mv one count.
     #[test]
     fn raw_to_mv_one_count() {
         assert_eq!(raw_to_mv(1), 0);
     }
 
+    /// Raw to mv ten counts.
     #[test]
     fn raw_to_mv_ten_counts() {
         assert_eq!(raw_to_mv(10), 8);

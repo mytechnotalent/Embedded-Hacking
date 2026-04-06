@@ -89,12 +89,21 @@ static void _watchdog_load_and_enable(void)
   WATCHDOG->CTRL |= (1U << WATCHDOG_CTRL_ENABLE_SHIFT);
 }
 
+/**
+  * @brief  Start the watchdog tick generator at 1 us resolution.
+  * @retval None
+  */
 void watchdog_tick_init(void)
 {
   _watchdog_set_tick_cycles();
   _watchdog_enable_tick();
 }
 
+/**
+  * @brief  Enable the watchdog with the specified timeout.
+  * @param  timeout_ms watchdog timeout in milliseconds (1-16777)
+  * @retval None
+  */
 void watchdog_enable(uint32_t timeout_ms)
 {
   _load_value = timeout_ms * 1000U;
@@ -106,11 +115,19 @@ void watchdog_enable(uint32_t timeout_ms)
   _watchdog_load_and_enable();
 }
 
+/**
+  * @brief  Feed the watchdog to prevent a reset.
+  * @retval None
+  */
 void watchdog_feed(void)
 {
   WATCHDOG->LOAD = _load_value;
 }
 
+/**
+  * @brief  Check whether the last reset was caused by the watchdog.
+  * @retval bool true if the watchdog triggered the last reset
+  */
 bool watchdog_caused_reboot(void)
 {
   return (WATCHDOG->REASON & ((1U << WATCHDOG_REASON_TIMER_SHIFT) | (1U << WATCHDOG_REASON_FORCE_SHIFT))) != 0;

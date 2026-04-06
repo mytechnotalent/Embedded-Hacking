@@ -46,6 +46,25 @@ pub const XIP_BASE: u32 = 0x1000_0000;
 /// Demo string written to flash, matching the C demo exactly.
 pub const DEMO_MSG: &[u8] = b"Embedded Hacking flash driver demo";
 
+/// Fill the entire buffer with 0xFF (erased flash state).
+fn fill_erased(buf: &mut [u8]) {
+    for b in buf.iter_mut() {
+        *b = 0xFF;
+    }
+}
+
+/// Copy the demo string and NUL terminator into `buf`, returning meaningful length.
+fn copy_demo_msg(buf: &mut [u8]) -> usize {
+    let msg_with_nul = DEMO_MSG.len() + 1;
+    let n = msg_with_nul.min(buf.len());
+    let copy_len = DEMO_MSG.len().min(n);
+    buf[..copy_len].copy_from_slice(&DEMO_MSG[..copy_len]);
+    if copy_len < n {
+        buf[copy_len] = 0x00;
+    }
+    n
+}
+
 /// Prepare a write buffer with 0xFF fill and the demo string at the start.
 ///
 /// Mirrors the C demo's `_prepare_write_buf()` function. The buffer is
@@ -60,17 +79,8 @@ pub const DEMO_MSG: &[u8] = b"Embedded Hacking flash driver demo";
 ///
 /// Number of meaningful bytes (string length + NUL terminator).
 pub fn prepare_write_buf(buf: &mut [u8]) -> usize {
-    for b in buf.iter_mut() {
-        *b = 0xFF;
-    }
-    let msg_with_nul = DEMO_MSG.len() + 1;
-    let n = msg_with_nul.min(buf.len());
-    let copy_len = DEMO_MSG.len().min(n);
-    buf[..copy_len].copy_from_slice(&DEMO_MSG[..copy_len]);
-    if copy_len < n {
-        buf[copy_len] = 0x00;
-    }
-    n
+    fill_erased(buf);
+    copy_demo_msg(buf)
 }
 
 /// Format the "Flash readback: <string>\r\n" message into `buf`.
@@ -115,36 +125,43 @@ mod tests {
     // Import all parent module items
     use super::*;
 
+    /// Flash size is 4mb.
     #[test]
     fn flash_size_is_4mb() {
         assert_eq!(FLASH_SIZE_BYTES, 4 * 1024 * 1024);
     }
 
+    /// Sector size is 4096.
     #[test]
     fn sector_size_is_4096() {
         assert_eq!(FLASH_SECTOR_SIZE, 4096);
     }
 
+    /// Page size is 256.
     #[test]
     fn page_size_is_256() {
         assert_eq!(FLASH_PAGE_SIZE, 256);
     }
 
+    /// Target offset is last sector.
     #[test]
     fn target_offset_is_last_sector() {
         assert_eq!(FLASH_TARGET_OFFSET, FLASH_SIZE_BYTES - FLASH_SECTOR_SIZE);
     }
 
+    /// Write len matches page size.
     #[test]
     fn write_len_matches_page_size() {
         assert_eq!(FLASH_WRITE_LEN, 256);
     }
 
+    /// Xip base address.
     #[test]
     fn xip_base_address() {
         assert_eq!(XIP_BASE, 0x1000_0000);
     }
 
+    /// Prepare write buf fills 0xff.
     #[test]
     fn prepare_write_buf_fills_0xff() {
         let mut buf = [0u8; FLASH_WRITE_LEN];
@@ -156,6 +173,7 @@ mod tests {
         }
     }
 
+    /// Prepare write buf has demo string.
     #[test]
     fn prepare_write_buf_has_demo_string() {
         let mut buf = [0u8; FLASH_WRITE_LEN];
@@ -163,6 +181,7 @@ mod tests {
         assert_eq!(&buf[..DEMO_MSG.len()], DEMO_MSG);
     }
 
+    /// Prepare write buf has nul terminator.
     #[test]
     fn prepare_write_buf_has_nul_terminator() {
         let mut buf = [0u8; FLASH_WRITE_LEN];
@@ -170,6 +189,7 @@ mod tests {
         assert_eq!(buf[DEMO_MSG.len()], 0x00);
     }
 
+    /// Format readback matches c output.
     #[test]
     fn format_readback_matches_c_output() {
         let mut read_data = [0xFFu8; FLASH_WRITE_LEN];
@@ -184,6 +204,7 @@ mod tests {
         );
     }
 
+    /// Format readback empty string.
     #[test]
     fn format_readback_empty_string() {
         let read_data = [0u8; 8];
@@ -192,6 +213,7 @@ mod tests {
         assert_eq!(&buf[..n], b"Flash readback: \r\n");
     }
 
+    /// Format readback no nul.
     #[test]
     fn format_readback_no_nul() {
         let read_data = [b'A'; 8];
@@ -200,6 +222,7 @@ mod tests {
         assert_eq!(&buf[..n], b"Flash readback: AAAAAAAA\r\n");
     }
 
+    /// Demo msg matches c string.
     #[test]
     fn demo_msg_matches_c_string() {
         assert_eq!(DEMO_MSG, b"Embedded Hacking flash driver demo");

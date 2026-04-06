@@ -47,16 +47,11 @@
 static void _uint_to_str(uint8_t value, char *buf)
 {
   uint8_t idx = 0;
-  if (value >= 100) {
+  if (value >= 100)
     buf[idx++] = (char)('0' + value / 100);
+  if (value >= 10)
     buf[idx++] = (char)('0' + (value / 10) % 10);
-    buf[idx++] = (char)('0' + value % 10);
-  } else if (value >= 10) {
-    buf[idx++] = (char)('0' + value / 10);
-    buf[idx++] = (char)('0' + value % 10);
-  } else {
-    buf[idx++] = (char)('0' + value);
-  }
+  buf[idx++] = (char)('0' + value % 10);
   buf[idx] = '\0';
 }
 
@@ -88,23 +83,40 @@ static void _print_failure(void)
 }
 
 /**
-  * @brief  Application entry point for the DHT11 sensor demo.
-  * @retval int does not return
+  * @brief  Initialize clocks, timer, DHT11, and announce over UART.
+  * @retval None
   */
-int main(void)
+static void _dht11_setup(void)
 {
-  uint8_t humidity;
-  uint8_t temperature;
   xosc_set_clk_ref();
   dht11_timer_release_reset();
   dht11_timer_start_tick();
   dht11_init();
   uart_puts("DHT11 driver initialized on GPIO4\r\n");
-  while (1) {
-    if (dht11_read(&humidity, &temperature))
-      _print_reading(humidity, temperature);
-    else
-      _print_failure();
-    delay_ms(DHT11_POLL_MS);
-  }
+}
+
+/**
+  * @brief  Read the sensor once and print results or failure.
+  * @retval None
+  */
+static void _poll_sensor(void)
+{
+  uint8_t humidity;
+  uint8_t temperature;
+  if (dht11_read(&humidity, &temperature))
+    _print_reading(humidity, temperature);
+  else
+    _print_failure();
+  delay_ms(DHT11_POLL_MS);
+}
+
+/**
+  * @brief  Application entry point for the DHT11 sensor demo.
+  * @retval int does not return
+  */
+int main(void)
+{
+  _dht11_setup();
+  while (1)
+    _poll_sensor();
 }

@@ -1,8 +1,0 @@
-cargo::rustc-check-cfg=cfg(rp2040)
-cargo::rustc-check-cfg=cfg(rp2350)
-cargo:rustc-link-search=C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\drivers\0x0a_ir_rust\target\thumbv8m.main-none-eabihf\debug\build\ir-3e1a7f7a40d8bf6b\out
-cargo:rerun-if-changed=.pico-rs
-cargo::rustc-cfg=rp2350
-cargo:rerun-if-changed=rp2350.x
-cargo:rerun-if-changed=rp2350_riscv.x
-cargo:rerun-if-changed=build.rs

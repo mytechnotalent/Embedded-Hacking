@@ -32,14 +32,22 @@
 #include "hardware/pwm.h"
 #include "hardware/clocks.h"
 
+/** @brief Default minimum pulse width in microseconds */
 static const uint16_t SERVO_DEFAULT_MIN_US = 1000;
+/** @brief Default maximum pulse width in microseconds */
 static const uint16_t SERVO_DEFAULT_MAX_US = 2000;
 
+/** @brief GPIO pin assigned to the servo */
 static uint8_t servo_pin = 0;
+/** @brief PWM hardware slice for the servo pin */
 static uint servo_slice = 0;
+/** @brief PWM channel within the servo slice */
 static uint servo_chan = 0;
+/** @brief PWM counter wrap value for 50 Hz servo */
 static uint32_t servo_wrap = 20000 - 1;
+/** @brief Servo PWM frequency in Hz */
 static float servo_hz = 50.0f;
+/** @brief Flag indicating servo has been initialized */
 static bool servo_initialized = false;
 
 /**
@@ -73,6 +81,11 @@ static void _apply_servo_config(void) {
     pwm_init(servo_slice, &config, true);
 }
 
+/**
+ * @brief Initialize servo driver on a given GPIO pin
+ *
+ * @param pin GPIO pin number to use for servo PWM
+ */
 void servo_init(uint8_t pin) {
     servo_pin = pin;
     gpio_set_function(servo_pin, GPIO_FUNC_PWM);
@@ -82,6 +95,11 @@ void servo_init(uint8_t pin) {
     servo_initialized = true;
 }
 
+/**
+ * @brief Set servo pulse width in microseconds
+ *
+ * @param pulse_us Pulse width in microseconds
+ */
 void servo_set_pulse_us(uint16_t pulse_us) {
     if (!servo_initialized) return;
     if (pulse_us < SERVO_DEFAULT_MIN_US) pulse_us = SERVO_DEFAULT_MIN_US;
@@ -90,6 +108,11 @@ void servo_set_pulse_us(uint16_t pulse_us) {
     pwm_set_chan_level(servo_slice, servo_chan, level);
 }
 
+/**
+ * @brief Set servo angle in degrees (0 to 180)
+ *
+ * @param degrees Angle in degrees
+ */
 void servo_set_angle(float degrees) {
     if (degrees < 0.0f) degrees = 0.0f;
     if (degrees > 180.0f) degrees = 180.0f;

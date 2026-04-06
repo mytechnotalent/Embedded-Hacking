@@ -41,7 +41,9 @@
 #include "pico/stdlib.h"
 #include "flash.h"
 
+/** @brief Byte offset from flash start for demo write target */
 #define FLASH_TARGET_OFFSET (FLASH_DRIVER_SIZE_BYTES - FLASH_DRIVER_SECTOR_SIZE)
+/** @brief Number of bytes to write in the flash demo */
 #define FLASH_WRITE_LEN     FLASH_DRIVER_PAGE_SIZE
 
 /**

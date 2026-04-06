@@ -1,3 +1,0 @@
-cargo:rustc-link-search=C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\drivers\0x0e_watchdog_rust\target\x86_64-pc-windows-msvc\debug\build\defmt-7ef1e9d929c14e25\out
-cargo:rustc-check-cfg=cfg(c_variadic)
-cargo:rustc-check-cfg=cfg(no_cas)

@@ -31,6 +31,7 @@
 #include "hardware/gpio.h"
 #include "pico/time.h"
 
+/** @brief GPIO pin connected to the DHT11 sensor */
 static uint dht_pin;
 
 /**
@@ -121,12 +122,29 @@ static bool _validate_checksum(const uint8_t *data) {
     return data[4] == ((data[0] + data[1] + data[2] + data[3]) & 0xFF);
 }
 
+/**
+ * @brief Initialize the DHT11 driver
+ *
+ * Configures the GPIO pin for the DHT11 sensor. This must be called before
+ * using dht11_read().
+ *
+ * @param pin GPIO pin number connected to DHT11 signal
+ */
 void dht11_init(uint8_t pin) {
     dht_pin = pin;
     gpio_init(pin);
     gpio_pull_up(pin);
 }
 
+/**
+ * @brief Read temperature and humidity from DHT11 sensor
+ *
+ * Performs the DHT11 communication protocol to read sensor data.
+ *
+ * @param humidity    Pointer to store humidity value (0-100%)
+ * @param temperature Pointer to store temperature value in Celsius
+ * @return true if read successful, false on error or timeout
+ */
 bool dht11_read(float *humidity, float *temperature) {
     uint8_t data[5] = {0};
     _send_start_signal();

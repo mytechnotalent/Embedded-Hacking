@@ -35,6 +35,23 @@
 #define SWEEP_DELAY_MS 50
 
 /**
+  * @brief  Convert a uint8_t to a decimal string.
+  * @param  value number to convert (0-255)
+  * @param  buf   output buffer (at least 4 bytes)
+  * @retval None
+  */
+static void _uint8_to_str(uint8_t value, char *buf)
+{
+  uint8_t idx = 0;
+  if (value >= 100)
+    buf[idx++] = (char)('0' + value / 100);
+  if (value >= 10)
+    buf[idx++] = (char)('0' + (value / 10) % 10);
+  buf[idx++] = (char)('0' + value % 10);
+  buf[idx] = '\0';
+}
+
+/**
   * @brief  Print a duty percentage value as a decimal string over UART.
   * @param  duty duty cycle value (0-100)
   * @retval None
@@ -42,18 +59,7 @@
 static void _print_duty(uint8_t duty)
 {
   char buf[4];
-  uint8_t idx = 0;
-  if (duty >= 100) {
-    buf[idx++] = '1';
-    buf[idx++] = '0';
-    buf[idx++] = '0';
-  } else if (duty >= 10) {
-    buf[idx++] = (char)('0' + duty / 10);
-    buf[idx++] = (char)('0' + duty % 10);
-  } else {
-    buf[idx++] = (char)('0' + duty);
-  }
-  buf[idx] = '\0';
+  _uint8_to_str(duty, buf);
   uart_puts("Duty: ");
   uart_puts(buf);
   uart_puts("%\r\n");

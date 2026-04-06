@@ -43,8 +43,11 @@
 #include "pico/stdlib.h"
 #include "servo.h"
 
+/** @brief GPIO pin for the servo PWM output */
 #define SERVO_GPIO     6
+/** @brief Angle increment per sweep step in degrees */
 #define STEP_DEGREES   10
+/** @brief Delay between sweep steps in milliseconds */
 #define STEP_DELAY_MS  150
 
 /**

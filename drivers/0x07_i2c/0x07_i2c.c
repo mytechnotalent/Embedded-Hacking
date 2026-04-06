@@ -44,9 +44,13 @@
 #include "pico/stdlib.h"
 #include "i2c.h"
 
+/** @brief I2C port number (0 or 1) */
 #define I2C_PORT    1
+/** @brief GPIO pin for I2C SDA */
 #define I2C_SDA_PIN 2
+/** @brief GPIO pin for I2C SCL */
 #define I2C_SCL_PIN 3
+/** @brief I2C bus clock rate in Hz */
 #define I2C_BAUD    100000
 
 /**

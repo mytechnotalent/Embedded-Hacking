@@ -36,6 +36,23 @@
 #define STEP_DELAY_MS 150
 
 /**
+  * @brief  Convert a uint8_t to a decimal string.
+  * @param  value number to convert (0-255)
+  * @param  buf   output buffer (at least 4 bytes)
+  * @retval None
+  */
+static void _uint8_to_str(uint8_t value, char *buf)
+{
+  uint8_t idx = 0;
+  if (value >= 100)
+    buf[idx++] = (char)('0' + value / 100);
+  if (value >= 10)
+    buf[idx++] = (char)('0' + (value / 10) % 10);
+  buf[idx++] = (char)('0' + value % 10);
+  buf[idx] = '\0';
+}
+
+/**
   * @brief  Print an angle value as a decimal string over UART.
   * @param  angle angle in degrees (0-180)
   * @retval None
@@ -43,18 +60,7 @@
 static void _print_angle(uint8_t angle)
 {
   char buf[4];
-  uint8_t idx = 0;
-  if (angle >= 100) {
-    buf[idx++] = (char)('0' + angle / 100);
-    buf[idx++] = (char)('0' + (angle / 10) % 10);
-    buf[idx++] = (char)('0' + angle % 10);
-  } else if (angle >= 10) {
-    buf[idx++] = (char)('0' + angle / 10);
-    buf[idx++] = (char)('0' + angle % 10);
-  } else {
-    buf[idx++] = (char)('0' + angle);
-  }
-  buf[idx] = '\0';
+  _uint8_to_str(angle, buf);
   uart_puts("Angle: ");
   uart_puts(buf);
   uart_puts(" deg\r\n");

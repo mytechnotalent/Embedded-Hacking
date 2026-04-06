@@ -212,6 +212,7 @@ mod tests {
     // Import all parent module items
     use super::*;
 
+    /// New state is inactive.
     #[test]
     fn new_state_is_inactive() {
         let state = TimerDriverState::new();
@@ -220,6 +221,7 @@ mod tests {
         assert_eq!(state.fire_count(), 0);
     }
 
+    /// Start activates timer.
     #[test]
     fn start_activates_timer() {
         let mut state = TimerDriverState::new();
@@ -228,6 +230,7 @@ mod tests {
         assert_eq!(state.period_ms(), 1_000);
     }
 
+    /// Cancel deactivates timer.
     #[test]
     fn cancel_deactivates_timer() {
         let mut state = TimerDriverState::new();
@@ -236,6 +239,7 @@ mod tests {
         assert!(!state.is_active());
     }
 
+    /// Cancel when inactive is safe.
     #[test]
     fn cancel_when_inactive_is_safe() {
         let mut state = TimerDriverState::new();
@@ -243,6 +247,7 @@ mod tests {
         assert!(!state.is_active());
     }
 
+    /// Start while active cancels and restarts.
     #[test]
     fn start_while_active_cancels_and_restarts() {
         let mut state = TimerDriverState::new();
@@ -252,6 +257,7 @@ mod tests {
         assert_eq!(state.period_ms(), 2_000);
     }
 
+    /// On fire increments count.
     #[test]
     fn on_fire_increments_count() {
         let mut state = TimerDriverState::new();
@@ -262,6 +268,7 @@ mod tests {
         assert_eq!(state.fire_count(), 2);
     }
 
+    /// On fire returns false when inactive.
     #[test]
     fn on_fire_returns_false_when_inactive() {
         let mut state = TimerDriverState::new();
@@ -269,6 +276,7 @@ mod tests {
         assert_eq!(state.fire_count(), 0);
     }
 
+    /// On fire after cancel returns false.
     #[test]
     fn on_fire_after_cancel_returns_false() {
         let mut state = TimerDriverState::new();
@@ -279,6 +287,7 @@ mod tests {
         assert_eq!(state.fire_count(), 1);
     }
 
+    /// Format heartbeat matches c output.
     #[test]
     fn format_heartbeat_matches_c_output() {
         let mut buf = [0u8; 32];
@@ -286,6 +295,7 @@ mod tests {
         assert_eq!(&buf[..n], b"Timer heartbeat\r\n");
     }
 
+    /// Format started 1000ms.
     #[test]
     fn format_started_1000ms() {
         let mut buf = [0u8; 48];
@@ -293,6 +303,7 @@ mod tests {
         assert_eq!(&buf[..n], b"Repeating timer started (1000 ms)\r\n");
     }
 
+    /// Format started single digit.
     #[test]
     fn format_started_single_digit() {
         let mut buf = [0u8; 48];
@@ -300,6 +311,7 @@ mod tests {
         assert_eq!(&buf[..n], b"Repeating timer started (5 ms)\r\n");
     }
 
+    /// Format u32 zero.
     #[test]
     fn format_u32_zero() {
         let mut buf = [0u8; 10];
@@ -307,6 +319,7 @@ mod tests {
         assert_eq!(&buf[..n], b"0");
     }
 
+    /// Format u32 large value.
     #[test]
     fn format_u32_large_value() {
         let mut buf = [0u8; 10];
@@ -314,6 +327,7 @@ mod tests {
         assert_eq!(&buf[..n], b"123456");
     }
 
+    /// Default period matches c demo.
     #[test]
     fn default_period_matches_c_demo() {
         assert_eq!(DEFAULT_PERIOD_MS, 1_000);

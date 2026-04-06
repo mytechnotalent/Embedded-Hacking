@@ -32,15 +32,18 @@ use fugit::RateExtU32;
 // Clock trait for accessing system clock frequency
 use hal::Clock;
 // GPIO pin types and function selectors
-use hal::gpio::{FunctionNull, FunctionSioInput, FunctionSioOutput, FunctionUart, Pin, PullDown, PullNone, PullUp};
+use hal::gpio::{
+    FunctionNull, FunctionSioInput, FunctionSioOutput, FunctionUart, Pin, PullDown, PullNone,
+    PullUp,
+};
 // UART configuration and peripheral types
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
 
 // Alias our HAL crate
-#[cfg(rp2350)]
-use rp235x_hal as hal;
 #[cfg(rp2040)]
 use rp2040_hal as hal;
+#[cfg(rp2350)]
+use rp235x_hal as hal;
 
 /// External crystal frequency in Hz (12 MHz).
 pub(crate) const XTAL_FREQ_HZ: u32 = 12_000_000u32;
@@ -96,7 +99,13 @@ pub(crate) fn init_clocks(
     watchdog: &mut hal::Watchdog,
 ) -> hal::clocks::ClocksManager {
     hal::clocks::init_clocks_and_plls(
-        XTAL_FREQ_HZ, xosc, clocks, pll_sys, pll_usb, resets, watchdog,
+        XTAL_FREQ_HZ,
+        xosc,
+        clocks,
+        pll_sys,
+        pll_usb,
+        resets,
+        watchdog,
     )
     .unwrap()
 }
@@ -188,7 +197,14 @@ type LedPin = Pin<hal::gpio::bank0::Gpio25, FunctionSioOutput, PullDown>;
 /// * `pac` - PAC Peripherals singleton (consumed).
 pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
     let mut wd = hal::Watchdog::new(pac.WATCHDOG);
-    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let clocks = init_clocks(
+        pac.XOSC,
+        pac.CLOCKS,
+        pac.PLL_SYS,
+        pac.PLL_USB,
+        &mut pac.RESETS,
+        &mut wd,
+    );
     let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
     let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
     let delay = RefCell::new(init_delay(&clocks));
@@ -210,12 +226,15 @@ fn button_demo(
     led_pin: Pin<hal::gpio::bank0::Gpio25, FunctionNull, PullDown>,
     delay: &RefCell<cortex_m::delay::Delay>,
 ) -> ! {
-    let mut btn = crate::button::ButtonDriver::init(
-        btn_pin.into_pull_up_input(), DEBOUNCE_MS, |ms| delay.borrow_mut().delay_ms(ms),
-    );
+    let mut btn =
+        crate::button::ButtonDriver::init(btn_pin.into_pull_up_input(), DEBOUNCE_MS, |ms| {
+            delay.borrow_mut().delay_ms(ms)
+        });
     let mut led = crate::button::ButtonLed::init(led_pin.into_push_pull_output());
     let mut last = false;
-    loop { poll_button(uart, &mut btn, &mut led, &mut last, delay); }
+    loop {
+        poll_button(uart, &mut btn, &mut led, &mut last, delay);
+    }
 }
 
 /// Poll button state, update LED, and report edge transitions.
@@ -227,7 +246,7 @@ fn button_demo(
 /// * `led` - Mutable reference to the LED driver.
 /// * `last` - Mutable reference to the previous button state.
 /// * `delay` - Shared reference to the delay provider.
-fn poll_button<F: Fn(u32)>(
+fn poll_button<F: FnMut(u32)>(
     uart: &EnabledUart,
     btn: &mut crate::button::ButtonDriver<BtnPin, F>,
     led: &mut crate::button::ButtonLed<LedPin>,
@@ -236,7 +255,10 @@ fn poll_button<F: Fn(u32)>(
 ) {
     let pressed = btn.is_pressed();
     led.set(pressed);
-    if pressed != *last { report_edge(uart, pressed); *last = pressed; }
+    if pressed != *last {
+        report_edge(uart, pressed);
+        *last = pressed;
+    }
     delay.borrow_mut().delay_ms(POLL_MS);
 }
 
@@ -247,7 +269,11 @@ fn poll_button<F: Fn(u32)>(
 /// * `uart` - Reference to the enabled UART peripheral for serial output.
 /// * `pressed` - `true` if the button is pressed, `false` if released.
 fn report_edge(uart: &EnabledUart, pressed: bool) {
-    let msg = if pressed { b"Button: PRESSED\r\n" as &[u8] } else { b"Button: RELEASED\r\n" };
+    let msg = if pressed {
+        b"Button: PRESSED\r\n" as &[u8]
+    } else {
+        b"Button: RELEASED\r\n"
+    };
     uart.write_full_blocking(msg);
 }
 

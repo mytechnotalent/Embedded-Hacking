@@ -43,6 +43,7 @@
 #include "pico/stdlib.h"
 #include "ir.h"
 
+/** @brief GPIO pin connected to the IR receiver output */
 #define IR_GPIO 5
 
 /**

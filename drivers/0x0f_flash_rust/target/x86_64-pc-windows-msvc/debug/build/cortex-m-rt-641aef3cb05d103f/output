@@ -1,8 +1,0 @@
-cargo:rustc-check-cfg=cfg(armv6m)
-cargo:rustc-check-cfg=cfg(armv7m)
-cargo:rustc-check-cfg=cfg(armv8m)
-cargo:rustc-check-cfg=cfg(cortex_m)
-cargo:rustc-check-cfg=cfg(has_fpu)
-cargo:rustc-link-search=C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\drivers\0x0f_flash_rust\target\x86_64-pc-windows-msvc\debug\build\cortex-m-rt-641aef3cb05d103f\out
-cargo:rerun-if-changed=build.rs
-cargo:rerun-if-changed=link.x.in

@@ -37,10 +37,10 @@ use hal::gpio::{FunctionNull, FunctionUart, Pin, PullDown, PullNone};
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
 
 // Alias our HAL crate
-#[cfg(rp2350)]
-use rp235x_hal as hal;
 #[cfg(rp2040)]
 use rp2040_hal as hal;
+#[cfg(rp2350)]
+use rp235x_hal as hal;
 
 /// External crystal frequency in Hz (12 MHz).
 pub(crate) const XTAL_FREQ_HZ: u32 = 12_000_000u32;
@@ -96,7 +96,13 @@ pub(crate) fn init_clocks(
     watchdog: &mut hal::Watchdog,
 ) -> hal::clocks::ClocksManager {
     hal::clocks::init_clocks_and_plls(
-        XTAL_FREQ_HZ, xosc, clocks, pll_sys, pll_usb, resets, watchdog,
+        XTAL_FREQ_HZ,
+        xosc,
+        clocks,
+        pll_sys,
+        pll_usb,
+        resets,
+        watchdog,
     )
     .unwrap()
 }
@@ -175,6 +181,39 @@ pub(crate) fn init_delay(clocks: &hal::clocks::ClocksManager) -> cortex_m::delay
     cortex_m::delay::Delay::new(core.SYST, clocks.system_clock.freq().to_Hz())
 }
 
+/// Write 3-character right-justified angle digits into `buf`.
+fn write_angle_digits(buf: &mut [u8], a: u32) -> usize {
+    if a >= 100 {
+        write_angle_hundreds(buf, a);
+    } else if a >= 10 {
+        write_angle_tens(buf, a);
+    } else {
+        write_angle_ones(buf, a);
+    }
+    3
+}
+
+/// Write digits for angles >= 100.
+fn write_angle_hundreds(buf: &mut [u8], a: u32) {
+    buf[0] = b'0' + (a / 100) as u8;
+    buf[1] = b'0' + ((a / 10) % 10) as u8;
+    buf[2] = b'0' + (a % 10) as u8;
+}
+
+/// Write digits for angles 10..99 with leading space.
+fn write_angle_tens(buf: &mut [u8], a: u32) {
+    buf[0] = b' ';
+    buf[1] = b'0' + (a / 10) as u8;
+    buf[2] = b'0' + (a % 10) as u8;
+}
+
+/// Write digit for angles 0..9 with leading spaces.
+fn write_angle_ones(buf: &mut [u8], a: u32) {
+    buf[0] = b' ';
+    buf[1] = b' ';
+    buf[2] = b'0' + a as u8;
+}
+
 /// Format an angle into "Angle: NNN deg\r\n".
 ///
 /// # Arguments
@@ -192,20 +231,6 @@ pub(crate) fn format_angle(buf: &mut [u8], angle: i32) -> usize {
     pos += write_angle_digits(&mut buf[pos..], a);
     buf[pos..pos + 6].copy_from_slice(b" deg\r\n");
     pos + 6
-}
-
-/// Write 3-character right-justified angle digits into `buf`.
-fn write_angle_digits(buf: &mut [u8], a: u32) -> usize {
-    if a >= 100 {
-        buf[0] = b'0' + (a / 100) as u8;
-        buf[1] = b'0' + ((a / 10) % 10) as u8;
-        buf[2] = b'0' + (a % 10) as u8;
-    } else if a >= 10 {
-        buf[0] = b' '; buf[1] = b'0' + (a / 10) as u8; buf[2] = b'0' + (a % 10) as u8;
-    } else {
-        buf[0] = b' '; buf[1] = b' '; buf[2] = b'0' + a as u8;
-    }
-    3
 }
 
 /// Sweep the servo angle upward from 0 to 180 in STEP_DEGREES increments.
@@ -265,10 +290,22 @@ fn apply_angle(
     delay.delay_ms(STEP_DELAY_MS);
 }
 
+/// Compute the pulse width in microseconds for the given angle.
+fn compute_pulse_us(angle: i32) -> u32 {
+    crate::servo::angle_to_pulse_us(
+        angle as f32,
+        crate::servo::SERVO_DEFAULT_MIN_US,
+        crate::servo::SERVO_DEFAULT_MAX_US,
+    ) as u32
+}
+
 /// Compute the PWM level for a given angle using servo constants.
 fn compute_servo_level(angle: i32) -> u32 {
-    let pulse = crate::servo::angle_to_pulse_us(angle as f32, crate::servo::SERVO_DEFAULT_MIN_US, crate::servo::SERVO_DEFAULT_MAX_US);
-    crate::servo::pulse_us_to_level(pulse as u32, crate::servo::SERVO_WRAP, crate::servo::SERVO_HZ)
+    crate::servo::pulse_us_to_level(
+        compute_pulse_us(angle),
+        crate::servo::SERVO_WRAP,
+        crate::servo::SERVO_HZ,
+    )
 }
 
 /// Type alias for PWM slice 3 (servo on GPIO 6, channel A).
@@ -281,7 +318,14 @@ type PwmSlice3 = hal::pwm::Slice<hal::pwm::Pwm3, hal::pwm::FreeRunning>;
 /// * `pac` - PAC Peripherals singleton (consumed).
 pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
     let mut wd = hal::Watchdog::new(pac.WATCHDOG);
-    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let clocks = init_clocks(
+        pac.XOSC,
+        pac.CLOCKS,
+        pac.PLL_SYS,
+        pac.PLL_USB,
+        &mut pac.RESETS,
+        &mut wd,
+    );
     let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
     let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
     let mut delay = init_delay(&clocks);

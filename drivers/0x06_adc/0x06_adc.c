@@ -42,7 +42,9 @@
 #include "pico/stdlib.h"
 #include "adc.h"
 
+/** @brief GPIO pin for the analog input */
 #define ADC_GPIO    26
+/** @brief ADC channel corresponding to ADC_GPIO */
 #define ADC_CHANNEL 0
 
 /**

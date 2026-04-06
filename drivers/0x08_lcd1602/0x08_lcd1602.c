@@ -45,10 +45,15 @@
 #include "pico/stdlib.h"
 #include "lcd1602.h"
 
+/** @brief I2C port number (0 or 1) */
 #define I2C_PORT      1
+/** @brief GPIO pin for I2C SDA */
 #define I2C_SDA_PIN   2
+/** @brief GPIO pin for I2C SCL */
 #define I2C_SCL_PIN   3
+/** @brief I2C bus clock rate in Hz */
 #define I2C_BAUD_HZ   100000
+/** @brief I2C address of the PCF8574 LCD backpack */
 #define LCD_I2C_ADDR  0x27
 
 /**

@@ -42,8 +42,11 @@
 #include "pico/stdlib.h"
 #include "button.h"
 
+/** @brief GPIO pin for the push-button input */
 #define BUTTON_PIN  15
+/** @brief GPIO pin for the indicator LED */
 #define LED_PIN     25
+/** @brief Button debounce delay in milliseconds */
 #define DEBOUNCE_MS 20
 
 /**

@@ -22,6 +22,11 @@
 
 #include "rp2350_delay.h"
 
+/**
+  * @brief  Delay for the specified number of milliseconds.
+  * @param  ms number of milliseconds to delay
+  * @retval None
+  */
 void delay_ms(uint32_t ms)
 {
   if (ms == 0)
@@ -38,6 +43,11 @@ void delay_ms(uint32_t ms)
   );
 }
 
+/**
+  * @brief  Delay for the specified number of microseconds.
+  * @param  us number of microseconds to delay
+  * @retval None
+  */
 void delay_us(uint32_t us)
 {
   if (us == 0)

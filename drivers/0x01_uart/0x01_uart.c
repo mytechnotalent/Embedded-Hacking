@@ -42,8 +42,11 @@
 #include "pico/stdlib.h"
 #include "uart.h"
 
+/** @brief GPIO pin used for UART0 TX */
 #define UART_TX_PIN  0
+/** @brief GPIO pin used for UART0 RX */
 #define UART_RX_PIN  1
+/** @brief UART baud rate in bits per second */
 #define UART_BAUD    115200
 
 /**

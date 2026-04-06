@@ -27,6 +27,8 @@
 
 // Rate extension trait for .Hz() baud rate construction
 use fugit::RateExtU32;
+// ADC one-shot trait for .read()
+use cortex_m::prelude::_embedded_hal_adc_OneShot;
 // Clock trait for accessing system clock frequency
 use hal::Clock;
 // GPIO pin types and function selectors
@@ -35,10 +37,10 @@ use hal::gpio::{FunctionNull, FunctionUart, Pin, PullDown, PullNone};
 use hal::uart::{DataBits, Enabled, StopBits, UartConfig, UartPeripheral};
 
 // Alias our HAL crate
-#[cfg(rp2350)]
-use rp235x_hal as hal;
 #[cfg(rp2040)]
 use rp2040_hal as hal;
+#[cfg(rp2350)]
+use rp235x_hal as hal;
 
 /// External crystal frequency in Hz (12 MHz).
 pub(crate) const XTAL_FREQ_HZ: u32 = 12_000_000u32;
@@ -91,7 +93,13 @@ pub(crate) fn init_clocks(
     watchdog: &mut hal::Watchdog,
 ) -> hal::clocks::ClocksManager {
     hal::clocks::init_clocks_and_plls(
-        XTAL_FREQ_HZ, xosc, clocks, pll_sys, pll_usb, resets, watchdog,
+        XTAL_FREQ_HZ,
+        xosc,
+        clocks,
+        pll_sys,
+        pll_usb,
+        resets,
+        watchdog,
     )
     .unwrap()
 }
@@ -170,6 +178,59 @@ pub(crate) fn init_delay(clocks: &hal::clocks::ClocksManager) -> cortex_m::delay
     cortex_m::delay::Delay::new(core.SYST, clocks.system_clock.freq().to_Hz())
 }
 
+/// Write a conditional digit into `buf` if `val` meets the threshold.
+fn write_conditional_digit(
+    buf: &mut [u8],
+    pos: &mut usize,
+    val: u32,
+    threshold: u32,
+    divisor: u32,
+) {
+    if val >= threshold {
+        buf[*pos] = b'0' + ((val / divisor) % 10) as u8;
+        *pos += 1;
+    }
+}
+
+/// Write a u32 with minimum digits (no leading zeros).
+fn write_min_digits(buf: &mut [u8], val: u32) -> usize {
+    let mut pos = 0;
+    write_conditional_digit(buf, &mut pos, val, 100, 100);
+    write_conditional_digit(buf, &mut pos, val, 10, 10);
+    buf[pos] = b'0' + (val % 10) as u8;
+    pos + 1
+}
+
+/// Write 4-digit millivolt value into `buf`.
+fn write_mv_digits(buf: &mut [u8], mv: u32) -> usize {
+    buf[0] = b'0' + ((mv / 1000) % 10) as u8;
+    buf[1] = b'0' + ((mv / 100) % 10) as u8;
+    buf[2] = b'0' + ((mv / 10) % 10) as u8;
+    buf[3] = b'0' + (mv % 10) as u8;
+    4
+}
+
+/// Write a negative sign if needed and return the absolute temperature value.
+fn write_sign(buf: &mut [u8], pos: &mut usize, temp_int: i32) -> u32 {
+    if temp_int < 0 {
+        buf[*pos] = b'-';
+        *pos += 1;
+        (-temp_int) as u32
+    } else {
+        temp_int as u32
+    }
+}
+
+/// Write temperature as "[-]NN.F" into `buf`.
+fn write_temp(buf: &mut [u8], temp_int: i32, temp_frac: u8) -> usize {
+    let mut pos = 0;
+    let abs_temp = write_sign(buf, &mut pos, temp_int);
+    pos += write_min_digits(&mut buf[pos..], abs_temp);
+    buf[pos] = b'.';
+    buf[pos + 1] = b'0' + temp_frac;
+    pos + 2
+}
+
 /// Format a millivolt value into "ADC0: NNNN mV  |  Chip temp: NN.N C\r\n".
 ///
 /// # Arguments
@@ -193,34 +254,6 @@ pub(crate) fn format_adc_line(buf: &mut [u8], mv: u32, temp_int: i32, temp_frac:
     pos + 4
 }
 
-/// Write 4-digit millivolt value into `buf`.
-fn write_mv_digits(buf: &mut [u8], mv: u32) -> usize {
-    buf[0] = b'0' + ((mv / 1000) % 10) as u8;
-    buf[1] = b'0' + ((mv / 100) % 10) as u8;
-    buf[2] = b'0' + ((mv / 10) % 10) as u8;
-    buf[3] = b'0' + (mv % 10) as u8;
-    4
-}
-
-/// Write temperature as "[-]NN.F" into `buf`.
-fn write_temp(buf: &mut [u8], temp_int: i32, temp_frac: u8) -> usize {
-    let mut pos = 0;
-    let abs_temp = if temp_int < 0 { buf[pos] = b'-'; pos += 1; -temp_int } else { temp_int } as u32;
-    pos += write_min_digits(&mut buf[pos..], abs_temp);
-    buf[pos] = b'.'; pos += 1;
-    buf[pos] = b'0' + temp_frac; pos += 1;
-    pos
-}
-
-/// Write a u32 with minimum digits (no leading zeros).
-fn write_min_digits(buf: &mut [u8], val: u32) -> usize {
-    let mut pos = 0;
-    if val >= 100 { buf[pos] = b'0' + ((val / 100) % 10) as u8; pos += 1; }
-    if val >= 10 { buf[pos] = b'0' + ((val / 10) % 10) as u8; pos += 1; }
-    buf[pos] = b'0' + (val % 10) as u8;
-    pos + 1
-}
-
 /// Type alias for the ADC input pin on GPIO 26.
 type Gpio26Adc = hal::adc::AdcPin<Pin<hal::gpio::bank0::Gpio26, FunctionNull, PullDown>>;
 
@@ -231,7 +264,14 @@ type Gpio26Adc = hal::adc::AdcPin<Pin<hal::gpio::bank0::Gpio26, FunctionNull, Pu
 /// * `pac` - PAC Peripherals singleton (consumed).
 pub(crate) fn run(mut pac: hal::pac::Peripherals) -> ! {
     let mut wd = hal::Watchdog::new(pac.WATCHDOG);
-    let clocks = init_clocks(pac.XOSC, pac.CLOCKS, pac.PLL_SYS, pac.PLL_USB, &mut pac.RESETS, &mut wd);
+    let clocks = init_clocks(
+        pac.XOSC,
+        pac.CLOCKS,
+        pac.PLL_SYS,
+        pac.PLL_USB,
+        &mut pac.RESETS,
+        &mut wd,
+    );
     let pins = init_pins(pac.IO_BANK0, pac.PADS_BANK0, pac.SIO, &mut pac.RESETS);
     let uart = init_uart(pac.UART0, pins.gpio0, pins.gpio1, &mut pac.RESETS, &clocks);
     let mut delay = init_delay(&clocks);
