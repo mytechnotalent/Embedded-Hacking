@@ -88,10 +88,15 @@ static void _print_failure(void)
   */
 static void _dht11_setup(void)
 {
+  uint8_t dummy_h;
+  uint8_t dummy_t;
   xosc_set_clk_ref();
   dht11_timer_release_reset();
   dht11_timer_start_tick();
   dht11_init();
+  delay_ms(DHT11_POLL_MS);
+  dht11_read(&dummy_h, &dummy_t);
+  delay_ms(DHT11_POLL_MS);
   uart_puts("DHT11 driver initialized on GPIO4\r\n");
 }
 
