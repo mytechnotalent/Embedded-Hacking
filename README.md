@@ -510,6 +510,7 @@ Register-level C drivers for the RP2350 with no SDK dependencies. Each driver fo
 | [0x0b_spi_cbm](drivers/0x0b_spi_cbm)             | SPI bus init & bidirectional transfer      | SPI0           |
 | [0x0c_multicore_cbm](drivers/0x0c_multicore_cbm) | Dual-core launch & FIFO messaging          | SIO FIFO, PSM  |
 | [0x0d_timer_cbm](drivers/0x0d_timer_cbm)         | Repeating timer alarm callbacks            | TIMER0, TICKS  |
+| [0x0e_watchdog_cbm](drivers/0x0e_watchdog_cbm)   | Watchdog enable, feed & reboot detection   | WATCHDOG, PSM  |
 
 <br>
 
