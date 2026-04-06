@@ -492,26 +492,47 @@ Forty-two stories beneath frozen tundra, a shadow intelligence alliance called D
 
 <br>
 
+# C Bare-Metal Drivers
+Register-level C drivers for the RP2350 with no SDK dependencies. Each driver folder uses a two-layer architecture: `rp2350.h` (peripheral register structs) and per-peripheral `rp2350_<name>.h/.c` driver pairs. Built with `arm-none-eabi-gcc`, linked with a custom linker script, and flashed via UF2.
+
+| Driver                                           | Description                                | Key Peripheral |
+| ------------------------------------------------ | ------------------------------------------ | -------------- |
+| [0x01_uart_cbm](drivers/0x01_uart_cbm)           | Raw UART transmit / receive                | UART0          |
+| [0x02_blink_cbm](drivers/0x02_blink_cbm)         | GPIO output LED blink                      | SIO, IO_BANK0  |
+| [0x03_button_cbm](drivers/0x03_button_cbm)       | GPIO input with debounce                   | SIO, IO_BANK0  |
+| [0x04_pwm_cbm](drivers/0x04_pwm_cbm)             | PWM output with frequency & duty control   | PWM            |
+| [0x05_servo_cbm](drivers/0x05_servo_cbm)         | SG90 servo angle & pulse control           | PWM            |
+| [0x06_adc_cbm](drivers/0x06_adc_cbm)             | ADC voltage & on-chip temperature reading  | ADC            |
+| [0x07_i2c_cbm](drivers/0x07_i2c_cbm)             | I2C bus init, probe & scan                 | I2C0           |
+| [0x08_lcd1602_cbm](drivers/0x08_lcd1602_cbm)     | 1602 LCD over I2C (PCF8574 backpack)       | I2C0           |
+| [0x09_dht11_cbm](drivers/0x09_dht11_cbm)         | DHT11 temperature & humidity (single-wire) | SIO, IO_BANK0  |
+| [0x0a_ir_cbm](drivers/0x0a_ir_cbm)               | IR remote NEC protocol decoder             | SIO, IO_BANK0  |
+| [0x0b_spi_cbm](drivers/0x0b_spi_cbm)             | SPI bus init & bidirectional transfer      | SPI0           |
+| [0x0c_multicore_cbm](drivers/0x0c_multicore_cbm) | Dual-core launch & FIFO messaging          | SIO FIFO, PSM  |
+| [0x0d_timer_cbm](drivers/0x0d_timer_cbm)         | Repeating timer alarm callbacks            | TIMER0, TICKS  |
+
+<br>
+
 # C Drivers
 Self-contained C driver libraries for the Raspberry Pi Pico 2 (RP2350). Each driver folder contains a thin demo (`0xNN_name.c`), a reusable library implementation (`name.c`), and a library header with full Doxygen docstrings (`name.h`).
 
-| Driver | Description | Key Hardware |
-|--------|-------------|--------------|
-| [0x01_uart](drivers/0x01_uart) | Raw UART transmit / receive | `hardware_uart` |
-| [0x02_blink](drivers/0x02_blink) | GPIO output LED blink | `pico_stdlib` |
-| [0x03_button](drivers/0x03_button) | GPIO input with debounce | `pico_stdlib` |
-| [0x04_pwm](drivers/0x04_pwm) | PWM output with frequency & duty control | `hardware_pwm`, `hardware_clocks` |
-| [0x05_servo](drivers/0x05_servo) | SG90 servo angle & pulse control | `hardware_pwm`, `hardware_clocks` |
-| [0x06_adc](drivers/0x06_adc) | ADC voltage & on-chip temperature reading | `hardware_adc` |
-| [0x07_i2c](drivers/0x07_i2c) | I2C bus init, probe & scan | `hardware_i2c` |
-| [0x08_lcd1602](drivers/0x08_lcd1602) | 1602 LCD over I2C (PCF8574 backpack) | `hardware_i2c` |
-| [0x09_dht11](drivers/0x09_dht11) | DHT11 temperature & humidity (single-wire) | `pico_stdlib` |
-| [0x0a_ir](drivers/0x0a_ir) | IR remote NEC protocol decoder | `pico_stdlib` |
-| [0x0b_spi](drivers/0x0b_spi) | SPI bus init & bidirectional transfer | `hardware_spi` |
-| [0x0c_multicore](drivers/0x0c_multicore) | Dual-core launch & FIFO messaging | `pico_multicore` |
-| [0x0d_timer](drivers/0x0d_timer) | Repeating timer callbacks | `pico_stdlib` |
-| [0x0e_watchdog](drivers/0x0e_watchdog) | Watchdog enable, feed & reboot detection | `hardware_watchdog` |
-| [0x0f_flash](drivers/0x0f_flash) | On-board flash erase, write & read | `hardware_flash`, `hardware_sync` |
+| Driver                                   | Description                                | Key Hardware                      |
+| ---------------------------------------- | ------------------------------------------ | --------------------------------- |
+| [0x01_uart](drivers/0x01_uart)           | Raw UART transmit / receive                | `hardware_uart`                   |
+| [0x02_blink](drivers/0x02_blink)         | GPIO output LED blink                      | `pico_stdlib`                     |
+| [0x03_button](drivers/0x03_button)       | GPIO input with debounce                   | `pico_stdlib`                     |
+| [0x04_pwm](drivers/0x04_pwm)             | PWM output with frequency & duty control   | `hardware_pwm`, `hardware_clocks` |
+| [0x05_servo](drivers/0x05_servo)         | SG90 servo angle & pulse control           | `hardware_pwm`, `hardware_clocks` |
+| [0x06_adc](drivers/0x06_adc)             | ADC voltage & on-chip temperature reading  | `hardware_adc`                    |
+| [0x07_i2c](drivers/0x07_i2c)             | I2C bus init, probe & scan                 | `hardware_i2c`                    |
+| [0x08_lcd1602](drivers/0x08_lcd1602)     | 1602 LCD over I2C (PCF8574 backpack)       | `hardware_i2c`                    |
+| [0x09_dht11](drivers/0x09_dht11)         | DHT11 temperature & humidity (single-wire) | `pico_stdlib`                     |
+| [0x0a_ir](drivers/0x0a_ir)               | IR remote NEC protocol decoder             | `pico_stdlib`                     |
+| [0x0b_spi](drivers/0x0b_spi)             | SPI bus init & bidirectional transfer      | `hardware_spi`                    |
+| [0x0c_multicore](drivers/0x0c_multicore) | Dual-core launch & FIFO messaging          | `pico_multicore`                  |
+| [0x0d_timer](drivers/0x0d_timer)         | Repeating timer callbacks                  | `pico_stdlib`                     |
+| [0x0e_watchdog](drivers/0x0e_watchdog)   | Watchdog enable, feed & reboot detection   | `hardware_watchdog`               |
+| [0x0f_flash](drivers/0x0f_flash)         | On-board flash erase, write & read         | `hardware_flash`, `hardware_sync` |
 
 <br>
 
@@ -525,44 +546,23 @@ Rust ports of the C drivers above using `rp235x-hal`. Each Rust driver folder co
 cargo test --lib --target x86_64-pc-windows-msvc
 ```
 
-| Driver | Description | Key Crates |
-|--------|-------------|------------|
-| [0x01_uart_rust](drivers/0x01_uart_rust) | Raw UART transmit / receive | `rp235x-hal`, `embedded-hal-nb` |
-| [0x02_blink_rust](drivers/0x02_blink_rust) | GPIO output LED blink | `rp235x-hal`, `embedded-hal` |
-| [0x03_button_rust](drivers/0x03_button_rust) | Push-button input with debounce | `rp235x-hal`, `embedded-hal` |
-| [0x04_pwm_rust](drivers/0x04_pwm_rust) | Generic PWM output | `rp235x-hal`, `embedded-hal` |
-| [0x05_servo_rust](drivers/0x05_servo_rust) | SG90 servo motor control | `rp235x-hal`, `embedded-hal` |
-| [0x06_adc_rust](drivers/0x06_adc_rust) | 12-bit ADC voltage + temperature | `rp235x-hal`, `embedded-hal` |
-| [0x07_i2c_rust](drivers/0x07_i2c_rust) | I2C bus scanner (7-bit addresses) | `rp235x-hal`, `embedded-hal` |
-| [0x08_lcd1602_rust](drivers/0x08_lcd1602_rust) | HD44780 16x2 LCD (PCF8574 I2C) | `rp235x-hal`, `embedded-hal` |
-| [0x09_dht11_rust](drivers/0x09_dht11_rust) | DHT11 temperature & humidity (single-wire) | `rp235x-hal`, `fugit` |
-| [0x0a_ir_rust](drivers/0x0a_ir_rust) | IR remote NEC protocol decoder | `rp235x-hal`, `fugit` |
-| [0x0b_spi_rust](drivers/0x0b_spi_rust) | SPI bus init & bidirectional transfer | `rp235x-hal`, `embedded-hal` |
-| [0x0c_multicore_rust](drivers/0x0c_multicore_rust) | Dual-core launch & FIFO messaging | `rp235x-hal` |
-| [0x0d_timer_rust](drivers/0x0d_timer_rust) | Repeating timer callbacks | `rp235x-hal`, `fugit` |
-| [0x0e_watchdog_rust](drivers/0x0e_watchdog_rust) | Watchdog enable, feed & reboot detection | `rp235x-hal` |
-| [0x0f_flash_rust](drivers/0x0f_flash_rust) | On-board flash erase, write & read | `rp235x-hal` |
-
-<br>
-
-# C Bare-Metal Drivers
-Register-level C drivers for the RP2350 with no SDK dependencies. Each driver folder uses a two-layer architecture: `rp2350.h` (peripheral register structs) and per-peripheral `rp2350_<name>.h/.c` driver pairs. Built with `arm-none-eabi-gcc`, linked with a custom linker script, and flashed via UF2.
-
-| Driver | Description | Key Peripheral |
-|--------|-------------|----------------|
-| [0x01_uart_cbm](drivers/0x01_uart_cbm) | Raw UART transmit / receive | UART0 |
-| [0x02_blink_cbm](drivers/0x02_blink_cbm) | GPIO output LED blink | SIO, IO_BANK0 |
-| [0x03_button_cbm](drivers/0x03_button_cbm) | GPIO input with debounce | SIO, IO_BANK0 |
-| [0x04_pwm_cbm](drivers/0x04_pwm_cbm) | PWM output with frequency & duty control | PWM |
-| [0x05_servo_cbm](drivers/0x05_servo_cbm) | SG90 servo angle & pulse control | PWM |
-| [0x06_adc_cbm](drivers/0x06_adc_cbm) | ADC voltage & on-chip temperature reading | ADC |
-| [0x07_i2c_cbm](drivers/0x07_i2c_cbm) | I2C bus init, probe & scan | I2C0 |
-| [0x08_lcd1602_cbm](drivers/0x08_lcd1602_cbm) | 1602 LCD over I2C (PCF8574 backpack) | I2C0 |
-| [0x09_dht11_cbm](drivers/0x09_dht11_cbm) | DHT11 temperature & humidity (single-wire) | SIO, IO_BANK0 |
-| [0x0a_ir_cbm](drivers/0x0a_ir_cbm) | IR remote NEC protocol decoder | SIO, IO_BANK0 |
-| [0x0b_spi_cbm](drivers/0x0b_spi_cbm) | SPI bus init & bidirectional transfer | SPI0 |
-| [0x0c_multicore_cbm](drivers/0x0c_multicore_cbm) | Dual-core launch & FIFO messaging | SIO FIFO, PSM |
-| [0x0d_timer_cbm](drivers/0x0d_timer_cbm) | Repeating timer alarm callbacks | TIMER0, TICKS |
+| Driver                                             | Description                                | Key Crates                      |
+| -------------------------------------------------- | ------------------------------------------ | ------------------------------- |
+| [0x01_uart_rust](drivers/0x01_uart_rust)           | Raw UART transmit / receive                | `rp235x-hal`, `embedded-hal-nb` |
+| [0x02_blink_rust](drivers/0x02_blink_rust)         | GPIO output LED blink                      | `rp235x-hal`, `embedded-hal`    |
+| [0x03_button_rust](drivers/0x03_button_rust)       | Push-button input with debounce            | `rp235x-hal`, `embedded-hal`    |
+| [0x04_pwm_rust](drivers/0x04_pwm_rust)             | Generic PWM output                         | `rp235x-hal`, `embedded-hal`    |
+| [0x05_servo_rust](drivers/0x05_servo_rust)         | SG90 servo motor control                   | `rp235x-hal`, `embedded-hal`    |
+| [0x06_adc_rust](drivers/0x06_adc_rust)             | 12-bit ADC voltage + temperature           | `rp235x-hal`, `embedded-hal`    |
+| [0x07_i2c_rust](drivers/0x07_i2c_rust)             | I2C bus scanner (7-bit addresses)          | `rp235x-hal`, `embedded-hal`    |
+| [0x08_lcd1602_rust](drivers/0x08_lcd1602_rust)     | HD44780 16x2 LCD (PCF8574 I2C)             | `rp235x-hal`, `embedded-hal`    |
+| [0x09_dht11_rust](drivers/0x09_dht11_rust)         | DHT11 temperature & humidity (single-wire) | `rp235x-hal`, `fugit`           |
+| [0x0a_ir_rust](drivers/0x0a_ir_rust)               | IR remote NEC protocol decoder             | `rp235x-hal`, `fugit`           |
+| [0x0b_spi_rust](drivers/0x0b_spi_rust)             | SPI bus init & bidirectional transfer      | `rp235x-hal`, `embedded-hal`    |
+| [0x0c_multicore_rust](drivers/0x0c_multicore_rust) | Dual-core launch & FIFO messaging          | `rp235x-hal`                    |
+| [0x0d_timer_rust](drivers/0x0d_timer_rust)         | Repeating timer callbacks                  | `rp235x-hal`, `fugit`           |
+| [0x0e_watchdog_rust](drivers/0x0e_watchdog_rust)   | Watchdog enable, feed & reboot detection   | `rp235x-hal`                    |
+| [0x0f_flash_rust](drivers/0x0f_flash_rust)         | On-board flash erase, write & read         | `rp235x-hal`                    |
 
 <br>
 
