@@ -5,8 +5,8 @@
   * @brief   Reset handler implementation for RP2350.
   *
   *          Entry point after power-on or system reset. Initializes the
-  *          stack, XOSC, subsystem resets, UART, servo, coprocessor,
-  *          then branches to main().
+  *          stack, XOSC, subsystem resets, UART, servo, then
+  *          branches to main().
   *
   ******************************************************************************
   * @attention
@@ -27,19 +27,17 @@
 #include "rp2350_reset.h"
 #include "rp2350_uart.h"
 #include "rp2350_servo.h"
-#include "rp2350_coprocessor.h"
 
 extern int main(void);
 
 /**
-  * @brief  Initialize late peripherals (servo and coprocessor).
+  * @brief  Initialize late peripherals (servo release and init).
   * @retval None
   */
 void _late_init(void)
 {
   servo_release_reset();
   servo_init();
-  coprocessor_enable();
 }
 
 void __attribute__((naked, noreturn)) Reset_Handler(void)

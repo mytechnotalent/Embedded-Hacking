@@ -36,7 +36,6 @@ SRCS = $(SRC_DIR)/vector_table.c \
        $(SRC_DIR)/rp2350_stack.c \
        $(SRC_DIR)/rp2350_xosc.c \
        $(SRC_DIR)/rp2350_reset.c \
-       $(SRC_DIR)/rp2350_coprocessor.c \
        $(SRC_DIR)/rp2350_uart.c \
        $(SRC_DIR)/rp2350_i2c.c \
        $(SRC_DIR)/rp2350_lcd1602.c \

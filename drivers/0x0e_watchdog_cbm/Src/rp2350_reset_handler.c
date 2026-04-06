@@ -5,8 +5,8 @@
   * @brief   Reset handler implementation for RP2350.
   *
   *          Entry point after power-on or system reset. Initializes the
-  *          stack, XOSC, subsystem resets, UART, watchdog tick generator,
-  *          coprocessor, then branches to main().
+  *          stack, XOSC, subsystem resets, UART, watchdog tick
+  *          generator, then branches to main().
   *
   ******************************************************************************
   * @attention
@@ -27,19 +27,8 @@
 #include "rp2350_reset.h"
 #include "rp2350_uart.h"
 #include "rp2350_watchdog.h"
-#include "rp2350_coprocessor.h"
 
 extern int main(void);
-
-/**
-  * @brief  Initialize late peripherals (watchdog tick and coprocessor).
-  * @retval None
-  */
-void _late_init(void)
-{
-  watchdog_tick_init();
-  coprocessor_enable();
-}
 
 void __attribute__((naked, noreturn)) Reset_Handler(void)
 {
@@ -50,7 +39,7 @@ void __attribute__((naked, noreturn)) Reset_Handler(void)
     "bl reset_init_subsystem\n\t"
     "bl uart_release_reset\n\t"
     "bl uart_init\n\t"
-    "bl _late_init\n\t"
+    "bl watchdog_tick_init\n\t"
     "b main\n\t"
   );
 }

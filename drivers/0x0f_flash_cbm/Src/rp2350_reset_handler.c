@@ -6,8 +6,7 @@
   *
   *          Entry point after power-on or system reset. Copies the
   *          .data section from flash to RAM, initializes the stack,
-  *          XOSC, subsystem resets, UART, coprocessor, then branches
-  *          to main().
+  *          XOSC, subsystem resets, UART, then branches to main().
   *
   ******************************************************************************
   * @attention
@@ -27,7 +26,6 @@
 #include "rp2350_xosc.h"
 #include "rp2350_reset.h"
 #include "rp2350_uart.h"
-#include "rp2350_coprocessor.h"
 
 extern int main(void);
 
@@ -77,7 +75,6 @@ void __attribute__((naked, noreturn)) Reset_Handler(void)
     "bl reset_init_subsystem\n\t"
     "bl uart_release_reset\n\t"
     "bl uart_init\n\t"
-    "bl coprocessor_enable\n\t"
     "b main\n\t"
   );
 }

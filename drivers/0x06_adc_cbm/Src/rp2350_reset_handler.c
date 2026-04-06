@@ -5,8 +5,8 @@
   * @brief   Reset handler implementation for RP2350.
   *
   *          Entry point after power-on or system reset. Initializes the
-  *          stack, XOSC, subsystem resets, UART, ADC, coprocessor,
-  *          then branches to main().
+  *          stack, XOSC, subsystem resets, UART, ADC, then
+  *          branches to main().
   *
   ******************************************************************************
   * @attention
@@ -27,7 +27,6 @@
 #include "rp2350_reset.h"
 #include "rp2350_uart.h"
 #include "rp2350_adc.h"
-#include "rp2350_coprocessor.h"
 
 extern int main(void);
 
@@ -40,7 +39,6 @@ void __attribute__((naked, noreturn)) Reset_Handler(void)
     "bl reset_init_subsystem\n\t"
     "bl uart_release_reset\n\t"
     "bl uart_init\n\t"
-    "bl coprocessor_enable\n\t"
     "b main\n\t"
   );
 }
