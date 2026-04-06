@@ -80,14 +80,6 @@ static void _update_counter(uint32_t *count) {
     sleep_ms(1000);
 }
 
-/**
- * @brief Application entry point for the LCD 1602 counter demo
- *
- * Initializes the LCD over I2C with a static title on line 0 and
- * continuously increments a counter on line 1 every second.
- *
- * @return int Does not return
- */
 int main(void) {
     stdio_init_all();
     _setup_display();

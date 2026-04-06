@@ -92,10 +92,6 @@ static void _sweep_down(void)
   }
 }
 
-/**
-  * @brief  Application entry point for the servo sweep demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   uart_puts("Servo driver initialized on GPIO6\r\n");

@@ -139,10 +139,6 @@ static void _display_count(uint32_t count)
   uart_puts("\r\n");
 }
 
-/**
-  * @brief  Application entry point for the LCD 1602 counter demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   uint32_t count = 0;

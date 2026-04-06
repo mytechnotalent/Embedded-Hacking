@@ -40,14 +40,6 @@ static void _default_handler(void)
 
 typedef void (*vector_func_t)(void);
 
-/**
-  * @brief Vector table placed in .vectors section
-  *
-  *        Entry 0:     Initial SP
-  *        Entry 1:     Reset handler
-  *        Entries 2-15: System exceptions (NMI, HardFault, etc.)
-  *        Entry 16:    IRQ 0 = TIMER0_IRQ_0
-  */
 __attribute__((section(".vectors"), used))
 const void *_vectors[17] = {
   &_stack_top,                 // 0:  Initial stack pointer

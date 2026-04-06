@@ -78,11 +78,6 @@ static void _gpio_enable_output(uint32_t gpio_num)
   SIO[SIO_GPIO_OE_SET_OFFSET] = (1U << gpio_num);
 }
 
-/**
-  * @brief  Configure a GPIO pin as SIO output.
-  * @param  gpio_num GPIO pin number (0-29)
-  * @retval None
-  */
 void gpio_config(uint32_t gpio_num)
 {
   _gpio_config_pad(gpio_num);
@@ -90,51 +85,26 @@ void gpio_config(uint32_t gpio_num)
   _gpio_enable_output(gpio_num);
 }
 
-/**
-  * @brief  Drive a GPIO output high.
-  * @param  gpio_num GPIO pin number (0-29)
-  * @retval None
-  */
 void gpio_set(uint32_t gpio_num)
 {
   SIO[SIO_GPIO_OUT_SET_OFFSET] = (1U << gpio_num);
 }
 
-/**
-  * @brief  Drive a GPIO output low.
-  * @param  gpio_num GPIO pin number (0-29)
-  * @retval None
-  */
 void gpio_clear(uint32_t gpio_num)
 {
   SIO[SIO_GPIO_OUT_CLR_OFFSET] = (1U << gpio_num);
 }
 
-/**
-  * @brief  Toggle a GPIO output.
-  * @param  gpio_num GPIO pin number (0-29)
-  * @retval None
-  */
 void gpio_toggle(uint32_t gpio_num)
 {
   SIO[SIO_GPIO_OUT_XOR_OFFSET] = (1U << gpio_num);
 }
 
-/**
-  * @brief  Read the current input level of a GPIO pin.
-  * @param  gpio_num GPIO pin number (0-29)
-  * @retval bool true if pin is high, false if low
-  */
 bool gpio_get(uint32_t gpio_num)
 {
   return (SIO[SIO_GPIO_IN_OFFSET] & (1U << gpio_num)) != 0;
 }
 
-/**
-  * @brief  Configure a GPIO pin as SIO input with internal pull-up.
-  * @param  gpio_num GPIO pin number (0-29)
-  * @retval None
-  */
 void gpio_config_input_pullup(uint32_t gpio_num)
 {
   _gpio_config_pad_input_pullup(gpio_num);

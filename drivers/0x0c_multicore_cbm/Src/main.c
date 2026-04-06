@@ -130,10 +130,6 @@ static void _send_and_print(uint32_t *counter)
   delay_ms(1000);
 }
 
-/**
-  * @brief  Application entry point for the multicore FIFO demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   uint32_t counter = 0;

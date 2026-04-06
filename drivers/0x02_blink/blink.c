@@ -37,39 +37,18 @@ void blink_init(uint32_t pin) {
     gpio_put(pin, false);
 }
 
-/**
- * @brief Drive the output pin high (LED on)
- *
- * @param pin GPIO pin number
- */
 void blink_on(uint32_t pin) {
     gpio_put(pin, true);
 }
 
-/**
- * @brief Drive the output pin low (LED off)
- *
- * @param pin GPIO pin number
- */
 void blink_off(uint32_t pin) {
     gpio_put(pin, false);
 }
 
-/**
- * @brief Toggle the current state of the output pin
- *
- * @param pin GPIO pin number
- */
 void blink_toggle(uint32_t pin) {
     gpio_put(pin, !gpio_get(pin));
 }
 
-/**
- * @brief Query the current drive state of the output pin
- *
- * @param pin GPIO pin number
- * @return bool true if the pin is driven high, false if low
- */
 bool blink_get_state(uint32_t pin) {
     return (bool)gpio_get(pin);
 }

@@ -102,32 +102,18 @@ static void _timer_arm_alarm(void)
   TIMER0->ALARM0 = target;
 }
 
-/**
-  * @brief  Release TIMER0 from reset and wait until ready.
-  * @retval None
-  */
 void timer_release_reset(void)
 {
   _timer_clear_reset_bit();
   _timer_wait_reset_done();
 }
 
-/**
-  * @brief  Start the TIMER0 tick generator at 1 us resolution.
-  * @retval None
-  */
 void timer_tick_init(void)
 {
   _timer_set_tick_cycles();
   _timer_enable_tick();
 }
 
-/**
-  * @brief  Start a repeating alarm that fires every period_ms milliseconds.
-  * @param  period_ms interval in milliseconds between callbacks
-  * @param  cb        function to call on each alarm
-  * @retval None
-  */
 void timer_alarm_start(uint32_t period_ms, timer_callback_t cb)
 {
   _user_callback = cb;
@@ -137,10 +123,6 @@ void timer_alarm_start(uint32_t period_ms, timer_callback_t cb)
   _timer_arm_alarm();
 }
 
-/**
-  * @brief  TIMER0 alarm 0 interrupt handler (exception 16 + IRQ 0).
-  * @retval None
-  */
 void TIMER0_IRQ_0_Handler(void)
 {
   TIMER0->INTR = TIMER_INTR_ALARM0_MASK;

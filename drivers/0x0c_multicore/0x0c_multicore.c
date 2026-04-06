@@ -68,15 +68,6 @@ static void _send_and_print(uint32_t *counter) {
     sleep_ms(1000);
 }
 
-/**
- * @brief Application entry point for the multicore FIFO demo
- *
- * Launches core 1 and continuously sends an incrementing counter
- * through the inter-core FIFO, printing both sent and returned
- * values over UART every second.
- *
- * @return int Does not return
- */
 int main(void) {
     stdio_init_all();
     multicore_driver_launch(_core1_main);

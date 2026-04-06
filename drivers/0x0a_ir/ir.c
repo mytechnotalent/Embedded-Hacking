@@ -115,14 +115,6 @@ static int _validate_nec_frame(const uint8_t *data) {
     return -1;
 }
 
-/**
- * @brief Initialize the IR receiver GPIO
- *
- * Configures the given pin as an input with pull-up for the NEC IR receiver.
- * Call this once during board initialization before calling ir_getkey().
- *
- * @param pin GPIO pin number connected to IR receiver output
- */
 void ir_init(uint8_t pin) {
     ir_pin = pin;
     gpio_init(pin);
@@ -130,14 +122,6 @@ void ir_init(uint8_t pin) {
     gpio_pull_up(pin);
 }
 
-/**
- * @brief Blocking NEC IR decoder
- *
- * Blocks while waiting for a complete NEC frame. On success returns the
- * decoded command byte (0..255). On timeout or protocol error returns -1.
- *
- * @return decoded command byte (0..255) or -1 on failure
- */
 int ir_getkey(void) {
     if (!_wait_leader()) return -1;
     uint8_t data[4] = {0, 0, 0, 0};

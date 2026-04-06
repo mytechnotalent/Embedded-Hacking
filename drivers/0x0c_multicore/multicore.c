@@ -30,39 +30,14 @@
 #include "multicore.h"
 #include "pico/multicore.h"
 
-/**
- * @brief Start the provided function on core 1
- *
- * Launches the given entry function on the second RP2350 core using the
- * Pico SDK multicore_launch_core1() API. The function will run
- * concurrently with core 0 from the moment this call returns.
- *
- * @param core1_entry Pointer to the void(void) function to run on core 1
- */
 void multicore_driver_launch(void (*core1_entry)(void)) {
     multicore_launch_core1(core1_entry);
 }
 
-/**
- * @brief Push a 32-bit value into the inter-core FIFO (blocking)
- *
- * Writes data to the FIFO that core 1 reads from. Blocks until
- * there is space in the hardware FIFO.
- *
- * @param data 32-bit value to send to core 1
- */
 void multicore_driver_push(uint32_t data) {
     multicore_fifo_push_blocking(data);
 }
 
-/**
- * @brief Pop a 32-bit value from the inter-core FIFO (blocking)
- *
- * Reads one entry from the FIFO that core 1 writes into. Blocks until
- * a value is available.
- *
- * @return uint32_t Value received from core 1
- */
 uint32_t multicore_driver_pop(void) {
     return multicore_fifo_pop_blocking();
 }

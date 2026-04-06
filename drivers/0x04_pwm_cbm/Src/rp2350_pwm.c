@@ -102,20 +102,12 @@ static void _pwm_enable(void)
   PWM[PWM_REG(PWM_CH_CSR_OFFSET)] = (1U << PWM_CSR_EN_SHIFT);
 }
 
-/**
-  * @brief  Release PWM from reset and wait until ready.
-  * @retval None
-  */
 void pwm_release_reset(void)
 {
   _pwm_clear_reset_bit();
   _pwm_wait_reset_done();
 }
 
-/**
-  * @brief  Initialize PWM on GPIO 25 at approximately 1 kHz.
-  * @retval None
-  */
 void pwm_init(void)
 {
   _pwm_configure_pin();
@@ -124,11 +116,6 @@ void pwm_init(void)
   _pwm_enable();
 }
 
-/**
-  * @brief  Set the PWM duty cycle as an integer percentage.
-  * @param  percent duty cycle from 0 (off) to 100 (fully on)
-  * @retval None
-  */
 void pwm_set_duty(uint8_t percent)
 {
   uint32_t level;

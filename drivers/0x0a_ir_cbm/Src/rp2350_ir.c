@@ -211,30 +211,18 @@ static void _set_input(void)
   SIO[SIO_GPIO_OE_CLR_OFFSET] = IR_PIN_MASK;
 }
 
-/**
-  * @brief  Release TIMER0 from reset in the reset controller.
-  * @retval None
-  */
 void ir_timer_release_reset(void)
 {
   _timer_clear_reset();
   _timer_wait_reset_done();
 }
 
-/**
-  * @brief  Start the TIMER0 tick generator for 1 us ticks at 12 MHz.
-  * @retval None
-  */
 void ir_timer_start_tick(void)
 {
   TICKS[TICKS_TIMER0_CYCLES_OFFSET] = TICKS_TIMER0_CYCLES_12MHZ;
   TICKS[TICKS_TIMER0_CTRL_OFFSET] = TICKS_TIMER0_ENABLE;
 }
 
-/**
-  * @brief  Configure GPIO5 pad and funcsel for SIO input with pull-up.
-  * @retval None
-  */
 void ir_init(void)
 {
   _configure_pad();
@@ -242,10 +230,6 @@ void ir_init(void)
   _set_input();
 }
 
-/**
-  * @brief  Block until a valid NEC frame is received or timeout.
-  * @retval int command byte (0-255) on success, -1 on failure
-  */
 int ir_getkey(void)
 {
   uint8_t data[NEC_DATA_BYTES] = {0};

@@ -55,14 +55,6 @@ static void _poll_and_print(void) {
         printf("NEC command: 0x%02X  (%d)\r\n", command, command);
 }
 
-/**
- * @brief Application entry point for the NEC IR receiver demo
- *
- * Initializes the IR receiver on GPIO5 and continuously decodes
- * NEC frames, printing each command byte over UART.
- *
- * @return int Does not return
- */
 int main(void) {
     stdio_init_all();
     ir_init(IR_GPIO);

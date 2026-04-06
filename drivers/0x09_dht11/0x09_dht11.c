@@ -63,14 +63,6 @@ static void _print_reading(void) {
     sleep_ms(2000);
 }
 
-/**
- * @brief Application entry point for the DHT11 sensor demo
- *
- * Initializes the DHT11 on GPIO4 and continuously reads temperature
- * and humidity, printing results over UART every 2 seconds.
- *
- * @return int Does not return
- */
 int main(void) {
     stdio_init_all();
     dht11_init(DHT11_GPIO);

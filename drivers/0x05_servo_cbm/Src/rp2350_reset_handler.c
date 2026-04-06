@@ -30,20 +30,12 @@
 
 extern int main(void);
 
-/**
-  * @brief  Initialize late peripherals (servo release and init).
-  * @retval None
-  */
 void _late_init(void)
 {
   servo_release_reset();
   servo_init();
 }
 
-/**
-  * @brief  Reset handler entry point (naked, noreturn).
-  * @retval None
-  */
 void __attribute__((naked, noreturn)) Reset_Handler(void)
 {
   __asm__ volatile (

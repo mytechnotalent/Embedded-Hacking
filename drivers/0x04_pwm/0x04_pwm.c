@@ -66,15 +66,6 @@ static void _sweep_duty(int start, int end, int step) {
     }
 }
 
-/**
- * @brief Application entry point for the PWM LED breathing demo
- *
- * Initializes PWM at 1 kHz on the onboard LED and enters an infinite
- * loop that sweeps the duty cycle up and down to produce a smooth
- * breathing effect, reporting each step over UART.
- *
- * @return int Does not return
- */
 int main(void) {
     stdio_init_all();
     pwm_driver_init(PWM_PIN, PWM_FREQ_HZ);

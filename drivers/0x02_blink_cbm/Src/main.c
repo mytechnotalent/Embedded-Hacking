@@ -40,10 +40,6 @@ static void _print_led_state(uint32_t pin)
     uart_puts("LED: OFF\r\n");
 }
 
-/**
-  * @brief  Application entry point for the LED blink demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   led_init(LED_PIN);

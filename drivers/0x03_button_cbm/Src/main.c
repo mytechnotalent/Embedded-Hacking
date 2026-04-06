@@ -77,10 +77,6 @@ static void _poll_button(bool *last_state)
   _report_edge(pressed, last_state);
 }
 
-/**
-  * @brief  Application entry point for the button debounce demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   button_init(BUTTON_PIN, DEBOUNCE_MS);

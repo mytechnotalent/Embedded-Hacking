@@ -54,20 +54,6 @@ static void _setup_spi_pins(uint32_t mosi, uint32_t miso, uint32_t sck) {
     gpio_set_function(sck, GPIO_FUNC_SPI);
 }
 
-/**
- * @brief Initialize an SPI peripheral in master mode
- *
- * Configures the SPI instance at the requested baud rate, assigns GPIO
- * alternate functions for MOSI, MISO, and SCK, and configures the chip
- * select pin as a GPIO output deasserted (high) by default.
- *
- * @param port    SPI port number (0 for spi0, 1 for spi1)
- * @param mosi    GPIO pin number for MOSI (controller TX)
- * @param miso    GPIO pin number for MISO (controller RX)
- * @param sck     GPIO pin number for SCK (clock)
- * @param cs      GPIO pin number for chip select (active-low)
- * @param baud_hz Desired SPI clock frequency in Hz (e.g. 1000000 for 1 MHz)
- */
 void spi_driver_init(uint8_t port, uint32_t mosi, uint32_t miso,
                      uint32_t sck, uint32_t cs, uint32_t baud_hz) {
     spi_inst_t *spi = _get_spi_inst(port);
@@ -78,36 +64,14 @@ void spi_driver_init(uint8_t port, uint32_t mosi, uint32_t miso,
     gpio_put(cs, 1);
 }
 
-/**
- * @brief Assert the chip-select line (drive CS low)
- *
- * @param cs GPIO pin number of the chip-select output
- */
 void spi_driver_cs_select(uint32_t cs) {
     gpio_put(cs, 0);
 }
 
-/**
- * @brief Deassert the chip-select line (drive CS high)
- *
- * @param cs GPIO pin number of the chip-select output
- */
 void spi_driver_cs_deselect(uint32_t cs) {
     gpio_put(cs, 1);
 }
 
-/**
- * @brief Perform a full-duplex SPI transfer
- *
- * Sends len bytes from tx while simultaneously receiving len bytes
- * into rx. Both buffers must hold at least len bytes. The caller is
- * responsible for asserting and deasserting CS around this call.
- *
- * @param port SPI port number (0 for spi0, 1 for spi1)
- * @param tx   Pointer to the transmit buffer (must be len bytes)
- * @param rx   Pointer to the receive buffer  (must be len bytes)
- * @param len  Number of bytes to transfer
- */
 void spi_driver_transfer(uint8_t port, const uint8_t *tx, uint8_t *rx,
                          uint32_t len) {
     spi_inst_t *spi = _get_spi_inst(port);

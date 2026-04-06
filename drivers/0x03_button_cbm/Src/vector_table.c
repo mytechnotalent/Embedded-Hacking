@@ -28,9 +28,6 @@ extern void Reset_Handler(void);
 
 typedef void (*vector_func_t)(void);
 
-/**
-  * @brief Vector table placed in .vectors section
-  */
 __attribute__((section(".vectors"), used))
 const void *_vectors[2] = {
   &_stack_top,

@@ -43,14 +43,6 @@ static i2c_inst_t *_get_i2c_inst(uint8_t port) {
     return port == 0 ? i2c0 : i2c1;
 }
 
-/**
- * @brief Initialize an I2C peripheral at the requested baud rate
- *
- * @param port    I2C port number (0 for i2c0, 1 for i2c1)
- * @param sda_pin GPIO pin number for SDA
- * @param scl_pin GPIO pin number for SCL
- * @param baud_hz Bus clock frequency in Hz
- */
 void i2c_driver_init(uint8_t port, uint32_t sda_pin, uint32_t scl_pin,
                      uint32_t baud_hz) {
     i2c_inst_t *inst = _get_i2c_inst(port);
@@ -61,13 +53,6 @@ void i2c_driver_init(uint8_t port, uint32_t sda_pin, uint32_t scl_pin,
     gpio_pull_up(scl_pin);
 }
 
-/**
- * @brief Probe a 7-bit I2C address and return whether a device responds
- *
- * @param port I2C port number (0 for i2c0, 1 for i2c1)
- * @param addr 7-bit I2C address to probe
- * @return bool true if a device acknowledged, false otherwise
- */
 bool i2c_driver_probe(uint8_t port, uint8_t addr) {
     i2c_inst_t *inst = _get_i2c_inst(port);
     uint8_t dummy;
@@ -100,11 +85,6 @@ static void _print_scan_entry(uint8_t port, uint8_t addr) {
     if (addr % 16 == 15) printf("\r\n");
 }
 
-/**
- * @brief Scan all valid 7-bit addresses and print a formatted table
- *
- * @param port I2C port number (0 for i2c0, 1 for i2c1)
- */
 void i2c_driver_scan(uint8_t port) {
     _print_scan_header();
     for (uint8_t addr = 0; addr < 128; addr++)

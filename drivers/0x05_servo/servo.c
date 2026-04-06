@@ -81,11 +81,6 @@ static void _apply_servo_config(void) {
     pwm_init(servo_slice, &config, true);
 }
 
-/**
- * @brief Initialize servo driver on a given GPIO pin
- *
- * @param pin GPIO pin number to use for servo PWM
- */
 void servo_init(uint8_t pin) {
     servo_pin = pin;
     gpio_set_function(servo_pin, GPIO_FUNC_PWM);
@@ -95,11 +90,6 @@ void servo_init(uint8_t pin) {
     servo_initialized = true;
 }
 
-/**
- * @brief Set servo pulse width in microseconds
- *
- * @param pulse_us Pulse width in microseconds
- */
 void servo_set_pulse_us(uint16_t pulse_us) {
     if (!servo_initialized) return;
     if (pulse_us < SERVO_DEFAULT_MIN_US) pulse_us = SERVO_DEFAULT_MIN_US;
@@ -108,11 +98,6 @@ void servo_set_pulse_us(uint16_t pulse_us) {
     pwm_set_chan_level(servo_slice, servo_chan, level);
 }
 
-/**
- * @brief Set servo angle in degrees (0 to 180)
- *
- * @param degrees Angle in degrees
- */
 void servo_set_angle(float degrees) {
     if (degrees < 0.0f) degrees = 0.0f;
     if (degrees > 180.0f) degrees = 180.0f;

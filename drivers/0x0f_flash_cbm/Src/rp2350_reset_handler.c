@@ -56,20 +56,12 @@ static void _data_copy_init(void)
     *dst++ = *src++;
 }
 
-/**
-  * @brief  Initialize stack pointers and copy .data section to RAM.
-  * @retval None
-  */
 void ram_init(void)
 {
   stack_init();
   _data_copy_init();
 }
 
-/**
-  * @brief  Reset handler entry point (naked, noreturn).
-  * @retval None
-  */
 void __attribute__((naked, noreturn)) Reset_Handler(void)
 {
   __asm__ volatile (

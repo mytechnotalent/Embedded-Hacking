@@ -37,10 +37,6 @@
 
 #define SCAN_DELAY_MS 5000
 
-/**
-  * @brief  Application entry point for the I2C bus scanner demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   xosc_set_clk_ref();

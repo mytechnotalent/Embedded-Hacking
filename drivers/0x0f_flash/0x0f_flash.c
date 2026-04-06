@@ -70,14 +70,6 @@ static void _write_and_verify(void) {
     printf("Flash readback: %s\r\n", read_buf);
 }
 
-/**
- * @brief Application entry point for the on-chip flash demo
- *
- * Writes a demo string to the last flash sector, reads it back,
- * and prints the result over UART.
- *
- * @return int Does not return
- */
 int main(void) {
     stdio_init_all();
     _write_and_verify();

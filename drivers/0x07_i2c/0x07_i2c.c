@@ -53,15 +53,6 @@
 /** @brief I2C bus clock rate in Hz */
 #define I2C_BAUD    100000
 
-/**
- * @brief Application entry point for the I2C bus scanner demo
- *
- * Initializes I2C1 at 100 kHz on SDA=GPIO2 / SCL=GPIO3 and prints
- * a formatted hex table of all responding device addresses over UART,
- * repeating every 5 seconds.
- *
- * @return int Does not return
- */
 int main(void) {
     stdio_init_all();
     i2c_driver_init(I2C_PORT, I2C_SDA_PIN, I2C_SCL_PIN, I2C_BAUD);

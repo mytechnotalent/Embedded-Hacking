@@ -66,14 +66,6 @@ static void _poll_button(bool *last_state) {
     }
 }
 
-/**
- * @brief Application entry point for the button debounce demo
- *
- * Initializes button and LED, then continuously polls button state
- * and mirrors it to the LED with UART reporting on edge transitions.
- *
- * @return int Does not return
- */
 int main(void) {
     stdio_init_all();
     button_init(BUTTON_PIN, DEBOUNCE_MS);

@@ -76,14 +76,6 @@ static void _loopback_transfer(const uint8_t *tx_buf, uint8_t *rx_buf, size_t le
     sleep_ms(1000);
 }
 
-/**
- * @brief Application entry point for the SPI loopback demo
- *
- * Initializes SPI0 in master mode and continuously performs
- * full-duplex transfers with MOSI wired to MISO for loopback.
- *
- * @return int Does not return
- */
 int main(void) {
     stdio_init_all();
     spi_driver_init(SPI_PORT, PIN_MOSI, PIN_MISO, PIN_SCK, PIN_CS, SPI_BAUD_HZ);

@@ -110,10 +110,6 @@ static void _poll_sensor(void)
   delay_ms(DHT11_POLL_MS);
 }
 
-/**
-  * @brief  Application entry point for the DHT11 sensor demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   _dht11_setup();

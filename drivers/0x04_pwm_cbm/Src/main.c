@@ -91,10 +91,6 @@ static void _sweep_down(void)
   }
 }
 
-/**
-  * @brief  Application entry point for the PWM LED breathing demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   uart_puts("PWM initialized: GPIO25\r\n");

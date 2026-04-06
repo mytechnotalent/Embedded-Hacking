@@ -66,10 +66,6 @@ static void _write_and_verify(void)
   uart_puts("\r\n");
 }
 
-/**
-  * @brief  Application entry point for the on-chip flash demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   _write_and_verify();

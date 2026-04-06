@@ -53,10 +53,6 @@ static void _feed_and_report(void)
   delay_ms(1000);
 }
 
-/**
-  * @brief  Application entry point for the watchdog demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   _print_reset_reason();

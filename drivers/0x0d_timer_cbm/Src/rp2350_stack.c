@@ -21,10 +21,6 @@
 
 #include "rp2350_stack.h"
 
-/**
-  * @brief  Initialize MSP, PSP, MSPLIM, and PSPLIM stack pointers.
-  * @retval None
-  */
 void stack_init(void)
 {
   __asm__ volatile (

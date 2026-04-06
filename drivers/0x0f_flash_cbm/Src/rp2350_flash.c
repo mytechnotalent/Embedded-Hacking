@@ -112,19 +112,6 @@ static void _flash_erase_program_ram(const FlashRomFns *fns, uint32_t offset,
   fns->enter_xip();
 }
 
-/**
-  * @brief  Erase the containing sector(s) and program data to flash.
-  *
-  *         The data buffer must reside in RAM (not flash). Interrupts
-  *         are disabled for the duration of the erase/program cycle.
-  *         The write length must be a multiple of FLASH_PAGE_SIZE
-  *         (256 bytes); pad with 0xFF if necessary.
-  *
-  * @param  offset byte offset from the start of flash (sector-aligned)
-  * @param  data   pointer to the source buffer in RAM
-  * @param  len    number of bytes to write
-  * @retval None
-  */
 void flash_write(uint32_t offset, const uint8_t *data, uint32_t len)
 {
   FlashRomFns fns;
@@ -136,13 +123,6 @@ void flash_write(uint32_t offset, const uint8_t *data, uint32_t len)
   __asm volatile ("msr primask, %0" :: "r" (primask));
 }
 
-/**
-  * @brief  Read bytes from on-chip flash via the XIP memory map.
-  * @param  offset byte offset from the start of flash
-  * @param  out    pointer to the destination buffer
-  * @param  len    number of bytes to read
-  * @retval None
-  */
 void flash_read(uint32_t offset, uint8_t *out, uint32_t len)
 {
   const uint8_t *src = (const uint8_t *)(XIP_BASE + offset);

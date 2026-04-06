@@ -59,14 +59,6 @@ static void _print_adc_readings(void) {
     printf("ADC0: %4lu mV  |  Chip temp: %.1f C\r\n", voltage_mv, temp_c);
 }
 
-/**
- * @brief Application entry point for the ADC voltage and temperature demo
- *
- * Initializes the ADC on GPIO26 channel 0 and prints readings
- * every 500 ms over UART.
- *
- * @return int Does not return
- */
 int main(void) {
     stdio_init_all();
     adc_driver_init(ADC_GPIO, ADC_CHANNEL);

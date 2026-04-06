@@ -131,10 +131,6 @@ static void _print_scan_entry(uint8_t addr)
     uart_puts("\r\n");
 }
 
-/**
-  * @brief  Release I2C1 from reset and wait for completion.
-  * @retval None
-  */
 void i2c_release_reset(void)
 {
   RESETS->RESET |= (1U << RESETS_RESET_I2C1_SHIFT);
@@ -143,15 +139,6 @@ void i2c_release_reset(void)
   }
 }
 
-/**
-  * @brief  Initialize I2C1 as a 100 kHz master on SDA=GPIO2 / SCL=GPIO3.
-  *
-  *         Configures GPIO pads with pull-ups, sets FUNCSEL to I2C,
-  *         programs SCL timing for 100 kHz at 12 MHz clk_sys, and
-  *         enables the controller in master mode with 7-bit addressing.
-  *
-  * @retval None
-  */
 void i2c_init(void)
 {
   _i2c_config_pads();
@@ -217,15 +204,6 @@ static void _probe_cleanup(bool aborted)
     (void)I2C1->DATA_CMD;
 }
 
-/**
-  * @brief  Probe a 7-bit I2C address and return whether a device responds.
-  *
-  *         Sends a 1-byte read to the target address. Returns true if
-  *         the device acknowledges, false otherwise.
-  *
-  * @param  addr 7-bit I2C address (0x08-0x77)
-  * @retval bool true if a device acknowledged, false otherwise
-  */
 bool i2c_probe(uint8_t addr)
 {
   _probe_set_target(addr);
@@ -235,15 +213,6 @@ bool i2c_probe(uint8_t addr)
   return !aborted;
 }
 
-/**
-  * @brief  Scan all valid 7-bit addresses and print a formatted table.
-  *
-  *         Iterates addresses 0x00 through 0x7F, probes each valid one
-  *         via i2c_probe(), and prints a 16-column hex grid showing
-  *         discovered device addresses over UART.
-  *
-  * @retval None
-  */
 void i2c_scan(void)
 {
   uart_puts("\r\nI2C bus scan:\r\n");

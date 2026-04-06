@@ -50,14 +50,6 @@ static bool _heartbeat_callback(void) {
     return true;
 }
 
-/**
- * @brief Application entry point for the repeating timer demo
- *
- * Starts a 1-second repeating timer whose callback prints a
- * heartbeat message over UART.
- *
- * @return int Does not return
- */
 int main(void) {
     stdio_init_all();
     timer_driver_start(1000, _heartbeat_callback);

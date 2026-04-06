@@ -22,10 +22,6 @@
 
 #include "rp2350_xosc.h"
 
-/**
-  * @brief  Initialize the external crystal oscillator and wait until stable.
-  * @retval None
-  */
 void xosc_init(void)
 {
   XOSC->STARTUP = 0x00C4U;
@@ -34,10 +30,6 @@ void xosc_init(void)
   }
 }
 
-/**
-  * @brief  Enable the XOSC peripheral clock via CLK_PERI_CTRL.
-  * @retval None
-  */
 void xosc_enable_peri_clk(void)
 {
   uint32_t value;
@@ -48,10 +40,6 @@ void xosc_enable_peri_clk(void)
   CLOCKS->CLK_PERI_CTRL = value;
 }
 
-/**
-  * @brief  Enable the XOSC ADC clock via CLK_ADC_CTRL.
-  * @retval None
-  */
 void xosc_enable_adc_clk(void)
 {
   uint32_t value;

@@ -30,20 +30,12 @@
 
 extern int main(void);
 
-/**
-  * @brief  Initialize late peripherals (timer release and tick init).
-  * @retval None
-  */
 void _late_init(void)
 {
   timer_release_reset();
   timer_tick_init();
 }
 
-/**
-  * @brief  Reset handler entry point (naked, noreturn).
-  * @retval None
-  */
 void __attribute__((naked, noreturn)) Reset_Handler(void)
 {
   __asm__ volatile (

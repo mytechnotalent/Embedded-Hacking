@@ -22,9 +22,6 @@
 
 #include <stdint.h>
 
-/**
-  * @brief IMAGE_DEF block structure placed in flash
-  */
 __attribute__((section(".embedded_block"), used))
 const uint8_t picobin_block[] = {
   0xD3, 0xDE, 0xFF, 0xFF,

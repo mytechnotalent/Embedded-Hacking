@@ -107,15 +107,6 @@ static void _lcd_hd44780_configure(void)
   _lcd_send(LCD_CMD_ENTRY_MODE, 0);
 }
 
-/**
-  * @brief  Initialize the LCD in 4-bit mode via the PCF8574 backpack.
-  *
-  *         Sets the I2C target address to LCD_I2C_ADDR, performs the
-  *         HD44780 power-on reset sequence, and configures the display
-  *         for 4-bit, 2-line, 5x8 font with backlight on.
-  *
-  * @retval None
-  */
 void lcd_init(void)
 {
   i2c_set_target(LCD_I2C_ADDR);
@@ -123,33 +114,18 @@ void lcd_init(void)
   _lcd_hd44780_configure();
 }
 
-/**
-  * @brief  Clear the LCD display and return cursor to home.
-  * @retval None
-  */
 void lcd_clear(void)
 {
   _lcd_send(LCD_CMD_CLEAR, 0);
   delay_ms(2);
 }
 
-/**
-  * @brief  Set the cursor position on the display.
-  * @param  line line number (0 or 1)
-  * @param  position column number (0-15)
-  * @retval None
-  */
 void lcd_set_cursor(uint8_t line, uint8_t position)
 {
   uint8_t offset = (line == 0U) ? LCD_ROW0_OFFSET : LCD_ROW1_OFFSET;
   _lcd_send(LCD_CMD_SET_DDRAM | (position + offset), 0);
 }
 
-/**
-  * @brief  Write a null-terminated string to the display.
-  * @param  str pointer to the string to write (ASCII)
-  * @retval None
-  */
 void lcd_puts(const char *str)
 {
   while (*str)

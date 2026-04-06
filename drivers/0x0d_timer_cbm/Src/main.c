@@ -38,10 +38,6 @@ static void _heartbeat(void)
   uart_puts("Timer heartbeat\r\n");
 }
 
-/**
-  * @brief  Application entry point for the repeating timer demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   uart_puts("Timer alarm demo initialized\r\n");

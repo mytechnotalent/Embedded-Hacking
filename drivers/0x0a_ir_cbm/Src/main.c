@@ -107,10 +107,6 @@ static void _ir_setup(void)
   uart_puts("Press a button on your NEC remote...\r\n");
 }
 
-/**
-  * @brief  Application entry point for the NEC IR receiver demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   int command;

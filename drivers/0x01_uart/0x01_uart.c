@@ -49,14 +49,6 @@
 /** @brief UART baud rate in bits per second */
 #define UART_BAUD    115200
 
-/**
- * @brief Application entry point for the UART uppercase echo demo
- *
- * Initializes UART0 and enters an infinite loop that reads incoming
- * characters, converts them to uppercase, and echoes them back.
- *
- * @return int Does not return
- */
 int main(void) {
     uart_driver_init(UART_TX_PIN, UART_RX_PIN, UART_BAUD);
     uart_driver_puts("UART driver ready (115200 8N1)\r\n");

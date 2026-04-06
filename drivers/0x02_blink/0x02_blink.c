@@ -45,14 +45,6 @@
 /** @brief Delay between blink toggles in milliseconds */
 #define BLINK_DELAY_MS 500
 
-/**
- * @brief Application entry point for the LED blink demo
- *
- * Initializes the onboard LED and enters an infinite loop that
- * toggles the LED state every BLINK_DELAY_MS milliseconds.
- *
- * @return int Does not return
- */
 int main(void) {
     stdio_init_all();
     blink_init(LED_PIN);

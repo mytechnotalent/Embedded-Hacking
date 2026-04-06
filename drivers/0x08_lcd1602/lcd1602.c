@@ -150,18 +150,6 @@ static void _lcd_hd44780_configure(void) {
     _lcd_send(0x06, 0);
 }
 
-/**
- * @brief Initialize the LCD driver over I2C
- *
- * Configures the internal driver state and performs the HD44780 initialization
- * sequence. The driver does not configure I2C pins or call i2c_init; that
- * must be done by the caller prior to calling this function.
- *
- * @param i2c_port       I2C port number (0 for i2c0, 1 for i2c1)
- * @param pcf_addr       PCF8574 I2C address (commonly 0x27 or 0x3F)
- * @param nibble_shift   Bit shift applied to 4-bit nibbles (commonly 4 or 0)
- * @param backlight_mask PCF8574 bit mask that controls the backlight
- */
 void lcd_i2c_init(uint8_t i2c_port, uint8_t pcf_addr, int nibble_shift,
                   uint8_t backlight_mask) {
     _lcd_store_config(i2c_port, pcf_addr, nibble_shift, backlight_mask);
@@ -197,34 +185,17 @@ void lcd_init(uint8_t i2c_port, uint32_t sda_pin, uint32_t scl_pin,
     lcd_i2c_init(i2c_port, pcf_addr, nibble_shift, backlight_mask);
 }
 
-/**
- * @brief Clear the LCD display
- *
- * Clears the display and returns the cursor to the home position. This
- * call blocks for the duration required by the HD44780 controller.
- */
 void lcd_clear(void) {
     _lcd_send(0x01, 0);
     sleep_ms(2);
 }
 
-/**
- * @brief Set the cursor position
- *
- * @param line     Line number (0 or 1)
- * @param position Column (0..15)
- */
 void lcd_set_cursor(int line, int position) {
     const uint8_t row_offsets[] = {0x00, 0x40};
     if (line > 1) line = 1;
     _lcd_send(0x80 | (position + row_offsets[line]), 0);
 }
 
-/**
- * @brief Write a null-terminated string to the display
- *
- * @param s The string to write (ASCII)
- */
 void lcd_puts(const char *s) {
     while (*s)
         _lcd_send((uint8_t)*s++, 1);

@@ -50,17 +50,6 @@ static bool _timer_shim(repeating_timer_t *rt) {
     return false;
 }
 
-/**
- * @brief Start a repeating hardware timer that fires the given callback
- *
- * Schedules callback to be invoked every period_ms milliseconds using
- * the Pico SDK add_repeating_timer_ms() API. The timer continues firing
- * until timer_driver_cancel() is called.
- *
- * @param period_ms Interval between callbacks in milliseconds (positive value)
- * @param callback  Function to call on each timer expiry; must return true to
- *                  continue repeating, false to stop
- */
 void timer_driver_start(int32_t period_ms, timer_driver_callback_t callback) {
     if (g_timer_active) {
         cancel_repeating_timer(&g_timer);
@@ -70,12 +59,6 @@ void timer_driver_start(int32_t period_ms, timer_driver_callback_t callback) {
     g_timer_active = add_repeating_timer_ms(period_ms, _timer_shim, NULL, &g_timer);
 }
 
-/**
- * @brief Cancel the active repeating timer
- *
- * Stops the timer started by timer_driver_start(). Safe to call even if the
- * timer has already fired and self-cancelled.
- */
 void timer_driver_cancel(void) {
     if (!g_timer_active)
         return;

@@ -68,14 +68,6 @@ static void _sweep_angle(int start, int end, int step) {
     }
 }
 
-/**
- * @brief Application entry point for the servo sweep demo
- *
- * Initializes the servo on GPIO and continuously sweeps 0-180-0 degrees
- * in STEP_DEGREES increments, reporting each angle over UART.
- *
- * @return int Does not return
- */
 int main(void) {
     stdio_init_all();
     servo_init(SERVO_GPIO);

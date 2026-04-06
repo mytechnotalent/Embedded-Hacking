@@ -111,10 +111,6 @@ static void _spi_setup(void)
   uart_puts("SPI loopback initialized (MOSI->MISO on GPIO19->GPIO16)\r\n");
 }
 
-/**
-  * @brief  Application entry point for the SPI loopback demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   /** @brief  Transmit test pattern for SPI loopback. */

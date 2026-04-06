@@ -60,14 +60,6 @@ static void _feed_and_report(void) {
     sleep_ms(1000);
 }
 
-/**
- * @brief Application entry point for the watchdog demo
- *
- * Enables the watchdog with a 3-second timeout and feeds it every
- * 1 second. Reports the reset reason on startup.
- *
- * @return int Does not return
- */
 int main(void) {
     stdio_init_all();
     _print_reset_reason();

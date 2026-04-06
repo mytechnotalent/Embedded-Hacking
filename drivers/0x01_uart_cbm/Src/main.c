@@ -28,10 +28,6 @@
 
 #include "rp2350_uart.h"
 
-/**
-  * @brief  Application entry point for the UART uppercase echo demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   uart_puts("UART driver ready (115200 8N1)\r\n");

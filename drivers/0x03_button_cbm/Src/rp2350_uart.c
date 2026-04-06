@@ -79,20 +79,12 @@ static void _uart_enable(void)
   UART_BASE[UART_CR_OFFSET] = UART_CR_ENABLE;
 }
 
-/**
-  * @brief  Release UART0 from reset and wait until ready.
-  * @retval None
-  */
 void uart_release_reset(void)
 {
   _uart_clear_reset_bit();
   _uart_wait_reset_done();
 }
 
-/**
-  * @brief  Initialize UART0 pins, baud rate, line control, and enable.
-  * @retval None
-  */
 void uart_init(void)
 {
   _uart_configure_pins();
@@ -100,19 +92,11 @@ void uart_init(void)
   _uart_enable();
 }
 
-/**
-  * @brief  Check whether a received byte is waiting in the UART FIFO.
-  * @retval bool true if at least one byte is available
-  */
 bool uart_is_readable(void)
 {
   return (UART_BASE[UART_FR_OFFSET] & UART_FR_RXFE_MASK) == 0;
 }
 
-/**
-  * @brief  Read one character from UART0 (blocking).
-  * @retval char the received character
-  */
 char uart_getchar(void)
 {
   while (UART_BASE[UART_FR_OFFSET] & UART_FR_RXFE_MASK) {
@@ -120,11 +104,6 @@ char uart_getchar(void)
   return (char)(UART_BASE[UART_DR_OFFSET] & 0xFF);
 }
 
-/**
-  * @brief  Transmit one character over UART0 (blocking).
-  * @param  c character to transmit
-  * @retval None
-  */
 void uart_putchar(char c)
 {
   while (UART_BASE[UART_FR_OFFSET] & UART_FR_TXFF_MASK) {
@@ -132,11 +111,6 @@ void uart_putchar(char c)
   UART_BASE[UART_DR_OFFSET] = (uint32_t)c;
 }
 
-/**
-  * @brief  Transmit a null-terminated string over UART0.
-  * @param  str pointer to the string to send
-  * @retval None
-  */
 void uart_puts(const char *str)
 {
   while (*str) {
@@ -144,11 +118,6 @@ void uart_puts(const char *str)
   }
 }
 
-/**
-  * @brief  Convert a lowercase ASCII character to uppercase.
-  * @param  c input character
-  * @retval char uppercase equivalent or original character
-  */
 char uart_to_upper(char c)
 {
   if (c >= 'a' && c <= 'z')

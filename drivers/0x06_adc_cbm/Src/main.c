@@ -95,10 +95,6 @@ static void _print_readings(void)
   uart_puts(" C\r\n");
 }
 
-/**
-  * @brief  Application entry point for the ADC voltage and temperature demo.
-  * @retval int does not return
-  */
 int main(void)
 {
   xosc_enable_adc_clk();
