@@ -545,5 +545,26 @@ cargo test --lib --target x86_64-pc-windows-msvc
 
 <br>
 
+# C Bare-Metal Drivers
+Register-level C drivers for the RP2350 with no SDK dependencies. Each driver folder uses a two-layer architecture: `rp2350.h` (peripheral register structs) and per-peripheral `rp2350_<name>.h/.c` driver pairs. Built with `arm-none-eabi-gcc`, linked with a custom linker script, and flashed via UF2.
+
+| Driver | Description | Key Peripheral |
+|--------|-------------|----------------|
+| [0x01_uart_cbm](drivers/0x01_uart_cbm) | Raw UART transmit / receive | UART0 |
+| [0x02_blink_cbm](drivers/0x02_blink_cbm) | GPIO output LED blink | SIO, IO_BANK0 |
+| [0x03_button_cbm](drivers/0x03_button_cbm) | GPIO input with debounce | SIO, IO_BANK0 |
+| [0x04_pwm_cbm](drivers/0x04_pwm_cbm) | PWM output with frequency & duty control | PWM |
+| [0x05_servo_cbm](drivers/0x05_servo_cbm) | SG90 servo angle & pulse control | PWM |
+| [0x06_adc_cbm](drivers/0x06_adc_cbm) | ADC voltage & on-chip temperature reading | ADC |
+| [0x07_i2c_cbm](drivers/0x07_i2c_cbm) | I2C bus init, probe & scan | I2C0 |
+| [0x08_lcd1602_cbm](drivers/0x08_lcd1602_cbm) | 1602 LCD over I2C (PCF8574 backpack) | I2C0 |
+| [0x09_dht11_cbm](drivers/0x09_dht11_cbm) | DHT11 temperature & humidity (single-wire) | SIO, IO_BANK0 |
+| [0x0a_ir_cbm](drivers/0x0a_ir_cbm) | IR remote NEC protocol decoder | SIO, IO_BANK0 |
+| [0x0b_spi_cbm](drivers/0x0b_spi_cbm) | SPI bus init & bidirectional transfer | SPI0 |
+| [0x0c_multicore_cbm](drivers/0x0c_multicore_cbm) | Dual-core launch & FIFO messaging | SIO FIFO, PSM |
+| [0x0d_timer_cbm](drivers/0x0d_timer_cbm) | Repeating timer alarm callbacks | TIMER0, TICKS |
+
+<br>
+
 # License
 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
