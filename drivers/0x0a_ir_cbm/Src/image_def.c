@@ -23,7 +23,8 @@
 #include <stdint.h>
 
 __attribute__((section(".embedded_block"), used))
-const uint8_t picobin_block[] = {
+const uint8_t picobin_block[] = 
+{
   0xD3, 0xDE, 0xFF, 0xFF,
   0x42, 0x01, 0x21, 0x10,
   0xFF, 0x01, 0x00, 0x00,

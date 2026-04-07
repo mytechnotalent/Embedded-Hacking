@@ -72,7 +72,8 @@ static void _print_angle(uint8_t angle)
   */
 static void _sweep_up(void)
 {
-  for (uint8_t angle = 0; angle <= 180; angle += STEP_DEGREES) {
+  for (uint8_t angle = 0; angle <= 180; angle += STEP_DEGREES) 
+  {
     servo_set_angle(angle);
     _print_angle(angle);
     delay_ms(STEP_DELAY_MS);
@@ -85,7 +86,8 @@ static void _sweep_up(void)
   */
 static void _sweep_down(void)
 {
-  for (int16_t angle = 180; angle >= 0; angle -= STEP_DEGREES) {
+  for (int16_t angle = 180; angle >= 0; angle -= STEP_DEGREES) 
+  {
     servo_set_angle((uint8_t)angle);
     _print_angle((uint8_t)angle);
     delay_ms(STEP_DELAY_MS);
@@ -96,7 +98,8 @@ int main(void)
 {
   uart_puts("Servo driver initialized on GPIO6\r\n");
   uart_puts("Sweeping 0 -> 180 -> 0 degrees\r\n");
-  while (1) {
+  while (1) 
+  {
     _sweep_up();
     _sweep_down();
   }

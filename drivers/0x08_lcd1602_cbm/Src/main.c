@@ -68,7 +68,8 @@ static void _uint_to_str(uint32_t val, char *buf)
   char tmp[11];
   int i = 0;
   if (val == 0) { buf[0] = '0'; buf[1] = '\0'; return; }
-  while (val > 0) {
+  while (val > 0) 
+  {
     tmp[i++] = (char)('0' + (val % 10));
     val /= 10;
   }
@@ -143,7 +144,8 @@ int main(void)
 {
   uint32_t count = 0;
   _lcd_setup();
-  while (1) {
+  while (1) 
+  {
     _display_count(count);
     count++;
     delay_ms(COUNT_DELAY_MS);

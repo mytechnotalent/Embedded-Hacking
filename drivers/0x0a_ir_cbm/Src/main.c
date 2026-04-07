@@ -111,7 +111,8 @@ int main(void)
 {
   int command;
   _ir_setup();
-  while (1) {
+  while (1) 
+  {
     command = ir_getkey();
     if (command >= 0)
       _print_command((uint8_t)command);

@@ -82,10 +82,12 @@ static uint16_t _adc_read_raw(void)
 {
   uint32_t timeout = ADC_READY_TIMEOUT;
   ADC->CS |= (1U << ADC_CS_START_ONCE_SHIFT);
-  while (!(ADC->CS & (1U << ADC_CS_READY_SHIFT)) && timeout > 0U) {
+  while (!(ADC->CS & (1U << ADC_CS_READY_SHIFT)) && timeout > 0U) 
+  {
     timeout--;
   }
-  if (timeout == 0U) {
+  if (timeout == 0U) 
+  {
     return 0U;
   }
   return (uint16_t)(ADC->RESULT & 0xFFFU);
@@ -126,7 +128,8 @@ void adc_release_reset(void)
   RESETS->RESET |= (1U << RESETS_RESET_ADC_SHIFT);
   uint32_t timeout = ADC_READY_TIMEOUT;
   RESETS->RESET &= ~(1U << RESETS_RESET_ADC_SHIFT);
-  while (!(RESETS->RESET_DONE & (1U << RESETS_RESET_ADC_SHIFT)) && timeout > 0U) {
+  while (!(RESETS->RESET_DONE & (1U << RESETS_RESET_ADC_SHIFT)) && timeout > 0U) 
+  {
     timeout--;
   }
 }

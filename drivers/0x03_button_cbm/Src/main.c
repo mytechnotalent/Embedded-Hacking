@@ -55,7 +55,8 @@ static void _set_led_state(bool pressed)
   */
 static void _report_edge(bool pressed, bool *last_state)
 {
-  if (pressed != *last_state) {
+  if (pressed != *last_state) 
+  {
     if (pressed)
       uart_puts("Button: PRESSED\r\n");
     else
@@ -83,7 +84,8 @@ int main(void)
   led_init(LED_PIN);
   uart_puts("Button driver initialized: button=GPIO15  led=GPIO25\r\n");
   bool last_state = false;
-  while (1) {
+  while (1) 
+  {
     _poll_button(&last_state);
     delay_ms(POLL_DELAY_MS);
   }

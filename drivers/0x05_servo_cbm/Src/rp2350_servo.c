@@ -75,8 +75,7 @@ static void _servo_clear_reset_bit(void)
   */
 static void _servo_wait_reset_done(void)
 {
-  while ((RESETS->RESET_DONE & (1U << RESETS_RESET_PWM_SHIFT)) == 0) {
-  }
+  while ((RESETS->RESET_DONE & (1U << RESETS_RESET_PWM_SHIFT)) == 0) {}
 }
 
 /**

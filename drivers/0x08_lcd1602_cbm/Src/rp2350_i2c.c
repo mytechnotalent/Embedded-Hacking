@@ -89,7 +89,8 @@ static void _i2c_config_timing(void)
   */
 static bool _check_abort(void)
 {
-  if (I2C1->RAW_INTR_STAT & I2C_RAW_INTR_TX_ABRT) {
+  if (I2C1->RAW_INTR_STAT & I2C_RAW_INTR_TX_ABRT) 
+  {
     (void)I2C1->CLR_TX_ABRT;
     return true;
   }
@@ -102,7 +103,8 @@ static bool _check_abort(void)
   */
 static bool _check_stop(void)
 {
-  if (I2C1->RAW_INTR_STAT & I2C_RAW_INTR_STOP_DET) {
+  if (I2C1->RAW_INTR_STAT & I2C_RAW_INTR_STOP_DET) 
+  {
     (void)I2C1->CLR_STOP_DET;
     return true;
   }
@@ -116,7 +118,8 @@ static bool _check_stop(void)
 static void _i2c_wait_done(void)
 {
   uint32_t timeout = I2C_TIMEOUT;
-  while (timeout > 0U) {
+  while (timeout > 0U) 
+  {
     if (_check_abort() || _check_stop())
       break;
     timeout--;
@@ -127,8 +130,7 @@ void i2c_release_reset(void)
 {
   RESETS->RESET |= (1U << RESETS_RESET_I2C1_SHIFT);
   RESETS->RESET &= ~(1U << RESETS_RESET_I2C1_SHIFT);
-  while (!(RESETS->RESET_DONE & (1U << RESETS_RESET_I2C1_SHIFT))) {
-  }
+  while (!(RESETS->RESET_DONE & (1U << RESETS_RESET_I2C1_SHIFT))) {}
 }
 
 void i2c_init(void)

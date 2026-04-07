@@ -26,8 +26,7 @@ void xosc_init(void)
 {
   XOSC->STARTUP = 0x00C4U;
   XOSC->CTRL = 0x00FABAA0U;
-  while ((XOSC->STATUS & (1U << XOSC_STATUS_STABLE_SHIFT)) == 0) {
-  }
+  while ((XOSC->STATUS & (1U << XOSC_STATUS_STABLE_SHIFT)) == 0) {}
 }
 
 void xosc_enable_peri_clk(void)

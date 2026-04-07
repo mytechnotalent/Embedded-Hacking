@@ -62,7 +62,8 @@ static void _print_hex(uint8_t value)
 static void _print_buffer(const char *label, const uint8_t *buf, uint32_t len)
 {
   uart_puts(label);
-  for (uint32_t i = 0; i < len; i++) {
+  for (uint32_t i = 0; i < len; i++) 
+  {
     _print_hex(buf[i]);
     if (i + 1 < len)
       uart_putchar(' ');
@@ -119,7 +120,8 @@ int main(void)
   static const uint32_t len = sizeof(tx);
   uint8_t rx[sizeof(tx)] = {0};
   _spi_setup();
-  while (1) {
+  while (1) 
+  {
     _loopback_transfer(tx, rx, len);
     _clear_buffer(rx, len);
     delay_ms(1000);

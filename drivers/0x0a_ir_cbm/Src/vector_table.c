@@ -29,7 +29,8 @@ extern void Reset_Handler(void);
 typedef void (*vector_func_t)(void);
 
 __attribute__((section(".vectors"), used))
-const void *_vectors[2] = {
+const void *_vectors[2] = 
+{
   &_stack_top,
   Reset_Handler
 };

@@ -50,8 +50,7 @@ static void _fifo_drain(void)
   */
 static void _fifo_push_blocking(uint32_t data)
 {
-  while (!(SIO[SIO_FIFO_ST_OFFSET] & SIO_FIFO_ST_RDY_MASK)) {
-  }
+  while (!(SIO[SIO_FIFO_ST_OFFSET] & SIO_FIFO_ST_RDY_MASK)) {}
   SIO[SIO_FIFO_WR_OFFSET] = data;
   __asm__ volatile ("sev");
 }
@@ -62,8 +61,7 @@ static void _fifo_push_blocking(uint32_t data)
   */
 static uint32_t _fifo_pop_blocking(void)
 {
-  while (!(SIO[SIO_FIFO_ST_OFFSET] & SIO_FIFO_ST_VLD_MASK)) {
-  }
+  while (!(SIO[SIO_FIFO_ST_OFFSET] & SIO_FIFO_ST_VLD_MASK)) {}
   return SIO[SIO_FIFO_RD_OFFSET];
 }
 
@@ -75,8 +73,7 @@ static void _set_frce_off_proc1(void)
 {
   volatile uint32_t *set = (volatile uint32_t *)((uintptr_t)&PSM->FRCE_OFF + ATOMIC_SET_OFFSET);
   *set = (1U << PSM_FRCE_OFF_PROC1_SHIFT);
-  while (!(PSM->FRCE_OFF & (1U << PSM_FRCE_OFF_PROC1_SHIFT))) {
-  }
+  while (!(PSM->FRCE_OFF & (1U << PSM_FRCE_OFF_PROC1_SHIFT))) {}
 }
 
 /**
@@ -107,7 +104,8 @@ static void _reset_core1(void)
   */
 static void _send_handshake_word(uint32_t cmd)
 {
-  if (!cmd) {
+  if (!cmd) 
+  {
     _fifo_drain();
     __asm__ volatile ("sev");
   }

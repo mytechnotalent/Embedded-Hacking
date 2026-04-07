@@ -28,6 +28,5 @@ void reset_init_subsystem(void)
   value = RESETS->RESET;
   value &= ~(1U << RESETS_RESET_IO_BANK0_SHIFT);
   RESETS->RESET = value;
-  while ((RESETS->RESET_DONE & (1U << RESETS_RESET_IO_BANK0_SHIFT)) == 0) {
-  }
+  while ((RESETS->RESET_DONE & (1U << RESETS_RESET_IO_BANK0_SHIFT)) == 0) {}
 }

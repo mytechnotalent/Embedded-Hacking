@@ -42,8 +42,7 @@ static void _uart_clear_reset_bit(void)
   */
 static void _uart_wait_reset_done(void)
 {
-  while ((RESETS->RESET_DONE & (1U << RESETS_RESET_UART0_SHIFT)) == 0) {
-  }
+  while ((RESETS->RESET_DONE & (1U << RESETS_RESET_UART0_SHIFT)) == 0) {}
 }
 
 /**
@@ -99,21 +98,20 @@ bool uart_is_readable(void)
 
 char uart_getchar(void)
 {
-  while (UART_BASE[UART_FR_OFFSET] & UART_FR_RXFE_MASK) {
-  }
+  while (UART_BASE[UART_FR_OFFSET] & UART_FR_RXFE_MASK) {}
   return (char)(UART_BASE[UART_DR_OFFSET] & 0xFF);
 }
 
 void uart_putchar(char c)
 {
-  while (UART_BASE[UART_FR_OFFSET] & UART_FR_TXFF_MASK) {
-  }
+  while (UART_BASE[UART_FR_OFFSET] & UART_FR_TXFF_MASK) {}
   UART_BASE[UART_DR_OFFSET] = (uint32_t)c;
 }
 
 void uart_puts(const char *str)
 {
-  while (*str) {
+  while (*str) 
+  {
     uart_putchar(*str++);
   }
 }

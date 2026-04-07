@@ -47,8 +47,7 @@ static void _spi_clear_reset(void)
   */
 static void _spi_wait_reset_done(void)
 {
-  while ((RESETS->RESET_DONE & (1U << RESETS_RESET_SPI0_SHIFT)) == 0) {
-  }
+  while ((RESETS->RESET_DONE & (1U << RESETS_RESET_SPI0_SHIFT)) == 0) {}
 }
 
 /**
@@ -148,8 +147,7 @@ static void _enable_spi(void)
   */
 static void _wait_tx_not_full(void)
 {
-  while ((SPI0->SSPSR & SPI_SSPSR_TNF_MASK) == 0) {
-  }
+  while ((SPI0->SSPSR & SPI_SSPSR_TNF_MASK) == 0) {}
 }
 
 /**
@@ -158,8 +156,7 @@ static void _wait_tx_not_full(void)
   */
 static void _wait_rx_not_empty(void)
 {
-  while ((SPI0->SSPSR & SPI_SSPSR_RNE_MASK) == 0) {
-  }
+  while ((SPI0->SSPSR & SPI_SSPSR_RNE_MASK) == 0) {}
 }
 
 void spi_release_reset(void)
@@ -214,7 +211,8 @@ void spi_cs_deselect(void)
 
 void spi_transfer(const uint8_t *tx, uint8_t *rx, uint32_t len)
 {
-  for (uint32_t i = 0; i < len; i++) {
+  for (uint32_t i = 0; i < len; i++) 
+  {
     _wait_tx_not_full();
     SPI0->SSPDR = tx[i];
     _wait_rx_not_empty();

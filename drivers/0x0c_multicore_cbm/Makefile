@@ -6,6 +6,15 @@
 #          Compiles, links, and generates UF2 firmware for the RP2350.
 # ------------------------------------------------------------------------------
 
+# OS detection
+ifeq ($(OS),Windows_NT)
+  MKDIR = if not exist $(subst /,\\,$(BUILD_DIR)) mkdir $(subst /,\\,$(BUILD_DIR))
+  RM    = if exist $(subst /,\\,$(BUILD_DIR)) rmdir /s /q $(subst /,\\,$(BUILD_DIR))
+else
+  MKDIR = mkdir -p $(BUILD_DIR)
+  RM    = rm -rf $(BUILD_DIR)
+endif
+
 # Toolchain
 CC      = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
@@ -48,9 +57,9 @@ OBJS = $(patsubst $(SRC_DIR)/%.c,$(BUILD_DIR)/%.o,$(SRCS))
 # Rules
 .PHONY: all clean flash
 
-all: $(BUILD_DIR)/$(TARGET).uf2
+all: $(BUILD_DIR)/$(TARGET).bin
 	@echo "==================================="
-	@echo "SUCCESS! Created $(TARGET).bin and $(TARGET).uf2"
+	@echo "SUCCESS! Created $(TARGET).elf and $(TARGET).bin"
 	@echo "==================================="
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
@@ -63,14 +72,12 @@ $(BUILD_DIR)/$(TARGET).elf: $(OBJS)
 $(BUILD_DIR)/$(TARGET).bin: $(BUILD_DIR)/$(TARGET).elf
 	$(OBJCOPY) -O binary $< $@
 
-$(BUILD_DIR)/$(TARGET).uf2: $(BUILD_DIR)/$(TARGET).bin
-	python3 uf2conv.py -b 0x10000000 -f 0xe48bff59 -o $@ $<
 
 $(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
+	$(MKDIR)
 
 clean:
-	rm -rf $(BUILD_DIR)
+	$(RM)
 
 flash: $(BUILD_DIR)/$(TARGET).elf
 	openocd -f interface/cmsis-dap.cfg -f target/rp2350.cfg \

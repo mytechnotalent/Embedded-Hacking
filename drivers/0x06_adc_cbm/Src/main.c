@@ -44,7 +44,8 @@
   */
 static void _reverse(char *buf, uint8_t len)
 {
-  for (uint8_t i = 0; i < len / 2; i++) {
+  for (uint8_t i = 0; i < len / 2; i++) 
+  {
     char tmp = buf[i];
     buf[i] = buf[len - 1 - i];
     buf[len - 1 - i] = tmp;
@@ -100,7 +101,8 @@ int main(void)
   xosc_enable_adc_clk();
   adc_release_reset();
   adc_init();
-  while (1) {
+  while (1) 
+  {
     _print_readings();
     delay_ms(SAMPLE_DELAY_MS);
   }

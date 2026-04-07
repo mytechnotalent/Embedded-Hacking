@@ -43,7 +43,8 @@ int main(void)
   i2c_release_reset();
   i2c_init();
   uart_puts("I2C driver initialized: I2C1 @ 100 kHz  SDA=GPIO2  SCL=GPIO3\r\n");
-  while (1) {
+  while (1) 
+  {
     i2c_scan();
     delay_ms(SCAN_DELAY_MS);
   }

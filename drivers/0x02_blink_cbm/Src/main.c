@@ -44,7 +44,8 @@ int main(void)
 {
   led_init(LED_PIN);
   uart_puts("LED driver initialized on GPIO 25\r\n");
-  while (1) {
+  while (1) 
+  {
     led_toggle(LED_PIN);
     _print_led_state(LED_PIN);
     delay_ms(BLINK_DELAY_MS);

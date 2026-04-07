@@ -56,7 +56,8 @@ static bool _read_pin(void)
 static int32_t _wait_for_level(bool level, uint32_t timeout_us)
 {
   uint32_t start = _time_us();
-  while (_read_pin() != level) {
+  while (_read_pin() != level) 
+  {
     if ((_time_us() - start) > timeout_us)
       return -1;
   }
@@ -174,8 +175,7 @@ static void _timer_clear_reset(void)
   */
 static void _timer_wait_reset_done(void)
 {
-  while ((RESETS->RESET_DONE & (1U << RESETS_RESET_TIMER0_SHIFT)) == 0) {
-  }
+  while ((RESETS->RESET_DONE & (1U << RESETS_RESET_TIMER0_SHIFT)) == 0) {}
 }
 
 /**

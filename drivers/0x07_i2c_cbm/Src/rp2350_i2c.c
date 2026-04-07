@@ -103,9 +103,11 @@ static void _print_hex8(uint8_t val)
   */
 static void _print_probe_result(uint8_t addr)
 {
-  if (addr < 0x08 || addr > 0x77) {
+  if (addr < 0x08 || addr > 0x77) 
+  {
     uart_puts("   ");
-  } else if (i2c_probe(addr)) {
+  } else if (i2c_probe(addr)) 
+  {
     _print_hex8(addr);
     uart_puts(" ");
   } else {
@@ -135,8 +137,7 @@ void i2c_release_reset(void)
 {
   RESETS->RESET |= (1U << RESETS_RESET_I2C1_SHIFT);
   RESETS->RESET &= ~(1U << RESETS_RESET_I2C1_SHIFT);
-  while (!(RESETS->RESET_DONE & (1U << RESETS_RESET_I2C1_SHIFT))) {
-  }
+  while (!(RESETS->RESET_DONE & (1U << RESETS_RESET_I2C1_SHIFT))) {}
 }
 
 void i2c_init(void)
@@ -180,7 +181,8 @@ static void _probe_send_read(void)
 static bool _probe_wait_response(void)
 {
   uint32_t timeout = I2C_TIMEOUT;
-  while (timeout > 0U) {
+  while (timeout > 0U) 
+  {
     if (I2C1->RAW_INTR_STAT & I2C_RAW_INTR_TX_ABRT)
       return true;
     if (I2C1->RXFLR)
@@ -217,7 +219,8 @@ void i2c_scan(void)
 {
   uart_puts("\r\nI2C bus scan:\r\n");
   uart_puts("     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F\r\n");
-  for (uint8_t addr = 0; addr < 128; addr++) {
+  for (uint8_t addr = 0; addr < 128; addr++) 
+  {
     _print_scan_entry(addr);
   }
 }

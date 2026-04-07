@@ -34,8 +34,7 @@ extern void TIMER0_IRQ_0_Handler(void);
   */
 static void _default_handler(void)
 {
-  while (1) {
-  }
+  while (1) {}
 }
 
 typedef void (*vector_func_t)(void);

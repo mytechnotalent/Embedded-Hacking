@@ -32,8 +32,10 @@ int main(void)
 {
   uart_puts("UART driver ready (115200 8N1)\r\n");
   uart_puts("Type characters to echo them back in UPPERCASE:\r\n");
-  while (1) {
-    if (uart_is_readable()) {
+  while (1) 
+  {
+    if (uart_is_readable()) 
+    {
       char c = uart_getchar();
       char upper = uart_to_upper(c);
       uart_putchar(upper);

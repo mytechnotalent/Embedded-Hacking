@@ -42,7 +42,8 @@ static int _extract_digits(uint32_t value, char *tmp)
   int i = 0;
   if (value == 0)
     tmp[i++] = '0';
-  while (value > 0) {
+  while (value > 0) 
+  {
     tmp[i++] = '0' + (char)(value % 10);
     value /= 10;
   }
@@ -110,7 +111,8 @@ static void _print_counter_line(uint32_t sent, uint32_t received)
   */
 static void _core1_main(void)
 {
-  while (1) {
+  while (1) 
+  {
     uint32_t value = multicore_fifo_pop();
     multicore_fifo_push(value + 1);
   }
