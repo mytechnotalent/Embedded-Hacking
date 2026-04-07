@@ -189,6 +189,7 @@ static void _configure_pad(void)
   value &= ~(1U << PADS_BANK0_OD_SHIFT);
   value |= (1U << PADS_BANK0_IE_SHIFT);
   value |= (1U << PADS_BANK0_PUE_SHIFT);
+  value &= ~(1U << PADS_BANK0_PDE_SHIFT);
   value &= ~(1U << PADS_BANK0_ISO_SHIFT);
   PADS_BANK0->GPIO[IR_PIN] = value;
 }
@@ -237,5 +238,8 @@ int ir_getkey(void)
     return -1;
   if (!_read_32_bits(data))
     return -1;
-  return _validate_nec_frame(data);
+  int result = _validate_nec_frame(data);
+  if (result < 0)
+    return -1;
+  return result;
 }

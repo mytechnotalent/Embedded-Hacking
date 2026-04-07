@@ -169,6 +169,7 @@ typedef struct
 #define PADS_BANK0_IE_SHIFT          6U
 #define PADS_BANK0_ISO_SHIFT         8U
 #define PADS_BANK0_PUE_SHIFT         3U
+#define PADS_BANK0_PDE_SHIFT         2U
 
 /**
   * @brief SIO GPIO register offsets (word indices from SIO_BASE)
