@@ -23,6 +23,23 @@ VIDEO PROMO [HERE](https://www.youtube.com/watch?v=aD7X9sXirF8)
 
 <br>
 
+# Required Skills
+Students must have a working understanding of the following items:
+
+- **Intermediate C Programming:** In particular, you must understand how pointers reference memory addresses which we will use to perform live variable hijacking.
+  - Training Link: https://www.learn-c.org
+- **Bare-Metal Embedded Systems Assembly Basics:** You must have experience with bare-metal assembly as we will be using this extensively throughout the entire course specifically with GDB and Ghidra.
+  - Training Link: https://azeria-labs.com/writing-arm-assembly-part-1
+- **Computer Architecture Basics (Registers & Stack):** You need a working mental model of how a CPU/MCU uses registers and the stack to follow the boot process and function calls.
+  - Training Link: https://www.geeksforgeeks.org/computer-science-fundamentals/what-is-register-memory
+  - Training Link: https://www.geeksforgeeks.org/computer-organization-architecture/memory-stack-organization-in-computer-architecture
+- **Command Line Interface (CLI) Proficiency:** You must be comfortable navigating directories and executing commands in a terminal to run the necessary OpenOCD and GDB tools.
+  - Training Link: https://www.freecodecamp.org/news/command-line-commands-cli-tutorial
+- **Breadboarding Proficiency:** You must be comfortable demonstrating breadboard proficiency by efficiently prototyping circuits and integrating diverse peripherals, sensors, and microcontrollers.
+  - Training Video: https://www.youtube.com/watch?v=fq6U5Y14oM4
+
+<br>
+
 # Hardware
 ## Raspberry Pi Pico 2 w/ Header [BUY](https://www.pishop.us/product/raspberry-pi-pico-2-with-header)
 ## USB A-Male to USB Micro-B Cable [BUY](https://www.pishop.us/product/usb-a-male-to-usb-micro-b-cable-6-inches)
