@@ -59,7 +59,7 @@ static void _core1_main(void) {
  *
  * @param counter Pointer to the running counter (post-incremented)
  */
-static void _send_and_print(uint32_t *counter) {
+static void send_and_print(uint32_t *counter) {
     multicore_driver_push(*counter);
     uint32_t response = multicore_driver_pop();
     printf("core0 sent: %lu, core1 returned: %lu\r\n",
@@ -73,5 +73,5 @@ int main(void) {
     multicore_driver_launch(_core1_main);
     uint32_t counter = 0;
     while (true)
-        _send_and_print(&counter);
+        send_and_print(&counter);
 }

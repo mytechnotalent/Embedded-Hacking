@@ -41,7 +41,7 @@ static const char _hex_lut[16] = "0123456789ABCDEF";
   * @param  value byte to print
   * @retval None
   */
-static void _print_hex(uint8_t value)
+static void print_hex(uint8_t value)
 {
   char buf[3];
   buf[0] = _hex_lut[value >> 4];
@@ -72,7 +72,7 @@ static void _uint8_to_str(uint8_t value, char *buf)
   * @param  value byte to print (0-255)
   * @retval None
   */
-static void _print_dec(uint8_t value)
+static void print_dec(uint8_t value)
 {
   char buf[4];
   _uint8_to_str(value, buf);
@@ -84,12 +84,12 @@ static void _print_dec(uint8_t value)
   * @param  command decoded command byte
   * @retval None
   */
-static void _print_command(uint8_t command)
+static void print_command(uint8_t command)
 {
   uart_puts("NEC command: 0x");
-  _print_hex(command);
+  print_hex(command);
   uart_puts("  (");
-  _print_dec(command);
+  print_dec(command);
   uart_puts(")\r\n");
 }
 
@@ -97,7 +97,7 @@ static void _print_command(uint8_t command)
   * @brief  Initialize clocks, timer, IR receiver, and announce over UART.
   * @retval None
   */
-static void _ir_setup(void)
+static void ir_setup(void)
 {
   xosc_set_clk_ref();
   ir_timer_release_reset();
@@ -110,11 +110,11 @@ static void _ir_setup(void)
 int main(void)
 {
   int command;
-  _ir_setup();
+  ir_setup();
   while (1) 
   {
     command = ir_getkey();
     if (command >= 0)
-      _print_command((uint8_t)command);
+      print_command((uint8_t)command);
   }
 }

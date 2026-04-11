@@ -45,14 +45,14 @@
  *
  * @return bool true to keep the repeating timer active
  */
-static bool _heartbeat_callback(void) {
+static bool heartbeat_callback(void) {
     printf("Timer heartbeat\r\n");
     return true;
 }
 
 int main(void) {
     stdio_init_all();
-    timer_driver_start(1000, _heartbeat_callback);
+    timer_driver_start(1000, heartbeat_callback);
     while (true)
         tight_loop_contents();
 }

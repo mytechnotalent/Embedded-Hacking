@@ -28,7 +28,7 @@
   * @brief  Clear the UART0 reset bit in the reset controller.
   * @retval None
   */
-static void _uart_clear_reset_bit(void)
+static void uart_clear_reset_bit(void)
 {
   uint32_t value;
   value = RESETS->RESET;
@@ -40,7 +40,7 @@ static void _uart_clear_reset_bit(void)
   * @brief  Wait until the UART0 block is out of reset.
   * @retval None
   */
-static void _uart_wait_reset_done(void)
+static void uart_wait_reset_done(void)
 {
   while ((RESETS->RESET_DONE & (1U << RESETS_RESET_UART0_SHIFT)) == 0) {}
 }
@@ -49,7 +49,7 @@ static void _uart_wait_reset_done(void)
   * @brief  Configure GPIO pins 0 (TX) and 1 (RX) for UART function.
   * @retval None
   */
-static void _uart_configure_pins(void)
+static void uart_configure_pins(void)
 {
   IO_BANK0->GPIO[0].CTRL = IO_BANK0_CTRL_FUNCSEL_UART;
   IO_BANK0->GPIO[1].CTRL = IO_BANK0_CTRL_FUNCSEL_UART;
@@ -61,7 +61,7 @@ static void _uart_configure_pins(void)
   * @brief  Set UART0 baud rate divisors for 115200 at 12 MHz.
   * @retval None
   */
-static void _uart_set_baud(void)
+static void uart_set_baud(void)
 {
   UART_BASE[UART_CR_OFFSET] = 0;
   UART_BASE[UART_IBRD_OFFSET] = 6;
@@ -72,7 +72,7 @@ static void _uart_set_baud(void)
   * @brief  Configure line control and enable UART0.
   * @retval None
   */
-static void _uart_enable(void)
+static void uart_enable(void)
 {
   UART_BASE[UART_LCR_H_OFFSET] = UART_LCR_H_8N1_FIFO;
   UART_BASE[UART_CR_OFFSET] = UART_CR_ENABLE;
@@ -80,15 +80,15 @@ static void _uart_enable(void)
 
 void uart_release_reset(void)
 {
-  _uart_clear_reset_bit();
-  _uart_wait_reset_done();
+  uart_clear_reset_bit();
+  uart_wait_reset_done();
 }
 
 void uart_init(void)
 {
-  _uart_configure_pins();
-  _uart_set_baud();
-  _uart_enable();
+  uart_configure_pins();
+  uart_set_baud();
+  uart_enable();
 }
 
 bool uart_is_readable(void)

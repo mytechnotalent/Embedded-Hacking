@@ -41,7 +41,7 @@
   * @brief  Clear the PWM reset bit in the reset controller.
   * @retval None
   */
-static void _pwm_clear_reset_bit(void)
+static void pwm_clear_reset_bit(void)
 {
   uint32_t value;
   value = RESETS->RESET;
@@ -53,7 +53,7 @@ static void _pwm_clear_reset_bit(void)
   * @brief  Wait until the PWM block is out of reset.
   * @retval None
   */
-static void _pwm_wait_reset_done(void)
+static void pwm_wait_reset_done(void)
 {
   while ((RESETS->RESET_DONE & (1U << RESETS_RESET_PWM_SHIFT)) == 0) {}
 }
@@ -62,7 +62,7 @@ static void _pwm_wait_reset_done(void)
   * @brief  Configure GPIO 25 pad and funcsel for PWM output.
   * @retval None
   */
-static void _pwm_configure_pin(void)
+static void pwm_configure_pin(void)
 {
   uint32_t value;
   value = PADS_BANK0->GPIO[LED_PIN];
@@ -77,7 +77,7 @@ static void _pwm_configure_pin(void)
   * @brief  Set the clock divider to 1 (no division).
   * @retval None
   */
-static void _pwm_set_divider(void)
+static void pwm_set_divider(void)
 {
   PWM[PWM_REG(PWM_CH_DIV_OFFSET)] = (1U << PWM_DIV_INT_SHIFT);
 }
@@ -86,7 +86,7 @@ static void _pwm_set_divider(void)
   * @brief  Set the wrap (TOP) value and zero the compare register.
   * @retval None
   */
-static void _pwm_set_wrap(void)
+static void pwm_set_wrap(void)
 {
   PWM[PWM_REG(PWM_CH_TOP_OFFSET)] = PWM_WRAP_DEFAULT;
   PWM[PWM_REG(PWM_CH_CC_OFFSET)] = 0;
@@ -96,23 +96,23 @@ static void _pwm_set_wrap(void)
   * @brief  Enable the PWM slice counter.
   * @retval None
   */
-static void _pwm_enable(void)
+static void pwm_enable(void)
 {
   PWM[PWM_REG(PWM_CH_CSR_OFFSET)] = (1U << PWM_CSR_EN_SHIFT);
 }
 
 void pwm_release_reset(void)
 {
-  _pwm_clear_reset_bit();
-  _pwm_wait_reset_done();
+  pwm_clear_reset_bit();
+  pwm_wait_reset_done();
 }
 
 void pwm_init(void)
 {
-  _pwm_configure_pin();
-  _pwm_set_divider();
-  _pwm_set_wrap();
-  _pwm_enable();
+  pwm_configure_pin();
+  pwm_set_divider();
+  pwm_set_wrap();
+  pwm_enable();
 }
 
 void pwm_set_duty(uint8_t percent)

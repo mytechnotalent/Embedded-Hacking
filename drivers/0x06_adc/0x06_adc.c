@@ -53,7 +53,7 @@
  * Samples the ADC channel for voltage in millivolts and reads the
  * on-chip temperature sensor, then prints both values.
  */
-static void _print_adc_readings(void) {
+static void print_adc_readings(void) {
     uint32_t voltage_mv = adc_driver_read_mv();
     float    temp_c     = adc_driver_read_temp_celsius();
     printf("ADC0: %4lu mV  |  Chip temp: %.1f C\r\n", voltage_mv, temp_c);
@@ -64,7 +64,7 @@ int main(void) {
     adc_driver_init(ADC_GPIO, ADC_CHANNEL);
     printf("ADC driver initialized: GPIO%d (channel %d)\r\n", ADC_GPIO, ADC_CHANNEL);
     while (true) {
-        _print_adc_readings();
+        print_adc_readings();
         sleep_ms(500);
     }
 }

@@ -61,7 +61,7 @@
   * @brief  Clear the PWM reset bit in the reset controller.
   * @retval None
   */
-static void _servo_clear_reset_bit(void)
+static void servo_clear_reset_bit(void)
 {
   uint32_t value;
   value = RESETS->RESET;
@@ -73,7 +73,7 @@ static void _servo_clear_reset_bit(void)
   * @brief  Wait until the PWM block is out of reset.
   * @retval None
   */
-static void _servo_wait_reset_done(void)
+static void servo_wait_reset_done(void)
 {
   while ((RESETS->RESET_DONE & (1U << RESETS_RESET_PWM_SHIFT)) == 0) {}
 }
@@ -82,7 +82,7 @@ static void _servo_wait_reset_done(void)
   * @brief  Configure GPIO 6 pad and funcsel for PWM output.
   * @retval None
   */
-static void _servo_configure_pin(void)
+static void servo_configure_pin(void)
 {
   uint32_t value;
   value = PADS_BANK0->GPIO[SERVO_PIN];
@@ -97,7 +97,7 @@ static void _servo_configure_pin(void)
   * @brief  Set the fractional clock divider for 50 Hz servo frequency.
   * @retval None
   */
-static void _servo_set_divider(void)
+static void servo_set_divider(void)
 {
   PWM[SERVO_REG(PWM_CH_DIV_OFFSET)] = SERVO_DIV_VAL;
 }
@@ -106,7 +106,7 @@ static void _servo_set_divider(void)
   * @brief  Set the wrap value and zero the compare register.
   * @retval None
   */
-static void _servo_set_wrap(void)
+static void servo_set_wrap(void)
 {
   PWM[SERVO_REG(PWM_CH_TOP_OFFSET)] = SERVO_WRAP;
   PWM[SERVO_REG(PWM_CH_CC_OFFSET)] = 0;
@@ -116,7 +116,7 @@ static void _servo_set_wrap(void)
   * @brief  Enable the PWM slice counter.
   * @retval None
   */
-static void _servo_enable(void)
+static void servo_enable(void)
 {
   PWM[SERVO_REG(PWM_CH_CSR_OFFSET)] = (1U << PWM_CSR_EN_SHIFT);
 }
@@ -126,23 +126,23 @@ static void _servo_enable(void)
   * @param  pulse_us pulse width in microseconds
   * @retval uint32_t PWM level for the CC register
   */
-static uint32_t _pulse_us_to_level(uint16_t pulse_us)
+static uint32_t pulse_us_to_level(uint16_t pulse_us)
 {
   return ((uint32_t)pulse_us * (SERVO_WRAP + 1)) / 20000U;
 }
 
 void servo_release_reset(void)
 {
-  _servo_clear_reset_bit();
-  _servo_wait_reset_done();
+  servo_clear_reset_bit();
+  servo_wait_reset_done();
 }
 
 void servo_init(void)
 {
-  _servo_configure_pin();
-  _servo_set_divider();
-  _servo_set_wrap();
-  _servo_enable();
+  servo_configure_pin();
+  servo_set_divider();
+  servo_set_wrap();
+  servo_enable();
 }
 
 void servo_set_pulse_us(uint16_t pulse_us)
@@ -152,7 +152,7 @@ void servo_set_pulse_us(uint16_t pulse_us)
     pulse_us = SERVO_MIN_US;
   if (pulse_us > SERVO_MAX_US)
     pulse_us = SERVO_MAX_US;
-  level = _pulse_us_to_level(pulse_us);
+  level = pulse_us_to_level(pulse_us);
   PWM[SERVO_REG(PWM_CH_CC_OFFSET)] = level;
 }
 

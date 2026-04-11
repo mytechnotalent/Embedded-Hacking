@@ -39,7 +39,7 @@
   * @param  buf destination buffer (FLASH_PAGE_SIZE bytes in RAM)
   * @retval None
   */
-static void _prepare_write_buf(uint8_t *buf)
+static void prepare_write_buf(uint8_t *buf)
 {
   uint32_t i;
   const char *msg = "Embedded Hacking flash driver demo";
@@ -54,11 +54,11 @@ static void _prepare_write_buf(uint8_t *buf)
   * @brief  Write the demo string to flash and print the read-back.
   * @retval None
   */
-static void _write_and_verify(void)
+static void write_and_verify(void)
 {
   uint8_t write_buf[FLASH_PAGE_SIZE];
   uint8_t read_buf[FLASH_PAGE_SIZE];
-  _prepare_write_buf(write_buf);
+  prepare_write_buf(write_buf);
   flash_write(FLASH_TARGET_OFFSET, write_buf, FLASH_PAGE_SIZE);
   flash_read(FLASH_TARGET_OFFSET, read_buf, FLASH_PAGE_SIZE);
   uart_puts("Flash readback: ");
@@ -68,7 +68,7 @@ static void _write_and_verify(void)
 
 int main(void)
 {
-  _write_and_verify();
+  write_and_verify();
   while (1)
     __asm volatile ("wfi");
 }

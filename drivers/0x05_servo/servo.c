@@ -59,7 +59,7 @@ static bool servo_initialized = false;
  * @param pulse_us Pulse width in microseconds
  * @return uint32_t PWM level suitable for pwm_set_chan_level()
  */
-static uint32_t _pulse_us_to_level(uint32_t pulse_us) {
+static uint32_t pulse_us_to_level(uint32_t pulse_us) {
     const float period_us = 1000000.0f / servo_hz;
     float counts_per_us = (servo_wrap + 1) / period_us;
     return (uint32_t)(pulse_us * counts_per_us + 0.5f);
@@ -72,7 +72,7 @@ static uint32_t _pulse_us_to_level(uint32_t pulse_us) {
  * target servo frequency with the chosen wrap value, then starts
  * the PWM slice.
  */
-static void _apply_servo_config(void) {
+static void apply_servo_config(void) {
     pwm_config config = pwm_get_default_config();
     const uint32_t sys_clock_hz = clock_get_hz(clk_sys);
     float clock_div = (float)sys_clock_hz / (servo_hz * (servo_wrap + 1));
@@ -86,7 +86,7 @@ void servo_init(uint8_t pin) {
     gpio_set_function(servo_pin, GPIO_FUNC_PWM);
     servo_slice = pwm_gpio_to_slice_num(servo_pin);
     servo_chan = pwm_gpio_to_channel(servo_pin);
-    _apply_servo_config();
+    apply_servo_config();
     servo_initialized = true;
 }
 
@@ -94,7 +94,7 @@ void servo_set_pulse_us(uint16_t pulse_us) {
     if (!servo_initialized) return;
     if (pulse_us < SERVO_DEFAULT_MIN_US) pulse_us = SERVO_DEFAULT_MIN_US;
     if (pulse_us > SERVO_DEFAULT_MAX_US) pulse_us = SERVO_DEFAULT_MAX_US;
-    uint32_t level = _pulse_us_to_level(pulse_us);
+    uint32_t level = pulse_us_to_level(pulse_us);
     pwm_set_chan_level(servo_slice, servo_chan, level);
 }
 

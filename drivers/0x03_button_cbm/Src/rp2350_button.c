@@ -32,7 +32,7 @@ static uint32_t debounce_delay_ms = 20;
   * @param  pin GPIO pin number to re-sample
   * @retval bool true if the pin is still low after the debounce delay
   */
-static bool _debounce_confirm(uint32_t pin)
+static bool debounce_confirm(uint32_t pin)
 {
   delay_ms(debounce_delay_ms);
   return !gpio_get(pin);
@@ -47,6 +47,6 @@ void button_init(uint32_t pin, uint32_t debounce_ms)
 bool button_is_pressed(uint32_t pin)
 {
   if (!gpio_get(pin))
-    return _debounce_confirm(pin);
+    return debounce_confirm(pin);
   return false;
 }

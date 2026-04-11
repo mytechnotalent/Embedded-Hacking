@@ -48,7 +48,7 @@ extern uint32_t __data_end;
   * @brief  Copy initialized data and RAM-resident code from flash to RAM.
   * @retval None
   */
-static void _data_copy_init(void)
+static void data_copy_init(void)
 {
   uint32_t *src = &__data_lma;
   uint32_t *dst = &__data_start;
@@ -59,7 +59,7 @@ static void _data_copy_init(void)
 void ram_init(void)
 {
   stack_init();
-  _data_copy_init();
+  data_copy_init();
 }
 
 void __attribute__((naked, noreturn)) Reset_Handler(void)

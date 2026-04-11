@@ -44,7 +44,7 @@
 /**
  * @brief Print whether the system booted normally or from a watchdog reset
  */
-static void _print_reset_reason(void) {
+static void print_reset_reason(void) {
     if (watchdog_driver_caused_reboot())
         printf("System rebooted by watchdog timeout\r\n");
     else
@@ -54,7 +54,7 @@ static void _print_reset_reason(void) {
 /**
  * @brief Feed the watchdog and log over UART, then wait 1 second
  */
-static void _feed_and_report(void) {
+static void feed_and_report(void) {
     watchdog_driver_feed();
     printf("Watchdog fed\r\n");
     sleep_ms(1000);
@@ -62,9 +62,9 @@ static void _feed_and_report(void) {
 
 int main(void) {
     stdio_init_all();
-    _print_reset_reason();
+    print_reset_reason();
     watchdog_driver_enable(3000);
     printf("Watchdog enabled (3s timeout). Feeding every 1s...\r\n");
     while (true)
-        _feed_and_report();
+        feed_and_report();
 }

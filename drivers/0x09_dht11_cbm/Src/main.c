@@ -44,7 +44,7 @@
   * @param  buf   output buffer (at least 4 bytes)
   * @retval None
   */
-static void _uint_to_str(uint8_t value, char *buf)
+static void uint_to_str(uint8_t value, char *buf)
 {
   uint8_t idx = 0;
   if (value >= 100)
@@ -61,14 +61,14 @@ static void _uint_to_str(uint8_t value, char *buf)
   * @param  temperature temperature in Celsius (integer)
   * @retval None
   */
-static void _print_reading(uint8_t humidity, uint8_t temperature)
+static void print_reading(uint8_t humidity, uint8_t temperature)
 {
   char buf[4];
   uart_puts("Humidity: ");
-  _uint_to_str(humidity, buf);
+  uint_to_str(humidity, buf);
   uart_puts(buf);
   uart_puts("%  Temperature: ");
-  _uint_to_str(temperature, buf);
+  uint_to_str(temperature, buf);
   uart_puts(buf);
   uart_puts(" C\r\n");
 }
@@ -77,7 +77,7 @@ static void _print_reading(uint8_t humidity, uint8_t temperature)
   * @brief  Print a read failure message over UART.
   * @retval None
   */
-static void _print_failure(void)
+static void print_failure(void)
 {
   uart_puts("DHT11 read failed - check wiring on GPIO4\r\n");
 }
@@ -104,14 +104,14 @@ static void _dht11_setup(void)
   * @brief  Read the sensor once and print results or failure.
   * @retval None
   */
-static void _poll_sensor(void)
+static void poll_sensor(void)
 {
   uint8_t humidity;
   uint8_t temperature;
   if (dht11_read(&humidity, &temperature))
-    _print_reading(humidity, temperature);
+    print_reading(humidity, temperature);
   else
-    _print_failure();
+    print_failure();
   delay_ms(DHT11_POLL_MS);
 }
 
@@ -119,5 +119,5 @@ int main(void)
 {
   _dht11_setup();
   while (1)
-    _poll_sensor();
+    poll_sensor();
 }

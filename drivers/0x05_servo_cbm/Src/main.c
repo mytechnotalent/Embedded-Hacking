@@ -57,7 +57,7 @@ static void _uint8_to_str(uint8_t value, char *buf)
   * @param  angle angle in degrees (0-180)
   * @retval None
   */
-static void _print_angle(uint8_t angle)
+static void print_angle(uint8_t angle)
 {
   char buf[4];
   _uint8_to_str(angle, buf);
@@ -70,12 +70,12 @@ static void _print_angle(uint8_t angle)
   * @brief  Sweep servo angle upward from 0 to 180 degrees.
   * @retval None
   */
-static void _sweep_up(void)
+static void sweep_up(void)
 {
   for (uint8_t angle = 0; angle <= 180; angle += STEP_DEGREES) 
   {
     servo_set_angle(angle);
-    _print_angle(angle);
+    print_angle(angle);
     delay_ms(STEP_DELAY_MS);
   }
 }
@@ -84,12 +84,12 @@ static void _sweep_up(void)
   * @brief  Sweep servo angle downward from 180 to 0 degrees.
   * @retval None
   */
-static void _sweep_down(void)
+static void sweep_down(void)
 {
   for (int16_t angle = 180; angle >= 0; angle -= STEP_DEGREES) 
   {
     servo_set_angle((uint8_t)angle);
-    _print_angle((uint8_t)angle);
+    print_angle((uint8_t)angle);
     delay_ms(STEP_DELAY_MS);
   }
 }
@@ -100,7 +100,7 @@ int main(void)
   uart_puts("Sweeping 0 -> 180 -> 0 degrees\r\n");
   while (1) 
   {
-    _sweep_up();
-    _sweep_down();
+    sweep_up();
+    sweep_down();
   }
 }

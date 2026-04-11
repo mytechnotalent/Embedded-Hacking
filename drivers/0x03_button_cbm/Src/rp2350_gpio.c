@@ -28,7 +28,7 @@
   * @param  gpio_num GPIO pin number (0-29)
   * @retval None
   */
-static void _gpio_config_pad(uint32_t gpio_num)
+static void gpio_config_pad(uint32_t gpio_num)
 {
   uint32_t value;
   value = PADS_BANK0->GPIO[gpio_num];
@@ -43,7 +43,7 @@ static void _gpio_config_pad(uint32_t gpio_num)
   * @param  gpio_num GPIO pin number (0-29)
   * @retval None
   */
-static void _gpio_config_funcsel(uint32_t gpio_num)
+static void gpio_config_funcsel(uint32_t gpio_num)
 {
   uint32_t value;
   value = IO_BANK0->GPIO[gpio_num].CTRL;
@@ -57,7 +57,7 @@ static void _gpio_config_funcsel(uint32_t gpio_num)
   * @param  gpio_num GPIO pin number (0-29)
   * @retval None
   */
-static void _gpio_config_pad_input_pullup(uint32_t gpio_num)
+static void gpio_config_pad_input_pullup(uint32_t gpio_num)
 {
   uint32_t value;
   value = PADS_BANK0->GPIO[gpio_num];
@@ -73,16 +73,16 @@ static void _gpio_config_pad_input_pullup(uint32_t gpio_num)
   * @param  gpio_num GPIO pin number (0-29)
   * @retval None
   */
-static void _gpio_enable_output(uint32_t gpio_num)
+static void gpio_enable_output(uint32_t gpio_num)
 {
   SIO[SIO_GPIO_OE_SET_OFFSET] = (1U << gpio_num);
 }
 
 void gpio_config(uint32_t gpio_num)
 {
-  _gpio_config_pad(gpio_num);
-  _gpio_config_funcsel(gpio_num);
-  _gpio_enable_output(gpio_num);
+  gpio_config_pad(gpio_num);
+  gpio_config_funcsel(gpio_num);
+  gpio_enable_output(gpio_num);
 }
 
 void gpio_set(uint32_t gpio_num)
@@ -107,6 +107,6 @@ bool gpio_get(uint32_t gpio_num)
 
 void gpio_config_input_pullup(uint32_t gpio_num)
 {
-  _gpio_config_pad_input_pullup(gpio_num);
-  _gpio_config_funcsel(gpio_num);
+  gpio_config_pad_input_pullup(gpio_num);
+  gpio_config_funcsel(gpio_num);
 }

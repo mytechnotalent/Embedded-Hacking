@@ -35,7 +35,7 @@ static uint8_t active_channel = 0;
   *
   * @retval None
   */
-static void _adc_config_pad(void)
+static void adc_config_pad(void)
 {
   PADS_BANK0->GPIO[ADC_PIN] = PADS_BANK0_DRIVE_4MA;
 }
@@ -48,7 +48,7 @@ static void _adc_config_pad(void)
   *
   * @retval None
   */
-static void _adc_config_gpio(void)
+static void adc_config_gpio(void)
 {
   IO_BANK0->GPIO[ADC_PIN].CTRL = IO_BANK0_CTRL_FUNCSEL_NULL;
 }
@@ -62,7 +62,7 @@ static void _adc_config_gpio(void)
   * @param  ch channel number (0-4)
   * @retval None
   */
-static void _adc_select_input(uint8_t ch)
+static void adc_select_input(uint8_t ch)
 {
   uint32_t cs = ADC->CS;
   cs &= ~ADC_CS_AINSEL_MASK;
@@ -78,7 +78,7 @@ static void _adc_select_input(uint8_t ch)
   *
   * @retval uint16_t raw ADC conversion result (0-4095)
   */
-static uint16_t _adc_read_raw(void)
+static uint16_t adc_read_raw(void)
 {
   uint32_t timeout = ADC_READY_TIMEOUT;
   ADC->CS |= (1U << ADC_CS_START_ONCE_SHIFT);
@@ -102,7 +102,7 @@ static uint16_t _adc_read_raw(void)
   * @param  raw 12-bit ADC conversion result (0-4095)
   * @retval uint32_t equivalent voltage in millivolts (0-3300)
   */
-static uint32_t _raw_to_mv(uint16_t raw)
+static uint32_t raw_to_mv(uint16_t raw)
 {
   return (uint32_t)raw * ADC_VREF_MV / ADC_FULL_SCALE;
 }
@@ -117,7 +117,7 @@ static uint32_t _raw_to_mv(uint16_t raw)
   * @param  raw 12-bit ADC result from the internal temperature sensor
   * @retval int32_t die temperature in tenths of degrees Celsius
   */
-static int32_t _raw_to_temp_tenths(uint16_t raw)
+static int32_t raw_to_temp_tenths(uint16_t raw)
 {
   int32_t v_mv10 = (int32_t)((uint32_t)raw * 33000U / ADC_FULL_SCALE);
   return 270 - (v_mv10 - 7060) * 1000 / 1721;
@@ -138,7 +138,7 @@ void adc_release_reset(void)
   * @brief  Enable the ADC block and wait until it is ready.
   * @retval None
   */
-static void _adc_enable(void)
+static void adc_enable(void)
 {
   ADC->CS = (1U << ADC_CS_EN_SHIFT);
   uint32_t timeout = ADC_READY_TIMEOUT;
@@ -149,22 +149,22 @@ static void _adc_enable(void)
 
 void adc_init(void)
 {
-  _adc_config_pad();
-  _adc_config_gpio();
-  _adc_enable();
+  adc_config_pad();
+  adc_config_gpio();
+  adc_enable();
   active_channel = ADC_CHANNEL;
-  _adc_select_input(active_channel);
+  adc_select_input(active_channel);
 }
 
 uint32_t adc_read_mv(void)
 {
-  return _raw_to_mv(_adc_read_raw());
+  return raw_to_mv(adc_read_raw());
 }
 
 int32_t adc_read_temp_tenths(void)
 {
-  _adc_select_input(ADC_TEMP_CHANNEL);
-  int32_t result = _raw_to_temp_tenths(_adc_read_raw());
-  _adc_select_input(active_channel);
+  adc_select_input(ADC_TEMP_CHANNEL);
+  int32_t result = raw_to_temp_tenths(adc_read_raw());
+  adc_select_input(active_channel);
   return result;
 }

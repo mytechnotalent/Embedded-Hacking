@@ -60,7 +60,7 @@
  * @param end   Ending angle in degrees
  * @param step  Increment per iteration (negative for descending)
  */
-static void _sweep_angle(int start, int end, int step) {
+static void sweep_angle(int start, int end, int step) {
     for (int angle = start; (step > 0) ? angle <= end : angle >= end; angle += step) {
         servo_set_angle((float)angle);
         printf("Angle: %3d deg\r\n", angle);
@@ -74,7 +74,7 @@ int main(void) {
     printf("Servo driver initialized on GPIO %d\r\n", SERVO_GPIO);
     printf("Sweeping 0 -> 180 -> 0 degrees in %d-degree steps\r\n", STEP_DEGREES);
     while (true) {
-        _sweep_angle(0, 180, STEP_DEGREES);
-        _sweep_angle(180, 0, -STEP_DEGREES);
+        sweep_angle(0, 180, STEP_DEGREES);
+        sweep_angle(180, 0, -STEP_DEGREES);
     }
 }

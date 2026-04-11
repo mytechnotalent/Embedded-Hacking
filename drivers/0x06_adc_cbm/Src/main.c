@@ -42,7 +42,7 @@
   * @param  len number of characters to reverse
   * @retval None
   */
-static void _reverse(char *buf, uint8_t len)
+static void reverse(char *buf, uint8_t len)
 {
   for (uint8_t i = 0; i < len / 2; i++) 
   {
@@ -62,7 +62,7 @@ static void _print_uint32(uint32_t val)
   char buf[11];
   uint8_t len = 0;
   do { buf[len++] = (char)('0' + val % 10); val /= 10; } while (val > 0);
-  _reverse(buf, len);
+  reverse(buf, len);
   buf[len] = '\0';
   uart_puts(buf);
 }
@@ -72,7 +72,7 @@ static void _print_uint32(uint32_t val)
   * @param  tenths temperature in tenths of degrees Celsius
   * @retval None
   */
-static void _print_temp(int32_t tenths)
+static void print_temp(int32_t tenths)
 {
   if (tenths < 0) { uart_puts("-"); tenths = -tenths; }
   _print_uint32((uint32_t)(tenths / 10));
@@ -85,14 +85,14 @@ static void _print_temp(int32_t tenths)
   * @brief  Print ADC voltage and chip temperature readings over UART.
   * @retval None
   */
-static void _print_readings(void)
+static void print_readings(void)
 {
   uint32_t mv = adc_read_mv();
   int32_t temp = adc_read_temp_tenths();
   uart_puts("ADC0: ");
   _print_uint32(mv);
   uart_puts(" mV  |  Chip temp: ");
-  _print_temp(temp);
+  print_temp(temp);
   uart_puts(" C\r\n");
 }
 
@@ -103,7 +103,7 @@ int main(void)
   adc_init();
   while (1) 
   {
-    _print_readings();
+    print_readings();
     delay_ms(SAMPLE_DELAY_MS);
   }
 }

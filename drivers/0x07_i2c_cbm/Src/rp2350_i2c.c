@@ -101,7 +101,7 @@ static void _print_hex8(uint8_t val)
   * @param  addr 7-bit I2C address
   * @retval None
   */
-static void _print_probe_result(uint8_t addr)
+static void print_probe_result(uint8_t addr)
 {
   if (addr < 0x08 || addr > 0x77) 
   {
@@ -125,10 +125,10 @@ static void _print_probe_result(uint8_t addr)
   * @param  addr 7-bit I2C address (0x00-0x7F)
   * @retval None
   */
-static void _print_scan_entry(uint8_t addr)
+static void print_scan_entry(uint8_t addr)
 {
   if (addr % 16 == 0) { _print_hex8(addr); uart_puts(": "); }
-  _print_probe_result(addr);
+  print_probe_result(addr);
   if (addr % 16 == 15)
     uart_puts("\r\n");
 }
@@ -157,7 +157,7 @@ void i2c_init(void)
   * @param  addr 7-bit target address
   * @retval None
   */
-static void _probe_set_target(uint8_t addr)
+static void probe_set_target(uint8_t addr)
 {
   I2C1->ENABLE = 0U;
   I2C1->TAR = addr;
@@ -168,7 +168,7 @@ static void _probe_set_target(uint8_t addr)
   * @brief  Issue a single read command with stop to probe the target.
   * @retval None
   */
-static void _probe_send_read(void)
+static void probe_send_read(void)
 {
   (void)I2C1->CLR_TX_ABRT;
   I2C1->DATA_CMD = (1U << I2C_DATA_CMD_CMD_SHIFT) | (1U << I2C_DATA_CMD_STOP_SHIFT);
@@ -178,7 +178,7 @@ static void _probe_send_read(void)
   * @brief  Wait for probe response, checking for abort or RX data.
   * @retval bool true if transaction was aborted
   */
-static bool _probe_wait_response(void)
+static bool probe_wait_response(void)
 {
   uint32_t timeout = I2C_TIMEOUT;
   while (timeout > 0U) 
@@ -197,7 +197,7 @@ static bool _probe_wait_response(void)
   * @param  aborted true if the probe was aborted
   * @retval None
   */
-static void _probe_cleanup(bool aborted)
+static void probe_cleanup(bool aborted)
 {
   if (aborted)
     (void)I2C1->CLR_TX_ABRT;
@@ -208,10 +208,10 @@ static void _probe_cleanup(bool aborted)
 
 bool i2c_probe(uint8_t addr)
 {
-  _probe_set_target(addr);
-  _probe_send_read();
-  bool aborted = _probe_wait_response();
-  _probe_cleanup(aborted);
+  probe_set_target(addr);
+  probe_send_read();
+  bool aborted = probe_wait_response();
+  probe_cleanup(aborted);
   return !aborted;
 }
 
@@ -221,6 +221,6 @@ void i2c_scan(void)
   uart_puts("     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F\r\n");
   for (uint8_t addr = 0; addr < 128; addr++) 
   {
-    _print_scan_entry(addr);
+    print_scan_entry(addr);
   }
 }

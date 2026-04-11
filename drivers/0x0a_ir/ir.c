@@ -46,7 +46,7 @@ static unsigned int ir_pin = 0;
  * @param timeout_us Maximum wait in microseconds
  * @return int64_t   Elapsed microseconds, or -1 on timeout
  */
-static int64_t _wait_for_level(unsigned int gpio, bool level, uint32_t timeout_us) {
+static int64_t wait_for_level(unsigned int gpio, bool level, uint32_t timeout_us) {
     absolute_time_t start = get_absolute_time();
     while (gpio_get(gpio) != level) {
         if (absolute_time_diff_us(start, get_absolute_time()) > (int64_t)timeout_us)
@@ -60,11 +60,11 @@ static int64_t _wait_for_level(unsigned int gpio, bool level, uint32_t timeout_u
  *
  * @return bool true if a valid leader was detected, false on timeout
  */
-static bool _wait_leader(void) {
-    if (_wait_for_level(ir_pin, 0, 150000) < 0) return false;
-    int64_t t = _wait_for_level(ir_pin, 1, 12000);
+static bool wait_leader(void) {
+    if (wait_for_level(ir_pin, 0, 150000) < 0) return false;
+    int64_t t = wait_for_level(ir_pin, 1, 12000);
     if (t < 8000 || t > 10000) return false;
-    t = _wait_for_level(ir_pin, 0, 7000);
+    t = wait_for_level(ir_pin, 0, 7000);
     if (t < 3500 || t > 5000) return false;
     return true;
 }
@@ -79,9 +79,9 @@ static bool _wait_leader(void) {
  * @param i    Bit index (0-31)
  * @return bool true on success, false on timeout or protocol error
  */
-static bool _read_nec_bit(uint8_t *data, int i) {
-    if (_wait_for_level(ir_pin, 1, 1000) < 0) return false;
-    int64_t t = _wait_for_level(ir_pin, 0, 2500);
+static bool read_nec_bit(uint8_t *data, int i) {
+    if (wait_for_level(ir_pin, 1, 1000) < 0) return false;
+    int64_t t = wait_for_level(ir_pin, 0, 2500);
     if (t < 200) return false;
     int byte_idx = i / 8;
     int bit_idx = i % 8;
@@ -97,7 +97,7 @@ static bool _read_nec_bit(uint8_t *data, int i) {
  */
 static bool _read_32_bits(uint8_t *data) {
     for (int i = 0; i < 32; ++i)
-        if (!_read_nec_bit(data, i)) return false;
+        if (!read_nec_bit(data, i)) return false;
     return true;
 }
 
@@ -109,7 +109,7 @@ static bool _read_32_bits(uint8_t *data) {
  * @param data 4-byte NEC frame (addr, ~addr, cmd, ~cmd)
  * @return int Command byte (0-255) on success, -1 on validation failure
  */
-static int _validate_nec_frame(const uint8_t *data) {
+static int validate_nec_frame(const uint8_t *data) {
     if ((uint8_t)(data[0] + data[1]) == 0xFF && (uint8_t)(data[2] + data[3]) == 0xFF)
         return data[2];
     return -1;
@@ -123,8 +123,8 @@ void ir_init(uint8_t pin) {
 }
 
 int ir_getkey(void) {
-    if (!_wait_leader()) return -1;
+    if (!wait_leader()) return -1;
     uint8_t data[4] = {0, 0, 0, 0};
     if (!_read_32_bits(data)) return -1;
-    return _validate_nec_frame(data);
+    return validate_nec_frame(data);
 }

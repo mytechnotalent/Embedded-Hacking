@@ -37,7 +37,7 @@ static uint32_t _core1_stack[CORE1_STACK_WORDS];
   * @brief  Drain all pending values from the RX FIFO.
   * @retval None
   */
-static void _fifo_drain(void)
+static void fifo_drain(void)
 {
   while (SIO[SIO_FIFO_ST_OFFSET] & SIO_FIFO_ST_VLD_MASK)
     (void)SIO[SIO_FIFO_RD_OFFSET];
@@ -48,7 +48,7 @@ static void _fifo_drain(void)
   * @param  data value to write
   * @retval None
   */
-static void _fifo_push_blocking(uint32_t data)
+static void fifo_push_blocking(uint32_t data)
 {
   while (!(SIO[SIO_FIFO_ST_OFFSET] & SIO_FIFO_ST_RDY_MASK)) {}
   SIO[SIO_FIFO_WR_OFFSET] = data;
@@ -59,7 +59,7 @@ static void _fifo_push_blocking(uint32_t data)
   * @brief  Pop one 32-bit word from the RX FIFO, blocking until valid.
   * @retval uint32_t value read from the FIFO
   */
-static uint32_t _fifo_pop_blocking(void)
+static uint32_t fifo_pop_blocking(void)
 {
   while (!(SIO[SIO_FIFO_ST_OFFSET] & SIO_FIFO_ST_VLD_MASK)) {}
   return SIO[SIO_FIFO_RD_OFFSET];
@@ -94,7 +94,7 @@ static void _reset_core1(void)
 {
   _set_frce_off_proc1();
   _clr_frce_off_proc1();
-  (void)_fifo_pop_blocking();
+  (void)fifo_pop_blocking();
 }
 
 /**
@@ -102,14 +102,14 @@ static void _reset_core1(void)
   * @param  cmd the command word to send
   * @retval None
   */
-static void _send_handshake_word(uint32_t cmd)
+static void send_handshake_word(uint32_t cmd)
 {
   if (!cmd) 
   {
-    _fifo_drain();
+    fifo_drain();
     __asm__ volatile ("sev");
   }
-  _fifo_push_blocking(cmd);
+  fifo_push_blocking(cmd);
 }
 
 /**
@@ -117,30 +117,30 @@ static void _send_handshake_word(uint32_t cmd)
   * @param  entry pointer to the core 1 entry function
   * @retval None
   */
-static void _launch_handshake(void (*entry)(void))
+static void launch_handshake(void (*entry)(void))
 {
   extern uint32_t __Vectors;
   uint32_t *sp = &_core1_stack[CORE1_STACK_WORDS];
   const uint32_t seq[] = {0, 0, 1, (uintptr_t)&__Vectors, (uintptr_t)sp, (uintptr_t)entry};
   uint32_t idx = 0;
   do {
-    _send_handshake_word(seq[idx]);
-    idx = (_fifo_pop_blocking() == seq[idx]) ? idx + 1 : 0;
+    send_handshake_word(seq[idx]);
+    idx = (fifo_pop_blocking() == seq[idx]) ? idx + 1 : 0;
   } while (idx < 6);
 }
 
 void multicore_launch(void (*entry)(void))
 {
   _reset_core1();
-  _launch_handshake(entry);
+  launch_handshake(entry);
 }
 
 void multicore_fifo_push(uint32_t data)
 {
-  _fifo_push_blocking(data);
+  fifo_push_blocking(data);
 }
 
 uint32_t multicore_fifo_pop(void)
 {
-  return _fifo_pop_blocking();
+  return fifo_pop_blocking();
 }

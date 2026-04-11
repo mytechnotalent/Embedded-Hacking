@@ -43,7 +43,7 @@ static const char _hex_lut[16] = "0123456789ABCDEF";
   * @param  value byte to print
   * @retval None
   */
-static void _print_hex(uint8_t value)
+static void print_hex(uint8_t value)
 {
   char buf[3];
   buf[0] = _hex_lut[value >> 4];
@@ -59,12 +59,12 @@ static void _print_hex(uint8_t value)
   * @param  len   number of bytes in buffer
   * @retval None
   */
-static void _print_buffer(const char *label, const uint8_t *buf, uint32_t len)
+static void print_buffer(const char *label, const uint8_t *buf, uint32_t len)
 {
   uart_puts(label);
   for (uint32_t i = 0; i < len; i++) 
   {
-    _print_hex(buf[i]);
+    print_hex(buf[i]);
     if (i + 1 < len)
       uart_putchar(' ');
   }
@@ -78,13 +78,13 @@ static void _print_buffer(const char *label, const uint8_t *buf, uint32_t len)
   * @param  len    number of bytes to transfer
   * @retval None
   */
-static void _loopback_transfer(const uint8_t *tx_buf, uint8_t *rx_buf, uint32_t len)
+static void loopback_transfer(const uint8_t *tx_buf, uint8_t *rx_buf, uint32_t len)
 {
   spi_cs_select();
   spi_transfer(tx_buf, rx_buf, len);
   spi_cs_deselect();
-  _print_buffer("TX: ", tx_buf, len);
-  _print_buffer("RX: ", rx_buf, len);
+  print_buffer("TX: ", tx_buf, len);
+  print_buffer("RX: ", rx_buf, len);
   uart_puts("\r\n");
 }
 
@@ -94,7 +94,7 @@ static void _loopback_transfer(const uint8_t *tx_buf, uint8_t *rx_buf, uint32_t 
   * @param  len number of bytes to clear
   * @retval None
   */
-static void _clear_buffer(uint8_t *buf, uint32_t len)
+static void clear_buffer(uint8_t *buf, uint32_t len)
 {
   for (uint32_t i = 0; i < len; i++)
     buf[i] = 0;
@@ -104,7 +104,7 @@ static void _clear_buffer(uint8_t *buf, uint32_t len)
   * @brief  Initialize clocks, SPI peripheral, and announce over UART.
   * @retval None
   */
-static void _spi_setup(void)
+static void spi_setup(void)
 {
   xosc_set_clk_ref();
   spi_release_reset();
@@ -119,11 +119,11 @@ int main(void)
   /** @brief  Buffer length for SPI loopback transfer. */
   static const uint32_t len = sizeof(tx);
   uint8_t rx[sizeof(tx)] = {0};
-  _spi_setup();
+  spi_setup();
   while (1) 
   {
-    _loopback_transfer(tx, rx, len);
-    _clear_buffer(rx, len);
+    loopback_transfer(tx, rx, len);
+    clear_buffer(rx, len);
     delay_ms(1000);
   }
 }

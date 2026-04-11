@@ -33,7 +33,7 @@
   * @brief  Clear the SPI0 reset bit in the reset controller.
   * @retval None
   */
-static void _spi_clear_reset(void)
+static void spi_clear_reset(void)
 {
   uint32_t value;
   value = RESETS->RESET;
@@ -45,7 +45,7 @@ static void _spi_clear_reset(void)
   * @brief  Wait until SPI0 is out of reset.
   * @retval None
   */
-static void _spi_wait_reset_done(void)
+static void spi_wait_reset_done(void)
 {
   while ((RESETS->RESET_DONE & (1U << RESETS_RESET_SPI0_SHIFT)) == 0) {}
 }
@@ -55,7 +55,7 @@ static void _spi_wait_reset_done(void)
   * @param  pin GPIO pin number to configure
   * @retval None
   */
-static void _configure_spi_pad(uint8_t pin)
+static void configure_spi_pad(uint8_t pin)
 {
   uint32_t value;
   value = PADS_BANK0->GPIO[pin];
@@ -70,7 +70,7 @@ static void _configure_spi_pad(uint8_t pin)
   * @param  pin GPIO pin number to configure
   * @retval None
   */
-static void _configure_cs_pad(uint8_t pin)
+static void configure_cs_pad(uint8_t pin)
 {
   uint32_t value;
   value = PADS_BANK0->GPIO[pin];
@@ -86,7 +86,7 @@ static void _configure_cs_pad(uint8_t pin)
   * @param  pin GPIO pin number
   * @retval None
   */
-static void _set_funcsel_spi(uint8_t pin)
+static void set_funcsel_spi(uint8_t pin)
 {
   IO_BANK0->GPIO[pin].CTRL = IO_BANK0_CTRL_FUNCSEL_SPI;
 }
@@ -96,7 +96,7 @@ static void _set_funcsel_spi(uint8_t pin)
   * @param  pin GPIO pin number
   * @retval None
   */
-static void _set_funcsel_sio(uint8_t pin)
+static void set_funcsel_sio(uint8_t pin)
 {
   IO_BANK0->GPIO[pin].CTRL = IO_BANK0_CTRL_FUNCSEL_SIO;
 }
@@ -105,7 +105,7 @@ static void _set_funcsel_sio(uint8_t pin)
   * @brief  Configure CS pin as output, initially deasserted (high).
   * @retval None
   */
-static void _cs_init(void)
+static void cs_init(void)
 {
   SIO[SIO_GPIO_OUT_SET_OFFSET] = CS_PIN_MASK;
   SIO[SIO_GPIO_OE_SET_OFFSET] = CS_PIN_MASK;
@@ -127,7 +127,7 @@ static void _configure_cr0(void)
   * @brief  Configure SSPCPSR clock prescaler for 1 MHz.
   * @retval None
   */
-static void _configure_prescaler(void)
+static void configure_prescaler(void)
 {
   SPI0->SSPCPSR = SPI_CPSDVSR_1MHZ;
 }
@@ -136,7 +136,7 @@ static void _configure_prescaler(void)
   * @brief  Enable the SPI0 peripheral (SSE=1 in SSPCR1).
   * @retval None
   */
-static void _enable_spi(void)
+static void enable_spi(void)
 {
   SPI0->SSPCR1 = (1U << SPI_SSPCR1_SSE_SHIFT);
 }
@@ -145,7 +145,7 @@ static void _enable_spi(void)
   * @brief  Wait until the SPI transmit FIFO has space.
   * @retval None
   */
-static void _wait_tx_not_full(void)
+static void wait_tx_not_full(void)
 {
   while ((SPI0->SSPSR & SPI_SSPSR_TNF_MASK) == 0) {}
 }
@@ -154,49 +154,49 @@ static void _wait_tx_not_full(void)
   * @brief  Wait until the SPI receive FIFO has data.
   * @retval None
   */
-static void _wait_rx_not_empty(void)
+static void wait_rx_not_empty(void)
 {
   while ((SPI0->SSPSR & SPI_SSPSR_RNE_MASK) == 0) {}
 }
 
 void spi_release_reset(void)
 {
-  _spi_clear_reset();
-  _spi_wait_reset_done();
+  spi_clear_reset();
+  spi_wait_reset_done();
 }
 
 /**
   * @brief  Configure all SPI and CS GPIO pads.
   * @retval None
   */
-static void _configure_all_pads(void)
+static void configure_all_pads(void)
 {
-  _configure_spi_pad(SPI_MOSI_PIN);
-  _configure_spi_pad(SPI_MISO_PIN);
-  _configure_spi_pad(SPI_SCK_PIN);
-  _configure_cs_pad(SPI_CS_PIN);
+  configure_spi_pad(SPI_MOSI_PIN);
+  configure_spi_pad(SPI_MISO_PIN);
+  configure_spi_pad(SPI_SCK_PIN);
+  configure_cs_pad(SPI_CS_PIN);
 }
 
 /**
   * @brief  Assign SPI and SIO alternate functions to all GPIO pins.
   * @retval None
   */
-static void _configure_all_funcsel(void)
+static void configure_all_funcsel(void)
 {
-  _set_funcsel_spi(SPI_MOSI_PIN);
-  _set_funcsel_spi(SPI_MISO_PIN);
-  _set_funcsel_spi(SPI_SCK_PIN);
-  _set_funcsel_sio(SPI_CS_PIN);
+  set_funcsel_spi(SPI_MOSI_PIN);
+  set_funcsel_spi(SPI_MISO_PIN);
+  set_funcsel_spi(SPI_SCK_PIN);
+  set_funcsel_sio(SPI_CS_PIN);
 }
 
 void spi_init(void)
 {
-  _configure_all_pads();
-  _configure_all_funcsel();
-  _cs_init();
+  configure_all_pads();
+  configure_all_funcsel();
+  cs_init();
   _configure_cr0();
-  _configure_prescaler();
-  _enable_spi();
+  configure_prescaler();
+  enable_spi();
 }
 
 void spi_cs_select(void)
@@ -213,9 +213,9 @@ void spi_transfer(const uint8_t *tx, uint8_t *rx, uint32_t len)
 {
   for (uint32_t i = 0; i < len; i++) 
   {
-    _wait_tx_not_full();
+    wait_tx_not_full();
     SPI0->SSPDR = tx[i];
-    _wait_rx_not_empty();
+    wait_rx_not_empty();
     rx[i] = (uint8_t)SPI0->SSPDR;
   }
 }

@@ -53,7 +53,7 @@
  * on failure prints a wiring-check message. Waits 2 s before returning
  * to respect the DHT11 minimum polling interval.
  */
-static void _print_reading(void) {
+static void print_reading(void) {
     float humidity = 0.0f;
     float temperature = 0.0f;
     if (dht11_read(&humidity, &temperature))
@@ -68,5 +68,5 @@ int main(void) {
     dht11_init(DHT11_GPIO);
     printf("DHT11 driver initialized on GPIO %d\r\n", DHT11_GPIO);
     while (true)
-        _print_reading();
+        print_reading();
 }

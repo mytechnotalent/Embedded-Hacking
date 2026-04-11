@@ -66,7 +66,7 @@
  * @param rx_buf Receive buffer (cleared after printing)
  * @param len    Number of bytes to transfer
  */
-static void _loopback_transfer(const uint8_t *tx_buf, uint8_t *rx_buf, size_t len) {
+static void loopback_transfer(const uint8_t *tx_buf, uint8_t *rx_buf, size_t len) {
     spi_driver_cs_select(PIN_CS);
     spi_driver_transfer(SPI_PORT, tx_buf, rx_buf, len);
     spi_driver_cs_deselect(PIN_CS);
@@ -82,5 +82,5 @@ int main(void) {
     const uint8_t tx_buf[] = "SPI loopback OK";
     uint8_t rx_buf[sizeof(tx_buf)] = {0};
     while (true)
-        _loopback_transfer(tx_buf, rx_buf, sizeof(tx_buf));
+        loopback_transfer(tx_buf, rx_buf, sizeof(tx_buf));
 }

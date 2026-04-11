@@ -37,7 +37,7 @@
   * @param  tmp   output buffer for reversed digits (min 11 bytes)
   * @retval int   number of digits written
   */
-static int _extract_digits(uint32_t value, char *tmp)
+static int extract_digits(uint32_t value, char *tmp)
 {
   int i = 0;
   if (value == 0)
@@ -57,7 +57,7 @@ static int _extract_digits(uint32_t value, char *tmp)
   * @param  buf destination buffer (must hold len + 1 bytes)
   * @retval None
   */
-static void _reverse_copy(const char *tmp, int len, char *buf)
+static void reverse_copy(const char *tmp, int len, char *buf)
 {
   int j = 0;
   while (len > 0)
@@ -71,11 +71,11 @@ static void _reverse_copy(const char *tmp, int len, char *buf)
   * @param  buf   output buffer (min 12 bytes)
   * @retval None
   */
-static void _uint_to_str(uint32_t value, char *buf)
+static void uint_to_str(uint32_t value, char *buf)
 {
   char tmp[11];
-  int len = _extract_digits(value, tmp);
-  _reverse_copy(tmp, len, buf);
+  int len = extract_digits(value, tmp);
+  reverse_copy(tmp, len, buf);
 }
 
 /**
@@ -84,11 +84,11 @@ static void _uint_to_str(uint32_t value, char *buf)
   * @param  value unsigned integer to print
   * @retval None
   */
-static void _print_labeled_value(const char *label, uint32_t value)
+static void print_labeled_value(const char *label, uint32_t value)
 {
   char buf[12];
   uart_puts(label);
-  _uint_to_str(value, buf);
+  uint_to_str(value, buf);
   uart_puts(buf);
 }
 
@@ -98,10 +98,10 @@ static void _print_labeled_value(const char *label, uint32_t value)
   * @param  received  value returned by core 1
   * @retval None
   */
-static void _print_counter_line(uint32_t sent, uint32_t received)
+static void print_counter_line(uint32_t sent, uint32_t received)
 {
-  _print_labeled_value("core0 sent: ", sent);
-  _print_labeled_value(", core1 returned: ", received);
+  print_labeled_value("core0 sent: ", sent);
+  print_labeled_value(", core1 returned: ", received);
   uart_puts("\r\n");
 }
 
@@ -123,11 +123,11 @@ static void _core1_main(void)
   * @param  counter pointer to the running counter (post-incremented)
   * @retval None
   */
-static void _send_and_print(uint32_t *counter)
+static void send_and_print(uint32_t *counter)
 {
   multicore_fifo_push(*counter);
   uint32_t response = multicore_fifo_pop();
-  _print_counter_line(*counter, response);
+  print_counter_line(*counter, response);
   (*counter)++;
   delay_ms(1000);
 }
@@ -138,5 +138,5 @@ int main(void)
   multicore_launch(_core1_main);
   uart_puts("Multicore FIFO demo initialized\r\n");
   while (1)
-    _send_and_print(&counter);
+    send_and_print(&counter);
 }

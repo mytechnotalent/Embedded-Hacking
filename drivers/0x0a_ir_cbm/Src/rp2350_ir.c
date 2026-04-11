@@ -33,7 +33,7 @@
   * @brief  Read the TIMER0 raw low register for a microsecond timestamp.
   * @retval uint32_t current microsecond count
   */
-static uint32_t _time_us(void)
+static uint32_t time_us(void)
 {
   return TIMER0[TIMER_TIMERAWL_OFFSET];
 }
@@ -42,7 +42,7 @@ static uint32_t _time_us(void)
   * @brief  Read the current level of GPIO5 from SIO input register.
   * @retval bool true if pin is high, false if low
   */
-static bool _read_pin(void)
+static bool read_pin(void)
 {
   return (SIO[SIO_GPIO_IN_OFFSET] & IR_PIN_MASK) != 0;
 }
@@ -53,24 +53,24 @@ static bool _read_pin(void)
   * @param  timeout_us maximum wait in microseconds
   * @retval int32_t elapsed microseconds, or -1 on timeout
   */
-static int32_t _wait_for_level(bool level, uint32_t timeout_us)
+static int32_t wait_for_level(bool level, uint32_t timeout_us)
 {
-  uint32_t start = _time_us();
-  while (_read_pin() != level) 
+  uint32_t start = time_us();
+  while (read_pin() != level) 
   {
-    if ((_time_us() - start) > timeout_us)
+    if ((time_us() - start) > timeout_us)
       return -1;
   }
-  return (int32_t)(_time_us() - start);
+  return (int32_t)(time_us() - start);
 }
 
 /**
   * @brief  Validate the 9 ms leader mark pulse duration.
   * @retval bool true if within expected range, false on timeout or invalid
   */
-static bool _validate_leader_mark(void)
+static bool validate_leader_mark(void)
 {
-  int32_t t = _wait_for_level(true, NEC_LEADER_MARK_TIMEOUT_US);
+  int32_t t = wait_for_level(true, NEC_LEADER_MARK_TIMEOUT_US);
   if (t < (int32_t)NEC_LEADER_MARK_MIN_US)
     return false;
   return t <= (int32_t)NEC_LEADER_MARK_MAX_US;
@@ -80,9 +80,9 @@ static bool _validate_leader_mark(void)
   * @brief  Validate the 4.5 ms leader space duration.
   * @retval bool true if within expected range, false on timeout or invalid
   */
-static bool _validate_leader_space(void)
+static bool validate_leader_space(void)
 {
-  int32_t t = _wait_for_level(false, NEC_LEADER_SPACE_TIMEOUT_US);
+  int32_t t = wait_for_level(false, NEC_LEADER_SPACE_TIMEOUT_US);
   if (t < (int32_t)NEC_LEADER_SPACE_MIN_US)
     return false;
   return t <= (int32_t)NEC_LEADER_SPACE_MAX_US;
@@ -92,13 +92,13 @@ static bool _validate_leader_space(void)
   * @brief  Wait for the NEC 9 ms leader pulse and 4.5 ms space.
   * @retval bool true if valid leader detected, false on timeout
   */
-static bool _wait_leader(void)
+static bool wait_leader(void)
 {
-  if (_wait_for_level(false, NEC_LEADER_WAIT_US) < 0)
+  if (wait_for_level(false, NEC_LEADER_WAIT_US) < 0)
     return false;
-  if (!_validate_leader_mark())
+  if (!validate_leader_mark())
     return false;
-  return _validate_leader_space();
+  return validate_leader_space();
 }
 
 /**
@@ -106,11 +106,11 @@ static bool _wait_leader(void)
   * @param  duration_out pointer to store the space duration
   * @retval bool true on success, false on timeout or invalid
   */
-static bool _measure_bit_space(int32_t *duration_out)
+static bool measure_bit_space(int32_t *duration_out)
 {
-  if (_wait_for_level(true, NEC_BIT_MARK_TIMEOUT_US) < 0)
+  if (wait_for_level(true, NEC_BIT_MARK_TIMEOUT_US) < 0)
     return false;
-  *duration_out = _wait_for_level(false, NEC_BIT_SPACE_TIMEOUT_US);
+  *duration_out = wait_for_level(false, NEC_BIT_SPACE_TIMEOUT_US);
   return *duration_out >= (int32_t)NEC_BIT_SPACE_MIN_US;
 }
 
@@ -120,10 +120,10 @@ static bool _measure_bit_space(int32_t *duration_out)
   * @param  bit  bit index (0-31)
   * @retval bool true on success, false on timeout
   */
-static bool _read_nec_bit(uint8_t *data, uint8_t bit)
+static bool read_nec_bit(uint8_t *data, uint8_t bit)
 {
   int32_t t;
-  if (!_measure_bit_space(&t))
+  if (!measure_bit_space(&t))
     return false;
   if (t > (int32_t)NEC_BIT_ONE_THRESHOLD_US)
     data[bit / 8U] |= (1U << (bit % 8U));
@@ -138,7 +138,7 @@ static bool _read_nec_bit(uint8_t *data, uint8_t bit)
 static bool _read_32_bits(uint8_t *data)
 {
   for (uint8_t i = 0; i < NEC_DATA_BITS; i++)
-    if (!_read_nec_bit(data, i))
+    if (!read_nec_bit(data, i))
       return false;
   return true;
 }
@@ -148,7 +148,7 @@ static bool _read_32_bits(uint8_t *data)
   * @param  data 4-byte NEC frame (addr, ~addr, cmd, ~cmd)
   * @retval int command byte (0-255) on success, -1 on failure
   */
-static int _validate_nec_frame(const uint8_t *data)
+static int validate_nec_frame(const uint8_t *data)
 {
   uint8_t addr_check = (uint8_t)(data[0] + data[1]);
   uint8_t cmd_check = (uint8_t)(data[2] + data[3]);
@@ -161,7 +161,7 @@ static int _validate_nec_frame(const uint8_t *data)
   * @brief  Clear the TIMER0 reset bit in the reset controller.
   * @retval None
   */
-static void _timer_clear_reset(void)
+static void timer_clear_reset(void)
 {
   uint32_t value;
   value = RESETS->RESET;
@@ -173,7 +173,7 @@ static void _timer_clear_reset(void)
   * @brief  Wait until TIMER0 is out of reset.
   * @retval None
   */
-static void _timer_wait_reset_done(void)
+static void timer_wait_reset_done(void)
 {
   while ((RESETS->RESET_DONE & (1U << RESETS_RESET_TIMER0_SHIFT)) == 0) {}
 }
@@ -182,7 +182,7 @@ static void _timer_wait_reset_done(void)
   * @brief  Configure GPIO5 pad: enable input, pull-up, clear isolation.
   * @retval None
   */
-static void _configure_pad(void)
+static void configure_pad(void)
 {
   uint32_t value;
   value = PADS_BANK0->GPIO[IR_PIN];
@@ -198,7 +198,7 @@ static void _configure_pad(void)
   * @brief  Set GPIO5 funcsel to SIO for software-controlled IO.
   * @retval None
   */
-static void _configure_funcsel(void)
+static void configure_funcsel(void)
 {
   IO_BANK0->GPIO[IR_PIN].CTRL = IO_BANK0_CTRL_FUNCSEL_SIO;
 }
@@ -207,15 +207,15 @@ static void _configure_funcsel(void)
   * @brief  Set GPIO5 as input via SIO output-enable clear register.
   * @retval None
   */
-static void _set_input(void)
+static void set_input(void)
 {
   SIO[SIO_GPIO_OE_CLR_OFFSET] = IR_PIN_MASK;
 }
 
 void ir_timer_release_reset(void)
 {
-  _timer_clear_reset();
-  _timer_wait_reset_done();
+  timer_clear_reset();
+  timer_wait_reset_done();
 }
 
 void ir_timer_start_tick(void)
@@ -226,19 +226,19 @@ void ir_timer_start_tick(void)
 
 void ir_init(void)
 {
-  _configure_pad();
-  _configure_funcsel();
-  _set_input();
+  configure_pad();
+  configure_funcsel();
+  set_input();
 }
 
 int ir_getkey(void)
 {
   uint8_t data[NEC_DATA_BYTES] = {0};
-  if (!_wait_leader())
+  if (!wait_leader())
     return -1;
   if (!_read_32_bits(data))
     return -1;
-  int result = _validate_nec_frame(data);
+  int result = validate_nec_frame(data);
   if (result < 0)
     return -1;
   return result;

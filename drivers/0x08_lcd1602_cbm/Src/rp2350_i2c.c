@@ -87,7 +87,7 @@ static void _i2c_config_timing(void)
   * @brief  Check for TX abort and clear if detected.
   * @retval bool true if TX abort occurred
   */
-static bool _check_abort(void)
+static bool check_abort(void)
 {
   if (I2C1->RAW_INTR_STAT & I2C_RAW_INTR_TX_ABRT) 
   {
@@ -101,7 +101,7 @@ static bool _check_abort(void)
   * @brief  Check for stop condition detected and clear if so.
   * @retval bool true if stop detected
   */
-static bool _check_stop(void)
+static bool check_stop(void)
 {
   if (I2C1->RAW_INTR_STAT & I2C_RAW_INTR_STOP_DET) 
   {
@@ -120,7 +120,7 @@ static void _i2c_wait_done(void)
   uint32_t timeout = I2C_TIMEOUT;
   while (timeout > 0U) 
   {
-    if (_check_abort() || _check_stop())
+    if (check_abort() || check_stop())
       break;
     timeout--;
   }

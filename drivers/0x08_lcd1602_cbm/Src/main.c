@@ -45,7 +45,7 @@
   * @param  buf output buffer
   * @retval None
   */
-static void _reverse_copy(const char *tmp, int len, char *buf)
+static void reverse_copy(const char *tmp, int len, char *buf)
 {
   for (int j = 0; j < len; j++)
     buf[j] = tmp[len - 1 - j];
@@ -63,7 +63,7 @@ static void _reverse_copy(const char *tmp, int len, char *buf)
   * @param  buf destination buffer (minimum 11 bytes)
   * @retval None
   */
-static void _uint_to_str(uint32_t val, char *buf)
+static void uint_to_str(uint32_t val, char *buf)
 {
   char tmp[11];
   int i = 0;
@@ -73,7 +73,7 @@ static void _uint_to_str(uint32_t val, char *buf)
     tmp[i++] = (char)('0' + (val % 10));
     val /= 10;
   }
-  _reverse_copy(tmp, i, buf);
+  reverse_copy(tmp, i, buf);
 }
 
 /**
@@ -83,7 +83,7 @@ static void _uint_to_str(uint32_t val, char *buf)
   * @param  src source string
   * @retval int new offset past the copied characters
   */
-static int _copy_str(char *dst, int off, const char *src)
+static int copy_str(char *dst, int off, const char *src)
 {
   while (*src)
     dst[off++] = *src++;
@@ -100,12 +100,12 @@ static int _copy_str(char *dst, int off, const char *src)
   * @param  buf   destination buffer (minimum 17 bytes)
   * @retval None
   */
-static void _format_counter(uint32_t count, char *buf)
+static void format_counter(uint32_t count, char *buf)
 {
   char num[11];
-  _uint_to_str(count, num);
-  int i = _copy_str(buf, 0, "Count: ");
-  i = _copy_str(buf, i, num);
+  uint_to_str(count, num);
+  int i = copy_str(buf, 0, "Count: ");
+  i = copy_str(buf, i, num);
   while (i < 16) buf[i++] = ' ';
   buf[i] = '\0';
 }
@@ -114,7 +114,7 @@ static void _format_counter(uint32_t count, char *buf)
   * @brief  Initialize clocks, I2C, LCD, UART, and display the static title.
   * @retval None
   */
-static void _lcd_setup(void)
+static void lcd_setup(void)
 {
   xosc_set_clk_ref();
   i2c_release_reset();
@@ -130,10 +130,10 @@ static void _lcd_setup(void)
   * @param  count current counter value
   * @retval None
   */
-static void _display_count(uint32_t count)
+static void display_count(uint32_t count)
 {
   char buf[17];
-  _format_counter(count, buf);
+  format_counter(count, buf);
   lcd_set_cursor(1, 0);
   lcd_puts(buf);
   uart_puts(buf);
@@ -143,10 +143,10 @@ static void _display_count(uint32_t count)
 int main(void)
 {
   uint32_t count = 0;
-  _lcd_setup();
+  lcd_setup();
   while (1) 
   {
-    _display_count(count);
+    display_count(count);
     count++;
     delay_ms(COUNT_DELAY_MS);
   }

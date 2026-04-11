@@ -37,7 +37,7 @@ static uint32_t _alarm_period_us;
   * @brief  Clear the TIMER0 reset bit in the reset controller.
   * @retval None
   */
-static void _timer_clear_reset_bit(void)
+static void timer_clear_reset_bit(void)
 {
   uint32_t value;
   value = RESETS->RESET;
@@ -49,7 +49,7 @@ static void _timer_clear_reset_bit(void)
   * @brief  Wait until the TIMER0 block is out of reset.
   * @retval None
   */
-static void _timer_wait_reset_done(void)
+static void timer_wait_reset_done(void)
 {
   while ((RESETS->RESET_DONE & (1U << RESETS_RESET_TIMER0_SHIFT)) == 0) {}
 }
@@ -58,7 +58,7 @@ static void _timer_wait_reset_done(void)
   * @brief  Set the TIMER0 tick generator cycle count to 12.
   * @retval None
   */
-static void _timer_set_tick_cycles(void)
+static void timer_set_tick_cycles(void)
 {
   TICKS_TIMER0->CYCLES = TICKS_TIMER0_CYCLES_12MHZ;
 }
@@ -67,7 +67,7 @@ static void _timer_set_tick_cycles(void)
   * @brief  Enable the TIMER0 tick generator.
   * @retval None
   */
-static void _timer_enable_tick(void)
+static void timer_enable_tick(void)
 {
   TICKS_TIMER0->CTRL = (1U << TICKS_CTRL_ENABLE_SHIFT);
 }
@@ -76,7 +76,7 @@ static void _timer_enable_tick(void)
   * @brief  Enable the alarm 0 interrupt in TIMER0 INTE register.
   * @retval None
   */
-static void _timer_enable_alarm_irq(void)
+static void timer_enable_alarm_irq(void)
 {
   TIMER0->INTE = (1U << TIMER_INTE_ALARM0_SHIFT);
 }
@@ -85,7 +85,7 @@ static void _timer_enable_alarm_irq(void)
   * @brief  Enable TIMER0_IRQ_0 in the NVIC.
   * @retval None
   */
-static void _timer_enable_nvic(void)
+static void timer_enable_nvic(void)
 {
   *NVIC_ISER0 = (1U << TIMER0_ALARM0_IRQ);
 }
@@ -94,7 +94,7 @@ static void _timer_enable_nvic(void)
   * @brief  Arm alarm 0 with the next target time.
   * @retval None
   */
-static void _timer_arm_alarm(void)
+static void timer_arm_alarm(void)
 {
   uint32_t target;
   target = TIMER0->TIMERAWL + _alarm_period_us;
@@ -103,29 +103,29 @@ static void _timer_arm_alarm(void)
 
 void timer_release_reset(void)
 {
-  _timer_clear_reset_bit();
-  _timer_wait_reset_done();
+  timer_clear_reset_bit();
+  timer_wait_reset_done();
 }
 
 void timer_tick_init(void)
 {
-  _timer_set_tick_cycles();
-  _timer_enable_tick();
+  timer_set_tick_cycles();
+  timer_enable_tick();
 }
 
 void timer_alarm_start(uint32_t period_ms, timer_callback_t cb)
 {
   _user_callback = cb;
   _alarm_period_us = period_ms * 1000U;
-  _timer_enable_alarm_irq();
-  _timer_enable_nvic();
-  _timer_arm_alarm();
+  timer_enable_alarm_irq();
+  timer_enable_nvic();
+  timer_arm_alarm();
 }
 
 void TIMER0_IRQ_0_Handler(void)
 {
   TIMER0->INTR = TIMER_INTR_ALARM0_MASK;
-  _timer_arm_alarm();
+  timer_arm_alarm();
   if (_user_callback)
     _user_callback();
 }

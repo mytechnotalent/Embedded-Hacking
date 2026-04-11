@@ -33,7 +33,7 @@
   * @brief  Heartbeat callback invoked by TIMER0 alarm 0 IRQ.
   * @retval None
   */
-static void _heartbeat(void)
+static void heartbeat(void)
 {
   uart_puts("Timer heartbeat\r\n");
 }
@@ -41,7 +41,7 @@ static void _heartbeat(void)
 int main(void)
 {
   uart_puts("Timer alarm demo initialized\r\n");
-  timer_alarm_start(1000, _heartbeat);
+  timer_alarm_start(1000, heartbeat);
   while (1)
     __asm__ volatile ("wfi");
 }

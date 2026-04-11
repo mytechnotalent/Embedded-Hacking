@@ -65,7 +65,7 @@ static uint8_t lcd_backlight_mask = 0x08;
  *
  * @param data Output byte to send to the expander
  */
-static void _pcf_write_byte(uint8_t data) {
+static void pcf_write_byte(uint8_t data) {
     if (!lcd_i2c) return;
     i2c_write_blocking(lcd_i2c, lcd_addr, &data, 1, false);
 }
@@ -75,10 +75,10 @@ static void _pcf_write_byte(uint8_t data) {
  *
  * @param data Current control/data bus byte (with RS and backlight already set)
  */
-static void _pcf_pulse_enable(uint8_t data) {
-    _pcf_write_byte(data | PIN_EN);
+static void pcf_pulse_enable(uint8_t data) {
+    pcf_write_byte(data | PIN_EN);
     sleep_us(1);
-    _pcf_write_byte(data & ~PIN_EN);
+    pcf_write_byte(data & ~PIN_EN);
     sleep_us(50);
 }
 
@@ -92,7 +92,7 @@ static void _lcd_write4(uint8_t nibble, uint8_t mode) {
     uint8_t data = (nibble & 0x0F) << lcd_nibble_shift;
     data |= mode ? PIN_RS : 0;
     data |= lcd_backlight_mask;
-    _pcf_pulse_enable(data);
+    pcf_pulse_enable(data);
 }
 
 /**
@@ -101,7 +101,7 @@ static void _lcd_write4(uint8_t nibble, uint8_t mode) {
  * @param value Byte to send to the LCD
  * @param mode  0 for command, non-zero for character data
  */
-static void _lcd_send(uint8_t value, uint8_t mode) {
+static void lcd_send(uint8_t value, uint8_t mode) {
     _lcd_write4((value >> 4) & 0x0F, mode);
     _lcd_write4(value & 0x0F, mode);
 }
@@ -114,7 +114,7 @@ static void _lcd_send(uint8_t value, uint8_t mode) {
  * @param nibble_shift   Bit shift for 4-bit nibbles
  * @param backlight_mask Backlight control bit mask
  */
-static void _lcd_store_config(uint8_t i2c_port, uint8_t pcf_addr,
+static void lcd_store_config(uint8_t i2c_port, uint8_t pcf_addr,
                               int nibble_shift, uint8_t backlight_mask) {
     lcd_i2c = _get_i2c_inst(i2c_port);
     lcd_addr = pcf_addr;
@@ -143,16 +143,16 @@ static void _lcd_hd44780_reset(void) {
  * cursor hidden, clears the screen, and selects left-to-right entry mode.
  */
 static void _lcd_hd44780_configure(void) {
-    _lcd_send(0x28, 0);
-    _lcd_send(0x0C, 0);
-    _lcd_send(0x01, 0);
+    lcd_send(0x28, 0);
+    lcd_send(0x0C, 0);
+    lcd_send(0x01, 0);
     sleep_ms(2);
-    _lcd_send(0x06, 0);
+    lcd_send(0x06, 0);
 }
 
 void lcd_i2c_init(uint8_t i2c_port, uint8_t pcf_addr, int nibble_shift,
                   uint8_t backlight_mask) {
-    _lcd_store_config(i2c_port, pcf_addr, nibble_shift, backlight_mask);
+    lcd_store_config(i2c_port, pcf_addr, nibble_shift, backlight_mask);
     _lcd_hd44780_reset();
     _lcd_hd44780_configure();
 }
@@ -186,17 +186,17 @@ void lcd_init(uint8_t i2c_port, uint32_t sda_pin, uint32_t scl_pin,
 }
 
 void lcd_clear(void) {
-    _lcd_send(0x01, 0);
+    lcd_send(0x01, 0);
     sleep_ms(2);
 }
 
 void lcd_set_cursor(int line, int position) {
     const uint8_t row_offsets[] = {0x00, 0x40};
     if (line > 1) line = 1;
-    _lcd_send(0x80 | (position + row_offsets[line]), 0);
+    lcd_send(0x80 | (position + row_offsets[line]), 0);
 }
 
 void lcd_puts(const char *s) {
     while (*s)
-        _lcd_send((uint8_t)*s++, 1);
+        lcd_send((uint8_t)*s++, 1);
 }

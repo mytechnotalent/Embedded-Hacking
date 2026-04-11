@@ -32,7 +32,7 @@ extern void TIMER0_IRQ_0_Handler(void);
   * @brief  Default handler for unused exceptions (infinite loop).
   * @retval None
   */
-static void _default_handler(void)
+static void default_handler(void)
 {
   while (1) {}
 }
@@ -43,19 +43,19 @@ __attribute__((section(".vectors"), used))
 const void *_vectors[17] = {
   &_stack_top,                 // 0:  Initial stack pointer
   Reset_Handler,               // 1:  Reset
-  _default_handler,            // 2:  NMI
-  _default_handler,            // 3:  HardFault
-  _default_handler,            // 4:  MemManage
-  _default_handler,            // 5:  BusFault
-  _default_handler,            // 6:  UsageFault
-  _default_handler,            // 7:  SecureFault
+  default_handler,            // 2:  NMI
+  default_handler,            // 3:  HardFault
+  default_handler,            // 4:  MemManage
+  default_handler,            // 5:  BusFault
+  default_handler,            // 6:  UsageFault
+  default_handler,            // 7:  SecureFault
   0,                           // 8:  Reserved
   0,                           // 9:  Reserved
   0,                           // 10: Reserved
-  _default_handler,            // 11: SVCall
-  _default_handler,            // 12: DebugMon
+  default_handler,            // 11: SVCall
+  default_handler,            // 12: DebugMon
   0,                           // 13: Reserved
-  _default_handler,            // 14: PendSV
-  _default_handler,            // 15: SysTick
+  default_handler,            // 14: PendSV
+  default_handler,            // 15: SysTick
   TIMER0_IRQ_0_Handler,        // 16: IRQ 0 — TIMER0_IRQ_0
 };

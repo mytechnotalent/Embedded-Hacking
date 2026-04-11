@@ -35,7 +35,7 @@
   * @param  data PCF8574 output byte (RS, backlight, and nibble already set)
   * @retval None
   */
-static void _lcd_pulse_enable(uint8_t data)
+static void lcd_pulse_enable(uint8_t data)
 {
   i2c_write_byte(data | LCD_PIN_EN);
   delay_us(1);
@@ -54,7 +54,7 @@ static void _lcd_write4(uint8_t nibble, uint8_t mode)
   uint8_t data = (nibble & 0x0FU) << LCD_NIBBLE_SHIFT;
   data |= mode ? LCD_PIN_RS : 0U;
   data |= LCD_BACKLIGHT;
-  _lcd_pulse_enable(data);
+  lcd_pulse_enable(data);
 }
 
 /**
@@ -63,7 +63,7 @@ static void _lcd_write4(uint8_t nibble, uint8_t mode)
   * @param  mode  0 for command, non-zero for character data
   * @retval None
   */
-static void _lcd_send(uint8_t value, uint8_t mode)
+static void lcd_send(uint8_t value, uint8_t mode)
 {
   _lcd_write4((value >> 4) & 0x0FU, mode);
   _lcd_write4(value & 0x0FU, mode);
@@ -100,11 +100,11 @@ static void _lcd_hd44780_reset(void)
   */
 static void _lcd_hd44780_configure(void)
 {
-  _lcd_send(LCD_CMD_FUNCTION_SET_4BIT, 0);
-  _lcd_send(LCD_CMD_DISPLAY_ON, 0);
-  _lcd_send(LCD_CMD_CLEAR, 0);
+  lcd_send(LCD_CMD_FUNCTION_SET_4BIT, 0);
+  lcd_send(LCD_CMD_DISPLAY_ON, 0);
+  lcd_send(LCD_CMD_CLEAR, 0);
   delay_ms(2);
-  _lcd_send(LCD_CMD_ENTRY_MODE, 0);
+  lcd_send(LCD_CMD_ENTRY_MODE, 0);
 }
 
 void lcd_init(void)
@@ -116,18 +116,18 @@ void lcd_init(void)
 
 void lcd_clear(void)
 {
-  _lcd_send(LCD_CMD_CLEAR, 0);
+  lcd_send(LCD_CMD_CLEAR, 0);
   delay_ms(2);
 }
 
 void lcd_set_cursor(uint8_t line, uint8_t position)
 {
   uint8_t offset = (line == 0U) ? LCD_ROW0_OFFSET : LCD_ROW1_OFFSET;
-  _lcd_send(LCD_CMD_SET_DDRAM | (position + offset), 0);
+  lcd_send(LCD_CMD_SET_DDRAM | (position + offset), 0);
 }
 
 void lcd_puts(const char *str)
 {
   while (*str)
-    _lcd_send((uint8_t)*str++, 1);
+    lcd_send((uint8_t)*str++, 1);
 }

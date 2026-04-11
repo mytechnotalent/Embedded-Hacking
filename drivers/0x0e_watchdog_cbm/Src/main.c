@@ -34,7 +34,7 @@
   * @brief  Print the reset reason over UART.
   * @retval None
   */
-static void _print_reset_reason(void)
+static void print_reset_reason(void)
 {
   if (watchdog_caused_reboot())
     uart_puts("System rebooted by watchdog timeout\r\n");
@@ -46,7 +46,7 @@ static void _print_reset_reason(void)
   * @brief  Feed the watchdog, report over UART, and delay 1 second.
   * @retval None
   */
-static void _feed_and_report(void)
+static void feed_and_report(void)
 {
   watchdog_feed();
   uart_puts("Watchdog fed\r\n");
@@ -55,9 +55,9 @@ static void _feed_and_report(void)
 
 int main(void)
 {
-  _print_reset_reason();
+  print_reset_reason();
   watchdog_enable(3000);
   uart_puts("Watchdog enabled (3s timeout). Feeding every 1s...\r\n");
   while (1)
-    _feed_and_report();
+    feed_and_report();
 }

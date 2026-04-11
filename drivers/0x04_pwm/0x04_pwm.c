@@ -58,7 +58,7 @@
  * @param end   Ending duty percentage
  * @param step  Increment per iteration (negative for descending)
  */
-static void _sweep_duty(int start, int end, int step) {
+static void sweep_duty(int start, int end, int step) {
     for (int duty = start; (step > 0) ? duty <= end : duty >= end; duty += step) {
         pwm_driver_set_duty_percent((uint8_t)duty);
         printf("Duty: %3d%%\r\n", duty);
@@ -71,7 +71,7 @@ int main(void) {
     pwm_driver_init(PWM_PIN, PWM_FREQ_HZ);
     printf("PWM initialized: GPIO%d @ %d Hz\r\n", PWM_PIN, PWM_FREQ_HZ);
     while (true) {
-        _sweep_duty(0, 100, 5);
-        _sweep_duty(100, 0, -5);
+        sweep_duty(0, 100, 5);
+        sweep_duty(100, 0, -5);
     }
 }

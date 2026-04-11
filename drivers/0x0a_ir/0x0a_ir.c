@@ -49,7 +49,7 @@
 /**
  * @brief Poll for an NEC frame and print the command if received
  */
-static void _poll_and_print(void) {
+static void poll_and_print(void) {
     int command = ir_getkey();
     if (command >= 0)
         printf("NEC command: 0x%02X  (%d)\r\n", command, command);
@@ -61,5 +61,5 @@ int main(void) {
     printf("NEC IR driver initialized on GPIO %d\r\n", IR_GPIO);
     printf("Press a button on your NEC remote...\r\n");
     while (true)
-        _poll_and_print();
+        poll_and_print();
 }

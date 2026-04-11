@@ -57,7 +57,7 @@
  *
  * @param last_state Pointer to the stored previous button state
  */
-static void _poll_button(bool *last_state) {
+static void poll_button(bool *last_state) {
     bool pressed = button_is_pressed(BUTTON_PIN);
     button_led_set(LED_PIN, pressed);
     if (pressed != *last_state) {
@@ -73,7 +73,7 @@ int main(void) {
     printf("Button driver initialized: button=GPIO%d  led=GPIO%d\r\n", BUTTON_PIN, LED_PIN);
     bool last_state = false;
     while (true) {
-        _poll_button(&last_state);
+        poll_button(&last_state);
         sleep_ms(10);
     }
 }

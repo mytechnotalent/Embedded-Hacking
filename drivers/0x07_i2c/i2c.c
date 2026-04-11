@@ -62,7 +62,7 @@ bool i2c_driver_probe(uint8_t port, uint8_t addr) {
 /**
  * @brief Print the I2C scan table header over UART
  */
-static void _print_scan_header(void) {
+static void print_scan_header(void) {
     printf("\r\nI2C bus scan:\r\n");
     printf("     0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F\r\n");
 }
@@ -77,7 +77,7 @@ static void _print_scan_header(void) {
  * @param port I2C port number (0 for i2c0, 1 for i2c1)
  * @param addr 7-bit I2C address being probed
  */
-static void _print_scan_entry(uint8_t port, uint8_t addr) {
+static void print_scan_entry(uint8_t port, uint8_t addr) {
     if (addr % 16 == 0) printf("%02X: ", addr);
     if (addr < 0x08 || addr > 0x77) printf("   ");
     else if (i2c_driver_probe(port, addr)) printf("%02X ", addr);
@@ -86,7 +86,7 @@ static void _print_scan_entry(uint8_t port, uint8_t addr) {
 }
 
 void i2c_driver_scan(uint8_t port) {
-    _print_scan_header();
+    print_scan_header();
     for (uint8_t addr = 0; addr < 128; addr++)
-        _print_scan_entry(port, addr);
+        print_scan_entry(port, addr);
 }

@@ -64,7 +64,7 @@ typedef struct
   * @param  code ROM_FUNC_* code from rp2350.h
   * @retval void* pointer to the ROM function
   */
-static void *_rom_func_lookup(uint32_t code)
+static void *rom_func_lookup(uint32_t code)
 {
   rom_table_lookup_fn fn =
       (rom_table_lookup_fn)(uintptr_t)(*(uint16_t *)BOOTROM_TABLE_LOOKUP_OFFSET);
@@ -76,14 +76,14 @@ static void *_rom_func_lookup(uint32_t code)
   * @param  fns pointer to the struct to fill
   * @retval None
   */
-static void _lookup_rom_fns(FlashRomFns *fns)
+static void lookup_rom_fns(FlashRomFns *fns)
 {
-  fns->connect     = (rom_void_fn)_rom_func_lookup(ROM_FUNC_CONNECT_INTERNAL_FLASH);
-  fns->exit_xip    = (rom_void_fn)_rom_func_lookup(ROM_FUNC_FLASH_EXIT_XIP);
-  fns->erase       = (rom_flash_erase_fn)_rom_func_lookup(ROM_FUNC_FLASH_RANGE_ERASE);
-  fns->program     = (rom_flash_program_fn)_rom_func_lookup(ROM_FUNC_FLASH_RANGE_PROGRAM);
-  fns->flush_cache = (rom_void_fn)_rom_func_lookup(ROM_FUNC_FLASH_FLUSH_CACHE);
-  fns->enter_xip   = (rom_void_fn)_rom_func_lookup(ROM_FUNC_FLASH_ENTER_CMD_XIP);
+  fns->connect     = (rom_void_fn)rom_func_lookup(ROM_FUNC_CONNECT_INTERNAL_FLASH);
+  fns->exit_xip    = (rom_void_fn)rom_func_lookup(ROM_FUNC_FLASH_EXIT_XIP);
+  fns->erase       = (rom_flash_erase_fn)rom_func_lookup(ROM_FUNC_FLASH_RANGE_ERASE);
+  fns->program     = (rom_flash_program_fn)rom_func_lookup(ROM_FUNC_FLASH_RANGE_PROGRAM);
+  fns->flush_cache = (rom_void_fn)rom_func_lookup(ROM_FUNC_FLASH_FLUSH_CACHE);
+  fns->enter_xip   = (rom_void_fn)rom_func_lookup(ROM_FUNC_FLASH_ENTER_CMD_XIP);
 }
 
 /**
@@ -99,7 +99,7 @@ static void _lookup_rom_fns(FlashRomFns *fns)
   * @retval None
   */
 __attribute__((section(".ram_func"), noinline))
-static void _flash_erase_program_ram(const FlashRomFns *fns, uint32_t offset,
+static void flash_erase_program_ram(const FlashRomFns *fns, uint32_t offset,
                                      const uint8_t *data, uint32_t len)
 {
   fns->connect();
@@ -115,11 +115,11 @@ static void _flash_erase_program_ram(const FlashRomFns *fns, uint32_t offset,
 void flash_write(uint32_t offset, const uint8_t *data, uint32_t len)
 {
   FlashRomFns fns;
-  _lookup_rom_fns(&fns);
+  lookup_rom_fns(&fns);
   uint32_t primask;
   __asm volatile ("mrs %0, primask" : "=r" (primask));
   __asm volatile ("cpsid i");
-  _flash_erase_program_ram(&fns, offset, data, len);
+  flash_erase_program_ram(&fns, offset, data, len);
   __asm volatile ("msr primask, %0" :: "r" (primask));
 }
 

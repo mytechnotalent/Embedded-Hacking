@@ -32,7 +32,7 @@
   * @param  pin GPIO pin number to query
   * @retval None
   */
-static void _print_led_state(uint32_t pin)
+static void print_led_state(uint32_t pin)
 {
   if (led_get_state(pin))
     uart_puts("LED: ON\r\n");
@@ -47,7 +47,7 @@ int main(void)
   while (1) 
   {
     led_toggle(LED_PIN);
-    _print_led_state(LED_PIN);
+    print_led_state(LED_PIN);
     delay_ms(BLINK_DELAY_MS);
   }
 }

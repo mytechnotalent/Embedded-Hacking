@@ -37,7 +37,7 @@
  * @param port SPI port number (0 for spi0, 1 for spi1)
  * @return spi_inst_t* Pointer to the corresponding SPI hardware instance
  */
-static spi_inst_t *_get_spi_inst(uint8_t port) {
+static spi_inst_t *get_spi_inst(uint8_t port) {
     return port == 0 ? spi0 : spi1;
 }
 
@@ -48,7 +48,7 @@ static spi_inst_t *_get_spi_inst(uint8_t port) {
  * @param miso GPIO pin for MISO
  * @param sck  GPIO pin for SCK
  */
-static void _setup_spi_pins(uint32_t mosi, uint32_t miso, uint32_t sck) {
+static void setup_spi_pins(uint32_t mosi, uint32_t miso, uint32_t sck) {
     gpio_set_function(mosi, GPIO_FUNC_SPI);
     gpio_set_function(miso, GPIO_FUNC_SPI);
     gpio_set_function(sck, GPIO_FUNC_SPI);
@@ -56,9 +56,9 @@ static void _setup_spi_pins(uint32_t mosi, uint32_t miso, uint32_t sck) {
 
 void spi_driver_init(uint8_t port, uint32_t mosi, uint32_t miso,
                      uint32_t sck, uint32_t cs, uint32_t baud_hz) {
-    spi_inst_t *spi = _get_spi_inst(port);
+    spi_inst_t *spi = get_spi_inst(port);
     spi_init(spi, baud_hz);
-    _setup_spi_pins(mosi, miso, sck);
+    setup_spi_pins(mosi, miso, sck);
     gpio_init(cs);
     gpio_set_dir(cs, GPIO_OUT);
     gpio_put(cs, 1);
@@ -74,6 +74,6 @@ void spi_driver_cs_deselect(uint32_t cs) {
 
 void spi_driver_transfer(uint8_t port, const uint8_t *tx, uint8_t *rx,
                          uint32_t len) {
-    spi_inst_t *spi = _get_spi_inst(port);
+    spi_inst_t *spi = get_spi_inst(port);
     spi_write_read_blocking(spi, tx, rx, (size_t)len);
 }

@@ -47,7 +47,7 @@ static uint8_t active_channel = 0;
  * @param raw 12-bit ADC conversion result (0 - 4095)
  * @return uint32_t Equivalent voltage in millivolts (0 - 3300)
  */
-static uint32_t _raw_to_mv(uint16_t raw) {
+static uint32_t raw_to_mv(uint16_t raw) {
     return (uint32_t)raw * ADC_VREF_MV / ADC_FULL_SCALE;
 }
 
@@ -60,7 +60,7 @@ static uint32_t _raw_to_mv(uint16_t raw) {
  * @param raw 12-bit ADC result from the internal temperature sensor (channel 4)
  * @return float Die temperature in degrees Celsius
  */
-static float _raw_to_celsius(uint16_t raw) {
+static float raw_to_celsius(uint16_t raw) {
     float voltage = (float)raw * 3.3f / (float)ADC_FULL_SCALE;
     return 27.0f - (voltage - 0.706f) / 0.001721f;
 }
@@ -74,12 +74,12 @@ void adc_driver_init(uint32_t gpio, uint8_t channel) {
 }
 
 uint32_t adc_driver_read_mv(void) {
-    return _raw_to_mv(adc_read());
+    return raw_to_mv(adc_read());
 }
 
 float adc_driver_read_temp_celsius(void) {
     adc_select_input(4);
-    float result = _raw_to_celsius(adc_read());
+    float result = raw_to_celsius(adc_read());
     adc_select_input(active_channel);
     return result;
 }

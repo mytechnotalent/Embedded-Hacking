@@ -52,7 +52,7 @@
  * @param buf      Destination buffer
  * @param buf_size Size of the buffer in bytes
  */
-static void _prepare_write_buf(uint8_t *buf, size_t buf_size) {
+static void prepare_write_buf(uint8_t *buf, size_t buf_size) {
     memset(buf, 0xFF, buf_size);
     const char *msg = "Embedded Hacking flash driver demo";
     memcpy(buf, msg, strlen(msg) + 1);
@@ -61,10 +61,10 @@ static void _prepare_write_buf(uint8_t *buf, size_t buf_size) {
 /**
  * @brief Write the demo string to flash and print the read-back result
  */
-static void _write_and_verify(void) {
+static void write_and_verify(void) {
     static uint8_t write_buf[FLASH_WRITE_LEN];
     static uint8_t read_buf[FLASH_WRITE_LEN];
-    _prepare_write_buf(write_buf, sizeof(write_buf));
+    prepare_write_buf(write_buf, sizeof(write_buf));
     flash_driver_write(FLASH_TARGET_OFFSET, write_buf, FLASH_WRITE_LEN);
     flash_driver_read(FLASH_TARGET_OFFSET, read_buf, FLASH_WRITE_LEN);
     printf("Flash readback: %s\r\n", read_buf);
@@ -72,7 +72,7 @@ static void _write_and_verify(void) {
 
 int main(void) {
     stdio_init_all();
-    _write_and_verify();
+    write_and_verify();
     while (true)
         tight_loop_contents();
 }

@@ -59,7 +59,7 @@
 /**
  * @brief Initialize the LCD, display the title, and log over UART
  */
-static void _setup_display(void) {
+static void setup_display(void) {
     lcd_init(I2C_PORT, I2C_SDA_PIN, I2C_SCL_PIN, I2C_BAUD_HZ, LCD_I2C_ADDR, 4, 0x08);
     lcd_set_cursor(0, 0);
     lcd_puts("Reverse Eng.");
@@ -71,7 +71,7 @@ static void _setup_display(void) {
  *
  * @param count Pointer to the running counter (post-incremented)
  */
-static void _update_counter(uint32_t *count) {
+static void update_counter(uint32_t *count) {
     char buf[17];
     snprintf(buf, sizeof(buf), "Count: %6lu", (*count)++);
     lcd_set_cursor(1, 0);
@@ -82,8 +82,8 @@ static void _update_counter(uint32_t *count) {
 
 int main(void) {
     stdio_init_all();
-    _setup_display();
+    setup_display();
     uint32_t count = 0;
     while (true)
-        _update_counter(&count);
+        update_counter(&count);
 }

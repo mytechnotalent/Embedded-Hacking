@@ -39,7 +39,7 @@
   * @param  pressed true if button is pressed, false if released
   * @retval None
   */
-static void _set_led_state(bool pressed)
+static void set_led_state(bool pressed)
 {
   if (pressed)
     led_on(LED_PIN);
@@ -53,7 +53,7 @@ static void _set_led_state(bool pressed)
   * @param  last_state pointer to the stored previous button state
   * @retval None
   */
-static void _report_edge(bool pressed, bool *last_state)
+static void report_edge(bool pressed, bool *last_state)
 {
   if (pressed != *last_state) 
   {
@@ -70,12 +70,12 @@ static void _report_edge(bool pressed, bool *last_state)
   * @param  last_state pointer to the stored previous button state
   * @retval None
   */
-static void _poll_button(bool *last_state)
+static void poll_button(bool *last_state)
 {
   bool pressed;
   pressed = button_is_pressed(BUTTON_PIN);
-  _set_led_state(pressed);
-  _report_edge(pressed, last_state);
+  set_led_state(pressed);
+  report_edge(pressed, last_state);
 }
 
 int main(void)
@@ -86,7 +86,7 @@ int main(void)
   bool last_state = false;
   while (1) 
   {
-    _poll_button(&last_state);
+    poll_button(&last_state);
     delay_ms(POLL_DELAY_MS);
   }
 }

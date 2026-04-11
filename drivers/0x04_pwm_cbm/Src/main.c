@@ -56,7 +56,7 @@ static void _uint8_to_str(uint8_t value, char *buf)
   * @param  duty duty cycle value (0-100)
   * @retval None
   */
-static void _print_duty(uint8_t duty)
+static void print_duty(uint8_t duty)
 {
   char buf[4];
   _uint8_to_str(duty, buf);
@@ -69,12 +69,12 @@ static void _print_duty(uint8_t duty)
   * @brief  Sweep duty cycle upward from 0 to 100 percent.
   * @retval None
   */
-static void _sweep_up(void)
+static void sweep_up(void)
 {
   for (uint8_t duty = 0; duty <= 100; duty += SWEEP_STEP) 
   {
     pwm_set_duty(duty);
-    _print_duty(duty);
+    print_duty(duty);
     delay_ms(SWEEP_DELAY_MS);
   }
 }
@@ -83,12 +83,12 @@ static void _sweep_up(void)
   * @brief  Sweep duty cycle downward from 100 to 0 percent.
   * @retval None
   */
-static void _sweep_down(void)
+static void sweep_down(void)
 {
   for (int8_t duty = 100; duty >= 0; duty -= SWEEP_STEP) 
   {
     pwm_set_duty((uint8_t)duty);
-    _print_duty((uint8_t)duty);
+    print_duty((uint8_t)duty);
     delay_ms(SWEEP_DELAY_MS);
   }
 }
@@ -98,7 +98,7 @@ int main(void)
   uart_puts("PWM initialized: GPIO25\r\n");
   while (1) 
   {
-    _sweep_up();
-    _sweep_down();
+    sweep_up();
+    sweep_down();
   }
 }
