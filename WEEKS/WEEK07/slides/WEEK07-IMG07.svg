@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">Instruction Encoding</text>
+<text class="dim" x="600" y="88" text-anchor="middle">movs (16-bit Thumb) vs movw (32-bit Thumb-2)</text>
+
+<!-- Top Left: movs encoding -->
+<rect class="pnl" x="30" y="110" width="555" height="310" rx="8"/>
+<text class="sub" x="50" y="145">movs r1, #42 (FAV_NUM)</text>
+<text class="dim" x="50" y="175">At address 0x1000028E</text>
+
+<rect x="50" y="195" width="515" height="55" rx="6" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text class="grn" x="70" y="228">Bytes: 2A 21</text>
+
+<text class="dim" x="50" y="270">2A = immediate value (42)</text>
+<text class="dim" x="50" y="295">21 = opcode (movs r1)</text>
+<text class="amb" x="50" y="325">16-bit Thumb instruction</text>
+<text class="dim" x="50" y="355">Fits values 0-255 in 8 bits</text>
+<text class="dim" x="50" y="380">File offset: 0x28E</text>
+
+<!-- Top Right: movw encoding -->
+<rect class="pnl" x="615" y="110" width="555" height="310" rx="8"/>
+<text class="sub" x="635" y="145">movw r1, #1337 (OTHER_FAV)</text>
+<text class="dim" x="635" y="175">At address 0x10000296</text>
+
+<rect x="635" y="195" width="515" height="55" rx="6" fill="#0a0a0f" stroke="#00d4ff" stroke-width="1"/>
+<text class="cyn" x="655" y="228">Bytes: 40 F2 39 51</text>
+
+<text class="dim" x="635" y="270">40 F2 = opcode (first halfword)</text>
+<text class="dim" x="635" y="295">39 = imm8 (lower 8 bits)</text>
+<text class="dim" x="635" y="320">51 = dest reg + upper imm</text>
+<text class="amb" x="635" y="350">32-bit Thumb-2 instruction</text>
+<text class="dim" x="635" y="380">File offset: 0x296</text>
+
+<!-- Bottom: Byte Layout Diagram -->
+<rect class="pnl" x="30" y="435" width="1140" height="170" rx="8"/>
+<text class="sub" x="50" y="470">movw Byte Layout (40 F2 39 51)</text>
+
+<rect x="50" y="485" width="260" height="50" rx="4" fill="#12121a" stroke="#ffaa00"/>
+<text class="amb" x="90" y="516">40 F2</text>
+<text class="dim" x="50" y="555">Opcode + upper imm</text>
+
+<rect x="330" y="485" width="260" height="50" rx="4" fill="#12121a" stroke="#00ff41"/>
+<text class="grn" x="400" y="516">39</text>
+<text class="dim" x="330" y="555">imm8 (lower 8 bits)</text>
+
+<rect x="610" y="485" width="260" height="50" rx="4" fill="#12121a" stroke="#00d4ff"/>
+<text class="cyn" x="690" y="516">51</text>
+<text class="dim" x="610" y="555">Dest reg (r1) + bits</text>
+
+<text class="dim" x="900" y="516">imm16 = 0x539</text>
+<text class="dim" x="900" y="555">= 1337 decimal</text>
+
+<!-- Bottom: Why movw -->
+<rect class="pnl" x="30" y="620" width="1140" height="100" rx="8"/>
+<text class="red" x="50" y="655">Why movw instead of movs?</text>
+<text class="txt" x="50" y="690">1337 &gt; 255 -- does not fit in 8-bit movs immediate</text>
+<text class="dim" x="640" y="690">movw encodes 0-65535 in 32-bit instruction</text>
+</svg>

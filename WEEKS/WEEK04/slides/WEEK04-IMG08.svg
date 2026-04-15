@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">GPIO Hacking</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Patching GPIO 16 to GPIO 17</text>
+
+<!-- Original Code -->
+<rect x="40" y="110" width="540" height="280" rx="8" class="pnl"/>
+<text x="310" y="148" text-anchor="middle" class="sub">Original: GPIO 16</text>
+<text x="60" y="185" class="red">Red LED on pin 16</text>
+
+<rect x="60" y="205" width="500" height="42" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="80" y="233" class="grn">1000023a</text>
+<text x="230" y="233" class="red">10 20</text>
+<text x="330" y="233" class="txt">movs r0,#0x10</text>
+
+<rect x="60" y="255" width="500" height="42" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="80" y="283" class="grn">10000244</text>
+<text x="230" y="283" class="red">10 23</text>
+<text x="330" y="283" class="txt">movs r3,#0x10</text>
+
+<rect x="60" y="305" width="500" height="42" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="80" y="333" class="grn">10000252</text>
+<text x="230" y="333" class="red">10 24</text>
+<text x="330" y="333" class="txt">movs r4,#0x10</text>
+
+<text x="60" y="368" class="dim">0x10 = 16, three locations</text>
+
+<!-- Patched Code -->
+<rect x="620" y="110" width="540" height="280" rx="8" class="pnl"/>
+<text x="890" y="148" text-anchor="middle" class="sub">Patched: GPIO 17</text>
+<text x="640" y="185" class="grn">Green LED on pin 17</text>
+
+<rect x="640" y="205" width="500" height="42" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="660" y="233" class="grn">1000023a</text>
+<text x="810" y="233" class="grn">11 20</text>
+<text x="910" y="233" class="txt">movs r0,#0x11</text>
+
+<rect x="640" y="255" width="500" height="42" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="660" y="283" class="grn">10000244</text>
+<text x="810" y="283" class="grn">11 23</text>
+<text x="910" y="283" class="txt">movs r3,#0x11</text>
+
+<rect x="640" y="305" width="500" height="42" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="660" y="333" class="grn">10000252</text>
+<text x="810" y="333" class="grn">11 24</text>
+<text x="910" y="333" class="txt">movs r4,#0x11</text>
+
+<text x="640" y="368" class="dim">0x11 = 17, all patched!</text>
+
+<!-- What Each Patch Does -->
+<rect x="40" y="410" width="1120" height="170" rx="8" class="pnl"/>
+<text x="600" y="448" text-anchor="middle" class="sub">What Each Patch Controls</text>
+
+<rect x="60" y="468" width="340" height="50" rx="4" fill="#0a0a0f" stroke="#00d4ff" stroke-width="1"/>
+<text x="80" y="500" class="cyn">gpio_init</text>
+<text x="240" y="500" class="dim">r0</text>
+
+<rect x="420" y="468" width="340" height="50" rx="4" fill="#0a0a0f" stroke="#ffaa00" stroke-width="1"/>
+<text x="440" y="500" class="amb">gpio_set_dir</text>
+<text x="640" y="500" class="dim">r3</text>
+
+<rect x="780" y="468" width="360" height="50" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="800" y="500" class="grn">gpio_put</text>
+<text x="960" y="500" class="dim">r4</text>
+
+<text x="60" y="550" class="dim">ALL pin refs must be patched</text>
+
+<!-- Bonus Patch -->
+<rect x="40" y="600" width="1120" height="180" rx="8" class="pnl"/>
+<text x="600" y="640" text-anchor="middle" class="sub">Bonus: Change Print Value</text>
+
+<rect x="60" y="660" width="480" height="50" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="80" y="692" class="red">00 21</text>
+<text x="170" y="692" class="txt">movs r1,#0x0</text>
+<text x="400" y="692" class="dim">age: 0</text>
+
+<text x="560" y="692" class="grn">-></text>
+
+<rect x="600" y="660" width="530" height="50" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="620" y="692" class="grn">42 21</text>
+<text x="720" y="692" class="txt">movs r1,#0x42</text>
+<text x="960" y="692" class="grn">age: 66</text>
+
+<text x="60" y="748" class="dim">Changed value: 0 to 66 (0x42)</text>
+</svg>

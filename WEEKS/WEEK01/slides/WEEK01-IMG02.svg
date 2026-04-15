@@ -1,0 +1,101 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Stack Growth Direction</text>
+<text x="600" y="88" text-anchor="middle" class="dim">ARM Stack Mechanics</text>
+
+  <!-- Left Panel: BEFORE PUSH -->
+  <rect x="30" y="105" width="350" height="675" class="pnl" rx="8"/>
+  <text x="205" y="148" text-anchor="middle" class="sub">Before PUSH</text>
+  <line x1="50" y1="163" x2="360" y2="163" stroke="#1a1a2e"/>
+
+  <text x="55" y="205" class="amb">0x20082000</text>
+  <text x="55" y="237" class="red">SP here</text>
+
+  <rect x="60" y="260" width="255" height="55" rx="5" fill="#0a0a0f" stroke="#1a1a2e" stroke-width="1" stroke-dasharray="6"/>
+  <text x="187" y="295" text-anchor="middle" class="dim">(empty)</text>
+
+  <rect x="60" y="325" width="255" height="55" rx="5" fill="#0a0a0f" stroke="#1a1a2e" stroke-width="1" stroke-dasharray="6"/>
+  <text x="187" y="360" text-anchor="middle" class="dim">(empty)</text>
+
+  <rect x="60" y="390" width="255" height="55" rx="5" fill="#0a0a0f" stroke="#1a1a2e" stroke-width="1" stroke-dasharray="6"/>
+  <text x="187" y="425" text-anchor="middle" class="dim">(empty)</text>
+
+  <rect x="60" y="455" width="255" height="55" rx="5" fill="#0a0a0f" stroke="#1a1a2e" stroke-width="1" stroke-dasharray="6"/>
+  <text x="187" y="490" text-anchor="middle" class="dim">(empty)</text>
+
+  <text x="55" y="555" class="amb">0x20080000</text>
+
+  <!-- Down arrow -->
+  <text x="187" y="650" text-anchor="middle" class="red">Grows DOWN</text>
+  <line x1="187" y1="665" x2="187" y2="725" stroke="#ff0040" stroke-width="4"/>
+  <polygon points="175,725 187,750 199,725" fill="#ff0040"/>
+
+  <!-- Middle Panel: AFTER PUSH -->
+  <rect x="410" y="105" width="370" height="675" class="pnl" rx="8"/>
+  <text x="595" y="148" text-anchor="middle" class="sub">After PUSH</text>
+  <line x1="430" y1="163" x2="760" y2="163" stroke="#1a1a2e"/>
+
+  <text x="435" y="205" class="amb">0x20082000</text>
+
+  <rect x="440" y="260" width="255" height="55" rx="5" fill="#0a0a0f" stroke="#1a1a2e" stroke-width="1" stroke-dasharray="6"/>
+  <text x="567" y="295" text-anchor="middle" class="dim">(empty)</text>
+
+  <rect x="440" y="325" width="255" height="55" rx="5" fill="#0a0a0f" stroke="#1a1a2e" stroke-width="1" stroke-dasharray="6"/>
+  <text x="567" y="360" text-anchor="middle" class="dim">(empty)</text>
+
+  <rect x="440" y="390" width="255" height="55" rx="5" fill="#1a0f0f" stroke="#ff0040" stroke-width="2"/>
+  <text x="567" y="425" text-anchor="middle" class="cyn">LR value</text>
+
+  <rect x="440" y="455" width="255" height="55" rx="5" fill="#1a0f0f" stroke="#ff0040" stroke-width="2"/>
+  <text x="567" y="490" text-anchor="middle" class="grn">r3 value</text>
+
+  <text x="435" y="545" class="red">SP here now</text>
+
+  <text x="435" y="620" class="dim" style="fill:#ff0040">SP moved down</text>
+  <text x="435" y="650" class="dim" style="fill:#ff0040">by 8 bytes</text>
+
+  <text x="435" y="720" class="amb">0x20080000</text>
+
+  <!-- Right Panel: Key Concepts -->
+  <rect x="810" y="105" width="360" height="675" class="pnl" rx="8"/>
+  <text x="990" y="148" text-anchor="middle" class="sub">Key Concepts</text>
+  <line x1="830" y1="163" x2="1150" y2="163" stroke="#1a1a2e"/>
+
+  <text x="835" y="210" class="grn">Full Descending</text>
+  <text x="835" y="248" class="txt">SP points to the</text>
+  <text x="835" y="280" class="txt">last pushed item</text>
+
+  <line x1="830" y1="308" x2="1150" y2="308" stroke="#1a1a2e"/>
+
+  <text x="835" y="348" class="red">PUSH: SP -= 4</text>
+  <text x="835" y="386" class="txt">Each 32-bit val</text>
+  <text x="835" y="418" class="txt">drops SP by 4</text>
+  <text x="835" y="450" class="txt">Two vals = -8</text>
+
+  <line x1="830" y1="478" x2="1150" y2="478" stroke="#1a1a2e"/>
+
+  <text x="835" y="518" class="cyn">POP: SP += 4</text>
+  <text x="835" y="556" class="txt">Restores values</text>
+  <text x="835" y="588" class="txt">SP moves back up</text>
+
+  <line x1="830" y1="616" x2="1150" y2="616" stroke="#1a1a2e"/>
+
+  <text x="835" y="656" class="amb">Initial SP</text>
+  <text x="835" y="694" class="txt">Set by vector</text>
+  <text x="835" y="726" class="txt">table at 0x00</text>
+  <text x="835" y="758" class="dim">StackTop=0x20082000</text>
+</svg>

@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Patching Float</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Changing 42.5 to 99.0 in Ghidra</text>
+
+<!-- Calculate New Encoding -->
+<rect x="40" y="110" width="1120" height="230" rx="8" class="pnl"/>
+<text x="600" y="148" text-anchor="middle" class="sub">Calculate 99.0 as Double</text>
+
+<text x="60" y="188" class="txt">99 decimal =</text>
+<text x="290" y="188" class="grn">1100011</text>
+<text x="440" y="188" class="txt">binary</text>
+
+<text x="60" y="223" class="txt">Normalize:</text>
+<text x="250" y="223" class="amb">1.100011 x 2^6</text>
+
+<text x="60" y="258" class="red">Sign:</text>
+<text x="160" y="258" class="txt">0</text>
+<text x="300" y="258" class="amb">Exp:</text>
+<text x="380" y="258" class="txt">6+1023 = 1029</text>
+
+<text x="60" y="293" class="grn">Mantissa:</text>
+<text x="240" y="293" class="txt">100011000...0</text>
+
+<text x="60" y="328" class="dim">Full double: 0x4058C00000000000</text>
+
+<!-- Before vs After -->
+<rect x="40" y="360" width="540" height="200" rx="8" class="pnl"/>
+<text x="310" y="398" text-anchor="middle" class="sub">Before (42.5)</text>
+
+<rect x="60" y="418" width="500" height="50" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="80" y="450" class="cyn">r2:</text>
+<text x="160" y="450" class="red">0x00000000</text>
+
+<rect x="60" y="478" width="500" height="50" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="80" y="510" class="cyn">r3:</text>
+<text x="160" y="510" class="red">0x40454000</text>
+
+<text x="60" y="548" class="dim">Output: fav_num: 42.500000</text>
+
+<rect x="620" y="360" width="540" height="200" rx="8" class="pnl"/>
+<text x="890" y="398" text-anchor="middle" class="sub">After (99.0)</text>
+
+<rect x="640" y="418" width="500" height="50" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="660" y="450" class="cyn">r2:</text>
+<text x="740" y="450" class="grn">0x00000000</text>
+<text x="960" y="450" class="dim">same!</text>
+
+<rect x="640" y="478" width="500" height="50" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="660" y="510" class="cyn">r3:</text>
+<text x="740" y="510" class="grn">0x4058C000</text>
+<text x="960" y="510" class="amb">changed</text>
+
+<text x="640" y="548" class="dim">Output: fav_num: 99.000000</text>
+
+<!-- Patch Steps -->
+<rect x="40" y="580" width="1120" height="200" rx="8" class="pnl"/>
+<text x="600" y="618" text-anchor="middle" class="sub">Patch in Ghidra</text>
+
+<rect x="60" y="640" width="340" height="65" rx="6" fill="#0a0a0f" stroke="#00d4ff" stroke-width="1"/>
+<text x="230" y="668" text-anchor="middle" class="cyn">1. Window: Bytes</text>
+<text x="230" y="690" text-anchor="middle" class="dim">Open byte editor</text>
+
+<rect x="420" y="640" width="340" height="65" rx="6" fill="#0a0a0f" stroke="#ffaa00" stroke-width="1"/>
+<text x="590" y="668" text-anchor="middle" class="amb">2. Find 00404540</text>
+<text x="590" y="690" text-anchor="middle" class="dim">High word of 42.5</text>
+
+<rect x="780" y="640" width="340" height="65" rx="6" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="950" y="668" text-anchor="middle" class="grn">3. Patch 00C05840</text>
+<text x="950" y="690" text-anchor="middle" class="dim">High word of 99.0</text>
+
+<text x="60" y="748" class="dim">Only one word to patch (low word is 0)</text>
+</svg>

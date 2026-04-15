@@ -1,0 +1,101 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Stack in Action</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Runtime Stack Analysis</text>
+
+  <!-- Left Panel: Before PUSH -->
+  <rect x="30" y="105" width="350" height="675" class="pnl" rx="8"/>
+  <text x="205" y="148" text-anchor="middle" class="sub">Before Call</text>
+  <line x1="50" y1="163" x2="360" y2="163" stroke="#1a1a2e"/>
+
+  <text x="55" y="200" class="dim">SP = 0x20082000</text>
+
+  <rect x="55" y="220" width="290" height="50" rx="4" fill="#0a0a0f" stroke="#1a1a2e" stroke-dasharray="6"/>
+  <text x="200" y="252" text-anchor="middle" class="dim">(empty)</text>
+
+  <rect x="55" y="280" width="290" height="50" rx="4" fill="#0a0a0f" stroke="#1a1a2e" stroke-dasharray="6"/>
+  <text x="200" y="312" text-anchor="middle" class="dim">(empty)</text>
+
+  <rect x="55" y="340" width="290" height="50" rx="4" fill="#0a0a0f" stroke="#1a1a2e" stroke-dasharray="6"/>
+  <text x="200" y="372" text-anchor="middle" class="dim">(empty)</text>
+
+  <rect x="55" y="400" width="290" height="50" rx="4" fill="#0a0a0f" stroke="#1a1a2e" stroke-dasharray="6"/>
+  <text x="200" y="432" text-anchor="middle" class="dim">(empty)</text>
+
+  <text x="205" y="510" text-anchor="middle" class="txt">Stack is clean</text>
+  <text x="205" y="542" text-anchor="middle" class="txt">SP at top of</text>
+  <text x="205" y="574" text-anchor="middle" class="txt">SRAM space</text>
+
+  <text x="205" y="650" text-anchor="middle" class="grn">Ready to call</text>
+  <text x="205" y="682" text-anchor="middle" class="grn">main()</text>
+
+  <!-- Middle Panel: After PUSH {r4, lr} -->
+  <rect x="410" y="105" width="370" height="675" class="pnl" rx="8"/>
+  <text x="595" y="148" text-anchor="middle" class="sub">After PUSH</text>
+  <line x1="430" y1="163" x2="760" y2="163" stroke="#1a1a2e"/>
+
+  <text x="435" y="200" class="dim">PUSH {r4, lr}</text>
+
+  <rect x="435" y="220" width="310" height="50" rx="4" fill="#0a0a0f" stroke="#1a1a2e" stroke-dasharray="6"/>
+  <text x="590" y="252" text-anchor="middle" class="dim">(empty)</text>
+
+  <rect x="435" y="280" width="310" height="50" rx="4" fill="#0a0a0f" stroke="#1a1a2e" stroke-dasharray="6"/>
+  <text x="590" y="312" text-anchor="middle" class="dim">(empty)</text>
+
+  <rect x="435" y="340" width="310" height="50" rx="4" fill="#1a0f0f" stroke="#ff0040" stroke-width="2"/>
+  <text x="590" y="372" text-anchor="middle" class="red">LR saved</text>
+
+  <rect x="435" y="400" width="310" height="50" rx="4" fill="#1a1a0f" stroke="#ffaa00" stroke-width="2"/>
+  <text x="590" y="432" text-anchor="middle" class="amb">r4 saved</text>
+
+  <text x="595" y="500" text-anchor="middle" class="red">SP moved down</text>
+  <text x="595" y="535" text-anchor="middle" class="txt">by 8 bytes</text>
+  <text x="595" y="567" text-anchor="middle" class="dim">2 regs x 4 bytes</text>
+
+  <text x="595" y="650" text-anchor="middle" class="cyn">GDB: info regs</text>
+  <text x="595" y="685" text-anchor="middle" class="dim">Watch SP change!</text>
+
+  <!-- Right Panel: Key Points -->
+  <rect x="810" y="105" width="360" height="675" class="pnl" rx="8"/>
+  <text x="990" y="148" text-anchor="middle" class="sub">Key Points</text>
+  <line x1="830" y1="163" x2="1150" y2="163" stroke="#1a1a2e"/>
+
+  <text x="835" y="205" class="grn">PUSH saves</text>
+  <text x="835" y="240" class="txt">Preserves regs</text>
+  <text x="835" y="272" class="txt">before function</text>
+  <text x="835" y="304" class="txt">body runs</text>
+
+  <line x1="830" y1="332" x2="1150" y2="332" stroke="#1a1a2e"/>
+
+  <text x="835" y="372" class="red">POP restores</text>
+  <text x="835" y="407" class="txt">Puts values</text>
+  <text x="835" y="439" class="txt">back when func</text>
+  <text x="835" y="471" class="txt">returns</text>
+
+  <line x1="830" y1="499" x2="1150" y2="499" stroke="#1a1a2e"/>
+
+  <text x="835" y="539" class="amb">Watch in GDB</text>
+  <text x="835" y="574" class="txt">x/4xw $sp</text>
+  <text x="835" y="606" class="dim">See stack data</text>
+
+  <line x1="830" y1="634" x2="1150" y2="634" stroke="#1a1a2e"/>
+
+  <text x="835" y="674" class="cyn">stepi</text>
+  <text x="835" y="709" class="txt">Step 1 instr</text>
+  <text x="835" y="741" class="txt">watch stack</text>
+  <text x="835" y="773" class="dim">change live</text>
+</svg>

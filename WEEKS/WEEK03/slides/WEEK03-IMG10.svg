@@ -1,0 +1,92 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Secure Boot &amp; Attack Vectors</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Why Boot Sequence Knowledge Matters for Security</text>
+
+<!-- Left Panel: Attack Scenarios -->
+<rect x="40" y="110" width="555" height="380" rx="8" class="pnl" stroke="#ff0040" stroke-width="2"/>
+<text x="60" y="148" class="red">Attack Scenarios</text>
+
+<rect x="60" y="168" width="515" height="60" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="75" y="193" class="red">Firmware Replacement</text>
+<text x="75" y="218" class="dim">Replace flash with malicious code</text>
+
+<rect x="60" y="238" width="515" height="60" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="75" y="263" class="red">Vector Table Hijack</text>
+<text x="75" y="288" class="dim">Modify reset handler address</text>
+
+<rect x="60" y="308" width="515" height="60" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="75" y="333" class="red">Debug Port Attack</text>
+<text x="75" y="358" class="dim">SWD/JTAG to dump or inject code</text>
+
+<rect x="60" y="378" width="515" height="60" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="75" y="403" class="red">Startup Code Modification</text>
+<text x="75" y="428" class="dim">Change crt0 data copy / BSS init</text>
+
+<text x="60" y="472" class="amb">Physical access = game over</text>
+
+<!-- Right Panel: Defense Strategies -->
+<rect x="625" y="110" width="535" height="380" rx="8" class="pnl" stroke="#00ff41" stroke-width="2"/>
+<text x="645" y="148" class="grn">Defense Strategies</text>
+
+<rect x="645" y="168" width="495" height="50" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="660" y="200" class="grn">1. Secure Boot</text>
+
+<rect x="645" y="228" width="495" height="50" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="660" y="260" class="grn">2. Debug Port Lock</text>
+
+<rect x="645" y="288" width="495" height="50" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="660" y="320" class="grn">3. Flash Read Protect</text>
+
+<rect x="645" y="348" width="495" height="50" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="660" y="380" class="grn">4. MPU Configuration</text>
+
+<rect x="645" y="408" width="495" height="50" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="660" y="440" class="grn">5. Integrity Checks</text>
+
+<text x="645" y="478" class="amb">Defense in depth!</text>
+
+<!-- Bottom Panel: Secure Boot Flow -->
+<rect x="40" y="515" width="1120" height="255" rx="8" class="pnl"/>
+<text x="60" y="553" class="sub">Secure Boot Chain</text>
+
+<rect x="60" y="573" width="220" height="70" rx="6" fill="#0a0a0f" stroke="#00ff41" stroke-width="2"/>
+<text x="170" y="603" text-anchor="middle" class="grn">Bootrom</text>
+<text x="170" y="629" text-anchor="middle" class="dim">immutable</text>
+
+<text x="298" y="613" class="amb">-></text>
+
+<rect x="320" y="573" width="220" height="70" rx="6" fill="#0a0a0f" stroke="#00d4ff" stroke-width="2"/>
+<text x="430" y="603" text-anchor="middle" class="cyn">Verify Sig</text>
+<text x="430" y="629" text-anchor="middle" class="dim">IMAGE_DEF</text>
+
+<text x="558" y="613" class="amb">-></text>
+
+<rect x="580" y="573" width="220" height="70" rx="6" fill="#0a0a0f" stroke="#ffaa00" stroke-width="2"/>
+<text x="690" y="603" text-anchor="middle" class="amb">Verify App</text>
+<text x="690" y="629" text-anchor="middle" class="dim">signature</text>
+
+<text x="818" y="613" class="amb">-></text>
+
+<rect x="840" y="573" width="280" height="70" rx="6" fill="#0a0a0f" stroke="#00ff41" stroke-width="2"/>
+<text x="980" y="603" text-anchor="middle" class="grn">Boot!</text>
+<text x="980" y="629" text-anchor="middle" class="dim">or refuse</text>
+
+<text x="60" y="688" class="txt">Each stage cryptographically verifies</text>
+<text x="60" y="718" class="txt">the next before handing off control.</text>
+<text x="60" y="748" class="dim">Bootrom = trust anchor (can't be changed)</text>
+</svg>

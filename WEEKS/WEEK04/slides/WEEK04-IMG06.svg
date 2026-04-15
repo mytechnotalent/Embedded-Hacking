@@ -1,0 +1,77 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Compiler Optimization</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Why Your Variable Disappeared</text>
+
+<!-- Source Code Panel -->
+<rect x="40" y="110" width="540" height="280" rx="8" class="pnl"/>
+<text x="310" y="148" text-anchor="middle" class="sub">Source Code</text>
+
+<rect x="60" y="165" width="500" height="205" rx="6" fill="#0a0a0f" stroke="#00d4ff" stroke-width="1"/>
+<text x="80" y="195" class="txt">int main(void) {</text>
+<text x="100" y="225" class="amb">uint8_t age = 42;</text>
+<text x="100" y="255" class="red">age = 43;</text>
+<text x="100" y="285" class="txt">stdio_init_all();</text>
+<text x="100" y="315" class="txt">while (true)</text>
+<text x="120" y="345" class="txt">printf("age: %d", age);</text>
+
+<!-- Compiler Thought Bubble -->
+<rect x="620" y="110" width="540" height="280" rx="8" class="pnl"/>
+<text x="890" y="148" text-anchor="middle" class="sub">Compiler Thinks...</text>
+
+<rect x="640" y="170" width="500" height="50" rx="4" fill="#0a0a0f" stroke="#ffaa00" stroke-width="2"/>
+<text x="655" y="202" class="amb">age = 42 is NEVER read</text>
+
+<rect x="640" y="232" width="500" height="50" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="2"/>
+<text x="655" y="264" class="red">Dead store -> REMOVED</text>
+
+<rect x="640" y="294" width="500" height="50" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="2"/>
+<text x="655" y="326" class="grn">age = 43 -> constant fold</text>
+
+<text x="640" y="370" class="dim">Replaces variable with literal</text>
+
+<!-- Assembly Result -->
+<rect x="40" y="410" width="1120" height="170" rx="8" class="pnl"/>
+<text x="600" y="448" text-anchor="middle" class="sub">Resulting Assembly</text>
+
+<rect x="60" y="465" width="1080" height="95" rx="6" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="80" y="498" class="grn">1000023a</text>
+<text x="280" y="498" class="amb">2b 21</text>
+<text x="420" y="498" class="txt">movs r1, #0x2b</text>
+<text x="730" y="498" class="dim">; 0x2b = 43</text>
+<text x="80" y="535" class="dim">No age=42 instruction — compiler removed it</text>
+
+<!-- Key Takeaway -->
+<rect x="40" y="600" width="1120" height="180" rx="8" class="pnl"/>
+<text x="600" y="640" text-anchor="middle" class="sub">Key Takeaway</text>
+
+<rect x="60" y="658" width="330" height="105" rx="6" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="225" y="693" text-anchor="middle" class="red">Source Code</text>
+<text x="225" y="723" text-anchor="middle" class="txt">age = 42</text>
+<text x="225" y="748" text-anchor="middle" class="txt">age = 43</text>
+
+<text x="425" y="718" class="grn">-></text>
+
+<rect x="460" y="658" width="310" height="105" rx="6" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="615" y="693" text-anchor="middle" class="grn">Binary</text>
+<text x="615" y="733" text-anchor="middle" class="amb">movs r1, #0x2b</text>
+
+<rect x="800" y="658" width="340" height="105" rx="6" fill="#0a0a0f" stroke="#1a1a2e" stroke-width="1"/>
+<text x="970" y="698" text-anchor="middle" class="cyn">Compiler</text>
+<text x="970" y="728" text-anchor="middle" class="dim">Optimizes dead</text>
+<text x="970" y="748" text-anchor="middle" class="dim">stores away!</text>
+</svg>

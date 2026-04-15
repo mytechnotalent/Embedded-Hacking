@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">Structures Source Code</text>
+<text class="dim" x="600" y="88" text-anchor="middle">0x0023_structures.c</text>
+
+<!-- Source Code -->
+<rect class="pnl" x="30" y="110" width="1140" height="520" rx="8"/>
+<text class="sub" x="50" y="150">Full Source</text>
+<rect x="50" y="168" width="1100" height="445" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+
+<text class="dim" x="70" y="198">#include &lt;stdio.h&gt;</text>
+<text class="dim" x="70" y="225">#include "pico/stdlib.h"</text>
+<text class="dim" x="70" y="252">#include "ir.h"</text>
+
+<text class="cyn" x="70" y="285">typedef struct {</text>
+<text class="txt" x="100" y="312">uint8_t led1_pin, led2_pin, led3_pin;</text>
+<text class="txt" x="100" y="339">bool led1_state, led2_state, led3_state;</text>
+<text class="cyn" x="70" y="366">} simple_led_ctrl_t;</text>
+
+<text class="cyn" x="70" y="400">int main(void) {</text>
+<text class="txt" x="100" y="427">stdio_init_all();</text>
+<text class="amb" x="100" y="454">simple_led_ctrl_t leds = {</text>
+<text class="grn" x="130" y="481">.led1_pin=16, .led2_pin=17, .led3_pin=18</text>
+<text class="amb" x="100" y="508">};</text>
+
+<text class="txt" x="100" y="540">gpio_init(leds.led1_pin);</text>
+<text class="dim" x="500" y="540">// init 16, 17, 18</text>
+<text class="txt" x="100" y="567">ir_init(5);</text>
+<text class="dim" x="500" y="567">// IR on GPIO 5</text>
+<text class="txt" x="100" y="594">while (true) {</text>
+<text class="dim" x="500" y="594">// main loop</text>
+
+<!-- Program Flow -->
+<rect class="pnl" x="30" y="650" width="1140" height="110" rx="8"/>
+<text class="sub" x="50" y="685">Main Loop Flow</text>
+<text class="txt" x="50" y="715">ir_getkey()</text>
+<text class="dim" x="230" y="715">--></text>
+<text class="txt" x="270" y="715">check NEC code</text>
+<text class="dim" x="490" y="715">--></text>
+<text class="txt" x="530" y="715">set state</text>
+<text class="dim" x="680" y="715">--></text>
+<text class="txt" x="720" y="715">gpio_put()</text>
+<text class="dim" x="50" y="740">0x0C=LED1(red)  0x18=LED2(green)  0x5E=LED3(yellow)</text>
+</svg>
