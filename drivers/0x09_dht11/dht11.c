@@ -106,7 +106,7 @@ static bool read_bit(uint8_t *data, int i) {
  * @param data 5-byte array filled with the received data
  * @return bool true if all 40 bits were read, false on timeout
  */
-static bool _read_40_bits(uint8_t *data) {
+static bool read_40_bits(uint8_t *data) {
     for (int i = 0; i < 40; i++)
         if (!read_bit(data, i)) return false;
     return true;
@@ -132,7 +132,7 @@ bool dht11_read(float *humidity, float *temperature) {
     uint8_t data[5] = {0};
     send_start_signal();
     if (!wait_response()) return false;
-    if (!_read_40_bits(data)) return false;
+    if (!read_40_bits(data)) return false;
     if (!validate_checksum(data)) return false;
     *humidity = data[0] + data[1] * 0.1f;
     *temperature = data[2] + data[3] * 0.1f;

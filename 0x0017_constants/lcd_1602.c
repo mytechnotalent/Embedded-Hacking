@@ -31,21 +31,37 @@
 #include <string.h>
 #include <stdint.h>
 
+/** @brief I2C instance pointer for the LCD */
 static i2c_inst_t *lcd_i2c = NULL;
+/** @brief I2C address of the PCF8574 backpack */
 static uint8_t lcd_addr = 0x27;
+/** @brief Bit shift for 4-bit nibble position */
 static int lcd_nibble_shift = 4;
+/** @brief PCF8574 bit mask controlling the backlight */
 static uint8_t lcd_backlight_mask = 0x08;
 
-/* PCF8574 -> LCD control pins */
+/** @brief PCF8574 bit mask for Register Select */
 #define PIN_RS 0x01
+/** @brief PCF8574 bit mask for Read/Write */
 #define PIN_RW 0x02
+/** @brief PCF8574 bit mask for Enable */
 #define PIN_EN 0x04
 
+/**
+ * @brief Write one raw byte to the PCF8574 expander over I2C
+ *
+ * @param data Output byte to send to the expander
+ */
 static void pcf_write_byte(uint8_t data) {
     if (!lcd_i2c) return;
     i2c_write_blocking(lcd_i2c, lcd_addr, &data, 1, false);
 }
 
+/**
+ * @brief Toggle EN to latch a nibble into the LCD controller
+ *
+ * @param data Current control/data bus byte (with RS and backlight already set)
+ */
 static void pcf_pulse_enable(uint8_t data) {
     pcf_write_byte(data | PIN_EN);
     sleep_us(1);
@@ -53,6 +69,12 @@ static void pcf_pulse_enable(uint8_t data) {
     sleep_us(50);
 }
 
+/**
+ * @brief Write one 4-bit nibble to the LCD
+ *
+ * @param nibble Lower 4 bits to write
+ * @param mode   0 for command, non-zero for character data
+ */
 static void lcd_write4(uint8_t nibble, uint8_t mode) {
     uint8_t data = (nibble & 0x0F) << lcd_nibble_shift;
     data |= mode ? PIN_RS : 0;
@@ -60,18 +82,37 @@ static void lcd_write4(uint8_t nibble, uint8_t mode) {
     pcf_pulse_enable(data);
 }
 
+/**
+ * @brief Send one full 8-bit command/data value as two nibbles
+ *
+ * @param value Byte to send to the LCD
+ * @param mode  0 for command, non-zero for character data
+ */
 static void lcd_send(uint8_t value, uint8_t mode) {
     lcd_write4((value >> 4) & 0x0F, mode);
     lcd_write4(value & 0x0F, mode);
 }
 
-void lcd_i2c_init(i2c_inst_t *i2c, uint8_t pcf_addr, int nibble_shift, uint8_t backlight_mask) {
+/**
+ * @brief Store LCD driver configuration in module-level state
+ *
+ * @param i2c            Pointer to the I2C instance
+ * @param pcf_addr       7-bit PCF8574 address
+ * @param nibble_shift   Bit shift for 4-bit nibbles
+ * @param backlight_mask Backlight control bit mask
+ */
+static void lcd_store_config(i2c_inst_t *i2c, uint8_t pcf_addr,
+                             int nibble_shift, uint8_t backlight_mask) {
     lcd_i2c = i2c;
     lcd_addr = pcf_addr;
     lcd_nibble_shift = nibble_shift;
     lcd_backlight_mask = backlight_mask;
+}
 
-    // Follow init sequence for HD44780 in 4-bit mode
+/**
+ * @brief Execute the HD44780 4-bit mode power-on reset sequence
+ */
+static void lcd_hd44780_reset(void) {
     lcd_write4(0x03, 0);
     sleep_ms(5);
     lcd_write4(0x03, 0);
@@ -80,19 +121,26 @@ void lcd_i2c_init(i2c_inst_t *i2c, uint8_t pcf_addr, int nibble_shift, uint8_t b
     sleep_us(150);
     lcd_write4(0x02, 0);
     sleep_us(150);
+}
 
-    // Function set: 4-bit, 2 lines
+/**
+ * @brief Send post-reset configuration commands to the HD44780
+ *
+ * Sets 4-bit mode with 2 display lines, turns the display on with
+ * cursor hidden, clears the screen, and selects left-to-right entry mode.
+ */
+static void lcd_hd44780_configure(void) {
     lcd_send(0x28, 0);
-
-    // Display on, cursor off
     lcd_send(0x0C, 0);
-
-    // Clear
     lcd_send(0x01, 0);
     sleep_ms(2);
-
-    // Entry mode set
     lcd_send(0x06, 0);
+}
+
+void lcd_i2c_init(i2c_inst_t *i2c, uint8_t pcf_addr, int nibble_shift, uint8_t backlight_mask) {
+    lcd_store_config(i2c, pcf_addr, nibble_shift, backlight_mask);
+    lcd_hd44780_reset();
+    lcd_hd44780_configure();
 }
 
 void lcd_clear(void) {
@@ -102,13 +150,11 @@ void lcd_clear(void) {
 
 void lcd_set_cursor(int line, int position) {
     const uint8_t row_offsets[] = {0x00, 0x40};
-
     if (line > 1) line = 1;
     lcd_send(0x80 | (position + row_offsets[line]), 0);
 }
 
 void lcd_puts(const char *s) {
-    while (*s) {
+    while (*s)
         lcd_send((uint8_t)*s++, 1);
-    }
 }

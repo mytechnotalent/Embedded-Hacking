@@ -1,32 +1,41 @@
 /**
-  ******************************************************************************
-  * @file    main.c
-  * @author  Kevin Thomas
-  * @brief   Multicore FIFO messaging demonstration.
-  *
-  *          Core 0 launches core 1, then sends an incrementing counter
-  *          through the SIO inter-processor FIFO. Core 1 returns the
-  *          value plus one. Both values are printed over UART every
-  *          second.
-  *
-  *          Wiring:
-  *            GPIO0 -> UART TX (USB-to-UART adapter RX)
-  *            GPIO1 -> UART RX (USB-to-UART adapter TX)
-  *            No external wiring required (dual-core on-chip)
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2026 Kevin Thomas.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-
+ * @file main.c
+ * @brief Multicore FIFO messaging demonstration.
+ * @author Kevin Thomas
+ * @date 2026
+ *
+ * Core 0 launches core 1, then sends an incrementing counter
+ * through the SIO inter-processor FIFO. Core 1 returns the
+ * value plus one. Both values are printed over UART every
+ * second.
+ *
+ * Wiring:
+ *  GPIO0 -> UART TX (USB-to-UART adapter RX)
+ *  GPIO1 -> UART RX (USB-to-UART adapter TX)
+ *  No external wiring required (dual-core on-chip)
+ *
+ * MIT License
+ *
+ * Copyright (c) 2026 Kevin Thomas
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 #include "rp2350_multicore.h"
 #include "rp2350_uart.h"
 #include "rp2350_delay.h"
@@ -109,7 +118,7 @@ static void print_counter_line(uint32_t sent, uint32_t received)
   * @brief  Core 1 entry point: receive a value and return it plus one.
   * @retval None (does not return)
   */
-static void _core1_main(void)
+static void core1_main(void)
 {
   while (1) 
   {
@@ -135,7 +144,7 @@ static void send_and_print(uint32_t *counter)
 int main(void)
 {
   uint32_t counter = 0;
-  multicore_launch(_core1_main);
+  multicore_launch(core1_main);
   uart_puts("Multicore FIFO demo initialized\r\n");
   while (1)
     send_and_print(&counter);

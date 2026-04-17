@@ -1,41 +1,51 @@
 /**
-  ******************************************************************************
-  * @file    main.c
-  * @author  Kevin Thomas
-  * @brief   LCD1602 demonstration: static title and live counter display.
-  *
-  *          Drives a 16x2 HD44780 LCD via a PCF8574 I2C backpack. Line 0
-  *          shows a static title ("Reverse Eng.") and line 1 displays a
-  *          counter that increments every second. The counter value is
-  *          also printed over UART for debugging.
-  *
-  *          Wiring:
-  *            GPIO0  -> UART TX (USB-to-UART adapter RX)
-  *            GPIO1  -> UART RX (USB-to-UART adapter TX)
-  *            GPIO2  -> PCF8574 backpack SDA (4.7 kohm pull-up to 3.3 V)
-  *            GPIO3  -> PCF8574 backpack SCL (4.7 kohm pull-up to 3.3 V)
-  *            3.3V   -> PCF8574 backpack VCC
-  *            GND    -> PCF8574 backpack GND
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2026 Kevin Thomas.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-
+ * @file main.c
+ * @brief LCD1602 demonstration: static title and live counter display.
+ * @author Kevin Thomas
+ * @date 2026
+ *
+ * Drives a 16x2 HD44780 LCD via a PCF8574 I2C backpack. Line 0
+ * shows a static title ("Reverse Eng.") and line 1 displays a
+ * counter that increments every second. The counter value is
+ * also printed over UART for debugging.
+ *
+ * Wiring:
+ *  GPIO0  -> UART TX (USB-to-UART adapter RX)
+ *  GPIO1  -> UART RX (USB-to-UART adapter TX)
+ *  GPIO2  -> PCF8574 backpack SDA (4.7 kohm pull-up to 3.3 V)
+ *  GPIO3  -> PCF8574 backpack SCL (4.7 kohm pull-up to 3.3 V)
+ *  3.3V   -> PCF8574 backpack VCC
+ *  GND    -> PCF8574 backpack GND
+ *
+ * MIT License
+ *
+ * Copyright (c) 2026 Kevin Thomas
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 #include "rp2350_i2c.h"
 #include "rp2350_lcd1602.h"
 #include "rp2350_uart.h"
 #include "rp2350_xosc.h"
 #include "rp2350_delay.h"
 
+/** @brief Delay between LCD counter updates in milliseconds */
 #define COUNT_DELAY_MS 1000
 
 /**

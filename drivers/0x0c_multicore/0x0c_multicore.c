@@ -47,7 +47,7 @@
  * Blocks on the FIFO, adds one to each received value, and pushes
  * the result back to core 0.
  */
-static void _core1_main(void) {
+static void core1_main(void) {
     while (true) {
         uint32_t value = multicore_driver_pop();
         multicore_driver_push(value + 1u);
@@ -70,7 +70,7 @@ static void send_and_print(uint32_t *counter) {
 
 int main(void) {
     stdio_init_all();
-    multicore_driver_launch(_core1_main);
+    multicore_driver_launch(core1_main);
     uint32_t counter = 0;
     while (true)
         send_and_print(&counter);

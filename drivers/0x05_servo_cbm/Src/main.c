@@ -1,38 +1,49 @@
 /**
-  ******************************************************************************
-  * @file    main.c
-  * @author  Kevin Thomas
-  * @brief   SG90 servo motor sweep demonstration.
-  *
-  *          Demonstrates servo control using the servo driver. The servo
-  *          sweeps from 0 to 180 degrees and back in 10-degree steps,
-  *          reporting each angle over UART.
-  *
-  *          Wiring:
-  *            GPIO0  -> UART TX (USB-to-UART adapter RX)
-  *            GPIO1  -> UART RX (USB-to-UART adapter TX)
-  *            GPIO6  -> Servo signal (orange/yellow)
-  *            5V     -> Servo power (red)
-  *            GND    -> Servo ground (brown/black)
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2026 Kevin Thomas.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-
+ * @file main.c
+ * @brief SG90 servo motor sweep demonstration.
+ * @author Kevin Thomas
+ * @date 2026
+ *
+ * Demonstrates servo control using the servo driver. The servo
+ * sweeps from 0 to 180 degrees and back in 10-degree steps,
+ * reporting each angle over UART.
+ *
+ * Wiring:
+ *  GPIO0  -> UART TX (USB-to-UART adapter RX)
+ *  GPIO1  -> UART RX (USB-to-UART adapter TX)
+ *  GPIO6  -> Servo signal (orange/yellow)
+ *  5V     -> Servo power (red)
+ *  GND    -> Servo ground (brown/black)
+ *
+ * MIT License
+ *
+ * Copyright (c) 2026 Kevin Thomas
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 #include "rp2350_servo.h"
 #include "rp2350_uart.h"
 #include "rp2350_delay.h"
 
+/** @brief Servo angle increment per step in degrees */
 #define STEP_DEGREES  10
+/** @brief Delay between servo sweep steps in milliseconds */
 #define STEP_DELAY_MS 150
 
 /**
@@ -41,7 +52,7 @@
   * @param  buf   output buffer (at least 4 bytes)
   * @retval None
   */
-static void _uint8_to_str(uint8_t value, char *buf)
+static void uint8_to_str(uint8_t value, char *buf)
 {
   uint8_t idx = 0;
   if (value >= 100)
@@ -60,7 +71,7 @@ static void _uint8_to_str(uint8_t value, char *buf)
 static void print_angle(uint8_t angle)
 {
   char buf[4];
-  _uint8_to_str(angle, buf);
+  uint8_to_str(angle, buf);
   uart_puts("Angle: ");
   uart_puts(buf);
   uart_puts(" deg\r\n");

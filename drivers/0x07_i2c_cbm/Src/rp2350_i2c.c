@@ -1,28 +1,37 @@
 /**
-  ******************************************************************************
-  * @file    rp2350_i2c.c
-  * @author  Kevin Thomas
-  * @brief   RP2350 I2C1 master-mode driver implementation.
-  *
-  *          Bare-metal driver for the RP2350 Synopsys DW APB I2C controller.
-  *          Configures I2C1 at 100 kHz on SDA=GPIO2 / SCL=GPIO3 with
-  *          internal pull-ups. Provides address probing and bus scanning.
-  *          All register accesses verified against the RP2350 datasheet
-  *          (RP-008373-DS-2).
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2026 Kevin Thomas.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-
+ * @file rp2350_i2c.c
+ * @brief RP2350 I2C1 master-mode driver implementation.
+ * @author Kevin Thomas
+ * @date 2026
+ *
+ * Bare-metal driver for the RP2350 Synopsys DW APB I2C controller.
+ * Configures I2C1 at 100 kHz on SDA=GPIO2 / SCL=GPIO3 with
+ * internal pull-ups. Provides address probing and bus scanning.
+ * All register accesses verified against the RP2350 datasheet
+ * (RP-008373-DS-2).
+ *
+ * MIT License
+ *
+ * Copyright (c) 2026 Kevin Thomas
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 #include "rp2350_i2c.h"
 #include "rp2350_uart.h"
 
@@ -34,7 +43,7 @@
   *
   * @retval None
   */
-static void _i2c_config_pads(void)
+static void i2c_config_pads(void)
 {
   uint32_t pad_val = (1U << PADS_BANK0_IE_SHIFT) | (1U << PADS_BANK0_PUE_SHIFT) | (1U << 4);
   PADS_BANK0->GPIO[I2C_SDA_PIN] = pad_val;
@@ -45,7 +54,7 @@ static void _i2c_config_pads(void)
   * @brief  Set GPIO2 and GPIO3 IO mux function to I2C (FUNCSEL=3).
   * @retval None
   */
-static void _i2c_config_gpio(void)
+static void i2c_config_gpio(void)
 {
   IO_BANK0->GPIO[I2C_SDA_PIN].CTRL = IO_BANK0_CTRL_FUNCSEL_I2C;
   IO_BANK0->GPIO[I2C_SCL_PIN].CTRL = IO_BANK0_CTRL_FUNCSEL_I2C;
@@ -59,7 +68,7 @@ static void _i2c_config_gpio(void)
   *
   * @retval None
   */
-static void _i2c_config_con(void)
+static void i2c_config_con(void)
 {
   I2C1->CON = (1U << I2C_CON_MASTER_MODE_SHIFT)
             | (I2C_CON_SPEED_FAST << I2C_CON_SPEED_SHIFT)
@@ -76,7 +85,7 @@ static void _i2c_config_con(void)
   *
   * @retval None
   */
-static void _i2c_config_timing(void)
+static void i2c_config_timing(void)
 {
   I2C1->FS_SCL_HCNT = I2C_FS_SCL_HCNT_VAL;
   I2C1->FS_SCL_LCNT = I2C_FS_SCL_LCNT_VAL;
@@ -89,7 +98,7 @@ static void _i2c_config_timing(void)
   * @param  val byte value to print (0x00-0xFF)
   * @retval None
   */
-static void _print_hex8(uint8_t val)
+static void print_hex8(uint8_t val)
 {
   const char hex[] = "0123456789ABCDEF";
   char buf[3] = { hex[val >> 4], hex[val & 0x0F], '\0' };
@@ -108,7 +117,7 @@ static void print_probe_result(uint8_t addr)
     uart_puts("   ");
   } else if (i2c_probe(addr)) 
   {
-    _print_hex8(addr);
+    print_hex8(addr);
     uart_puts(" ");
   } else {
     uart_puts("-- ");
@@ -127,7 +136,7 @@ static void print_probe_result(uint8_t addr)
   */
 static void print_scan_entry(uint8_t addr)
 {
-  if (addr % 16 == 0) { _print_hex8(addr); uart_puts(": "); }
+  if (addr % 16 == 0) { print_hex8(addr); uart_puts(": "); }
   print_probe_result(addr);
   if (addr % 16 == 15)
     uart_puts("\r\n");
@@ -142,13 +151,13 @@ void i2c_release_reset(void)
 
 void i2c_init(void)
 {
-  _i2c_config_pads();
-  _i2c_config_gpio();
+  i2c_config_pads();
+  i2c_config_gpio();
   I2C1->ENABLE = 0U;
-  _i2c_config_con();
+  i2c_config_con();
   I2C1->TX_TL = 0U;
   I2C1->RX_TL = 0U;
-  _i2c_config_timing();
+  i2c_config_timing();
   I2C1->ENABLE = 1U;
 }
 

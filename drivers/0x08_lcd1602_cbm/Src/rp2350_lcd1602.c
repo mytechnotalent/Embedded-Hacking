@@ -1,27 +1,36 @@
 /**
-  ******************************************************************************
-  * @file    rp2350_lcd1602.c
-  * @author  Kevin Thomas
-  * @brief   LCD1602 driver implementation for RP2350.
-  *
-  *          Drives a 16x2 HD44780 LCD through a PCF8574 I2C backpack
-  *          in 4-bit mode. Each nibble is latched by pulsing the EN
-  *          line via single-byte I2C writes to the PCF8574. All
-  *          timing margins exceed HD44780 datasheet minimums.
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2026 Kevin Thomas.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-
+ * @file rp2350_lcd1602.c
+ * @brief LCD1602 driver implementation for RP2350.
+ * @author Kevin Thomas
+ * @date 2026
+ *
+ * Drives a 16x2 HD44780 LCD through a PCF8574 I2C backpack
+ * in 4-bit mode. Each nibble is latched by pulsing the EN
+ * line via single-byte I2C writes to the PCF8574. All
+ * timing margins exceed HD44780 datasheet minimums.
+ *
+ * MIT License
+ *
+ * Copyright (c) 2026 Kevin Thomas
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 #include "rp2350_lcd1602.h"
 #include "rp2350_i2c.h"
 #include "rp2350_delay.h"
@@ -49,7 +58,7 @@ static void lcd_pulse_enable(uint8_t data)
   * @param  mode   0 for command, non-zero for character data
   * @retval None
   */
-static void _lcd_write4(uint8_t nibble, uint8_t mode)
+static void lcd_write4(uint8_t nibble, uint8_t mode)
 {
   uint8_t data = (nibble & 0x0FU) << LCD_NIBBLE_SHIFT;
   data |= mode ? LCD_PIN_RS : 0U;
@@ -65,8 +74,8 @@ static void _lcd_write4(uint8_t nibble, uint8_t mode)
   */
 static void lcd_send(uint8_t value, uint8_t mode)
 {
-  _lcd_write4((value >> 4) & 0x0FU, mode);
-  _lcd_write4(value & 0x0FU, mode);
+  lcd_write4((value >> 4) & 0x0FU, mode);
+  lcd_write4(value & 0x0FU, mode);
 }
 
 /**
@@ -77,15 +86,15 @@ static void lcd_send(uint8_t value, uint8_t mode)
   *
   * @retval None
   */
-static void _lcd_hd44780_reset(void)
+static void lcd_hd44780_reset(void)
 {
-  _lcd_write4(0x03, 0);
+  lcd_write4(0x03, 0);
   delay_ms(5);
-  _lcd_write4(0x03, 0);
+  lcd_write4(0x03, 0);
   delay_us(150);
-  _lcd_write4(0x03, 0);
+  lcd_write4(0x03, 0);
   delay_us(150);
-  _lcd_write4(0x02, 0);
+  lcd_write4(0x02, 0);
   delay_us(150);
 }
 
@@ -98,7 +107,7 @@ static void _lcd_hd44780_reset(void)
   *
   * @retval None
   */
-static void _lcd_hd44780_configure(void)
+static void lcd_hd44780_configure(void)
 {
   lcd_send(LCD_CMD_FUNCTION_SET_4BIT, 0);
   lcd_send(LCD_CMD_DISPLAY_ON, 0);
@@ -110,8 +119,8 @@ static void _lcd_hd44780_configure(void)
 void lcd_init(void)
 {
   i2c_set_target(LCD_I2C_ADDR);
-  _lcd_hd44780_reset();
-  _lcd_hd44780_configure();
+  lcd_hd44780_reset();
+  lcd_hd44780_configure();
 }
 
 void lcd_clear(void)

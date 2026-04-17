@@ -1,27 +1,36 @@
 /**
-  ******************************************************************************
-  * @file    rp2350_ir.c
-  * @author  Kevin Thomas
-  * @brief   NEC IR receiver driver implementation for RP2350.
-  *
-  *          Decodes NEC infrared remote frames using bare-metal SIO
-  *          GPIO input and TIMER0 microsecond timestamps. Validates
-  *          the 32-bit frame (addr, ~addr, cmd, ~cmd) and returns
-  *          the command byte.
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2026 Kevin Thomas.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-
+ * @file rp2350_ir.c
+ * @brief NEC IR receiver driver implementation for RP2350.
+ * @author Kevin Thomas
+ * @date 2026
+ *
+ * Decodes NEC infrared remote frames using bare-metal SIO
+ * GPIO input and TIMER0 microsecond timestamps. Validates
+ * the 32-bit frame (addr, ~addr, cmd, ~cmd) and returns
+ * the command byte.
+ *
+ * MIT License
+ *
+ * Copyright (c) 2026 Kevin Thomas
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 #include "rp2350_ir.h"
 
 /**
@@ -135,7 +144,7 @@ static bool read_nec_bit(uint8_t *data, uint8_t bit)
   * @param  data 4-byte array filled with received data
   * @retval bool true if all bits read, false on timeout
   */
-static bool _read_32_bits(uint8_t *data)
+static bool read_32_bits(uint8_t *data)
 {
   for (uint8_t i = 0; i < NEC_DATA_BITS; i++)
     if (!read_nec_bit(data, i))
@@ -236,7 +245,7 @@ int ir_getkey(void)
   uint8_t data[NEC_DATA_BYTES] = {0};
   if (!wait_leader())
     return -1;
-  if (!_read_32_bits(data))
+  if (!read_32_bits(data))
     return -1;
   int result = validate_nec_frame(data);
   if (result < 0)

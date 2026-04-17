@@ -39,13 +39,13 @@
  * @param port I2C port number (0 for i2c0, 1 for i2c1)
  * @return i2c_inst_t* Pointer to the corresponding I2C hardware instance
  */
-static i2c_inst_t *_get_i2c_inst(uint8_t port) {
+static i2c_inst_t *get_i2c_inst(uint8_t port) {
     return port == 0 ? i2c0 : i2c1;
 }
 
 void i2c_driver_init(uint8_t port, uint32_t sda_pin, uint32_t scl_pin,
                      uint32_t baud_hz) {
-    i2c_inst_t *inst = _get_i2c_inst(port);
+    i2c_inst_t *inst = get_i2c_inst(port);
     i2c_init(inst, baud_hz);
     gpio_set_function(sda_pin, GPIO_FUNC_I2C);
     gpio_set_function(scl_pin, GPIO_FUNC_I2C);
@@ -54,7 +54,7 @@ void i2c_driver_init(uint8_t port, uint32_t sda_pin, uint32_t scl_pin,
 }
 
 bool i2c_driver_probe(uint8_t port, uint8_t addr) {
-    i2c_inst_t *inst = _get_i2c_inst(port);
+    i2c_inst_t *inst = get_i2c_inst(port);
     uint8_t dummy;
     return i2c_read_blocking(inst, addr, &dummy, 1, false) >= 0;
 }

@@ -1,27 +1,36 @@
 /**
-  ******************************************************************************
-  * @file    rp2350_spi.c
-  * @author  Kevin Thomas
-  * @brief   SPI0 master driver implementation for RP2350.
-  *
-  *          Full-duplex SPI0 master on GPIO16 (MISO), GPIO17 (CS),
-  *          GPIO18 (SCK), GPIO19 (MOSI). Motorola SPI frame format,
-  *          8-bit data, CPOL=0, CPHA=0, 1 MHz clock from 12 MHz
-  *          clk_peri.
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2026 Kevin Thomas.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-
+ * @file rp2350_spi.c
+ * @brief SPI0 master driver implementation for RP2350.
+ * @author Kevin Thomas
+ * @date 2026
+ *
+ * Full-duplex SPI0 master on GPIO16 (MISO), GPIO17 (CS),
+ * GPIO18 (SCK), GPIO19 (MOSI). Motorola SPI frame format,
+ * 8-bit data, CPOL=0, CPHA=0, 1 MHz clock from 12 MHz
+ * clk_peri.
+ *
+ * MIT License
+ *
+ * Copyright (c) 2026 Kevin Thomas
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 #include "rp2350_spi.h"
 
 /**
@@ -115,7 +124,7 @@ static void cs_init(void)
   * @brief  Configure SSPCR0 for 8-bit Motorola SPI, SCR=0.
   * @retval None
   */
-static void _configure_cr0(void)
+static void configure_cr0(void)
 {
   uint32_t value = 0;
   value |= (SPI_SSPCR0_DSS_8BIT << SPI_SSPCR0_DSS_SHIFT);
@@ -194,7 +203,7 @@ void spi_init(void)
   configure_all_pads();
   configure_all_funcsel();
   cs_init();
-  _configure_cr0();
+  configure_cr0();
   configure_prescaler();
   enable_spi();
 }

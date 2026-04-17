@@ -95,7 +95,7 @@ static bool read_nec_bit(uint8_t *data, int i) {
  * @param data 4-byte array filled with the received address and command
  * @return bool true if all 32 bits were read, false on timeout
  */
-static bool _read_32_bits(uint8_t *data) {
+static bool read_32_bits(uint8_t *data) {
     for (int i = 0; i < 32; ++i)
         if (!read_nec_bit(data, i)) return false;
     return true;
@@ -125,6 +125,6 @@ void ir_init(uint8_t pin) {
 int ir_getkey(void) {
     if (!wait_leader()) return -1;
     uint8_t data[4] = {0, 0, 0, 0};
-    if (!_read_32_bits(data)) return -1;
+    if (!read_32_bits(data)) return -1;
     return validate_nec_frame(data);
 }

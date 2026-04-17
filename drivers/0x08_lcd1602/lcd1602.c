@@ -39,7 +39,7 @@
  * @param port I2C port number (0 for i2c0, 1 for i2c1)
  * @return i2c_inst_t* Pointer to the corresponding I2C hardware instance
  */
-static i2c_inst_t *_get_i2c_inst(uint8_t port) {
+static i2c_inst_t *get_i2c_inst(uint8_t port) {
     return port == 0 ? i2c0 : i2c1;
 }
 
@@ -88,7 +88,7 @@ static void pcf_pulse_enable(uint8_t data) {
  * @param nibble Lower 4 bits to write
  * @param mode   0 for command, non-zero for character data
  */
-static void _lcd_write4(uint8_t nibble, uint8_t mode) {
+static void lcd_write4(uint8_t nibble, uint8_t mode) {
     uint8_t data = (nibble & 0x0F) << lcd_nibble_shift;
     data |= mode ? PIN_RS : 0;
     data |= lcd_backlight_mask;
@@ -102,8 +102,8 @@ static void _lcd_write4(uint8_t nibble, uint8_t mode) {
  * @param mode  0 for command, non-zero for character data
  */
 static void lcd_send(uint8_t value, uint8_t mode) {
-    _lcd_write4((value >> 4) & 0x0F, mode);
-    _lcd_write4(value & 0x0F, mode);
+    lcd_write4((value >> 4) & 0x0F, mode);
+    lcd_write4(value & 0x0F, mode);
 }
 
 /**
@@ -116,7 +116,7 @@ static void lcd_send(uint8_t value, uint8_t mode) {
  */
 static void lcd_store_config(uint8_t i2c_port, uint8_t pcf_addr,
                               int nibble_shift, uint8_t backlight_mask) {
-    lcd_i2c = _get_i2c_inst(i2c_port);
+    lcd_i2c = get_i2c_inst(i2c_port);
     lcd_addr = pcf_addr;
     lcd_nibble_shift = nibble_shift;
     lcd_backlight_mask = backlight_mask;
@@ -125,14 +125,14 @@ static void lcd_store_config(uint8_t i2c_port, uint8_t pcf_addr,
 /**
  * @brief Execute the HD44780 4-bit mode power-on reset sequence
  */
-static void _lcd_hd44780_reset(void) {
-    _lcd_write4(0x03, 0);
+static void lcd_hd44780_reset(void) {
+    lcd_write4(0x03, 0);
     sleep_ms(5);
-    _lcd_write4(0x03, 0);
+    lcd_write4(0x03, 0);
     sleep_us(150);
-    _lcd_write4(0x03, 0);
+    lcd_write4(0x03, 0);
     sleep_us(150);
-    _lcd_write4(0x02, 0);
+    lcd_write4(0x02, 0);
     sleep_us(150);
 }
 
@@ -142,7 +142,7 @@ static void _lcd_hd44780_reset(void) {
  * Sets 4-bit mode with 2 display lines, turns the display on with
  * cursor hidden, clears the screen, and selects left-to-right entry mode.
  */
-static void _lcd_hd44780_configure(void) {
+static void lcd_hd44780_configure(void) {
     lcd_send(0x28, 0);
     lcd_send(0x0C, 0);
     lcd_send(0x01, 0);
@@ -153,30 +153,14 @@ static void _lcd_hd44780_configure(void) {
 void lcd_i2c_init(uint8_t i2c_port, uint8_t pcf_addr, int nibble_shift,
                   uint8_t backlight_mask) {
     lcd_store_config(i2c_port, pcf_addr, nibble_shift, backlight_mask);
-    _lcd_hd44780_reset();
-    _lcd_hd44780_configure();
+    lcd_hd44780_reset();
+    lcd_hd44780_configure();
 }
 
-/**
- * @brief Initialize I2C bus and the LCD driver in one call
- *
- * Configures the I2C peripheral at the given baud rate, assigns GPIO
- * alternate functions for SDA and SCL with internal pull-ups, and then
- * performs the full HD44780 4-bit initialization sequence through the
- * PCF8574 backpack.
- *
- * @param i2c_port       I2C port number (0 for i2c0, 1 for i2c1)
- * @param sda_pin        GPIO pin number for SDA
- * @param scl_pin        GPIO pin number for SCL
- * @param baud_hz        I2C clock rate in Hz (e.g. 100000)
- * @param pcf_addr       PCF8574 I2C address (commonly 0x27 or 0x3F)
- * @param nibble_shift   Bit shift applied to 4-bit nibbles (commonly 4 or 0)
- * @param backlight_mask PCF8574 bit mask that controls the backlight
- */
 void lcd_init(uint8_t i2c_port, uint32_t sda_pin, uint32_t scl_pin,
               uint32_t baud_hz, uint8_t pcf_addr, int nibble_shift,
               uint8_t backlight_mask) {
-    i2c_inst_t *i2c = _get_i2c_inst(i2c_port);
+    i2c_inst_t *i2c = get_i2c_inst(i2c_port);
     i2c_init(i2c, baud_hz);
     gpio_set_function(sda_pin, GPIO_FUNC_I2C);
     gpio_set_function(scl_pin, GPIO_FUNC_I2C);
