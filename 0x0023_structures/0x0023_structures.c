@@ -122,8 +122,12 @@ static void poll_ir(simple_led_ctrl_t *leds) {
  */
 static simple_led_ctrl_t make_default_leds(void) {
     simple_led_ctrl_t leds = {
-        .led1_pin = 16, .led2_pin = 17, .led3_pin = 18,
-        .led1_state = false, .led2_state = false, .led3_state = false
+        .led1_pin = 16, 
+        .led2_pin = 17, 
+        .led3_pin = 18,
+        .led1_state = false, 
+        .led2_state = false, 
+        .led3_state = false
     };
     return leds;
 }
