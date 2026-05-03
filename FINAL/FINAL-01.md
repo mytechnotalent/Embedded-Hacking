@@ -256,12 +256,3 @@ By submitting this final project, you certify that:
 2. You have not shared answers with other students
 3. You understand the ethical implications of embedded security research
 4. You will only use these skills for lawful purposes
-
----
-
-## 📚 Reference Material
-
-- Full scenario narrative and step-by-step instructions: [WEEK14-1.md](WEEK14-1.md)
-- ARM Cortex-M33 Technical Reference Manual
-- IEEE 754 single-precision floating-point standard
-- Ghidra documentation: [https://ghidra-sre.org/](https://ghidra-sre.org/)

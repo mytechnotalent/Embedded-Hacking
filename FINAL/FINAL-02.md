@@ -289,13 +289,3 @@ By submitting this examination, you certify that:
 3. You understand the ethical implications of embedded security research
 4. You understand that the skills demonstrated here may only be used in authorized, lawful contexts
 5. You recognize the difference between academic exercises and real-world operations
-
----
-
-## 📚 Reference Material
-
-- Full scenario narrative, wiring diagrams, and step-by-step instructions: [WEEK14-2.md](WEEK14-2.md)
-- ARM Cortex-M33 Technical Reference Manual
-- ARM Thumb-2 Instruction Set Reference
-- Ghidra documentation: [https://ghidra-sre.org/](https://ghidra-sre.org/)
-- STUXNET analysis: Langner, Ralph. "To Kill a Centrifuge" (for Q1 reference)
