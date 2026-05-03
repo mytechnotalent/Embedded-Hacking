@@ -38,10 +38,38 @@
 
 extern int main(void);
 
+extern uint32_t __data_lma;
+extern uint32_t __data_start;
+extern uint32_t __data_end;
+extern uint32_t __bss_start;
+extern uint32_t __bss_end;
+
+static void _data_copy_init(void)
+{
+  uint32_t *src = &__data_lma;
+  uint32_t *dst = &__data_start;
+  while (dst < &__data_end)
+    *dst++ = *src++;
+}
+
+static void _bss_zero_init(void)
+{
+  uint32_t *dst = &__bss_start;
+  while (dst < &__bss_end)
+    *dst++ = 0U;
+}
+
+void _ram_init(void)
+{
+  stack_init();
+  _data_copy_init();
+  _bss_zero_init();
+}
+
 void __attribute__((naked, noreturn)) Reset_Handler(void)
 {
   __asm__ volatile (
-    "bl stack_init\n\t"
+    "bl _ram_init\n\t"
     "bl xosc_init\n\t"
     "bl xosc_enable_peri_clk\n\t"
     "bl reset_init_subsystem\n\t"

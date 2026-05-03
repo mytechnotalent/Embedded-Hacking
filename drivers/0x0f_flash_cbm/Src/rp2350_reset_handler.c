@@ -38,26 +38,13 @@
 
 extern int main(void);
 
-/**
-  * @brief  Linker-defined symbol: flash LMA of .data section.
-  */
 extern uint32_t __data_lma;
-
-/**
-  * @brief  Linker-defined symbol: RAM VMA start of .data section.
-  */
 extern uint32_t __data_start;
-
-/**
-  * @brief  Linker-defined symbol: RAM VMA end of .data section.
-  */
 extern uint32_t __data_end;
+extern uint32_t __bss_start;
+extern uint32_t __bss_end;
 
-/**
-  * @brief  Copy initialized data and RAM-resident code from flash to RAM.
-  * @retval None
-  */
-static void data_copy_init(void)
+static void _data_copy_init(void)
 {
   uint32_t *src = &__data_lma;
   uint32_t *dst = &__data_start;
@@ -65,16 +52,24 @@ static void data_copy_init(void)
     *dst++ = *src++;
 }
 
-void ram_init(void)
+static void _bss_zero_init(void)
+{
+  uint32_t *dst = &__bss_start;
+  while (dst < &__bss_end)
+    *dst++ = 0U;
+}
+
+void _ram_init(void)
 {
   stack_init();
-  data_copy_init();
+  _data_copy_init();
+  _bss_zero_init();
 }
 
 void __attribute__((naked, noreturn)) Reset_Handler(void)
 {
   __asm__ volatile (
-    "bl ram_init\n\t"
+    "bl _ram_init\n\t"
     "bl xosc_init\n\t"
     "bl xosc_enable_peri_clk\n\t"
     "bl reset_init_subsystem\n\t"

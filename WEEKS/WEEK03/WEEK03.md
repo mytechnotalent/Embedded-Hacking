@@ -130,8 +130,8 @@ Think of the bootrom like the BIOS in your computer - it's the first thing that 
 ### What Does the Bootrom Do?
 
 1. **Initialize Hardware**: Sets up clocks, resets peripherals
-2. **Check Boot Sources**: Looks for valid firmware in flash
-3. **Validate Firmware**: Checks for magic markers (IMAGE_DEF)
+2. **Check Boot Sources (Discovery)**: Scans configured boot sources (for this course: flash) to find a candidate firmware image region.
+3. **Validate Firmware (Validation)**: Verifies that candidate by finding IMAGE_DEF start/end markers and parsing the block.
 4. **Configure Flash**: Sets up the XIP interface
 5. **Jump to Your Code**: Reads the vector table and jumps to your reset handler
 
@@ -157,6 +157,54 @@ Here's what it looks like in the Pico SDK:
 **The magic numbers:**
 - `0xffffded3` = Start marker ("I'm a valid Pico binary!")
 - `0xab123579` = End marker ("End of the header block")
+
+### See This Exact Block in Your ELF (Commands + Real Output)
+
+Use these commands to view the IMAGE_DEF bytes directly in the ELF:
+
+```powershell
+arm-none-eabi-objdump -s --start-address=0x1000013c --stop-address=0x10000150 build/0x0001_hello-world.elf
+arm-none-eabi-objdump -s --start-address=0x10000130 --stop-address=0x10000154 build/0x0001_hello-world.elf
+arm-none-eabi-gdb build/0x0001_hello-world.elf -ex "x/20bx 0x1000013c" -ex quit
+```
+
+Actual output from this lesson build:
+
+```text
+build/0x0001_hello-world.elf:     file format elf32-littlearm
+
+Contents of section .text:
+ 1000013c 42012110 ff010000 b01b0000 793512ab  B.!.........y5..
+ 1000014c 4ff00000                             O...
+
+build/0x0001_hello-world.elf:     file format elf32-littlearm
+
+Contents of section .text:
+ 10000130 a0010010 90a31ae7 d3deffff 42012110  ............B.!.
+ 10000140 ff010000 b01b0000 793512ab 4ff00000  ........y5..O...
+ 10000150 1e490860                             .I.`
+```
+
+Command 1 explained (`--start-address=0x1000013c --stop-address=0x10000150`):
+- Starts at `0x1000013c`, so it does **not** include the start marker at `0x10000138` (`d3deffff`).
+- Shows IMAGE_DEF body fields and the end marker:
+  - `42012110` = `42 01 21 10` (item type/size + secure mode field)
+  - `ff010000` = last-item marker + size + pad
+  - `b01b0000` = next word in the block payload for this build
+  - `793512ab` = `PICOBIN_BLOCK_MARKER_END` (`0xab123579` in little-endian)
+- `4ff00000` at `0x1000014c` is already the next instruction word after IMAGE_DEF.
+
+Command 2 explained (`--start-address=0x10000130 --stop-address=0x10000154`):
+- Starts earlier, so it captures context **and** both IMAGE_DEF markers.
+- `a0010010 90a31ae7` = binary-info context before IMAGE_DEF.
+- `d3deffff` at `0x10000138` = `PICOBIN_BLOCK_MARKER_START`.
+- `793512ab` at `0x10000148` = `PICOBIN_BLOCK_MARKER_END`.
+- `4ff00000 1e490860` = code words after the IMAGE_DEF block.
+- This command proves the full block location for this build: `0x10000138` to `0x1000014b`.
+
+Important: IMAGE_DEF offset can vary by build. In this build, the start marker `d3deffff`
+is at `0x10000138` (not `0x1000013c`), so always search for the marker bytes instead of
+assuming a fixed address.
 
 > 📖 **Datasheet Reference:** Block markers are defined in Section 5.1.5.1 "Blocks" (p. 357): *"it must begin with the 4 byte magic header, PICOBIN_BLOCK_MARKER_START (0xffffded3)"* and *"it must end with the 4 byte magic footer, PICOBIN_BLOCK_MARKER_END (0xab123579)"*. The minimum Arm IMAGE_DEF is detailed in Section 5.9.5.1 (p. 429).
 
@@ -350,7 +398,7 @@ arm-none-eabi-gdb build\0x0001_hello-world.elf
 **Connect to target:**
 
 ```gdb
-(gdb) target remote :3333
+(gdb) target extended-remote :3333
 (gdb) monitor reset halt
 ```
 
@@ -383,7 +431,7 @@ Let's look at the first 4 entries of the vector table at `0x10000000`:
 
 ### Step 2: Understanding What We See
 
-> 🔄 **REVIEW:** In Week 1, we saw `sp = 0x20081fc8` when stopped at `main`. That's *after* some stack was used during boot. Here we see the *initial* stack pointer before any code runs!
+> 🔄 **REVIEW:** In Weeks 1-2, we saw both `sp = 0x20082000` at the clean breakpoint at `main` and lower values like `0x20081fc8` or `0x20081ff8` after additional stack activity. Here we are looking at the *initial* stack pointer from the vector table before any code runs.
 
 Let's decode each value:
 
@@ -491,39 +539,39 @@ Let's look at more instructions to see the full picture:
 (gdb) x/20i 0x1000015c
 ```
 
-**You should see something like:**
+**You should see:**
 
 ```
-0x1000015c <_reset_handler>: mov.w   r0, #3489660928 @ 0xd0000000
-0x10000160 <_reset_handler+4>:       ldr     r0, [r0, #0]
-0x10000162 <_reset_handler+6>:
-cbz r0, 0x1000016a <hold_non_core0_in_bootrom+6>
-0x10000164 <hold_non_core0_in_bootrom>:      mov.w   r0, #0
-0x10000168 <hold_non_core0_in_bootrom+4>:
-b.n 0x10000150 <_enter_vtable_in_r0>
-0x1000016a <hold_non_core0_in_bootrom+6>:
-add r4, pc, #52     @ (adr r4, 0x100001a0 <data_cpy_table>)
-0x1000016c <hold_non_core0_in_bootrom+8>:    ldmia   r4!, {r1, r2, r3}
-0x1000016e <hold_non_core0_in_bootrom+10>:   cmp     r1, #0
-0x10000170 <hold_non_core0_in_bootrom+12>:
-beq.n       0x10000178 <hold_non_core0_in_bootrom+20>
-0x10000172 <hold_non_core0_in_bootrom+14>:
-bl  0x1000019a <data_cpy>
-0x10000176 <hold_non_core0_in_bootrom+18>:
-b.n 0x1000016c <hold_non_core0_in_bootrom+8>
-0x10000178 <hold_non_core0_in_bootrom+20>:
-ldr r1, [pc, #84]   @ (0x100001d0 <data_cpy_table+48>)
-0x1000017a <hold_non_core0_in_bootrom+22>:
-ldr r2, [pc, #88]   @ (0x100001d4 <data_cpy_table+52>)
-0x1000017c <hold_non_core0_in_bootrom+24>:   movs    r0, #0
-0x1000017e <hold_non_core0_in_bootrom+26>:
-b.n 0x10000182 <bss_fill_test>
-0x10000180 <bss_fill_loop>:  stmia   r1!, {r0}
-0x10000182 <bss_fill_test>:  cmp     r1, r2
-0x10000184 <bss_fill_test+2>:        bne.n   0x10000180 <bss_fill_loop>
-0x10000186 <platform_entry>:
-ldr r1, [pc, #80]   @ (0x100001d8 <data_cpy_table+56>)
-0x10000188 <platform_entry+2>:       blx     r1
+  0x1000015c <_reset_handler>: mov.w   r0, #3489660928 @ 0xd0000000
+  0x10000160 <_reset_handler+4>:       ldr     r0, [r0, #0]
+  0x10000162 <_reset_handler+6>:
+   cbz r0, 0x1000016a <hold_non_core0_in_bootrom+6>
+  0x10000164 <hold_non_core0_in_bootrom>:      mov.w   r0, #0
+  0x10000168 <hold_non_core0_in_bootrom+4>:
+   b.n 0x10000150 <_enter_vtable_in_r0>
+  0x1000016a <hold_non_core0_in_bootrom+6>:
+   add r4, pc, #52     @ (adr r4, 0x100001a0 <data_cpy_table>)
+  0x1000016c <hold_non_core0_in_bootrom+8>:    ldmia   r4!, {r1, r2, r3}
+  0x1000016e <hold_non_core0_in_bootrom+10>:   cmp     r1, #0
+  0x10000170 <hold_non_core0_in_bootrom+12>:
+   beq.n       0x10000178 <hold_non_core0_in_bootrom+20>
+  0x10000172 <hold_non_core0_in_bootrom+14>:
+   bl  0x1000019a <data_cpy>
+  0x10000176 <hold_non_core0_in_bootrom+18>:
+   b.n 0x1000016c <hold_non_core0_in_bootrom+8>
+  0x10000178 <hold_non_core0_in_bootrom+20>:
+   ldr r1, [pc, #84]   @ (0x100001d0 <data_cpy_table+48>)
+  0x1000017a <hold_non_core0_in_bootrom+22>:
+   ldr r2, [pc, #88]   @ (0x100001d4 <data_cpy_table+52>)
+  0x1000017c <hold_non_core0_in_bootrom+24>:   movs    r0, #0
+  0x1000017e <hold_non_core0_in_bootrom+26>:
+   b.n 0x10000182 <bss_fill_test>
+  0x10000180 <bss_fill_loop>:  stmia   r1!, {r0}
+  0x10000182 <bss_fill_test>:  cmp     r1, r2
+  0x10000184 <bss_fill_test+2>:        bne.n   0x10000180 <bss_fill_loop>
+  0x10000186 <platform_entry>:
+   ldr r1, [pc, #80]   @ (0x100001d8 <data_cpy_table+56>)
+  0x10000188 <platform_entry+2>:       blx     r1
 ```
 
 > 💡 **About GDB Label Offsets:** You may notice GDB shows instructions like `<hold_non_core0_in_bootrom+8>` for code that is clearly part of the data copy loop, not the core-parking function. This is **not** a GDB bug or "symbol snapping" — `hold_non_core0_in_bootrom` is a **real label** defined in the SDK's `crt0.S` (line 454). The `+8` offset simply means "8 bytes past that label." GDB always displays addresses relative to the nearest preceding symbol. The data copy code falls through from the `cbz` branch at the core check, landing right after the `hold_non_core0_in_bootrom` label, hence the offset.
@@ -540,22 +588,23 @@ The reset handler performs several phases:
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│  PHASE 2: Data Copy (0x1000016a - 0x10000176)                   │
+│  PHASE 2: Data Copy Setup & Loop (0x1000016a - 0x10000176)      │
+│  - Set up the data_cpy_table pointer and load each copy triplet │
 │  - Copy initialized variables from flash to RAM                 │
-│  - Uses data_cpy_table for source/destination info              │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│  PHASE 3: BSS Clear (0x10000178 - 0x10000184)                   │
+│  PHASE 3: BSS Setup & Clear (0x10000178 - 0x10000184)           │
+│  - Load the BSS start/end addresses into r1 and r2              │
+│  - GDB labels those literals as `data_cpy_table+48/+52`         │
 │  - Zero out all uninitialized global variables                  │
-│  - C standard requires BSS to start at zero                     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│  PHASE 4: Runtime Init & Main (0x10000186+)                     │
-│  - Call runtime_init() for SDK setup                            │
-│  - Call __libc_init_array() for C++ constructors                │
-│  - Finally call main()!                                         │
+│  PHASE 4: Platform Entry Begins (0x10000186 - 0x10000188 shown) │
+│  - Load the runtime_init() pointer from the table               │
+│  - Branch to runtime_init() with `blx r1`                       │
+│  - `main()` and `exit()` appear a few instructions later        │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -667,6 +716,8 @@ ldr r2, [pc, #88]   @ (0x100001d4 <data_cpy_table+52>)
 b.n 0x10000182 <bss_fill_test>
 0x10000180 <bss_fill_loop>:  stmia   r1!, {r0}
 ```
+
+The first two `ldr` instructions are still part of the **BSS clear setup**, even though GDB shows the source words as `data_cpy_table+48` and `data_cpy_table+52`. That label means the two literal words live in the same nearby constant block as the copy-table entries; it does **not** mean the code is still performing `.data` copies. At this point, `r1` becomes the BSS start address, `r2` becomes the BSS end address, and the loop beginning at `0x10000180` zeros that range.
 
 ### Understanding the Loop
 
@@ -1018,7 +1069,7 @@ Ghidra can visualize the call flow:
 
 1. With `_reset_handler` selected, go to **Window → Function Call Graph**
 2. This shows a visual graph of all function calls from the reset handler
-3. You can see the path: `_reset_handler` → `platform_entry` → `main`
+3. You will see `_reset_handler` at the top with arrows going down to its four direct callees: `data_cpy`, `runtime_init`, `main`, and `exit`
 
 ### Comparing GDB and Ghidra for Boot Analysis
 
@@ -1156,21 +1207,18 @@ Ghidra can visualize the call flow:
    - Is it a valid code address (starts with `0x1000...`)?
    - What handler does it point to?
 
-### Exercise 4: Find Your Main Function
+### Exercise 4: Find Your Main Function and Trace Back
 
 1. Use `info functions main` to find main
 2. Examine 10 instructions at that address
 3. Identify the first function call in main
 4. What does that function do?
+5. When stopped at main, examine `$lr` (link register)
+6. What address is stored there?
+7. Disassemble that address - what function is it?
+8. This shows you where main was called from!
 
-### Exercise 5: Trace Back from Main
-
-1. When stopped at main, examine `$lr` (link register)
-2. What address is stored there?
-3. Disassemble that address - what function is it?
-4. This shows you where main was called from!
-
-### Exercise 6: Ghidra Boot Analysis
+### Exercise 5: Ghidra Boot Analysis
 
 1. In Ghidra, navigate to `_reset_handler`
 2. Use **Window → Function Call Graph** to visualize the call tree
@@ -1395,6 +1443,180 @@ The startup code lives in:
 
 The bootrom source is available at:
 https://github.com/raspberrypi/pico-bootrom-rp2350
+
+---
+
+## 🔬 Part 17: Proving the Boot Sequence with objdump
+
+Everything we have learned about the boot sequence can be proven directly from the compiled ELF binary using `arm-none-eabi-objdump`. The bootrom is not in your ELF (it is mask ROM burned into the chip at `0x00000000`), but everything your firmware provides — the vector table, the IMAGE_DEF, and the reset handler — lives in your ELF starting at `0x10000000`.
+
+### Step 1: List All Sections
+
+```bash
+arm-none-eabi-objdump -h build/0x0001_hello-world.elf
+```
+
+Expected output (key sections):
+
+```
+Idx Name          Size      VMA       LMA
+  0 .text         000019cc  10000000  10000000
+  3 .binary_info  0000002c  10001b20  10001b20
+  4 .ram_vector_table 00000110  20000000  20000000
+  6 .data         0000019c  20000110  10001b4c
+```
+
+> 💡 The Pico SDK merges `.vectors`, `.embedded_block`, and `.reset` all into `.text` at `0x10000000`. They are not separate named ELF sections — they are sub-regions inside `.text`.
+
+### Step 2: Dump the First 0x150 Bytes of Flash — One Command, Zero Skips
+
+```bash
+arm-none-eabi-objdump -s --start-address=0x10000000 --stop-address=0x10000150 build/0x0001_hello-world.elf
+```
+
+Raw output from that command:
+
+```
+ 10000000 00200820 5d010010 1b010010 1d010010  . . ]...........
+ 10000010 11010010 11010010 11010010 11010010  ................
+ 10000020 11010010 11010010 11010010 11010010  ................
+ 10000030 11010010 11010010 11010010 11010010  ................
+ 10000040 11010010 11010010 11010010 11010010  ................
+ 10000050 11010010 11010010 11010010 11010010  ................
+ 10000060 11010010 11010010 11010010 11010010  ................
+ 10000070 11010010 11010010 11010010 11010010  ................
+ 10000080 11010010 11010010 11010010 11010010  ................
+ 10000090 11010010 11010010 11010010 11010010  ................
+ 100000a0 11010010 11010010 11010010 11010010  ................
+ 100000b0 11010010 11010010 11010010 11010010  ................
+ 100000c0 11010010 11010010 11010010 11010010  ................
+ 100000d0 11010010 11010010 11010010 11010010  ................
+ 100000e0 11010010 11010010 11010010 11010010  ................
+ 100000f0 11010010 11010010 11010010 11010010  ................
+ 10000100 11010010 11010010 11010010 11010010  ................
+ 10000110 eff30580 103800be 00be00be 00be00be  .....8..........
+ 10000120 00be00be f2eb8871 201b0010 4c1b0010  .......q ...L...
+ 10000130 a0010010 90a31ae7 d3deffff 42012110  ............B.!.
+ 10000140 ff010000 b01b0000 793512ab           ........y5..
+```
+
+Every address annotated, no skips:
+
+#### 0x10000000 — Vector Table, Mandatory Entries
+
+| Address | Raw Bytes (LE) | Decoded | What it is |
+|---------|----------------|---------|------------|
+| `0x10000000` | `00 20 08 20` | `0x20082000` | **Initial SP** — top of SCRATCH_Y RAM. Bootrom loads MSP from here before doing anything else. |
+| `0x10000004` | `5d 01 00 10` | `0x1000015d` | **Reset_Handler** address with Thumb bit set. Strip bit 0 → real address `0x1000015c`. Bootrom jumps here. |
+| `0x10000008` | `1b 01 00 10` | `0x1000011b` | **NMI** handler address (Thumb, → `0x1000011a`). |
+| `0x1000000c` | `1d 01 00 10` | `0x1000011d` | **HardFault** handler address (Thumb, → `0x1000011c`). |
+
+#### 0x10000010–0x1000010f — Vector Table, IRQ Slots (all 52 external IRQs)
+
+```
+ 10000010 11010010 11010010 ...(repeats through 0x1000010f)...
+```
+
+Every 4-byte word here is `11 01 00 10` = pointer `0x10000111`.
+That is the **default IRQ handler** address with Thumb bit set (→ `0x10000110`).
+The RP2350 Cortex-M33 has 16 system vectors (offsets 0x00–0x3f) plus up to 52
+external IRQ vectors (offsets 0x40–0xff = addresses `0x10000040`–`0x1000010f`).
+Every IRQ the application does not register gets this default handler pointer.
+This block is 240 bytes (`0x10000010` to `0x1000010f`) of nothing but that one
+repeated pointer.
+
+#### 0x10000110–0x10000127 — Default IRQ Handler Code
+
+```
+ 10000110 eff30580 103800be 00be00be 00be00be
+ 10000120 00be00be f2eb8871
+```
+
+| Address | Bytes | ARM Thumb-2 Instruction | What it does |
+|---------|-------|-------------------------|--------------|
+| `0x10000110` | `ef f3 05 80` | `MRS r0, IPSR` | Read the Interrupt Program Status Register into r0. The low 9 bits = the active vector number. |
+| `0x10000114` | `10 38` | `SUBS r0, #16` | Vector 16 = IRQ0, so subtract 16 to convert vector number → IRQ index. |
+| `0x10000116` | `00 be` | `BKPT #0` | Software breakpoint. If a debugger is attached, it stops here and you can inspect r0 to see which IRQ fired. If no debugger is attached, the CPU enters a fault loop and the chip hangs. |
+| `0x10000118`–`0x10000127` | `00 be` ×12 | `BKPT #0` repeating | Alignment padding to the next 4-byte boundary. |
+
+This is the **entire** default IRQ handler. It is intentionally minimal: if your
+code triggers an IRQ you did not register, it crashes visibly instead of silently.
+
+#### 0x10000128–0x1000013b — Binary Info Pointer Table
+
+```
+ 10000120              201b0010 4c1b0010
+ 10000130 a0010010 90a31ae7
+```
+
+| Address | Bytes (LE) | Decoded Value | What it is |
+|---------|------------|---------------|------------|
+| `0x10000128` | `20 1b 00 10` | `0x10001b20` | Pointer to **start** of `.binary_info` data section in flash. |
+| `0x1000012c` | `4c 1b 00 10` | `0x10001b4c` | Pointer to **end** of `.binary_info` data section in flash. |
+| `0x10000130` | `a0 01 00 10` | `0x100001a0` | Pointer to `binary_info_callback` function. |
+| `0x10000134` | `90 a3 1a e7` | (magic marker) | `BINARY_INFO_MARKER_END` — marks the end of this pointer table. |
+
+`picotool` reads this table to extract the program name, version string, URL,
+and GPIO pin map from any compiled binary without running it.
+
+#### 0x10000138–0x1000014c — IMAGE_DEF Block (this build)
+
+```
+ 10000130 a0010010 90a31ae7 d3deffff 42012110
+ 10000140 ff010000 b01b0000 793512ab 4ff00000
+```
+
+| Address | Bytes | What it is |
+|---------|-------|------------|
+| `0x10000138` | `d3 de ff ff` | `PICOBIN_BLOCK_MARKER_START` — the bootrom scans flash for this exact 4-byte sequence to locate the IMAGE_DEF. |
+| `0x1000013c` | `42 01 21 10` | IMAGE_DEF content (image type, flags, version). |
+| `0x10000140` | `ff 01 00 00` | IMAGE_DEF content (continuation). |
+| `0x10000144` | `b0 1b 00 00` | IMAGE_DEF content (continuation). |
+| `0x10000148` | `79 35 12 ab` | `PICOBIN_BLOCK_MARKER_END` — bootrom stops scanning here. |
+
+The IMAGE_DEF sits at `0x10000138`–`0x1000014b` in this build,
+well within the 4 KB scan window the bootrom uses (Datasheet §5.9.5, p. 429).
+
+#### Full Flash Map: 0x10000000–0x1000015c
+
+```
+ 0x10000000–0x1000000f  Vector Table: mandatory entries (SP, Reset, NMI, HardFault)
+ 0x10000010–0x1000010f  Vector Table: 52 external IRQ slots → all point to default handler
+ 0x10000110–0x10000127  Default IRQ handler code (MRS / SUBS / BKPT)
+ 0x10000128–0x10000137  Binary info pointer table (start / end / callback / magic end)
+ 0x10000138–0x1000014b  IMAGE_DEF block (d3 de ff ff ... 79 35 12 ab)
+ 0x10000150–0x1000015b  (padding / alignment)
+ 0x1000015c             Reset_Handler (_reset_handler in crt0.S) ← bootrom jumps here
+```
+
+### Step 4: Confirmed Boot Sequence (proven from ELF)
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  PROVEN BOOT SEQUENCE (0x0001_hello-world)                      │
+├─────────────────────────────────────────────────────────────────┤
+│  1. Bootrom reads 0x10000000                                    │
+│     → SP  = 0x20082000  (offset +0x00 of vector table)          │
+│     → RST = 0x1000015d  (offset +0x04, Thumb → 0x1000015c)     │
+├─────────────────────────────────────────────────────────────────┤
+│  2. Bootrom scans first 4 kB for IMAGE_DEF                      │
+│     → Found at 0x10000138 (this build)                          │
+│     → Start marker: d3 de ff ff                                 │
+│     → End marker:   79 35 12 ab                                 │
+├─────────────────────────────────────────────────────────────────┤
+│  3. Bootrom jumps to reset handler at 0x1000015c                │
+│     → _reset_handler (crt0.S) runs                              │
+│     → Checks CPUID — Core 1 sent back to bootrom                │
+│     → Core 0: .data copied, .bss zeroed, platform_entry called  │
+├─────────────────────────────────────────────────────────────────┤
+│  4. platform_entry calls runtime_init → main → exit             │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+> 📖 **Datasheet References:**
+> - §5.1.5.1 (p. 357): Block markers `0xffffded3` (start) and `0xab123579` (end)
+> - §5.9.5 (p. 429): IMAGE_DEF must appear within first 4 kB of flash image
+> - §5.9.5.1 (p. 429): Bootrom enters via reset handler at vector table offset +4
 
 ---
 

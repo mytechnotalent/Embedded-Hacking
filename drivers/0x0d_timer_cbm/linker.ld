@@ -50,6 +50,7 @@ MEMORY
 PHDRS
 {
   text PT_LOAD FLAGS(5);
+  data PT_LOAD FLAGS(6);
 }
 
 /**
@@ -100,10 +101,28 @@ SECTIONS
   .bss (NOLOAD) :
   {
     . = ALIGN(4);
+    __bss_start = .;
     *(.bss*)
     *(COMMON)
     . = ALIGN(4);
+    __bss_end = .;
   } > RAM
+
+  /**
+    * Initialized data and RAM-resident code (LMA in flash, VMA in RAM).
+    * Startup copies from __data_lma to __data_start..__data_end.
+    */
+  .data :
+  {
+    . = ALIGN(4);
+    __data_start = .;
+    *(.ram_func*)
+    *(.data*)
+    . = ALIGN(4);
+    __data_end = .;
+  } > RAM AT> FLASH :data
+
+  __data_lma = LOADADDR(.data);
 
   /**
     * Non-secure stack symbols.

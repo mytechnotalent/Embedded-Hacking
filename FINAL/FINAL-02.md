@@ -261,9 +261,11 @@ These are the most frequent mistakes. Avoid them.
 
 ---
 
-## ⏰ Time Limit
+## ⏰ Deadline & Submission
 
-You have **4 hours** to complete this examination.
+- This is a **take-home final project**. See the course syllabus for the due date.
+- Submit all deliverables as a single ZIP file or as specified by your instructor.
+- Late submissions: see syllabus late work policy.
 
 ---
 
