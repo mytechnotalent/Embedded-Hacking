@@ -66,6 +66,8 @@ The **stack** is a special area of memory that works like a stack of plates:
 
 The Stack Pointer always points to the top of this stack.  On ARM systems, the stack **grows downward** in memory.  This means when you push something onto the stack, the address number gets smaller! 
 
+The two Arm ABI documents we verified give the formal proof for these rules.  In AAPCS32, page 17 defines the core register roles used by the base procedure call standard: `r13` is `SP`, `r14` is `LR`, `r15` is `PC`, `r0`-`r3` are argument and scratch registers, and `r4`-`r11` are the longer-lived variable registers.  In Advisory Note 132, page 7 states that `SP` must be aligned to a multiple of 8 at every conforming call site and must already be 8-byte aligned when control first enters conforming code.  That is why compiler-generated prologues often push an even number of registers, such as `push {r3, lr}`, to preserve both saved state and the required ABI stack alignment.
+
 ```
 Higher Memory Address (0x20082000)
 ┌──────────────────┐
@@ -316,6 +318,10 @@ Breakpoint 1, main () at ../0x0001_hello-world.c:5
 
 The program has stopped right at the beginning of `main`!
 
+
+
+
+
 ##### Disassembling with `disas`
 
 The `disas` (disassemble) command shows us the assembly instructions for the current function:
@@ -339,6 +345,120 @@ End of assembler dump.
 - Each line shows: `address <offset>: instruction operands`
 - We can see the calls to `stdio_init_all` and `__wrap_puts` (printf was optimized to puts)
 - The `b.n 0x1000023a` at the end is our infinite loop - it jumps back to reload the string!
+
+##### Viewing ELF Sections with `info files` and `maintenance info sections`
+
+To see how the ELF is laid out in memory, use:
+
+```gdb
+(gdb) info files
+Symbols from "C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0001_hello-world\build\0x0001_hello-world.elf".
+Extended remote target using gdb-specific protocol:
+   `C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0001_hello-world\build\0x0001_hello-world.elf', file type elf32-littlearm.
+   Entry point: 0x1000014c
+   0x10000000 - 0x100019cc is .text
+   0x100019cc - 0x10001b18 is .rodata
+   0x10001b18 - 0x10001b20 is .ARM.exidx
+   0x10001b20 - 0x10001b4c is .binary_info
+   0x20000000 - 0x20000110 is .ram_vector_table
+   0x20000110 - 0x200002ac is .data
+   0x200002ac - 0x200002ac is .tdata
+   0x200002ac - 0x200002ac is .tbss
+   0x200002b0 - 0x200004d8 is .bss
+   0x200004d8 - 0x20000cd8 is .heap
+   0x20081000 - 0x20081800 is .stack_dummy
+   0x10001ce8 - 0x10001cfc is .flash_end
+   While running this, GDB does not access memory from...
+Local exec file:
+   `C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0001_hello-world\build\0x0001_hello-world.elf', file type elf32-littlearm.
+   Entry point: 0x1000014c
+   0x10000000 - 0x100019cc is .text
+   0x100019cc - 0x10001b18 is .rodata
+   0x10001b18 - 0x10001b20 is .ARM.exidx
+   0x10001b20 - 0x10001b4c is .binary_info
+   0x20000000 - 0x20000110 is .ram_vector_table
+   0x20000110 - 0x200002ac is .data
+   0x200002ac - 0x200002ac is .tdata
+   0x200002ac - 0x200002ac is .tbss
+   0x200002b0 - 0x200004d8 is .bss
+   0x200004d8 - 0x20000cd8 is .heap
+   0x20081000 - 0x20081800 is .stack_dummy
+   0x10001ce8 - 0x10001cfc is .flash_end
+(gdb) maintenance info sections
+Exec file: `C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0001_hello-world\build\0x0001_hello-world.elf', file type elf32-littlearm.
+ [0]      0x10000000->0x100019cc at 0x00001000: .text ALLOC LOAD READONLY CODE HAS_CONTENTS
+ [1]      0x100019cc->0x10001b18 at 0x000029cc: .rodata ALLOC LOAD READONLY DATA HAS_CONTENTS
+ [2]      0x10001b18->0x10001b20 at 0x00002b18: .ARM.exidx ALLOC LOAD READONLY DATA HAS_CONTENTS
+ [3]      0x10001b20->0x10001b4c at 0x00002b20: .binary_info ALLOC LOAD READONLY DATA HAS_CONTENTS
+ [4]      0x20000000->0x20000110 at 0x00004000: .ram_vector_table ALLOC
+ [5]      0x20000110->0x20000110 at 0x00003cfc: .uninitialized_data HAS_CONTENTS
+ [6]      0x20000110->0x200002ac at 0x00003110: .data ALLOC LOAD READONLY CODE HAS_CONTENTS
+ [7]      0x200002ac->0x200002ac at 0x00003cfc: .tdata ALLOC LOAD DATA HAS_CONTENTS
+ [8]      0x200002ac->0x200002ac at 0x00000000: .tbss ALLOC
+ [9]      0x200002b0->0x200004d8 at 0x000042b0: .bss ALLOC
+ [10]     0x200004d8->0x20000cd8 at 0x000044d8: .heap ALLOC READONLY
+ [11]     0x20080000->0x20080000 at 0x00003cfc: .scratch_x HAS_CONTENTS
+ [12]     0x20081000->0x20081000 at 0x00003cfc: .scratch_y HAS_CONTENTS
+ [13]     0x20081000->0x20081800 at 0x00004000: .stack_dummy ALLOC READONLY
+ [14]     0x10001ce8->0x10001cfc at 0x00003ce8: .flash_end ALLOC LOAD READONLY DATA HAS_CONTENTS
+ [15]     0x0000->0x0034 at 0x00003cfc: .ARM.attributes READONLY HAS_CONTENTS
+ [16]     0x0000->0x0045 at 0x00003d30: .comment READONLY HAS_CONTENTS
+ [17]     0x0000->0x2069a at 0x00003d75: .debug_info READONLY HAS_CONTENTS
+ [18]     0x0000->0x54ff at 0x0002440f: .debug_abbrev READONLY HAS_CONTENTS
+ [19]     0x0000->0x0af0 at 0x00029910: .debug_aranges READONLY HAS_CONTENTS
+ [20]     0x0000->0x2f86 at 0x0002a400: .debug_rnglists READONLY HAS_CONTENTS
+ [21]     0x0000->0x15526 at 0x0002d386: .debug_line READONLY HAS_CONTENTS
+ [22]     0x0000->0x56a7 at 0x000428ac: .debug_str READONLY HAS_CONTENTS
+ [23]     0x0000->0x1ed4 at 0x00047f54: .debug_frame READONLY HAS_CONTENTS
+ [24]     0x0000->0xffd1 at 0x00049e28: .debug_loclists READONLY HAS_CONTENTS
+ [25]     0x0000->0x0178 at 0x00059df9: .debug_line_str READONLY HAS_CONTENTS
+```
+
+**What each section means:**
+
+| Section | Purpose |
+| ------- | ------- |
+| `.text` | Executable machine code (your functions/instructions). |
+| `.rodata` | Read-only constants (strings like `"hello, world"`, lookup tables, const data). |
+| `.ARM.exidx` | ARM exception unwind index used for stack unwinding/backtraces. |
+| `.binary_info` | Pico metadata used by tools (program identity/build information). |
+| `.ram_vector_table` | Interrupt vector table copied/placed in RAM for runtime use. |
+| `.uninitialized_data` | Deliberately non-zeroed RAM region that can survive certain reset paths. |
+| `.data` | Initialized global/static variables in RAM (initial values come from flash). |
+| `.tdata` | Initialized thread-local storage data (often empty in simple bare-metal apps). |
+| `.tbss` | Zero-initialized thread-local storage (often empty). |
+| `.bss` | Zero-initialized global/static variables in RAM. |
+| `.heap` | Heap allocation region (`malloc/new`) reserved in RAM. |
+| `.scratch_x` | RP2 scratch RAM bank X section (core-local/low-contention placement). |
+| `.scratch_y` | RP2 scratch RAM bank Y section (core-local/low-contention placement). |
+| `.stack_dummy` | Linker-reserved stack range marker used to size/place the stack. |
+| `.flash_end` | Marker/metadata near the logical end of flash image region. |
+| `.ARM.attributes` | ARM build attributes (ABI/architecture metadata for tools/linkers). |
+| `.comment` | Compiler/build comment strings (toolchain identification). |
+| `.debug_info` | Main DWARF debug database (types, variables, symbols, scopes). |
+| `.debug_abbrev` | Abbreviation table referenced by `.debug_info`. |
+| `.debug_aranges` | Address-to-compilation-unit lookup acceleration data. |
+| `.debug_rnglists` | DWARF range lists for non-contiguous code/data ranges. |
+| `.debug_line` | Address-to-source-line mapping used for stepping/breakpoints. |
+| `.debug_str` | Shared string pool used by DWARF debug sections. |
+| `.debug_frame` | Call frame information used for unwinding stack frames. |
+| `.debug_loclists` | Variable location lists (where variables live over PC ranges). |
+| `.debug_line_str` | Extra string pool used by `.debug_line` data. |
+
+> 💡 **Practical rule:** For reverse engineering runtime behavior, focus first on `.text`, `.rodata`, `.data`, `.bss`, heap/stack regions, and the vector table. Debug sections are for source-level mapping and symbol intelligence.
+
+**Fast interpretation checklist (use this every time):**
+
+1. **Find where code executes**: Verify `.text` starts at `0x10000000` (XIP flash) and note its end.
+2. **Find immutable constants**: Use `.rodata` for strings/tables; cross-reference these addresses in disassembly.
+3. **Find initialized RAM state**: `.data` lives in RAM at runtime, but its initial bytes come from flash.
+4. **Find zeroed runtime state**: `.bss` is RAM that startup code clears to zero before `main`.
+5. **Find interrupt control point**: Confirm `.ram_vector_table` location for exception/IRQ handler mapping.
+6. **Bound dynamic memory**: Note `.heap` range so you can classify allocator activity vs static data.
+7. **Bound call-stack activity**: Use `.stack_dummy` as linker stack reservation, then track live stack with `$sp`.
+8. **Separate runtime vs debug-only sections**: `.debug_*`, `.comment`, and `.ARM.attributes` help tooling, not execution.
+9. **Correlate any suspicious address quickly**: Flash/XIP (`0x100...`) usually code/const; SRAM (`0x200...`) usually data/stack/heap.
+10. **Validate in memory**: After identifying a section, inspect it with `x` in GDB to confirm actual bytes/instructions.
 
 ##### Viewing Registers with `i r`
 
@@ -388,7 +508,25 @@ xpsr           0x69000000          1761607680
 | `x/10i $pc`           |            | Examine 10 instructions at PC        |
 | `monitor reset halt`  |            | Reset the target and halt            |
 
----
+### Watching the Stack Change After `push {r3, lr}`
+
+The first instruction in `main` is `push {r3, lr}`.  Before we step it, `SP` is `0x20082000`.  After a single `si`, `SP` becomes `0x20081ff8`, which tells us the processor reserved 8 bytes on the stack for two 32-bit values.  The first word at the new top of stack is `0xe000ed08`, which is the old value of `r3`, and the second word is `0x1000018f`, which is the saved `lr` return address.  This matches the ABI rule we discussed earlier: the compiler pushes an even number of registers so the stack stays 8-byte aligned at the next call site before `stdio_init_all()` runs.
+
+Notice the difference between inspecting memory at `$sp` and inspecting `$lr`.  `x/4x $sp` is enough here to show the relevant stack words in RAM, while `x/x $lr` shows the instruction word stored at the flash address held in the link register.  In other words, `$sp` points to saved data on the stack, but `$lr` points to code that execution will return to later.
+
+```gdb
+(gdb) x/x $sp
+0x20082000:     0x00000000
+(gdb) si
+0x10000236      5           stdio_init_all();
+
+(gdb) x/x $sp
+0x20081ff8:     0xe000ed08
+(gdb) x/4x $sp
+0x20081ff8:     0xe000ed08      0x1000018f      0x00000000      0x00000000
+(gdb) x/x $lr
+0x1000018f <platform_entry+8>:  0x00478849
+```
 
 > 💡 **What's Next?** In Week 2, we'll put these GDB commands to work with hands-on debugging exercises! We'll step through code, examine the stack, watch registers change, and ultimately use these skills to modify a running program. The commands you learned here are the foundation for everything that follows.
 
@@ -450,29 +588,29 @@ Ghidra shows you two views of the code:
                              *                           FUNCTION                          
                              *************************************************************
                              int  main (void )
-                               assume LRset = 0x0
-                               assume TMode = 0x1
-             int               r0:4           <RETURN>
+                                assume LRset = 0x0
+                                assume TMode = 0x1
+             int                r0:4           <RETURN>
                              main                                            XREF[3]:     Entry Point (*) , 
                                                                                           _reset_handler:1000018c (c) , 
                                                                                           .debug_frame::00000018 (*)   
                              0x0001_hello-world.c:4 (2)
                              0x0001_hello-world.c:5 (2)
-        10000234 08  b5           push       {r3,lr}
+        10000234 08 b5           push       {r3,lr}
                              0x0001_hello-world.c:5 (4)
-        10000236 01  f0  99  f9    bl         stdio_init_all                                   _Bool stdio_init_all(void)
+        10000236 01 f0 99 f9     bl         stdio_init_all                                   _Bool stdio_init_all(void)
                              LAB_1000023a                                    XREF[1]:     10000240 (j)   
                              0x0001_hello-world.c:7 (6)
                              0x0001_hello-world.c:8 (6)
-        1000023a 02  48           ldr        r0=>__EH_FRAME_BEGIN__ ,[DAT_10000244 ]           = "hello, world\r"
+        1000023a 02 48           ldr        r0=>__EH_FRAME_BEGIN__ ,[DAT_10000244 ]          = "hello, world\r"
                                                                                              = 100019CCh
-        1000023c 01  f0  de  f9    bl         __wrap_puts                                      int __wrap_puts(char * s)
+        1000023c 01 f0 de f9     bl         __wrap_puts                                      int __wrap_puts(char * s)
                              0x0001_hello-world.c:7 (8)
-        10000240 fb  e7           b          LAB_1000023a
+        10000240 fb e7           b          LAB_1000023a
         10000242 00              ??         00h
         10000243 bf              ??         BFh
                              DAT_10000244                                    XREF[1]:     main:1000023a (R)   
-        10000244 cc  19  00  10    undefine   100019CCh                                        ?  ->  100019cc
+        10000244 cc 19 00 10     undefine   100019CCh                                        ?  ->  100019cc
 
 ```
 
@@ -561,28 +699,78 @@ In future weeks, we'll work with `.bin` files that have been stripped of symbols
 
 Try these on your own to reinforce what you learned:
 
-### Exercise 1: Explore in Ghidra
-1. Open your `0x0001_hello-world` project in Ghidra
-2. Find the `stdio_init_all` function in the Symbol Tree
-3. Look at its decompiled code - can you understand what it's setting up?
+These prompts are intentionally aligned 1:1 with the four Week 1 solution files:
+- `WEEK01-01-S.md`
+- `WEEK01-02-S.md`
+- `WEEK01-03-S.md`
+- `WEEK01-04-S.md`
 
-### Exercise 2: Find Strings in Ghidra
-1. In Ghidra, go to **Window → Defined Strings**
-2. Look for `"hello, world"` - what address is it at?
-3. Double-click to navigate to it in the listing
+### Exercise 1: Analyze `stdio_init_all` in Ghidra
+1. Open your `0x0001_hello-world` project in Ghidra.
+2. Find `stdio_init_all` in the Symbol Tree.
+3. Answer exactly:
+   - What does the function return?
+   - What parameters does it take?
+   - What functions does it call?
+   - What is its purpose?
+4. Reflection:
+   - Why would we need to initialize standard I/O before using `printf()`?
+   - Can you find other functions in the Symbol Tree that might be related to I/O?
+   - How does this function support the `printf("hello, world\r\n")` call in `main`?
 
-### Exercise 3: Cross-References
-1. In Ghidra, navigate to the `main` function
-2. Find the `ldr r0, [DAT_...]` instruction that loads the string
-3. Right-click on `DAT_10000244` and select **References → Show References to**
-4. This shows you where this data is used!
+### Exercise 2: Locate and Characterize the String
+1. In Ghidra, go to **Window → Defined Strings**.
+2. Find `"hello, world\r\n"` and record its address.
+3. Answer exactly:
+   - What is the address, and is it Flash or RAM?
+   - How many bytes does the string take?
+   - How many times is it referenced, and by which function(s)?
+   - How is the string encoded?
+4. Reflection:
+   - Why is the string stored in Flash instead of RAM?
+   - What would happen if you tried to modify this string at runtime?
+   - How does the Listing view help you understand string storage?
 
-### Exercise 4: Connect GDB (Preparation for Week 2)
-1. Start OpenOCD and connect GDB as shown in Part 4
-2. Set a breakpoint at main: `b main`
-3. Continue: `c`
-4. Use `disas` to see the assembly
-5. Use `i r` to see register values
+### Exercise 3: Trace Cross-References and Data Flow
+1. In `main`, locate `DAT_10000244` and open its references.
+2. Fill in:
+   - Data reference address
+   - Number of references
+   - Reference type (read or write)
+   - Function using it
+   - Next instruction after `ldr`
+3. Answer exactly:
+   - What is the address of the data reference?
+   - How many places reference this data?
+   - Is it a read or write operation? Why?
+   - What happens next after the `ldr`?
+4. Complete the data flow chain from string storage to print call.
+5. Reflection:
+   - Why does the compiler use an indirect pointer reference here?
+   - What is a literal pool?
+   - How does cross-referencing help in reverse engineering?
+
+### Exercise 4: Verify Runtime View in GDB
+1. Start OpenOCD and connect GDB as shown in Part 4.
+2. Break at `main` and continue to the breakpoint.
+3. Answer exactly:
+   - Was GDB able to connect to OpenOCD?
+   - Did the program stop at the `main` breakpoint?
+   - What is the address of `main`'s first instruction, and is it Flash or RAM?
+   - What is the `sp` value at `main`, and is it Flash or RAM?
+   - What is the first instruction in `main`, and what does it do?
+   - Does GDB match what Ghidra shows?
+4. Capture register values for `pc`, `sp`, `lr`, and `r0-r3`.
+5. Reflection:
+   - Why does the stack pointer start where it does?
+   - Why does `push {r3, lr}` include `r3`?
+   - How does the infinite loop work in assembly?
+
+Use these solution keys after attempting the exercises:
+- `WEEK01-01-S.md`
+- `WEEK01-02-S.md`
+- `WEEK01-03-S.md`
+- `WEEK01-04-S.md`
 
 > 💡 **Note:** The detailed hands-on GDB debugging (stepping through code, watching the stack, examining memory) will be covered in Week 2!
 

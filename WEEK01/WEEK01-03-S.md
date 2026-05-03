@@ -27,7 +27,7 @@ The data reference is at **`0x10000244`** (labeled `DAT_10000244` in Ghidra). Th
 ##### Question 3: Is it a read or write operation? Why?
 It is a **READ** operation. The `ldr` (Load Register) instruction reads the pointer value from `DAT_10000244` into register `r0`. The program needs to read this pointer to pass the string address as an argument to `__wrap_puts`.
 
-##### Question 4: What happens next?
+##### Question 4: What happens next after the `ldr`?
 After the `ldr r0, [DAT_10000244]` instruction loads the string address into `r0`, the next instruction is **`bl 0x100015fc <__wrap_puts>`** which calls the `puts` function with `r0` as its argument (the string pointer).
 
 ##### Question 5: Complete Data Flow Chain
@@ -42,7 +42,7 @@ Pointer to string stored at DAT_10000244 (0x10000244)
 main() executes: ldr r0, [DAT_10000244]  -> r0 = 0x100019CC
     |
     v
-main() executes: bl __wrap_puts           -> prints the string
+main() executes: bl __wrap_puts          -> prints the string
     |
     v
 main() executes: b.n main+6              -> loops back (infinite loop)
