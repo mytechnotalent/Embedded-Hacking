@@ -9,30 +9,30 @@ Hello, World - Debugging and Hacking Basics: Debugging and Hacking a Basic Progr
 #### Answers
 
 ##### Attack Summary
-Write the payload to `0x20001000` instead of `0x20000000` to demonstrate that multiple safe SRAM locations can be used for injection.
+Write the payload to `0x20041000` instead of `0x20040000` to demonstrate that multiple safe SRAM locations can be used for injection.
 
 ##### GDB Commands
 
 ```gdb
 (gdb) b *0x1000023c
 (gdb) c
-(gdb) set {char[14]} 0x20001000 = {'h','a','c','k','e','d','!','!','!','\r','\0'}
-(gdb) set $r0 = 0x20001000
+(gdb) set {char[14]} 0x20041000 = {'h','a','c','k','e','d','!','!','!','\r','\0'}
+(gdb) set $r0 = 0x20041000
 (gdb) c
 ```
 
 ##### Verification
 ```gdb
-(gdb) x/s 0x20001000                   # Shows "hacked!!!\r"
+(gdb) x/s 0x20041000                   # Shows "hacked!!!\r"
 ```
 
 #### Reflection Answers
 
-1. **How can you ensure `0x20001000` does not collide with stack usage?**
-   The stack pointer was observed at `0x20082000` (top of stack) and grows downward. Since `0x20001000` is far below the stack region, there is substantial separation. Use `info registers sp` in GDB to verify the current stack pointer is well above your injection address.
+1. **How can you ensure `0x20041000` does not collide with stack usage?**
+   The stack pointer was observed at `0x20082000` (top of stack) and grows downward. Since `0x20041000` is well below the stack region, there is substantial separation. Use `info registers sp` in GDB to verify the current stack pointer is above your injection address.
 
 2. **What symptoms would indicate you overwrote an active stack frame?**
    The program would crash when attempting to return from a function. Symptoms include: unexpected address exceptions, invalid memory access faults, or the program jumping to random addresses. The Link Register return path gets corrupted.
 
 3. **How would you pick a safe SRAM offset in a larger program with dynamic allocations?**
-   Start from the bottom of SRAM (`0x20000000`) for small static payloads, working upward. Check the linker script to understand memory regions. In this simple program with no heap allocations, both `0x20000000` and `0x20001000` are safe. In larger programs, examine the `.bss` and `.data` section boundaries.
+   Choose a region with clear separation from vectors, stack growth, and active data. In this simple program, `0x20040000` and `0x20041000` are practical safe offsets. In larger programs, inspect linker sections (`.data`, `.bss`, heap) and validate with runtime `sp` checks.

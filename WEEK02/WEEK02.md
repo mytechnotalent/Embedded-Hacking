@@ -97,7 +97,7 @@ Our goal: **Make it print something else WITHOUT changing the source code!**
 └─────────────────────────────────────────────────────┘
 ```
 
-> 🔄 **REVIEW:** In Week 1, we saw the stack pointer (SP) was around `0x20081fc8` - that's in the SRAM region! The stack "grows downward" from the top of SRAM.
+> 🔄 **REVIEW:** In Week 1, we saw SP values in the `0x20081xxx` range (for example `0x20081fc8`) - that's in the SRAM region. In this run you may see values like `0x20081ff8` depending on where execution is paused. The stack "grows downward" from the top of SRAM.
 
 #### Why This Matters for Our Hack
 
@@ -147,8 +147,8 @@ Before we start, make sure you have:
 
 You will need **THREE** terminal windows:
 1. **Terminal 1**: Running OpenOCD (the debug server)
-2. **Terminal 2**: Running your serial monitor (to see output)
-3. **Terminal 3**: Running GDB (where we do the hacking)
+2. **Terminal 2**: Running GDB (where we do the hacking)
+3. **PuTTY**: Running your serial monitor (to see output)
 
 ---
 
@@ -256,7 +256,8 @@ Now we need to connect GDB to OpenOCD. OpenOCD is listening on port `3333`.
 
 ```
 Remote debugging using :3333
-main () at 0x0001_hello-world/0x0001_hello-world.c:5.
+main ()
+    at C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0001_hello-world/0x0001_hello-world.c:5
 5           stdio_init_all();
 ```
 
@@ -451,6 +452,24 @@ Before we execute the `push` instruction, let's see what's on the stack:
 - The stack pointer is at address `0x20082000`
 - The stack is empty (all zeros)
 - This is the "top" of our stack in RAM
+
+**Verify where this value came from (the Vector Table):**
+
+Now let's trace back where this initial `0x20082000` value came from. It comes from the first entry in the vector table at `0x10000000`:
+
+```gdb
+(gdb) x/x $sp
+0x20082000:     0x00000000
+(gdb) x/x 0x10000000
+0x10000000 <__vectors>: 0x20082000
+```
+
+**What this shows:**
+- The first command `x/x $sp` reads one word at the stack pointer (currently `0x00000000`)
+- The second command `x/x 0x10000000` reads the **first entry in the vector table** at address `0x10000000`
+- That vector table entry contains `0x20082000` - this is the **initial stack pointer value**!
+- The Boot ROM reads this value and puts it into the SP register when the chip starts
+- This is why our SP register already has `0x20082000` before `main()` runs
 
 ##### Step 7: Execute One Instruction (Step Into)
 
@@ -740,143 +759,26 @@ There's our string! The `\r` is a carriage return character (part of `\r\n`).
 
 ---
 
-## 🔬 Part 6: Starting the Debug Session for the Hack
+## 🔬 Part 6: Continuing the Debug Session for the Hack
 
-##### Step 1: Start OpenOCD (Debug Server)
+You're right where you need to be from Part 5, so we **do not restart** OpenOCD or GDB here.
 
-OpenOCD is the bridge between your computer and the Pico 2's debug interface. It creates a server that GDB can connect to.
+Use this as a quick checkpoint before the hack:
 
-**Open Terminal 1 and type:**
+- OpenOCD is still running and listening on `:3333`
+- GDB is still connected (`target extended-remote :3333` already done)
+- The target is halted at a known point (or easy to re-halt)
 
-```powershell
-openocd ^
-  -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
-  -f interface/cmsis-dap.cfg ^
-  -f target/rp2350.cfg ^
-  -c "adapter speed 5000"
-```
+If your session is still live, continue directly to Part 7.
 
-**What this command means:**
-- `openocd` = the OpenOCD program
-- `-f interface/cmsis-dap.cfg` = use the CMSIS-DAP debug probe configuration
-- `-f target/rp2350.cfg` = configure for the RP2350 chip
-- `-c "adapter speed 5000"` = set the debug speed to 5000 kHz
-
-**You should see output like:**
-
-```
-Open On-Chip Debugger 0.12.0
-Licensed under GNU GPL v2
-Info : Listening on port 3333 for gdb connections
-Info : CMSIS-DAP: SWD supported
-Info : CMSIS-DAP: Interface ready
-```
-
-**Important:** Leave this terminal running! Don't close it.
-
-##### Step 2: Start Your Serial Monitor
-
-**Open PuTTY** and start your serial monitor to watch the Pico 2's output.
-
-**Example using screen (macOS/Linux):**
-
-```bash
-screen /dev/tty.usbmodem* 115200
-```
-
-**Example using minicom:**
-
-```bash
-minicom -D /dev/ttyACM0 -b 115200
-```
-
-**You should see:**
-
-```
-hello, world
-hello, world
-hello, world
-hello, world
-...
-```
-
-The program is running and printing `"hello, world"` in an infinite loop!
-
-**Important:** Leave this terminal running! We'll watch it change when we hack the system.
-
-##### Step 3: Start GDB and Load the Binary
-
-**Open Terminal 3** and start GDB with your binary:
-
-```powershell
-arm-none-eabi-gdb build\0x0001_hello-world.elf
-```
-
-**What this command means:**
-- `arm-none-eabi-gdb` = the ARM version of GDB
-- `build\0x0001_hello-world.elf` = our compiled program with debug symbols
-
-**You should see:**
-
-```
-GNU gdb (Arm GNU Toolchain 13.2) 13.2
-Reading symbols from build\0x0001_hello-world.elf...
-(gdb) 
-```
-
-The `(gdb)` prompt means GDB is ready for commands!
-
-##### Step 4: Connect to the Remote Debug Server
-
-Now we need to connect GDB to OpenOCD. OpenOCD is listening on port `3333`.
-
-**Type this command:**
+If you got disconnected, run only this minimal recovery in GDB:
 
 ```gdb
 (gdb) target extended-remote :3333
-```
-
-**What this command means:**
-- `target remote` = connect to a remote debug server
-- `:3333` = on localhost, port 3333 (where OpenOCD is listening)
-
-**You should see:**
-
-```
-Remote debugging using :3333
-warning: multi-threaded target stopped without sending a thread-id, using first non-exited thread
-0x1000023c in main () at 0x0001_hello-world.c:8
-8           printf("hello, world\r\n");
-```
-
-We're connected! GDB shows us the program is currently in the `main` function.
-
-##### Step 5: Halt the Running Program
-
-The program is still running (you can see "hello, world" still printing in your serial monitor). Let's stop it:
-
-**Type this command:**
-
-```gdb
 (gdb) monitor reset halt
 ```
 
-**What this command means:**
-- `monitor` = send a command to OpenOCD (not GDB)
-- `reset` = reset the processor
-- `halt` = stop execution immediately
-
-**You should see:**
-
-```gdb
-(gdb) monitor reset halt
-[rp2350.cm0] halted due to debug-request, current mode: Thread
-xPSR: 0xf9000000 pc: 0x00000088 msp: 0xf0000000
-[rp2350.cm1] halted due to debug-request, current mode: Thread
-xPSR: 0xf9000000 pc: 0x00000088 msp: 0xf0000000
-```
-
-**Check your serial monitor (Terminal 2):** The "hello, world" messages should have stopped! The processor is now frozen, waiting for our commands.
+After that, continue to the analysis steps below.
 
 ---
 
@@ -906,7 +808,7 @@ Let's look at the main function to understand what we're dealing with:
    0x10000234 <main>:   push    {r3, lr}
    0x10000236 <main+2>: bl      0x1000156c <stdio_init_all>
    0x1000023a <main+6>: ldr     r0, [pc, #8]    @ (0x10000244 <main+16>)
-   0x1000023c <main+8>: bl      0x100015fc <__wrap_puts>
+=> 0x1000023c <main+8>: bl      0x100015fc <__wrap_puts>
    0x10000240 <main+12>:        b.n     0x1000023a <main+6>
 ```
 
@@ -966,8 +868,7 @@ We want to stop the program RIGHT BEFORE it calls `puts()`. That's at address `0
 **You should see:**
 
 ```
-Breakpoint 1 at 0x1000023c: file 0x0001_hello-world.c, line 8.
-Note: automatically using hardware breakpoints for read-only addresses.
+Breakpoint 2 at 0x1000023c: file C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0001_hello-world/0x0001_hello-world.c, line 8
 ```
 
 **What does "hardware breakpoints" mean?**
@@ -992,9 +893,9 @@ Now let's run the program until it hits our breakpoint:
 ```gdb
 Continuing.
 
-Thread 1 "rp2350.cm0" hit Breakpoint 1, 0x1000023c in main ()
-    at 0x0001_hello-world.c:8
-8           printf("hello, world\r\n");
+Thread 1 "rp2350.cm0" hit Breakpoint 2, 0x1000023c in main ()
+    at C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0001_hello-world/0x0001_hello-world.c:8
+8               printf("hello, world\r\n");
 ```
 
 The program has stopped RIGHT BEFORE calling `puts()`! The string address is loaded into `r0`, but the function hasn't been called yet.
@@ -1053,7 +954,7 @@ Let's see what string `r0` is currently pointing to:
 **You should see:**
 
 ```gdb
-0x100019cc: "hello, world\r"
+0x100019cc:     "hello, world\r"
 ```
 
 There it is! The register `r0` contains `0x100019cc`, which is the address of our `"hello, world"` string in flash memory.
@@ -1088,11 +989,13 @@ This is a very important lesson! Here's what happened:
 
 1. When you type `"hacky, world\r"` in GDB, GDB interprets this as: "Create a new string and give me its address"
 
-2. To create a new string at runtime, GDB would need to allocate memory using `malloc()`
+2. To create a new string at runtime, GDB tries to allocate target memory using `malloc()`.
 
-3. But our embedded system has **no operating system** and **no C runtime library loaded**! There's no `malloc()` function available.
+3. If the target program exposed a working `malloc()` that GDB could call, this style of assignment can work.
 
-4. GDB can't create the string because there's nowhere to put it!
+4. In our case, this is a bare-metal firmware image and there is no usable `malloc()` path for GDB expression evaluation, so GDB cannot create temporary storage for that string literal.
+
+5. That is why this command fails here, and why we switch to writing bytes directly into SRAM ourselves.
 
 **Let's verify nothing changed:**
 
@@ -1103,7 +1006,7 @@ This is a very important lesson! Here's what happened:
 **You should see:**
 
 ```
-0x100019cc: "hello, world\r"
+0x100019cc:     "hello, world\r"
 ```
 
 The original string is still there. Our hack attempt failed... but we're not giving up!
@@ -1119,13 +1022,13 @@ Since we can't use `malloc()`, we need to manually create our string somewhere i
 - Flash (`0x10000000`): **Read-only** - can't write here
 - SRAM (`0x20000000`): **Read-write** - we CAN write here!
 
-> 🔄 **REVIEW:** In Week 1, we saw the stack pointer was at `0x20081fc8`. The stack lives at the TOP of SRAM and grows downward. We'll write our string at the BOTTOM of SRAM (`0x20000000`) to avoid conflicts!
+> 🔄 **REVIEW:** In Week 1 we observed SP in the `0x20081xxx` range (for example `0x20081fc8`). In this run, after `push {r3, lr}`, you are seeing `0x20081ff8`, which is also correct and still near the top of SRAM. We'll write our string at a safer SRAM address (`0x20040000`) to avoid vector-table and stack conflicts.
 
 We'll write our malicious string directly to SRAM, then point `r0` to it.
 
 ##### Step 13: Create Our Malicious String in SRAM
 
-We need to write 14 bytes (13 characters + null terminator) to SRAM:
+We need to write 13 bytes (12 characters + null terminator) to SRAM:
 
 | Character | ASCII Hex |
 | --------- | --------- |
@@ -1147,14 +1050,14 @@ We need to write 14 bytes (13 characters + null terminator) to SRAM:
 **Type this command:**
 
 ```gdb
-(gdb) set {char[14]} 0x20000000 = {'h','a','c','k','y',',',' ','w','o','r','l','d','\r','\0'}
+(gdb) set {char[13]} 0x20040000 = "hacky, world"
 ```
 
 **What this command means:**
 - `set` = modify memory
-- `{char[14]}` = treat the target as an array of 14 characters
-- `0x20000000` = the address where we're writing (start of SRAM)
-- `= {...}` = the characters to write
+- `{char[13]}` = treat the target as an array of 13 characters
+- `0x20040000` = the address where we're writing (safe SRAM offset)
+- `= "hacky, world"` = the string bytes to write
 
 **No output means success!**
 
@@ -1165,18 +1068,18 @@ Let's confirm our malicious string is in SRAM:
 **Type this command:**
 
 ```gdb
-(gdb) x/s 0x20000000
+(gdb) x/s 0x20040000
 ```
 
 **You should see:**
 
 ```gdb
-0x20000000 <ram_vector_table>: "hacky, world\r"
+0x20040000: "hacky, world"
 ```
 
 **OUR STRING IS IN MEMORY!** 
 
-GDB shows it's at the `ram_vector_table` location - that's just a label from the linker script. The important thing is our string is there and ready to use.
+The important thing is our string is in writable SRAM at a safe offset and ready to use.
 
 ---
 
@@ -1191,13 +1094,13 @@ Now for the magic moment! We'll change `r0` from pointing to the original string
 **Type this command:**
 
 ```gdb
-(gdb) set $r0 = 0x20000000
+(gdb) set $r0 = 0x20040000
 ```
 
 **What this command means:**
 - `set` = modify a value
 - `$r0` = the `r0` register
-- `= 0x20000000` = change it to this address (where our string is)
+- `= 0x20040000` = change it to this address (where our string is)
 
 **No output means success!**
 
@@ -1205,19 +1108,33 @@ Now for the magic moment! We'll change `r0` from pointing to the original string
 
 Let's confirm `r0` now points to our malicious string:
 
-**First, check the raw value:**
+**First, check one byte (explicit byte view):**
 
 ```gdb
-(gdb) x/x $r0
+(gdb) x/bx $r0
 ```
 
 **You should see:**
 
 ```
-0x20000000 <ram_vector_table>: 0x68
+0x20040000: 0x68
 ```
 
-The value `0x68` is the ASCII code for 'h' - the first character of "hacky"!
+The value `0x68` is ASCII `'h'`, the first byte of `"hacky, world"`.
+
+**Now check one 32-bit word (explicit word view):**
+
+```gdb
+(gdb) x/wx $r0
+```
+
+**You should see:**
+
+```
+0x20040000: 0x6b636168
+```
+
+This is the first 4 bytes (`h a c k`) packed into one 32-bit little-endian word.
 
 **Now check it as a string:**
 
@@ -1228,7 +1145,7 @@ The value `0x68` is the ASCII code for 'h' - the first character of "hacky"!
 **You should see:**
 
 ```
-0x20000000 <ram_vector_table>: "hacky, world\r"
+0x20040000: "hacky, world"
 ```
 
 **THE HIJACK IS COMPLETE!** When `puts()` runs, it will read the string address from `r0` - which now points to our malicious string!
@@ -1252,9 +1169,9 @@ This is the moment of truth! Let's continue the program and watch our hack take 
 ```gdb
 Continuing.
 
-Thread 1 "rp2350.cm0" hit Breakpoint 1, 0x1000023c in main ()
-    at 0x0001_hello-world.c:8
-8           printf("hello, world\r\n");
+Thread 1 "rp2350.cm0" hit Breakpoint 2, 0x1000023c in main ()
+    at C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0001_hello-world/0x0001_hello-world.c:8
+8               printf("hello, world\r\n");
 ```
 
 The program ran through one loop iteration and hit our breakpoint again.
@@ -1305,40 +1222,41 @@ If you haven't already set up the Ghidra project from Week 1:
                              *                           FUNCTION                          
                              *************************************************************
                              int  main (void )
-                               assume LRset = 0x0
-                               assume TMode = 0x1
-             int               r0:4           <RETURN>
+                                assume LRset = 0x0
+                                assume TMode = 0x1
+             int                r0:4           <RETURN>
                              main                                            XREF[3]:     Entry Point (*) , 
                                                                                           _reset_handler:1000018c (c) , 
                                                                                           .debug_frame::00000018 (*)   
                              0x0001_hello-world.c:4 (2)
                              0x0001_hello-world.c:5 (2)
-        10000234 08  b5           push       {r3,lr}
+        10000234 08 b5           push       {r3,lr}
                              0x0001_hello-world.c:5 (4)
-        10000236 01  f0  99  f9    bl         stdio_init_all                                   _Bool stdio_init_all(void)
+        10000236 01 f0 99 f9     bl         stdio_init_all                                   _Bool stdio_init_all(void)
                              LAB_1000023a                                    XREF[1]:     10000240 (j)   
                              0x0001_hello-world.c:7 (6)
                              0x0001_hello-world.c:8 (6)
-        1000023a 02  48           ldr        r0=>__EH_FRAME_BEGIN__ ,[DAT_10000244 ]           = "hello, world\r"
+        1000023a 02 48           ldr        r0=>__EH_FRAME_BEGIN__ ,[DAT_10000244 ]          = "hello, world\r"
                                                                                              = 100019CCh
-        1000023c 01  f0  de  f9    bl         __wrap_puts                                      int __wrap_puts(char * s)
+        1000023c 01 f0 de f9     bl         __wrap_puts                                      int __wrap_puts(char * s)
                              0x0001_hello-world.c:7 (8)
-        10000240 fb  e7           b          LAB_1000023a
+        10000240 fb e7           b          LAB_1000023a
         10000242 00              ??         00h
         10000243 bf              ??         BFh
                              DAT_10000244                                    XREF[1]:     main:1000023a (R)   
-        10000244 cc  19  00  10    undefine   100019CCh                                        ?  ->  100019cc
-
+        10000244 cc 19 00 10     undefine   100019CCh                                        ?  ->  100019cc
 ```
 
 **What you'll see in the Decompile View:**
 
 ```c
-int main(void) {
-    stdio_init_all();
-    do {
-        __wrap_puts("hello, world");
-    } while (true);
+int main(void)
+
+{
+  stdio_init_all();
+  do {
+    __wrap_puts("hello, world\r");
+  } while( true );
 }
 ```
 
@@ -1364,9 +1282,8 @@ Let's trace where the string actually lives:
                              LAB_1000023a                                    XREF[1]:     10000240 (j)   
                              0x0001_hello-world.c:7 (6)
                              0x0001_hello-world.c:8 (6)
-        1000023a 02  48           ldr        r0=>__EH_FRAME_BEGIN__ ,[DAT_10000244 ]           = "hello, world\r"
+        1000023a 02 48           ldr        r0=>__EH_FRAME_BEGIN__ ,[DAT_10000244 ]          = "hello, world\r"
                                                                                              = 100019CCh
-
    ```
 
 2. **Double-click on `DAT_10000244`** to go to the data reference
@@ -1374,8 +1291,7 @@ Let's trace where the string actually lives:
 3. You'll see:
    ```
                              DAT_10000244                                    XREF[1]:     main:1000023a (R)   
-        10000244 cc  19  00  10    undefine   100019CCh                                        ?  ->  100019cc
-
+        10000244 cc 19 00 10     undefine   100019CCh                                        ?  ->  100019cc
    ```
 
 4. **Double-click on `100019CCh`** to navigate to the actual string
@@ -1393,10 +1309,9 @@ Let's trace where the string actually lives:
                              __boot2_end__                                                main:1000023a (*) , 
                              __EH_FRAME_BEGIN__                                           runtime_init:1000138a (R) , 
                                                                                           _elfSectionHeaders::0000005c (*)   
-        100019cc 68  65  6c       ds         "hello, world\r"
+        100019cc 68  65  6c      ds         "hello, world\r"
                  6c  6f  2c 
                  20  77  6f 
-
 ```
 
 ##### Step 4: Understand Why We Needed SRAM
@@ -1410,7 +1325,7 @@ This starts with `0x10...` which means it's in **Flash memory (XIP region)**!
 | `0x10000000`+ | Flash (XIP) | **NO** - Read Only |
 | `0x20000000`+ | SRAM | **YES** - Read/Write |
 
-> 🎯 **This is why our direct string modification failed in GDB!** The string lives in flash memory, which is read-only at runtime. We had to create our malicious string in SRAM (`0x20000000`) instead.
+> 🎯 **This is why our direct string modification failed in GDB!** The string lives in flash memory, which is read-only at runtime. We had to create our malicious string in SRAM at a safe address (`0x20040000`) instead.
 
 ##### Step 5: Examine Cross-References
 
@@ -1427,11 +1342,13 @@ This shows every place that calls `puts()`. In a larger program, you could find 
 The Decompile view makes attack planning easy:
 
 ```c
-int main(void) {
-    stdio_init_all();
-    do {
-        __wrap_puts("hello, world"); // <-- Attack target identified!
-    } while (true);
+int main(void)
+
+{
+  stdio_init_all();
+  do {
+    __wrap_puts("hello, world\r"); 
+  } while( true );
 }
 ```
 
@@ -1455,10 +1372,9 @@ When you navigate to the string address `0x100019cc`, you'll see the string stor
                              __boot2_end__                                                main:1000023a (*) , 
                              __EH_FRAME_BEGIN__                                           runtime_init:1000138a (R) , 
                                                                                           _elfSectionHeaders::0000005c (*)   
-        100019cc 68  65  6c       ds         "hello, world\r"
+        100019cc 68  65  6c      ds         "hello, world\r"
                  6c  6f  2c 
                  20  77  6f 
-
 ```
 
 This shows the raw bytes of our string: `68 65 6c 6c 6f 2c 20 77 6f...` which spell out "hello, world\r" in ASCII.
@@ -1484,7 +1400,7 @@ Ghidra allows you to modify data directly in the binary! Here's how to patch the
 After patching, you'll see the change reflected in the Listing view:
 
 ```
-        100019cc 68  61  63       ds         "hacky, world\r"
+        100019cc 68  61  63      ds         "hacky, world\r"
                  6b  79  2c 
                  20  77  6f 
 ```
@@ -1499,8 +1415,6 @@ In future lessons, we will learn how to:
 
 1. **Export the patched binary** from Ghidra to create a modified `.elf` or `.bin` file
 2. **Flash the patched binary** to the Pico 2, making the hack **persistent**
-3. **Understand patch verification** - how defenders detect modified binaries
-4. **Bypass integrity checks** that try to prevent patching
 
 The key difference:
 
@@ -1577,7 +1491,7 @@ BEFORE OUR HACK:
 
 AFTER OUR HACK:
 ┌─────────────────┐      ┌──────────────────────────────┐
-│  r0 = 0x20000000│ ───> │ SRAM: "hacky, world\r"       │
+│  r0 = 0x20040000│ ───> │ SRAM: "hacky, world"         │
 └─────────────────┘      └──────────────────────────────┘
          │
          ▼
@@ -1605,18 +1519,24 @@ AFTER OUR HACK:
 | `0x10000234` | Start of `main()` function       | Read-only   |
 | `0x1000023c` | The `bl __wrap_puts` call        | Read-only   |
 | `0x100019cc` | Original `"hello, world"` string | Read-only   |
-| `0x20000000` | Start of SRAM (our hack target)  | Read-Write  |
+| `0x20040000` | Safe SRAM location (hack target) | Read-Write  |
 
 ---
 
 ## ✅ Practice Exercises
 
+These prompts are intentionally aligned 1:1 with the Week 2 exercise and solution files:
+- `WEEK02-01.md` and `WEEK02-01-S.md`
+- `WEEK02-02.md` and `WEEK02-02-S.md`
+- `WEEK02-03.md` and `WEEK02-03-S.md`
+- `WEEK02-04.md` and `WEEK02-04-S.md`
+
 #### Exercise 1: Change the Message
 Try creating a different message! Write your name to SRAM and make the program print it:
 
 ```gdb
-(gdb) set {char[20]} 0x20000000 = {'Y','o','u','r',' ','N','a','m','e','!','\r','\0'}
-(gdb) set $r0 = 0x20000000
+(gdb) set {char[12]} 0x20040000 = {'Y','o','u','r',' ','N','a','m','e','!','\r','\0'}
+(gdb) set $r0 = 0x20040000
 (gdb) c
 ```
 
@@ -1624,8 +1544,8 @@ Try creating a different message! Write your name to SRAM and make the program p
 The SRAM region is large. Try writing your string to a different address:
 
 ```gdb
-(gdb) set {char[14]} 0x20001000 = {'h','a','c','k','e','d','!','!','!','\r','\0'}
-(gdb) set $r0 = 0x20001000
+(gdb) set {char[14]} 0x20041000 = {'h','a','c','k','e','d','!','!','!','\r','\0'}
+(gdb) set $r0 = 0x20041000
 (gdb) c
 ```
 
@@ -1633,7 +1553,7 @@ The SRAM region is large. Try writing your string to a different address:
 Look at the bytes around your injected string:
 
 ```gdb
-(gdb) x/20b 0x20000000
+(gdb) x/20b 0x20040000
 ```
 
 What do you see? Can you identify each character?
@@ -1643,8 +1563,8 @@ Create a GDB command sequence that does the full hack. You can use GDB's command
 
 ```gdb
 (gdb) define hack
-> set {char[14]} 0x20000000 = {'h','a','c','k','y',',',' ','w','o','r','l','d','\r','\0'}
-> set $r0 = 0x20000000
+> set {char[13]} 0x20040000 = "hacky, world"
+> set $r0 = 0x20040000
 > c
 > end
 (gdb) hack

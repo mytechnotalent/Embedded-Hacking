@@ -25,7 +25,7 @@ The string `"hello, world\r\n"` is located at address **`0x100019CC`** in **Flas
 - 12 printable characters: `h`, `e`, `l`, `l`, `o`, `,`, ` `, `w`, `o`, `r`, `l`, `d`
 - 2 special characters: `\r` (carriage return, 0x0D) and `\n` (newline, 0x0A)
 
-##### Question 3: How many times and which functions reference it?
+##### Question 3: How many times is it referenced, and by which function(s)?
 The string is referenced **1 time**, only in the **`main()`** function. The `ldr` instruction at `0x1000023a` loads the string address into register `r0`, which is then passed to `__wrap_puts`.
 
 ##### Question 4: How is the string encoded?

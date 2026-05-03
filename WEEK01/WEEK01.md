@@ -616,11 +616,13 @@ Ghidra shows you two views of the code:
 
 **Decompile View (Right Panel)** - The reconstructed C code:
 ```c
-int main(void) {
-    stdio_init_all();
-    do {
-        __wrap_puts("hello, world");
-    } while (true);
+int main(void)
+
+{
+  stdio_init_all();
+  do {
+    __wrap_puts("hello, world\r");
+  } while( true );
 }
 ```
 

@@ -12,8 +12,8 @@ Hello, World - Debugging and Hacking Basics: Debugging and Hacking a Basic Progr
 
 ```gdb
 (gdb) define hack
-> set {char[14]} 0x20000000 = {'h','a','c','k','y',',',' ','w','o','r','l','d','\r','\0'}
-> set $r0 = 0x20000000
+> set {char[13]} 0x20040000 = "hacky, world"
+> set $r0 = 0x20040000
 > c
 > end
 ```
@@ -39,7 +39,7 @@ hacky, world
 #### Reflection Answers
 
 1. **How could you parameterize the command to accept different strings or addresses?**
-   Standard GDB `define` blocks do not support function parameters directly. However, you can use GDB convenience variables (`set $myaddr = 0x20000000`) and reference them in the macro, or create multiple specific commands like `hack_addr1`, `hack_addr2`. For advanced parameterization, use GDB Python scripting.
+   Standard GDB `define` blocks do not support function parameters directly. However, you can use GDB convenience variables (`set $myaddr = 0x20040000`) and reference them in the macro, or create multiple specific commands like `hack_addr1`, `hack_addr2`. For advanced parameterization, use GDB Python scripting.
 
 2. **What happens if you define `hack` before setting the breakpoint - will it still work as expected?**
    The `define` command only creates a macro; it does not execute immediately. The breakpoint must be set and hit before invoking `hack`. The sequence matters: set breakpoint -> run/continue to hit breakpoint -> then call `hack`. Defining the macro before or after the breakpoint does not matter as long as you invoke it at the right time.
@@ -48,9 +48,9 @@ hacky, world
    Extend the `define` block with additional commands:
    ```gdb
    (gdb) define hack_verbose
-   > set {char[14]} 0x20000000 = {'h','a','c','k','y',',',' ','w','o','r','l','d','\r','\0'}
-   > x/20b 0x20000000
-   > set $r0 = 0x20000000
+   > set {char[13]} 0x20040000 = "hacky, world"
+   > x/20b 0x20040000
+   > set $r0 = 0x20040000
    > info registers r0
    > c
    > end

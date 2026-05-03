@@ -8,23 +8,22 @@ Introduction and Overview of Embedded Reverse Engineering: Ethics, Scoping, and 
 
 #### Answers
 
-##### Step 1-2 Verification
-
-- **Was GDB able to connect to OpenOCD?** Yes, via `target extended-remote localhost:3333`.
-- **Did the program stop at the `main` breakpoint?** Yes, at `Breakpoint 1, main () at ../0x0001_hello-world.c:4`.
-
 ##### Step 3: Answer Exactly
 
+- **Was GDB able to connect to OpenOCD?**
+   - Yes, via `target extended-remote localhost:3333`.
+- **Did the program stop at the `main` breakpoint?**
+   - Yes, at `Breakpoint 1, main () at ../0x0001_hello-world.c:4`.
 - **What is the address of `main`'s first instruction, and is it Flash or RAM?**
    - `0x10000234`, and it is in **Flash** (`0x100...` XIP region).
 - **What is the `sp` value at `main`, and is it Flash or RAM?**
-   - `x/s $sp`, the value is, `0x20082000`, and it is in **RAM** (`0x200...` SRAM region).
+   - `0x20082000`, and it is in **RAM** (`0x200...` SRAM region).
 - **What is the first instruction in `main`, and what does it do?**
    - `push {r3, lr}`; it saves `r3` and `lr` on the stack and keeps 8-byte stack alignment for ABI-compliant calls.
 - **Does GDB match what Ghidra shows?**
    - Yes. The disassembly and flow match the Ghidra listing.
 
-##### Step 4: Capture Register Values (`pc`, `sp`, `lr`, `r0-r3`, by using `x/x $XX`)
+##### Step 4: Capture Register Values (`pc`, `sp`, `lr`, `r0-r3`)
 
 | Register | Value | Description |
 |----------|-------|-------------|

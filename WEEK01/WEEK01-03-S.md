@@ -30,7 +30,7 @@ It is a **READ** operation. The `ldr` (Load Register) instruction reads the poin
 ##### Question 4: What happens next after the `ldr`?
 After the `ldr r0, [DAT_10000244]` instruction loads the string address into `r0`, the next instruction is **`bl 0x100015fc <__wrap_puts>`** which calls the `puts` function with `r0` as its argument (the string pointer).
 
-##### Question 5: Complete Data Flow Chain
+##### Complete the Data Flow Chain
 
 ```
 String "hello, world\r\n" stored at 0x100019CC (Flash)
