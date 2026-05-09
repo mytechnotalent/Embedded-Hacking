@@ -1,6 +1,6 @@
-﻿# Week 6: Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ GPIO Input Basics
+﻿?# Week 6: Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ GPIO Input Basics
 
-## 🎯 What You'll Learn This Week
+## ? What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
 - Understand the difference between regular (automatic) variables and static variables
@@ -14,7 +14,7 @@ By the end of this tutorial, you will be able to:
 
 ---
 
-## 📚 Part 1: Understanding Static Variables
+## Part 1: Understanding Static Variables
 
 ### What is a Static Variable?
 
@@ -25,26 +25,26 @@ Think of it like this:
 - **Static variable:** Like writing in a notebook that you keep forever
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Regular vs Static Variables                                    │
-│                                                                 │
-│  REGULAR (automatic):                                           │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │ Loop 1: Create → Set to 42 → Increment to 43 → Destroy     │ │
-│  │ Loop 2: Create → Set to 42 → Increment to 43 → Destroy     │ │
-│  │ Loop 3: Create → Set to 42 → Increment to 43 → Destroy     │ │
-│  │ Result: Always appears as 42!                              │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                                                                 │
-│  STATIC:                                                        │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │ Loop 1: Already exists → Read 42 → Increment → Store 43    │ │
-│  │ Loop 2: Already exists → Read 43 → Increment → Store 44    │ │
-│  │ Loop 3: Already exists → Read 44 → Increment → Store 45    │ │
-│  │ Result: Keeps incrementing!                                │ │
-│  └────────────────────────────────────────────────────────────┘ │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Regular vs Static Variables                                    |
+|                                                                 |
+|  REGULAR (automatic):                                           |
+|  +------------------------------------------------------------+ |
+|  | Loop 1: Create -> Set to 42 -> Increment to 43 -> Destroy     | |
+|  | Loop 2: Create -> Set to 42 -> Increment to 43 -> Destroy     | |
+|  | Loop 3: Create -> Set to 42 -> Increment to 43 -> Destroy     | |
+|  | Result: Always appears as 42!                              | |
+|  +------------------------------------------------------------+ |
+|                                                                 |
+|  STATIC:                                                        |
+|  +------------------------------------------------------------+ |
+|  | Loop 1: Already exists -> Read 42 -> Increment -> Store 43    | |
+|  | Loop 2: Already exists -> Read 43 -> Increment -> Store 44    | |
+|  | Loop 3: Already exists -> Read 44 -> Increment -> Store 45    | |
+|  | Result: Keeps incrementing!                                | |
+|  +------------------------------------------------------------+ |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### The `static` Keyword
@@ -70,26 +70,26 @@ Different types of variables are stored in different memory locations:
 ### Stack vs Static Storage vs Heap
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Memory Layout                                                  │
-│                                                                 │
-│  ┌───────────────────┐  High Address (0x20082000)               │
-│  │      STACK        │  ← Automatic/local variables             │
-│  │   (grows down)    │    Created/destroyed per function        │
-│  ├───────────────────┤                                          │
-│  │                   │                                          │
-│  │    (free space)   │                                          │
-│  │                   │                                          │
-│  ├───────────────────┤                                          │
-│  │       HEAP        │  ← Dynamic allocation (malloc/free)      │
-│  │    (grows up)     │                                          │
-│  ├───────────────────┤                                          │
-│  │   .bss section    │  ← Uninitialized static/global vars      │
-│  ├───────────────────┤                                          │
-│  │   .data section   │  ← Initialized static/global vars        │
-│  └───────────────────┘  Low Address (0x20000000)                │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Memory Layout                                                  |
+|                                                                 |
+|  +-------------------+  High Address (0x20082000)               |
+|  |      STACK        |  ?? Automatic/local variables             |
+|  |   (grows down)    |    Created/destroyed per function        |
+|  +-------------------+                                          |
+|  |                   |                                          |
+|  |    (free space)   |                                          |
+|  |                   |                                          |
+|  +-------------------+                                          |
+|  |       HEAP        |  ?? Dynamic allocation (malloc/free)      |
+|  |    (grows up)     |                                          |
+|  +-------------------+                                          |
+|  |   .bss section    |  ?? Uninitialized static/global vars      |
+|  +-------------------+                                          |
+|  |   .data section   |  ?? Initialized static/global vars        |
+|  +-------------------+  Low Address (0x20000000)                |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 **Key Point:** Static variables are NOT on the heap! They live in a fixed location in the `.data` section (if initialized) or `.bss` section (if uninitialized). This is different from heap memory which is dynamically allocated at runtime.
@@ -108,29 +108,29 @@ This is called **overflow** or **wrap-around**. The value "wraps" back to 0 and 
 
 ---
 
-## 📚 Part 2: Understanding GPIO Inputs
+## Part 2: Understanding GPIO Inputs
 
 ### Input vs Output
 
 So far, we've used GPIO pins as **outputs** to control LEDs. Now we'll learn to use them as **inputs** to read button states!
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  GPIO Direction                                                 │
-│                                                                 │
-│  OUTPUT (what we've done before):                               │
-│  ┌─────────┐                                                    │
-│  │  Pico   │ ───────► LED                                       │
-│  │ GPIO 16 │          (We control the LED)                      │
-│  └─────────┘                                                    │
-│                                                                 │
-│  INPUT (new this week):                                         │
-│  ┌─────────┐                                                    │
-│  │  Pico   │ ◄─────── Button                                    │
-│  │ GPIO 15 │          (We read the button state)                │
-│  └─────────┘                                                    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  GPIO Direction                                                 |
+|                                                                 |
+|  OUTPUT (what we've done before):                               |
+|  +---------+                                                    |
+|  |  Pico   | -------? LED                                       |
+|  | GPIO 16 |          (We control the LED)                      |
+|  +---------+                                                    |
+|                                                                 |
+|  INPUT (new this week):                                         |
+|  +---------+                                                    |
+|  |  Pico   | ?------- Button                                    |
+|  | GPIO 15 |          (We read the button state)                |
+|  +---------+                                                    |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### The Floating Input Problem
@@ -138,18 +138,18 @@ So far, we've used GPIO pins as **outputs** to control LEDs. Now we'll learn to 
 When a GPIO pin is set as an input but nothing is connected, it's called a **floating input**. The voltage on the pin is undefined and can randomly read as HIGH (1) or LOW (0) due to electrical noise.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Floating Input = Random Values!                                │
-│                                                                 │
-│  GPIO Pin (no connection):                                      │
-│    Reading 1: HIGH                                              │
-│    Reading 2: LOW                                               │
-│    Reading 3: HIGH                                              │
-│    Reading 4: HIGH                                              │
-│    Reading 5: LOW                                               │
-│    (Completely unpredictable!)                                  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Floating Input = Random Values!                                |
+|                                                                 |
+|  GPIO Pin (no connection):                                      |
+|    Reading 1: HIGH                                              |
+|    Reading 2: LOW                                               |
+|    Reading 3: HIGH                                              |
+|    Reading 4: HIGH                                              |
+|    Reading 5: LOW                                               |
+|    (Completely unpredictable!)                                  |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Pull-Up and Pull-Down Resistors
@@ -164,25 +164,25 @@ To solve the floating input problem, we use **pull resistors**:
 The Pico 2 has **internal** pull resistors that you can enable with software - no external components needed!
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Pull-Up Resistor (what we're using)                            │
-│                                                                 │
-│     3.3V                                                        │
-│       │                                                         │
-│       ┴ (internal pull-up resistor)                             │
-│       │                                                         │
-│       ├──────► GPIO 15 (reads HIGH normally)                    │
-│       │                                                         │
-│     ┌─┴─┐                                                       │
-│     │BTN│ ← Button connects GPIO to GND when pressed            │
-│     └─┬─┘                                                       │
-│       │                                                         │
-│      GND                                                        │
-│                                                                 │
-│  Button NOT pressed: GPIO reads 1 (HIGH)                        │
-│  Button PRESSED:     GPIO reads 0 (LOW)                         │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Pull-Up Resistor (what we're using)                            |
+|                                                                 |
+|     3.3V                                                        |
+|       |                                                         |
+|       + (internal pull-up resistor)                             |
+|       |                                                         |
+|       +------? GPIO 15 (reads HIGH normally)                    |
+|       |                                                         |
+|     +-+-+                                                       |
+|     |BTN| ?? Button connects GPIO to GND when pressed            |
+|     +-+-+                                                       |
+|       |                                                         |
+|      GND                                                        |
+|                                                                 |
+|  Button NOT pressed: GPIO reads 1 (HIGH)                        |
+|  Button PRESSED:     GPIO reads 0 (LOW)                         |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### GPIO Input Functions
@@ -208,8 +208,8 @@ This is a compact if-else statement:
 - If `pressed` is **false (0)**: output `1` (LED ON)
 
 **Why is it inverted?** Because of the pull-up resistor!
-- Button **released** → GPIO reads `1` → `pressed = 1` → output `0` → LED OFF
-- Button **pressed** → GPIO reads `0` → `pressed = 0` → output `1` → LED ON
+- Button **released** -> GPIO reads `1` -> `pressed = 1` -> output `0` -> LED OFF
+- Button **pressed** -> GPIO reads `0` -> `pressed = 0` -> output `1` -> LED ON
 
 A clearer way to write this:
 ```c
@@ -218,7 +218,7 @@ gpio_put(LED_GPIO, !gpio_get(BUTTON_GPIO));
 
 ---
 
-## 📚 Part 3: Understanding Compiler Optimizations
+## Part 3: Understanding Compiler Optimizations
 
 ### Why Does Code Disappear?
 
@@ -254,7 +254,7 @@ This is why when you look for `gpio_pull_up` in the binary, you might find `gpio
 
 ---
 
-## 📚 Part 4: Setting Up Your Environment
+## Part 4: Setting Up Your Environment
 
 ### Prerequisites
 
@@ -273,46 +273,46 @@ Before we start, make sure you have:
 ### Hardware Setup
 
 Connect your button like this:
-- One side of button → GPIO 15
-- Other side of button → GND
+- One side of button -> GPIO 15
+- Other side of button -> GND
 
 The internal pull-up resistor provides the 3.3V connection, so you only need to connect to GND!
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Breadboard Wiring                                              │
-│                                                                 │
-│  Pico 2                                                         │
-│  ┌──────────┐                                                   │
-│  │          │                                                   │
-│  │ GPIO 15  │────────┐                                          │
-│  │          │        │                                          │
-│  │ GPIO 16  │────────┼───► LED (with resistor to GND)           │
-│  │          │        │                                          │
-│  │   GND    │────────┼───┐                                      │
-│  │          │        │   │                                      │
-│  └──────────┘      ┌─┴─┐ │                                      │
-│                    │BTN│─┘                                      │
-│                    └───┘                                        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Breadboard Wiring                                              |
+|                                                                 |
+|  Pico 2                                                         |
+|  +----------+                                                   |
+|  |          |                                                   |
+|  | GPIO 15  |--------+                                          |
+|  |          |        |                                          |
+|  | GPIO 16  |--------+---? LED (with resistor to GND)           |
+|  |          |        |                                          |
+|  |   GND    |--------+---+                                      |
+|  |          |        |   |                                      |
+|  +----------+      +-+-+ |                                      |
+|                    |BTN|-+                                      |
+|                    +---+                                        |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Project Structure
 
 ```
 Embedded-Hacking/
-├── 0x0014_static-variables/
-│   ├── build/
-│   │   ├── 0x0014_static-variables.uf2
-│   │   └── 0x0014_static-variables.elf
-│   └── 0x0014_static-variables.c
-└── uf2conv.py
++-- 0x0014_static-variables/
+|   +-- build/
+|   |   +-- 0x0014_static-variables.uf2
+|   |   +-- 0x0014_static-variables.elf
+|   +-- 0x0014_static-variables.c
++-- uf2conv.py
 ```
 
 ---
 
-## 🔬 Part 5: Hands-On Tutorial - Static Variables and GPIO Input
+## ? Part 5: Hands-On Tutorial - Static Variables and GPIO Input
 
 ### Step 1: Review the Source Code
 
@@ -412,7 +412,7 @@ Keep the program running and watch `static_fav_num`. After 255, you'll see:
 ```
 static_fav_num: 254
 static_fav_num: 255
-static_fav_num: 0      ← Wrapped around!
+static_fav_num: 0      ?? Wrapped around!
 static_fav_num: 1
 static_fav_num: 2
 ...
@@ -422,9 +422,9 @@ This demonstrates unsigned integer overflow!
 
 ---
 
-## 🔬 Part 6: Debugging with GDB (Dynamic Analysis)
+## ? Part 6: Debugging with GDB (Dynamic Analysis)
 
-> 🔄 **REVIEW:** This setup is identical to previous weeks. If you need a refresher on OpenOCD and GDB connection, refer back to Week 3 Part 6.
+> ? **REVIEW:** This setup is identical to previous weeks. If you need a refresher on OpenOCD and GDB connection, refer back to Week 3 Part 6.
 
 ### Starting the Debug Session
 
@@ -432,7 +432,7 @@ This demonstrates unsigned integer overflow!
 
 ```powershell
 openocd ^
-  -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
+  -s "C:\Users\assem.KEVINTHOMAS\.pico-sdk\openocd\0.12.0+dev\scripts" ^
   -f interface/cmsis-dap.cfg ^
   -f target/rp2350.cfg ^
   -c "adapter speed 5000"
@@ -511,17 +511,17 @@ c
 
 GDB responds:
 ```
-Breakpoint 1 at 0x10000234: file C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0014_static-variables/0x0014_static-variables.c, line 5.
+Breakpoint 1 at 0x10000234: file C:/Users/assem.KEVINTHOMAS/OneDrive/Documents/Embedded-Hacking/0x0014_static-variables/0x0014_static-variables.c, line 5.
 Note: automatically using hardware breakpoints for read-only addresses.
 (gdb) c
 Continuing.
 
 Thread 1 "rp2350.cm0" hit Breakpoint 1, main ()
-    at C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0014_static-variables/0x0014_static-variables.c:5
+    at C:/Users/assem.KEVINTHOMAS/OneDrive/Documents/Embedded-Hacking/0x0014_static-variables/0x0014_static-variables.c:5
 5           stdio_init_all();
 ```
 
-> ⚠️ **Note:** If GDB says `The program is not being run.` when you type `c`, the target hasn't been started yet. Use `monitor reset halt` first, then `c` to continue to your breakpoint.
+> **Note:** If GDB says `The program is not being run.` when you type `c`, the target hasn't been started yet. Use `monitor reset halt` first, then `c` to continue to your breakpoint.
 
 ### Step 8: Examine the Static Variable Location
 
@@ -531,16 +531,16 @@ Static variables live at fixed RAM addresses. But how do we find that address? L
 0x10000262:    ldr r4, [pc, #44]   @ (0x10000290 <main+92>)
 ```
 
-This loads `r4` from the **literal pool** at address `0x10000290`. The literal pool stores constants that are too large for immediate encoding — in this case, a 32-bit RAM address. Let's examine what's stored there:
+This loads `r4` from the **literal pool** at address `0x10000290`. The literal pool stores constants that are too large for immediate encoding - in this case, a 32-bit RAM address. Let's examine what's stored there:
 
 ```gdb
 (gdb) x/1wx 0x10000290
 0x10000290 <main+92>:   0x200005a8
 ```
 
-That's `0x200005a8` — the RAM address of `static_fav_num`! The compiler placed this address in the literal pool because it can't encode a full 32-bit address in a single Thumb instruction.
+That's `0x200005a8` - the RAM address of `static_fav_num`! The compiler placed this address in the literal pool because it can't encode a full 32-bit address in a single Thumb instruction.
 
-> 💡 **Why did the disassembly at `0x10000290` show `lsls r0, r5, #22` instead?** Because `x/i` (disassemble) interprets raw data as instructions. The bytes `A8 05 00 20` at that address are the little-endian encoding of `0x200005A8`, but GDB's disassembler doesn't know it's data — it tries to decode it as a Thumb instruction. Using `x/wx` (examine as word) shows the actual value.
+> Tip: **Why did the disassembly at `0x10000290` show `lsls r0, r5, #22` instead?** Because `x/i` (disassemble) interprets raw data as instructions. The bytes `A8 05 00 20` at that address are the little-endian encoding of `0x200005A8`, but GDB's disassembler doesn't know it's data - it tries to decode it as a Thumb instruction. Using `x/wx` (examine as word) shows the actual value.
 
 ### Step 9: Step Through the Loop
 
@@ -568,10 +568,10 @@ After stepping to `0x10000262` or later, check the registers:
 ```
 
 Pay attention to:
-- `r4` — Should hold `0x200005a8` (static variable's RAM address, loaded from literal pool)
-- `r1` — Used for `printf` arguments (holds `42` or the static variable value)
-- `r3` — Used for load/increment/store of the static variable
-- `pc` — Program counter (current instruction address)
+- `r4` - Should hold `0x200005a8` (static variable's RAM address, loaded from literal pool)
+- `r1` - Used for `printf` arguments (holds `42` or the static variable value)
+- `r3` - Used for load/increment/store of the static variable
+- `pc` - Program counter (current instruction address)
 
 ### Step 11: Watch the Static Variable Change
 
@@ -613,7 +613,7 @@ TRY IT!
 
 ---
 
-## 🔬 Part 7: Understanding the Assembly
+## ? Part 7: Understanding the Assembly
 
 Now that we've explored the binary in GDB, let's make sense of the key patterns.
 
@@ -658,9 +658,9 @@ Look for the load-increment-store pattern using `r4` (which holds the static var
    0x1000028e <main+90>:        b.n     0x10000264 <main+48>
 ```
 
-Note that `r4` was loaded earlier at `0x10000262` via `ldr r4, [pc, #44]` — this pulled the static variable's RAM address (`0x200005a8`) from the literal pool at `0x10000290`.
+Note that `r4` was loaded earlier at `0x10000262` via `ldr r4, [pc, #44]` - this pulled the static variable's RAM address (`0x200005a8`) from the literal pool at `0x10000290`.
 
-**Key insight:** The static variable lives at a **fixed RAM address** (`0x200005a8`). It's loaded, incremented, and stored back — unlike the regular variable which was optimized away!
+**Key insight:** The static variable lives at a **fixed RAM address** (`0x200005a8`). It's loaded, incremented, and stored back - unlike the regular variable which was optimized away!
 
 Verify the static variable value which should be `43`:
 
@@ -706,7 +706,7 @@ Look for this sequence:
 | `0x1000028a`   | `mcrr 0, 4, r2, r3, cr0`   | Write `r3` (button) and `r2` (pin 16) to GPIO output |
 | `0x1000028e`   | `b.n 0x10000264`           | Loop back to start (`while (true)`)                  |
 
-> 💡 **Notice how the compiler interleaves the static variable increment with the GPIO logic.** It loads the SIO base address (`r1`) *before* doing the increment, and sets up `r2 = 16` (LED pin) in between. This is called **instruction scheduling** — the compiler reorders instructions to avoid pipeline stalls while waiting for memory reads.
+> Tip: **Notice how the compiler interleaves the static variable increment with the GPIO logic.** It loads the SIO base address (`r1`) *before* doing the increment, and sets up `r2 = 16` (LED pin) in between. This is called **instruction scheduling** - the compiler reorders instructions to avoid pipeline stalls while waiting for memory reads.
 
 ### Step 16: Find the Infinite Loop
 
@@ -716,21 +716,21 @@ The last instruction at `0x1000028e` is already covered in the table above:
 0x1000028e:    b.n 0x10000264
 ```
 
-This is an **unconditional branch** back to `0x10000264` (the `movs r1, #42` at the top of the loop) — this is the `while (true)` in our code! There is no `pop` or `bx lr` to return from `main` because the loop never exits.
+This is an **unconditional branch** back to `0x10000264` (the `movs r1, #42` at the top of the loop) - this is the `while (true)` in our code! There is no `pop` or `bx lr` to return from `main` because the loop never exits.
 
 ---
 
-## 🔬 Part 8: Hacking the Binary with a Hex Editor
+## ? Part 8: Hacking the Binary with a Hex Editor
 
-Now for the fun part — we'll patch the `.bin` file directly using a hex editor!
+Now for the fun part - we'll patch the `.bin` file directly using a hex editor!
 
-> 💡 **Why a hex editor?** GDB **cannot write to flash memory** — the `0x10000000+` address range where program instructions live. Trying `set *(char *)0x10000264 = 0x2b` in GDB gives `Writing to flash memory forbidden in this context`. To make **permanent** patches that survive a power cycle, we edit the `.bin` file directly with a hex editor and re-flash it.
+> Tip: **Why a hex editor?** GDB **cannot write to flash memory** - the `0x10000000+` address range where program instructions live. Trying `set *(char *)0x10000264 = 0x2b` in GDB gives `Writing to flash memory forbidden in this context`. To make **permanent** patches that survive a power cycle, we edit the `.bin` file directly with a hex editor and re-flash it.
 
 ### Step 17: Open the Binary in a Hex Editor
 
 1. Open **HxD** (or your preferred hex editor: ImHex, 010 Editor, etc.)
-2. Click **File** → **Open**
-3. Navigate to `C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0014_static-variables\build\`
+2. Click **File** -> **Open**
+3. Navigate to `C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\0x0014_static-variables\build\`
 4. Open `0x0014_static-variables.bin`
 
 ### Step 18: Calculate the File Offset
@@ -742,29 +742,29 @@ file_offset = address - 0x10000000
 ```
 
 For example:
-- Address `0x10000264` → file offset `0x264` (612 in decimal)
-- Address `0x10000286` → file offset `0x286` (646 in decimal)
+- Address `0x10000264` -> file offset `0x264` (612 in decimal)
+- Address `0x10000286` -> file offset `0x286` (646 in decimal)
 
-### Step 19: Hack #1 — Change regular_fav_num from 42 to 43
+### Step 19: Hack #1 - Change regular_fav_num from 42 to 43
 
 From our GDB analysis, we know the instruction at `0x10000264` is:
 
 ```
-movs r1, #0x2a    →    bytes: 2a 21
+movs r1, #0x2a    ->    bytes: 2a 21
 ```
 
 To change the value from 42 (`0x2a`) to 43 (`0x2b`):
 
-1. In HxD, open `C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0014_static-variables\build\0x0014_static-variables.bin`
+1. In HxD, open `C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\0x0014_static-variables\build\0x0014_static-variables.bin`
 2. Press **Ctrl+G** (Go to offset)
 3. Enter offset: `264`
 4. You should see the byte `2A` at this position
 5. Change `2A` to `2B`
 6. The instruction is now `movs r1, #0x2b` (43 in decimal)
 
-> 🔍 **How Thumb encoding works:** In `movs r1, #imm8`, the immediate value is the first byte, and the opcode `21` is the second byte. So the bytes `2a 21` encode `movs r1, #0x2a`.
+> ?? **How Thumb encoding works:** In `movs r1, #imm8`, the immediate value is the first byte, and the opcode `21` is the second byte. So the bytes `2a 21` encode `movs r1, #0x2a`.
 
-### Step 20: Hack #2 — Invert the Button Logic
+### Step 20: Hack #2 - Invert the Button Logic
 
 #### Understand the Encoding
 
@@ -778,15 +778,15 @@ From GDB, we found the `eor.w r3, r3, #1` instruction at `0x10000286` that inver
 This is the 32-bit Thumb-2 encoding of `eor.w r3, r3, #1`. The bytes break down as:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  eor.w r3, r3, #1  →  bytes: 83 F0 01 03                        │
-│                                                                 │
-│  Byte 0: 0x83  ─┐                                               │
-│  Byte 1: 0xF0  ─┘  First halfword (opcode + source register)    │
-│  Byte 2: 0x01  ──── Immediate value (#1) ← CHANGE THIS          │
-│  Byte 3: 0x03  ──── Destination register (r3)                   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  eor.w r3, r3, #1  ->  bytes: 83 F0 01 03                        |
+|                                                                 |
+|  Byte 0: 0x83  -??                                               |
+|  Byte 1: 0xF0  -+  First halfword (opcode + source register)    |
+|  Byte 2: 0x01  ---- Immediate value (#1) ?? CHANGE THIS          |
+|  Byte 3: 0x03  ---- Destination register (r3)                   |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 To change `eor.w r3, r3, #1` to `eor.w r3, r3, #0` (making XOR do nothing):
@@ -800,30 +800,30 @@ To change `eor.w r3, r3, #1` to `eor.w r3, r3, #0`:
 3. You should see the byte `01` at this position
 4. Change `01` to `00`
 
-> 🔍 **Why offset `0x288` and not `0x286`?** The immediate value `#1` is in the **third byte** of the 4-byte instruction. The instruction starts at file offset `0x286`, so the immediate byte is at `0x286 + 2 = 0x288`.
+> ?? **Why offset `0x288` and not `0x286`?** The immediate value `#1` is in the **third byte** of the 4-byte instruction. The instruction starts at file offset `0x286`, so the immediate byte is at `0x286 + 2 = 0x288`.
 
 Now the logic is permanently changed:
-- Button released (input = 1): `1 XOR 0 = 1` → LED **ON**
-- Button pressed (input = 0): `0 XOR 0 = 0` → LED **OFF**
+- Button released (input = 1): `1 XOR 0 = 1` -> LED **ON**
+- Button pressed (input = 0): `0 XOR 0 = 0` -> LED **OFF**
 
 This is the **opposite** of the original behavior!
 
 ### Step 21: Save the Patched Binary
 
-1. Click **File** → **Save As**
+1. Click **File** -> **Save As**
 2. Save as `0x0014_static-variables-h.bin` in the build directory
 3. Close the hex editor
 
 ---
 
-## 🔬 Part 9: Converting and Flashing the Hacked Binary
+## ? Part 9: Converting and Flashing the Hacked Binary
 
 ### Step 22: Convert to UF2 Format
 
 Open a terminal and navigate to your project directory:
 
 ```powershell
-cd C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0014_static-variables
+cd C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\0x0014_static-variables
 ```
 
 Run the conversion command:
@@ -833,7 +833,7 @@ python ..\uf2conv.py build\0x0014_static-variables-h.bin --base 0x10000000 --fam
 ```
 
 **What this command means:**
-- `uf2conv.py` = the conversion script (in the parent `Embedded-Hacking-main` directory)
+- `uf2conv.py` = the conversion script (in the parent `Embedded-Hacking` directory)
 - `--base 0x10000000` = the XIP base address where code runs from
 - `--family 0xe48bff59` = the RP2350 family ID
 - `--output build\hacked.uf2` = the output filename
@@ -848,7 +848,7 @@ python ..\uf2conv.py build\0x0014_static-variables-h.bin --base 0x10000000 --fam
 
 **Check the serial output:**
 ```
-regular_fav_num: 43    ← Changed from 42!
+regular_fav_num: 43    ?? Changed from 42!
 static_fav_num: 42
 regular_fav_num: 43
 static_fav_num: 43
@@ -859,13 +859,13 @@ static_fav_num: 43
 - LED should now be **ON by default** (when button is NOT pressed)
 - LED should turn **OFF** when you press the button
 
-🎉 **BOOM! We successfully:**
+? **BOOM! We successfully:**
 1. Changed the printed value from 42 to 43
 2. Inverted the LED/button logic
 
 ---
 
-## 📊 Part 10: Summary and Review
+## ? Part 10: Summary and Review
 
 ### What We Accomplished
 
@@ -890,46 +890,46 @@ static_fav_num: 43
 ### GPIO Input Configuration
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  GPIO Input Setup Steps                                         │
-│                                                                 │
-│  1. gpio_init(pin)                   - Initialize the pin       │
-│  2. gpio_set_dir(pin, GPIO_IN)       - Set as input             │
-│  3. gpio_pull_up(pin)                - Enable pull-up           │
-│     OR gpio_pull_down(pin)           - OR enable pull-down      │
-│  4. gpio_get(pin)                    - Read the state           │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  GPIO Input Setup Steps                                         |
+|                                                                 |
+|  1. gpio_init(pin)                   - Initialize the pin       |
+|  2. gpio_set_dir(pin, GPIO_IN)       - Set as input             |
+|  3. gpio_pull_up(pin)                - Enable pull-up           |
+|     OR gpio_pull_down(pin)           - OR enable pull-down      |
+|  4. gpio_get(pin)                    - Read the state           |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### The Binary Hacking Workflow
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  1. Analyze the binary with GDB                                 │
-│     - Disassemble functions with x/Ni                           │
-│     - Identify key instructions and addresses                   │
-├─────────────────────────────────────────────────────────────────┤
-│  2. Understand compiler optimizations                           │
-│     - Some functions get inlined (gpio_pull_up → gpio_set_pulls)│
-│     - Some variables are optimized away                         │
-├─────────────────────────────────────────────────────────────────┤
-│  3. Calculate file offsets                                      │
-│     - file_offset = address - 0x10000000                        │
-├─────────────────────────────────────────────────────────────────┤
-│  4. Patch the .bin file with a hex editor                       │
-│     - Open the .bin file in HxD / ImHex                         │
-│     - Go to the calculated offset                               │
-│     - Change the target byte(s)                                 │
-├─────────────────────────────────────────────────────────────────┤
-│  5. Convert to UF2                                              │
-│     python uf2conv.py file.bin --base 0x10000000                │
-│       --family 0xe48bff59 --output hacked.uf2                   │
-├─────────────────────────────────────────────────────────────────┤
-│  6. Flash and verify                                            │
-│     - Hold BOOTSEL, plug in, drag UF2                           │
-│     - Check serial output and button/LED behavior               │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  1. Analyze the binary with GDB                                 |
+|     - Disassemble functions with x/Ni                           |
+|     - Identify key instructions and addresses                   |
++-----------------------------------------------------------------+
+|  2. Understand compiler optimizations                           |
+|     - Some functions get inlined (gpio_pull_up -> gpio_set_pulls)|
+|     - Some variables are optimized away                         |
++-----------------------------------------------------------------+
+|  3. Calculate file offsets                                      |
+|     - file_offset = address - 0x10000000                        |
++-----------------------------------------------------------------+
+|  4. Patch the .bin file with a hex editor                       |
+|     - Open the .bin file in HxD / ImHex                         |
+|     - Go to the calculated offset                               |
+|     - Change the target byte(s)                                 |
++-----------------------------------------------------------------+
+|  5. Convert to UF2                                              |
+|     python uf2conv.py file.bin --base 0x10000000                |
+|       --family 0xe48bff59 --output hacked.uf2                   |
++-----------------------------------------------------------------+
+|  6. Flash and verify                                            |
+|     - Hold BOOTSEL, plug in, drag UF2                           |
+|     - Check serial output and button/LED behavior               |
++-----------------------------------------------------------------+
 ```
 
 ### Key Memory Addresses
@@ -943,40 +943,13 @@ static_fav_num: 43
 
 ---
 
-## ✅ Practice Exercises
-
-### Exercise 1: Change Static Variable Initial Value
-The static variable starts at 42. Hack the binary to make it start at 100 instead.
-
-**Hint:** Find where `DAT_200005a8` is initialized in the .data section.
-
-### Exercise 2: Make the LED Blink
-Instead of responding to button presses, hack the binary to make the LED blink continuously.
-
-**Hint:** You'll need to change the GPIO output logic to toggle instead of following button state.
-
-### Exercise 3: Reverse Engineer gpio_set_pulls
-Using GDB, disassemble the `gpio_set_pulls` function and figure out what registers it writes to.
-
-**Hint:** Look for writes to addresses around `0x40038000` (PADS_BANK0).
-
-### Exercise 4: Add a Second Static Variable
-If you had two static variables, where would they be stored in memory? Would they be next to each other?
-
-**Hint:** Static variables in the same compilation unit are typically placed consecutively in the .data section.
-
-### Exercise 5: Overflow Faster
-The static variable overflows after 255 iterations. Can you hack it to overflow sooner?
-
-**Hint:** Change the increment from `+1` to `+10` by modifying the `adds r3,#0x1` instruction.
-
 ---
 
-## 🎓 Key Takeaways
+## ? Key Takeaways
 
 1. **Static variables persist** - They keep their value between function calls and loop iterations.
 
-2. **Static storage ≠ heap** - Static variables are in a fixed location, not dynamically allocated.
+2. **Static storage ? heap** - Static variables are in a fixed location, not dynamically allocated.
 
 3. **Compilers optimize aggressively** - Regular variables may be optimized away if the compiler sees no effect.
 
@@ -996,7 +969,7 @@ The static variable overflows after 255 iterations. Can you hack it to overflow 
 
 ---
 
-## 📖 Glossary
+## ? Glossary
 
 | Term                  | Definition                                                       |
 | --------------------- | ---------------------------------------------------------------- |
@@ -1019,7 +992,7 @@ The static variable overflows after 255 iterations. Can you hack it to overflow 
 
 ---
 
-## 🔗 Additional Resources
+## ? Additional Resources
 
 ### GPIO Input Reference
 
@@ -1061,4 +1034,6 @@ The static variable overflows after 255 iterations. Can you hack it to overflow 
 
 **Remember:** Static variables are your friends when you need to remember values across function calls. But they also make your program's behavior more complex to analyze - which is exactly why we practice reverse engineering!
 
-Happy hacking! 🔧
+Happy hacking! ?
+
+

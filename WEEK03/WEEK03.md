@@ -22,7 +22,7 @@ This week builds on your GDB and Ghidra skills from previous weeks:
 
 ---
 
-## 📚 The Code We're Analyzing
+## The Code We're Analyzing
 
 Throughout this week, we'll continue working with our `0x0001_hello-world.c` program:
 
@@ -42,7 +42,7 @@ But this week, we're going **deeper** - we'll understand everything that happens
 
 ---
 
-## 📚 Part 1: Understanding the Boot Process
+## Part 1: Understanding the Boot Process
 
 ### What Happens When You Power On?
 
@@ -60,49 +60,49 @@ Each of these steps has a corresponding piece of code. Let's explore them all!
 ### The RP2350 Boot Sequence Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  STEP 1: Power On                                               │
-│  - The Cortex-M33 core wakes up                                 │
-│  - Execution begins at address 0x00000000 (Bootrom)             │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  STEP 1: Power On                                               |
+|  - The Cortex-M33 core wakes up                                 |
+|  - Execution begins at address 0x00000000 (Bootrom)             |
++-----------------------------------------------------------------+
                               ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  STEP 2: Bootrom Executes (32KB on-chip ROM)                    │
-│  - This code is burned into the chip - can't be changed!        │
-│  - It looks for valid firmware in flash memory                  │
-│  - It scans the first 4 kB of the image for a valid IMAGE_DEF   │
-│  (Datasheet §4.1, p. 338: 32KB ROM; §5.9.5, p. 429: IMAGE_DEF)  │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  STEP 2: Bootrom Executes (32KB on-chip ROM)                    |
+|  - This code is burned into the chip - can't be changed!        |
+|  - It looks for valid firmware in flash memory                  |
+|  - It scans the first 4 kB of the image for a valid IMAGE_DEF   |
+|  (Datasheet §4.1, p. 338: 32KB ROM; §5.9.5, p. 429: IMAGE_DEF)  |
++-----------------------------------------------------------------+
                               ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  STEP 3: Flash XIP Setup (bootrom-managed)                      │
-│  - The bootrom configures the flash interface automatically     │
-│  - Sets up XIP (Execute In Place) mode                          │
-│  - NOTE: Unlike RP2040, there is NO separate boot2 in flash!    │
-│  (Datasheet §5.2, p. 375: "removal of a boot2 in the first      │
-│   256 bytes of the image")                                      │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  STEP 3: Flash XIP Setup (bootrom-managed)                      |
+|  - The bootrom configures the flash interface automatically     |
+|  - Sets up XIP (Execute In Place) mode                          |
+|  - NOTE: Unlike RP2040, there is NO separate boot2 in flash!    |
+|  (Datasheet §5.2, p. 375: "removal of a boot2 in the first      |
+|   256 bytes of the image")                                      |
++-----------------------------------------------------------------+
                               ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  STEP 4: Vector Table & Reset Handler                           │
-│  - Bootrom reads the vector table at 0x10000000                 │
-│  - Gets the initial stack pointer from offset 0x00              │
-│  - Gets the reset handler address from offset 0x04              │
-│  - Jumps to the reset handler!                                  │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  STEP 4: Vector Table & Reset Handler                           |
+|  - Bootrom reads the vector table at 0x10000000                 |
+|  - Gets the initial stack pointer from offset 0x00              |
+|  - Gets the reset handler address from offset 0x04              |
+|  - Jumps to the reset handler!                                  |
++-----------------------------------------------------------------+
                               ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  STEP 5: C Runtime Startup (crt0.S)                             │
-│  - Copies initialized data from flash to RAM                    │
-│  - Zeros out the BSS section                                    │
-│  - Calls runtime_init()                                         │
-│  - Finally calls main()!                                        │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  STEP 5: C Runtime Startup (crt0.S)                             |
+|  - Copies initialized data from flash to RAM                    |
+|  - Zeros out the BSS section                                    |
+|  - Calls runtime_init()                                         |
+|  - Finally calls main()!                                        |
++-----------------------------------------------------------------+
 ```
 
 ---
 
-## 📚 Part 2: The Bootrom - Where It All Begins
+## Part 2: The Bootrom - Where It All Begins
 
 ### What is the Bootrom?
 
@@ -200,7 +200,7 @@ assuming a fixed address.
 
 ---
 
-## 📚 Part 3: Understanding XIP (Execute In Place)
+## Part 3: Understanding XIP (Execute In Place)
 
 > 🔄 **REVIEW:** In Week 1, we learned that our code lives at `0x10000000` in flash memory. We used `x/1000i 0x10000000` to find our `main` function. Now we'll understand WHY code is at this address!
 
@@ -225,29 +225,29 @@ Think of it like reading a book:
 The XIP flash region starts at address `0x10000000`. This is where your compiled code lives!
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  Address: 0x10000000 (XIP Base)                     │
-│  ┌─────────────────────────────────────────────────┐│
-│  │  Vector Table (first thing here!)               ││
-│  │  - Stack Pointer at offset 0x00                 ││
-│  │  - Reset Handler at offset 0x04                 ││
-│  │  - Other exception handlers...                  ││
-│  ├─────────────────────────────────────────────────┤│
-│  │  Your Code                                      ││
-│  │  - Reset handler                                ││
-│  │  - main() function                              ││
-│  │  - Other functions                              ││
-│  ├─────────────────────────────────────────────────┤│
-│  │  Read-Only Data                                 ││
-│  │  - Strings like "hello, world"                  ││
-│  │  - Constant values                              ││
-│  └─────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────┘
++-----------------------------------------------------+
+|  Address: 0x10000000 (XIP Base)                     |
+|  +-------------------------------------------------+|
+|  |  Vector Table (first thing here!)               ||
+|  |  - Stack Pointer at offset 0x00                 ||
+|  |  - Reset Handler at offset 0x04                 ||
+|  |  - Other exception handlers...                  ||
+|  +-------------------------------------------------+|
+|  |  Your Code                                      ||
+|  |  - Reset handler                                ||
+|  |  - main() function                              ||
+|  |  - Other functions                              ||
+|  +-------------------------------------------------+|
+|  |  Read-Only Data                                 ||
+|  |  - Strings like "hello, world"                  ||
+|  |  - Constant values                              ||
+|  +-------------------------------------------------+|
++-----------------------------------------------------+
 ```
 
 ---
 
-## 📚 Part 4: The Vector Table - The CPU's Instruction Manual
+## Part 4: The Vector Table - The CPU's Instruction Manual
 
 ### What is the Vector Table?
 
@@ -293,7 +293,7 @@ So `0x1000015d` means:
 
 ---
 
-## 📚 Part 5: The Linker Script - Memory Mapping
+## Part 5: The Linker Script - Memory Mapping
 
 ### What is a Linker Script?
 
@@ -344,7 +344,7 @@ This value (`0x20082000`) is what we see at offset `0x00` in the vector table!
 
 ---
 
-## 📚 Part 6: Setting Up Your Environment (GDB - Dynamic Analysis)
+## Part 6: Setting Up Your Environment (GDB - Dynamic Analysis)
 
 > 🔄 **REVIEW:** This setup is identical to Weeks 1-2. If you need a refresher on OpenOCD and GDB connection, refer back to Week 1 Part 4 or Week 2 Part 5.
 
@@ -363,7 +363,7 @@ Before we start, make sure you have:
 
 ```powershell
 openocd ^
-  -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
+  -s "C:\Users\assem.KEVINTHOMAS\.pico-sdk\openocd\0.12.0+dev\scripts" ^
   -f interface/cmsis-dap.cfg ^
   -f target/rp2350.cfg ^
   -c "adapter speed 5000"
@@ -500,8 +500,8 @@ This is "Compare and Branch if Zero". If `r0` is `0` (meaning we're on Core 0), 
 The RP2350 has **two cores**, but only **Core 0** should run the startup code! If both cores tried to initialize the same memory and peripherals, chaos would ensue.
 
 So the reset handler checks:
-- **Core 0?** → Continue with startup
-- **Core 1?** → Go back to the bootrom and wait
+- **Core 0?** -> Continue with startup
+- **Core 1?** -> Go back to the bootrom and wait
 
 ---
 
@@ -557,31 +557,31 @@ Let's look at more instructions to see the full picture:
 The reset handler performs several phases:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  PHASE 1: Core Check (0x1000015c - 0x10000168)                  │
-│  - Check CPUID to see which core we're on                       │
-│  - If not Core 0, go back to bootrom                            │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  PHASE 1: Core Check (0x1000015c - 0x10000168)                  |
+|  - Check CPUID to see which core we're on                       |
+|  - If not Core 0, go back to bootrom                            |
++-----------------------------------------------------------------+
                               ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  PHASE 2: Data Copy Setup & Loop (0x1000016a - 0x10000176)      │
-│  - Set up the data_cpy_table pointer and load each copy triplet │
-│  - Copy initialized variables from flash to RAM                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  PHASE 2: Data Copy Setup & Loop (0x1000016a - 0x10000176)      |
+|  - Set up the data_cpy_table pointer and load each copy triplet |
+|  - Copy initialized variables from flash to RAM                 |
++-----------------------------------------------------------------+
                               ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  PHASE 3: BSS Setup & Clear (0x10000178 - 0x10000184)           │
-│  - Load the BSS start/end addresses into r1 and r2              │
-│  - GDB labels those literals as `data_cpy_table+48/+52`         │
-│  - Zero out all uninitialized global variables                  │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  PHASE 3: BSS Setup & Clear (0x10000178 - 0x10000184)           |
+|  - Load the BSS start/end addresses into r1 and r2              |
+|  - GDB labels those literals as `data_cpy_table+48/+52`         |
+|  - Zero out all uninitialized global variables                  |
++-----------------------------------------------------------------+
                               ↓
-┌─────────────────────────────────────────────────────────────────┐
-│  PHASE 4: Platform Entry Begins (0x10000186 - 0x10000188 shown) │
-│  - Load the runtime_init() pointer from the table               │
-│  - Branch to runtime_init() with `blx r1`                       │
-│  - `main()` and `exit()` appear a few instructions later        │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  PHASE 4: Platform Entry Begins (0x10000186 - 0x10000188 shown) |
+|  - Load the runtime_init() pointer from the table               |
+|  - Branch to runtime_init() with `blx r1`                       |
+|  - `main()` and `exit()` appear a few instructions later        |
++-----------------------------------------------------------------+
 ```
 
 ---
@@ -634,12 +634,12 @@ The table ends with an entry where the source address is `0x00000000` (which sig
 The data copy loop works like this:
 
 ```
-┌─────────────────────────────────────────────┐
-│  1. Load source, dest, end from table       │
-│  2. If source == 0, we're done              │
-│  3. Otherwise, copy word by word            │
-│  4. Go back to step 1 for next entry        │
-└─────────────────────────────────────────────┘
++---------------------------------------------+
+|  1. Load source, dest, end from table       |
+|  2. If source == 0, we're done              |
+|  3. Otherwise, copy word by word            |
+|  4. Go back to step 1 for next entry        |
++---------------------------------------------+
 ```
 
 The actual code (starting at **`0x1000016c`** in the reset handler):
@@ -655,7 +655,7 @@ bl  0x1000019a <data_cpy>
 b.n 0x1000016c <hold_non_core0_in_bootrom+8>
 ```
 
-> 💡 **Note:** You can see this code in **Step 6** earlier where we examined the reset handler with `x/20i 0x1000015c`.
+> Tip: **Note:** You can see this code in **Step 6** earlier where we examined the reset handler with `x/20i 0x1000015c`.
 
 ---
 
@@ -699,16 +699,16 @@ The first two `ldr` instructions are still part of the **BSS clear setup**, even
 ### Understanding the Loop
 
 ```
-┌─────────────────────────────────────────────┐
-│  r1 = start of BSS section                  │
-│  r2 = end of BSS section                    │
-│  r0 = 0                                     │
-│                                             │
-│  LOOP:                                      │
-│    Store 0 at address r1                    │
-│    Increment r1 by 4 bytes                  │
-│    If r1 != r2, repeat                      │
-└─────────────────────────────────────────────┘
++---------------------------------------------+
+|  r1 = start of BSS section                  |
+|  r2 = end of BSS section                    |
+|  r0 = 0                                     |
+|                                             |
+|  LOOP:                                      |
+|    Store 0 at address r1                    |
+|    Increment r1 by 4 bytes                  |
+|    If r1 != r2, repeat                      |
++---------------------------------------------+
 ```
 
 ---
@@ -817,7 +817,7 @@ Let's verify we understand the boot process by setting a breakpoint at main:
 **You should see:**
 
 ```
-Breakpoint 1 at 0x10000234: file C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0001_hello-world/0x0001_hello-world.c, line 5.
+Breakpoint 1 at 0x10000234: file C:/Users/assem.KEVINTHOMAS/OneDrive/Documents/Embedded-Hacking/0x0001_hello-world/0x0001_hello-world.c, line 5.
 Note: automatically using hardware breakpoints for read-only addresses.
 ```
 
@@ -833,7 +833,7 @@ Note: automatically using hardware breakpoints for read-only addresses.
 Continuing.
 
 Thread 1 "rp2350.cm0" hit Breakpoint 1, main ()
-    at C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0001_hello-world/0x0001_hello-world.c:5
+    at C:/Users/assem.KEVINTHOMAS/OneDrive/Documents/Embedded-Hacking/0x0001_hello-world/0x0001_hello-world.c:5
 5           stdio_init_all();
 (gdb)
 ```
@@ -945,7 +945,7 @@ While GDB is excellent for dynamic analysis (watching code execute), Ghidra exce
 ...
 ```
 
-> 💡 **Notice:** Ghidra shows the vector table data as individual bytes by default. You can see it has labeled the start as `__vectors`, `__flash_binary_start`, `__VECTOR_TABLE`, and `__logical_binary_start`. The arrows (like `? -> 1000015d`) show that Ghidra recognizes these bytes as pointers to code addresses! To see the data formatted as 32-bit addresses instead of bytes, you can right-click and retype the data.
+> Tip: **Notice:** Ghidra shows the vector table data as individual bytes by default. You can see it has labeled the start as `__vectors`, `__flash_binary_start`, `__VECTOR_TABLE`, and `__logical_binary_start`. The arrows (like `? -> 1000015d`) show that Ghidra recognizes these bytes as pointers to code addresses! To see the data formatted as 32-bit addresses instead of bytes, you can right-click and retype the data.
 
 ### Step 17: Navigate to the Reset Handler
 
@@ -1005,7 +1005,7 @@ void _reset_handler(void)
 Let's find how the boot code eventually calls `main()`:
 
 1. In the Symbol Tree, find the `main` function
-2. Right-click on `main` and select **References → Show References to main**
+2. Right-click on `main` and select **References -> Show References to main**
 3. This shows everywhere `main` is called from!
 
 **You should see:**
@@ -1048,7 +1048,7 @@ In Ghidra, look at `platform_entry`:
 
 Ghidra can visualize the call flow:
 
-1. With `_reset_handler` selected, go to **Window → Function Call Graph**
+1. With `_reset_handler` selected, go to **Window -> Function Call Graph**
 2. This shows a visual graph of all function calls from the reset handler
 3. You will see `_reset_handler` at the top with arrows going down to its four direct callees: `data_cpy`, `runtime_init`, `main`, and `exit`
 
@@ -1076,32 +1076,32 @@ Ghidra can visualize the call flow:
 ### The Complete Boot Sequence
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  1. POWER ON                                                    │
-│     Cortex-M33 begins at 0x00000000 (bootrom)                   │
-├─────────────────────────────────────────────────────────────────┤
-│  2. BOOTROM                                                     │
-│     - Initializes hardware                                      │
-│     - Configures flash XIP (no separate boot2 on RP2350)        │
-│     - Finds IMAGE_DEF within first 4 kB of flash image          │
-├─────────────────────────────────────────────────────────────────┤
-│  3. VECTOR TABLE (0x10000000)                                   │
-│     - Reads SP from offset 0x00 → 0x20082000                    │
-│     - Reads Reset Handler from offset 0x04 → 0x1000015d         │
-├─────────────────────────────────────────────────────────────────┤
-│  4. RESET HANDLER (0x1000015c)                                  │
-│     - Checks CPUID (Core 0 continues, Core 1 waits)             │
-│     - Copies .data from flash to RAM                            │
-│     - Zeros .bss section                                        │
-├─────────────────────────────────────────────────────────────────┤
-│  5. PLATFORM ENTRY (0x10000186)                                 │
-│     - Calls runtime_init()                                      │
-│     - Calls main()                                              │
-│     - Calls exit() when main returns                            │
-├─────────────────────────────────────────────────────────────────┤
-│  6. YOUR CODE RUNS!                                             │
-│     main() at 0x10000234                                        │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  1. POWER ON                                                    |
+|     Cortex-M33 begins at 0x00000000 (bootrom)                   |
++-----------------------------------------------------------------+
+|  2. BOOTROM                                                     |
+|     - Initializes hardware                                      |
+|     - Configures flash XIP (no separate boot2 on RP2350)        |
+|     - Finds IMAGE_DEF within first 4 kB of flash image          |
++-----------------------------------------------------------------+
+|  3. VECTOR TABLE (0x10000000)                                   |
+|     - Reads SP from offset 0x00 -> 0x20082000                    |
+|     - Reads Reset Handler from offset 0x04 -> 0x1000015d         |
++-----------------------------------------------------------------+
+|  4. RESET HANDLER (0x1000015c)                                  |
+|     - Checks CPUID (Core 0 continues, Core 1 waits)             |
+|     - Copies .data from flash to RAM                            |
+|     - Zeros .bss section                                        |
++-----------------------------------------------------------------+
+|  5. PLATFORM ENTRY (0x10000186)                                 |
+|     - Calls runtime_init()                                      |
+|     - Calls main()                                              |
+|     - Calls exit() when main returns                            |
++-----------------------------------------------------------------+
+|  6. YOUR CODE RUNS!                                             |
+|     main() at 0x10000234                                        |
++-----------------------------------------------------------------+
 ```
 
 ### Key Addresses to Remember
@@ -1157,55 +1157,13 @@ Ghidra can visualize the call flow:
 
 | Action | How to Access | Purpose |
 | ------ | ------------- | ------- |
-| Go To Address | Navigation → Go To... | Jump to specific memory address |
-| Show References | Right-click → References → Show References to | Find all callers of a function |
-| Function Call Graph | Window → Function Call Graph | Visualize call flow |
+| Go To Address | Navigation -> Go To... | Jump to specific memory address |
+| Show References | Right-click -> References -> Show References to | Find all callers of a function |
+| Function Call Graph | Window -> Function Call Graph | Visualize call flow |
 | Add Comment | Press `;` | Document your analysis |
-| Rename Symbol | Right-click → Rename | Give meaningful names to functions |
+| Rename Symbol | Right-click -> Rename | Give meaningful names to functions |
 
 ---
-
-## ✅ Practice Exercises
-
-### Exercise 1: Trace a Reset
-
-1. Set a breakpoint at the reset handler: `b *0x1000015c`
-2. Type `monitor reset halt` then `c`
-3. Single-step through the first 10 instructions with `si`
-4. For each instruction, explain what it does
-
-### Exercise 2: Find the Stack Size
-
-1. The stack starts at `0x20082000`
-2. The stack limit is `0x20078000` (from register assignments)
-3. Calculate: How many bytes is the stack?
-4. How many kilobytes is that?
-
-### Exercise 3: Examine All Vectors
-
-1. Use `x/16x 0x10000000` to see the first 16 vector table entries
-2. For each entry, determine:
-   - Is it a valid code address (starts with `0x1000...`)?
-   - What handler does it point to?
-
-### Exercise 4: Find Your Main Function and Trace Back
-
-1. Use `info functions main` to find main
-2. Examine 10 instructions at that address
-3. Identify the first function call in main
-4. What does that function do?
-5. When stopped at main, examine `$lr` (link register)
-6. What address is stored there?
-7. Disassemble that address - what function is it?
-8. This shows you where main was called from!
-
-### Exercise 5: Ghidra Boot Analysis
-
-1. In Ghidra, navigate to `_reset_handler`
-2. Use **Window → Function Call Graph** to visualize the call tree
-3. Identify the path from `_reset_handler` to `main`
-4. How many functions are called before `main` starts?
-5. Add a comment in Ghidra explaining what each function does
 
 ---
 
@@ -1270,18 +1228,18 @@ Understanding the boot process is critical for both attackers and defenders. Kno
 #### 1. Secure Boot Implementation
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  SECURE BOOT FLOW                                   │
-├─────────────────────────────────────────────────────┤
-│  Bootrom (immutable)                                │
-│    ↓                                                │
-│  Verify IMAGE_DEF signature                         │
-│    ↓                                                │
-│  Verify application image signature                 │
-│    ↓                                                │
-│  If all valid: Jump to reset handler                │
-│  If any invalid: Refuse to boot                     │
-└─────────────────────────────────────────────────────┘
++-----------------------------------------------------+
+|  SECURE BOOT FLOW                                   |
++-----------------------------------------------------+
+|  Bootrom (immutable)                                |
+|    ↓                                                |
+|  Verify IMAGE_DEF signature                         |
+|    ↓                                                |
+|  Verify application image signature                 |
+|    ↓                                                |
+|  If all valid: Jump to reset handler                |
+|  If any invalid: Refuse to boot                     |
++-----------------------------------------------------+
 ```
 
 **Implementation:** Use cryptographic signatures to verify each boot stage before execution.
@@ -1386,7 +1344,7 @@ Understanding how an attacker would analyze and exploit the boot sequence is ess
 
 ---
 
-## 📚 Additional Resources
+## Additional Resources
 
 ### RP2350 Datasheet
 
@@ -1411,7 +1369,7 @@ https://github.com/raspberrypi/pico-bootrom-rp2350
 
 ## 🔬 Part 17: Proving the Boot Sequence with objdump
 
-Everything we have learned about the boot sequence can be proven directly from the compiled ELF binary using `arm-none-eabi-objdump`. The bootrom is not in your ELF (it is mask ROM burned into the chip at `0x00000000`), but everything your firmware provides — the vector table, the IMAGE_DEF, and the reset handler — lives in your ELF starting at `0x10000000`.
+Everything we have learned about the boot sequence can be proven directly from the compiled ELF binary using `arm-none-eabi-objdump`. The bootrom is not in your ELF (it is mask ROM burned into the chip at `0x00000000`), but everything your firmware provides - the vector table, the IMAGE_DEF, and the reset handler - lives in your ELF starting at `0x10000000`.
 
 ### Step 1: List All Sections
 
@@ -1429,9 +1387,9 @@ Idx Name          Size      VMA       LMA
   6 .data         0000019c  20000110  10001b4c
 ```
 
-> 💡 The Pico SDK merges `.vectors`, `.embedded_block`, and `.reset` all into `.text` at `0x10000000`. They are not separate named ELF sections — they are sub-regions inside `.text`.
+> Tip: The Pico SDK merges `.vectors`, `.embedded_block`, and `.reset` all into `.text` at `0x10000000`. They are not separate named ELF sections - they are sub-regions inside `.text`.
 
-### Step 2: Dump the First 0x150 Bytes of Flash — One Command, Zero Skips
+### Step 2: Dump the First 0x150 Bytes of Flash - One Command, Zero Skips
 
 ```bash
 arm-none-eabi-objdump -s --start-address=0x10000000 --stop-address=0x10000150 build/0x0001_hello-world.elf
@@ -1465,30 +1423,30 @@ Raw output from that command:
 
 Every address annotated, no skips:
 
-#### 0x10000000 — Vector Table, Mandatory Entries
+#### 0x10000000 - Vector Table, Mandatory Entries
 
 | Address | Raw Bytes (LE) | Decoded | What it is |
 |---------|----------------|---------|------------|
-| `0x10000000` | `00 20 08 20` | `0x20082000` | **Initial SP** — top of SCRATCH_Y RAM. Bootrom loads MSP from here before doing anything else. |
-| `0x10000004` | `5d 01 00 10` | `0x1000015d` | **Reset_Handler** address with Thumb bit set. Strip bit 0 → real address `0x1000015c`. Bootrom jumps here. |
-| `0x10000008` | `1b 01 00 10` | `0x1000011b` | **NMI** handler address (Thumb, → `0x1000011a`). |
-| `0x1000000c` | `1d 01 00 10` | `0x1000011d` | **HardFault** handler address (Thumb, → `0x1000011c`). |
+| `0x10000000` | `00 20 08 20` | `0x20082000` | **Initial SP** - top of SCRATCH_Y RAM. Bootrom loads MSP from here before doing anything else. |
+| `0x10000004` | `5d 01 00 10` | `0x1000015d` | **Reset_Handler** address with Thumb bit set. Strip bit 0 -> real address `0x1000015c`. Bootrom jumps here. |
+| `0x10000008` | `1b 01 00 10` | `0x1000011b` | **NMI** handler address (Thumb, -> `0x1000011a`). |
+| `0x1000000c` | `1d 01 00 10` | `0x1000011d` | **HardFault** handler address (Thumb, -> `0x1000011c`). |
 
-#### 0x10000010–0x1000010f — Vector Table, IRQ Slots (all 52 external IRQs)
+#### 0x10000010-0x1000010f - Vector Table, IRQ Slots (all 52 external IRQs)
 
 ```
  10000010 11010010 11010010 ...(repeats through 0x1000010f)...
 ```
 
 Every 4-byte word here is `11 01 00 10` = pointer `0x10000111`.
-That is the **default IRQ handler** address with Thumb bit set (→ `0x10000110`).
-The RP2350 Cortex-M33 has 16 system vectors (offsets 0x00–0x3f) plus up to 52
-external IRQ vectors (offsets 0x40–0xff = addresses `0x10000040`–`0x1000010f`).
+That is the **default IRQ handler** address with Thumb bit set (-> `0x10000110`).
+The RP2350 Cortex-M33 has 16 system vectors (offsets 0x00-0x3f) plus up to 52
+external IRQ vectors (offsets 0x40-0xff = addresses `0x10000040`-`0x1000010f`).
 Every IRQ the application does not register gets this default handler pointer.
 This block is 240 bytes (`0x10000010` to `0x1000010f`) of nothing but that one
 repeated pointer.
 
-#### 0x10000110–0x10000127 — Default IRQ Handler Code
+#### 0x10000110-0x10000127 - Default IRQ Handler Code
 
 ```
  10000110 eff30580 103800be 00be00be 00be00be
@@ -1498,14 +1456,14 @@ repeated pointer.
 | Address | Bytes | ARM Thumb-2 Instruction | What it does |
 |---------|-------|-------------------------|--------------|
 | `0x10000110` | `ef f3 05 80` | `MRS r0, IPSR` | Read the Interrupt Program Status Register into r0. The low 9 bits = the active vector number. |
-| `0x10000114` | `10 38` | `SUBS r0, #16` | Vector 16 = IRQ0, so subtract 16 to convert vector number → IRQ index. |
+| `0x10000114` | `10 38` | `SUBS r0, #16` | Vector 16 = IRQ0, so subtract 16 to convert vector number -> IRQ index. |
 | `0x10000116` | `00 be` | `BKPT #0` | Software breakpoint. If a debugger is attached, it stops here and you can inspect r0 to see which IRQ fired. If no debugger is attached, the CPU enters a fault loop and the chip hangs. |
-| `0x10000118`–`0x10000127` | `00 be` ×12 | `BKPT #0` repeating | Alignment padding to the next 4-byte boundary. |
+| `0x10000118`-`0x10000127` | `00 be` *12 | `BKPT #0` repeating | Alignment padding to the next 4-byte boundary. |
 
 This is the **entire** default IRQ handler. It is intentionally minimal: if your
 code triggers an IRQ you did not register, it crashes visibly instead of silently.
 
-#### 0x10000128–0x1000013b — Binary Info Pointer Table
+#### 0x10000128-0x1000013b - Binary Info Pointer Table
 
 ```
  10000120              201b0010 4c1b0010
@@ -1517,12 +1475,12 @@ code triggers an IRQ you did not register, it crashes visibly instead of silentl
 | `0x10000128` | `20 1b 00 10` | `0x10001b20` | Pointer to **start** of `.binary_info` data section in flash. |
 | `0x1000012c` | `4c 1b 00 10` | `0x10001b4c` | Pointer to **end** of `.binary_info` data section in flash. |
 | `0x10000130` | `a0 01 00 10` | `0x100001a0` | Pointer to `binary_info_callback` function. |
-| `0x10000134` | `90 a3 1a e7` | (magic marker) | `BINARY_INFO_MARKER_END` — marks the end of this pointer table. |
+| `0x10000134` | `90 a3 1a e7` | (magic marker) | `BINARY_INFO_MARKER_END` - marks the end of this pointer table. |
 
 `picotool` reads this table to extract the program name, version string, URL,
 and GPIO pin map from any compiled binary without running it.
 
-#### 0x10000138–0x1000014c — IMAGE_DEF Block (this build)
+#### 0x10000138-0x1000014c - IMAGE_DEF Block (this build)
 
 ```
  10000130 a0010010 90a31ae7 d3deffff 42012110
@@ -1531,49 +1489,49 @@ and GPIO pin map from any compiled binary without running it.
 
 | Address | Bytes | What it is |
 |---------|-------|------------|
-| `0x10000138` | `d3 de ff ff` | `PICOBIN_BLOCK_MARKER_START` — the bootrom scans flash for this exact 4-byte sequence to locate the IMAGE_DEF. |
+| `0x10000138` | `d3 de ff ff` | `PICOBIN_BLOCK_MARKER_START` - the bootrom scans flash for this exact 4-byte sequence to locate the IMAGE_DEF. |
 | `0x1000013c` | `42 01 21 10` | IMAGE_DEF content (image type, flags, version). |
 | `0x10000140` | `ff 01 00 00` | IMAGE_DEF content (continuation). |
 | `0x10000144` | `b0 1b 00 00` | IMAGE_DEF content (continuation). |
-| `0x10000148` | `79 35 12 ab` | `PICOBIN_BLOCK_MARKER_END` — bootrom stops scanning here. |
+| `0x10000148` | `79 35 12 ab` | `PICOBIN_BLOCK_MARKER_END` - bootrom stops scanning here. |
 
-The IMAGE_DEF sits at `0x10000138`–`0x1000014b` in this build,
+The IMAGE_DEF sits at `0x10000138`-`0x1000014b` in this build,
 well within the 4 KB scan window the bootrom uses (Datasheet §5.9.5, p. 429).
 
-#### Full Flash Map: 0x10000000–0x1000015c
+#### Full Flash Map: 0x10000000-0x1000015c
 
 ```
- 0x10000000–0x1000000f  Vector Table: mandatory entries (SP, Reset, NMI, HardFault)
- 0x10000010–0x1000010f  Vector Table: 52 external IRQ slots → all point to default handler
- 0x10000110–0x10000127  Default IRQ handler code (MRS / SUBS / BKPT)
- 0x10000128–0x10000137  Binary info pointer table (start / end / callback / magic end)
- 0x10000138–0x1000014b  IMAGE_DEF block (d3 de ff ff ... 79 35 12 ab)
- 0x10000150–0x1000015b  (padding / alignment)
+ 0x10000000-0x1000000f  Vector Table: mandatory entries (SP, Reset, NMI, HardFault)
+ 0x10000010-0x1000010f  Vector Table: 52 external IRQ slots -> all point to default handler
+ 0x10000110-0x10000127  Default IRQ handler code (MRS / SUBS / BKPT)
+ 0x10000128-0x10000137  Binary info pointer table (start / end / callback / magic end)
+ 0x10000138-0x1000014b  IMAGE_DEF block (d3 de ff ff ... 79 35 12 ab)
+ 0x10000150-0x1000015b  (padding / alignment)
  0x1000015c             Reset_Handler (_reset_handler in crt0.S) ← bootrom jumps here
 ```
 
 ### Step 4: Confirmed Boot Sequence (proven from ELF)
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  PROVEN BOOT SEQUENCE (0x0001_hello-world)                      │
-├─────────────────────────────────────────────────────────────────┤
-│  1. Bootrom reads 0x10000000                                    │
-│     → SP  = 0x20082000  (offset +0x00 of vector table)          │
-│     → RST = 0x1000015d  (offset +0x04, Thumb → 0x1000015c)     │
-├─────────────────────────────────────────────────────────────────┤
-│  2. Bootrom scans first 4 kB for IMAGE_DEF                      │
-│     → Found at 0x10000138 (this build)                          │
-│     → Start marker: d3 de ff ff                                 │
-│     → End marker:   79 35 12 ab                                 │
-├─────────────────────────────────────────────────────────────────┤
-│  3. Bootrom jumps to reset handler at 0x1000015c                │
-│     → _reset_handler (crt0.S) runs                              │
-│     → Checks CPUID — Core 1 sent back to bootrom                │
-│     → Core 0: .data copied, .bss zeroed, platform_entry called  │
-├─────────────────────────────────────────────────────────────────┤
-│  4. platform_entry calls runtime_init → main → exit             │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  PROVEN BOOT SEQUENCE (0x0001_hello-world)                      |
++-----------------------------------------------------------------+
+|  1. Bootrom reads 0x10000000                                    |
+|     -> SP  = 0x20082000  (offset +0x00 of vector table)          |
+|     -> RST = 0x1000015d  (offset +0x04, Thumb -> 0x1000015c)     |
++-----------------------------------------------------------------+
+|  2. Bootrom scans first 4 kB for IMAGE_DEF                      |
+|     -> Found at 0x10000138 (this build)                          |
+|     -> Start marker: d3 de ff ff                                 |
+|     -> End marker:   79 35 12 ab                                 |
++-----------------------------------------------------------------+
+|  3. Bootrom jumps to reset handler at 0x1000015c                |
+|     -> _reset_handler (crt0.S) runs                              |
+|     -> Checks CPUID - Core 1 sent back to bootrom                |
+|     -> Core 0: .data copied, .bss zeroed, platform_entry called  |
++-----------------------------------------------------------------+
+|  4. platform_entry calls runtime_init -> main -> exit             |
++-----------------------------------------------------------------+
 ```
 
 > 📖 **Datasheet References:**
@@ -1586,3 +1544,5 @@ well within the 4 KB scan window the bootrom uses (Datasheet §5.9.5, p. 429).
 **Remember:** Understanding the boot process is fundamental to embedded systems work. Whether you're debugging a system that won't start, reverse engineering firmware, or building secure boot chains, this knowledge is essential!
 
 Happy exploring! 🔍
+
+

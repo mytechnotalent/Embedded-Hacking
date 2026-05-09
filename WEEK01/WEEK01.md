@@ -13,7 +13,7 @@ By the end of this week, you will be able to:
 
 ---
 
-## 📚 Part 1: Understanding the Basics
+## Part 1: Understanding the Basics
 
 ### What is a Microcontroller? 
 
@@ -32,7 +32,7 @@ Reverse engineering is like being a detective for code. Instead of writing code 
 
 ---
 
-## 📚 Part 2: Understanding Processor Registers
+## Part 2: Understanding Processor Registers
 
 ### What is a Register? 
 
@@ -70,13 +70,13 @@ The two Arm ABI documents we verified give the formal proof for these rules.  In
 
 ```
 Higher Memory Address (0x20082000)
-┌──────────────────┐
-│                  │  ← Stack starts here (empty)
-├──────────────────┤
-│   Pushed Item 1  │  ← SP points here after 1 push
-├──────────────────┤
-│   Pushed Item 2  │  ← SP points here after 2 pushes
-└──────────────────┘
++------------------+
+|                  |  ← Stack starts here (empty)
++------------------+
+|   Pushed Item 1  |  ← SP points here after 1 push
++------------------+
+|   Pushed Item 2  |  ← SP points here after 2 pushes
++------------------+
 Lower Memory Address (0x20081FF8)
 ```
 
@@ -103,7 +103,7 @@ The Program Counter always points to the **next instruction** the processor will
 
 ---
 
-## 📚 Part 3: Understanding Memory Layout
+## Part 3: Understanding Memory Layout
 
 ### XIP - Execute In Place
 
@@ -116,15 +116,15 @@ This is where your program code starts in flash memory. Remember this address - 
 ### Memory Map Overview
 
 ```
-┌─────────────────────────────────────┐
-│  Flash Memory (XIP)                 │
-│  Starts at:  0x10000000             │
-│  Contains: Your program code        │
-├─────────────────────────────────────┤
-│  RAM                                │
-│  Starts at: 0x20000000              │
-│  Contains: Stack, Heap, Variables   │
-└─────────────────────────────────────┘
++-------------------------------------+
+|  Flash Memory (XIP)                 |
+|  Starts at:  0x10000000             |
+|  Contains: Your program code        |
++-------------------------------------+
+|  RAM                                |
+|  Starts at: 0x20000000              |
+|  Contains: Stack, Heap, Variables   |
++-------------------------------------+
 ```
 
 ### Stack vs Heap
@@ -139,7 +139,7 @@ This is where your program code starts in flash memory. Remember this address - 
 
 ---
 
-## 📚 Part 3.5: Reviewing Our Hello World Code
+## Part 3.5: Reviewing Our Hello World Code
 
 Before we start debugging, let's understand the code we'll be working with. Here's our `0x0001_hello-world.c` program:
 
@@ -197,7 +197,7 @@ while (true)
 - **`while (true)`** - This creates an infinite loop. The program will keep running forever (or until you reset/power off the Pico).
 - **`printf("hello, world\r\n")`** - This prints the text "hello, world" followed by a carriage return (`\r`) and newline (`\n`).
 
-> 💡 **Why `\r\n` instead of just `\n`?**
+> Tip: **Why `\r\n` instead of just `\n`?**
 > 
 > In embedded systems, we often use both carriage return (`\r`) and newline (`\n`) together. The `\r` moves the cursor back to the beginning of the line, and `\n` moves to the next line. This ensures proper display across different terminal programs.
 
@@ -239,7 +239,7 @@ To flash new code to your Pico 2, you need to put it into **BOOTSEL mode**:
 
 When done correctly, your Pico 2 will appear as a USB mass storage device (like a flash drive) on your computer. This means it's ready to receive new firmware!
 
-> 💡 **Tip:** You'll see a drive called "RP2350" appear in your file explorer when the Pico 2 is in flash loading mode.
+> Tip: **Tip:** You'll see a drive called "RP2350" appear in your file explorer when the Pico 2 is in flash loading mode.
 
 ##### Step 3: Flash and Run
 
@@ -251,7 +251,7 @@ Once flashed, your Pico 2 will immediately start executing the hello-world progr
 
 ---
 
-## 📚 Part 4: Dynamic Analysis with GDB
+## Part 4: Dynamic Analysis with GDB
 
 ### Prerequisites
 
@@ -267,7 +267,7 @@ Open a terminal and start OpenOCD:
 
 ```powershell
 openocd ^
-  -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
+  -s "C:\Users\assem.KEVINTHOMAS\.pico-sdk\openocd\0.12.0+dev\scripts" ^
   -f interface/cmsis-dap.cfg ^
   -f target/rp2350.cfg ^
   -c "adapter speed 5000"
@@ -318,10 +318,6 @@ Breakpoint 1, main () at ../0x0001_hello-world.c:5
 
 The program has stopped right at the beginning of `main`!
 
-
-
-
-
 ##### Disassembling with `disas`
 
 The `disas` (disassemble) command shows us the assembly instructions for the current function:
@@ -352,9 +348,9 @@ To see how the ELF is laid out in memory, use:
 
 ```gdb
 (gdb) info files
-Symbols from "C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0001_hello-world\build\0x0001_hello-world.elf".
+Symbols from "C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\0x0001_hello-world\build\0x0001_hello-world.elf".
 Extended remote target using gdb-specific protocol:
-   `C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0001_hello-world\build\0x0001_hello-world.elf', file type elf32-littlearm.
+   `C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\0x0001_hello-world\build\0x0001_hello-world.elf', file type elf32-littlearm.
    Entry point: 0x1000014c
    0x10000000 - 0x100019cc is .text
    0x100019cc - 0x10001b18 is .rodata
@@ -370,7 +366,7 @@ Extended remote target using gdb-specific protocol:
    0x10001ce8 - 0x10001cfc is .flash_end
    While running this, GDB does not access memory from...
 Local exec file:
-   `C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0001_hello-world\build\0x0001_hello-world.elf', file type elf32-littlearm.
+   `C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\0x0001_hello-world\build\0x0001_hello-world.elf', file type elf32-littlearm.
    Entry point: 0x1000014c
    0x10000000 - 0x100019cc is .text
    0x100019cc - 0x10001b18 is .rodata
@@ -385,7 +381,7 @@ Local exec file:
    0x20081000 - 0x20081800 is .stack_dummy
    0x10001ce8 - 0x10001cfc is .flash_end
 (gdb) maintenance info sections
-Exec file: `C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0001_hello-world\build\0x0001_hello-world.elf', file type elf32-littlearm.
+Exec file: `C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\0x0001_hello-world\build\0x0001_hello-world.elf', file type elf32-littlearm.
  [0]      0x10000000->0x100019cc at 0x00001000: .text ALLOC LOAD READONLY CODE HAS_CONTENTS
  [1]      0x100019cc->0x10001b18 at 0x000029cc: .rodata ALLOC LOAD READONLY DATA HAS_CONTENTS
  [2]      0x10001b18->0x10001b20 at 0x00002b18: .ARM.exidx ALLOC LOAD READONLY DATA HAS_CONTENTS
@@ -445,7 +441,7 @@ Exec file: `C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0001_hello-world\b
 | `.debug_loclists` | Variable location lists (where variables live over PC ranges). |
 | `.debug_line_str` | Extra string pool used by `.debug_line` data. |
 
-> 💡 **Practical rule:** For reverse engineering runtime behavior, focus first on `.text`, `.rodata`, `.data`, `.bss`, heap/stack regions, and the vector table. Debug sections are for source-level mapping and symbol intelligence.
+> Tip: **Practical rule:** For reverse engineering runtime behavior, focus first on `.text`, `.rodata`, `.data`, `.bss`, heap/stack regions, and the vector table. Debug sections are for source-level mapping and symbol intelligence.
 
 **Fast interpretation checklist (use this every time):**
 
@@ -493,7 +489,7 @@ xpsr           0x69000000          1761607680
 | `lr`     | `0x100002d5` | Link Register - where we return after `main`    |
 | `r0-r3`  | Various      | Will hold function arguments and return values  |
 
-> 💡 **Tip:** You can also use `i r pc sp lr` to show only specific registers you care about.
+> Tip: **Tip:** You can also use `i r pc sp lr` to show only specific registers you care about.
 
 ### Quick Reference: Essential GDB Commands
 
@@ -528,7 +524,7 @@ Notice the difference between inspecting memory at `$sp` and inspecting `$lr`.  
 0x1000018f <platform_entry+8>:  0x00478849
 ```
 
-> 💡 **What's Next?** In Week 2, we'll put these GDB commands to work with hands-on debugging exercises! We'll step through code, examine the stack, watch registers change, and ultimately use these skills to modify a running program. The commands you learned here are the foundation for everything that follows.
+> Tip: **What's Next?** In Week 2, we'll put these GDB commands to work with hands-on debugging exercises! We'll step through code, examine the stack, watch registers change, and ultimately use these skills to modify a running program. The commands you learned here are the foundation for everything that follows.
 
 ---
 
@@ -541,7 +537,7 @@ Before we dive into GDB debugging, let's set up Ghidra to analyze our hello-worl
 ##### Step 1: Create a New Project
 
 1. Launch Ghidra
-2. A window will appear - select **File → New Project**
+2. A window will appear - select **File -> New Project**
 3. Choose **Non-Shared Project** and click **Next**
 4. Enter the Project Name: `0x0001_hello-world`
 5. Click **Finish**
@@ -555,7 +551,7 @@ Before we dive into GDB debugging, let's set up Ghidra to analyze our hello-worl
 
 In the small window that appears, you will see the file identified as an **ELF** (Executable and Linkable Format). 
 
-> 💡 **What is an ELF file?**
+> Tip: **What is an ELF file?**
 > 
 > ELF stands for **Executable and Linkable Format**. This format includes **symbols** - human-readable names for functions and variables. These symbols make reverse engineering much easier because you can see function names like `main` and `printf` instead of just memory addresses.
 > 
@@ -575,7 +571,7 @@ Ghidra will now process the binary, identifying functions, strings, and cross-re
 Once analysis is complete, let's find our `main` function:
 
 1. In the **Symbol Tree** panel on the left, expand **Functions**
-2. Look for `main` in the list (you can also use **Search → For Address or Label** and type "main")
+2. Look for `main` in the list (you can also use **Search -> For Address or Label** and type "main")
 3. Click on `main` to navigate to it
 
 ##### What You'll See
@@ -677,104 +673,27 @@ In future weeks, we'll work with `.bin` files that have been stripped of symbols
 ### The Program Flow
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  1. push {r3, lr}                                   │
-│     Save registers to stack                         │
-├─────────────────────────────────────────────────────┤
-│  2. bl stdio_init_all                               │
-│     Initialize standard I/O                         │
-├─────────────────────────────────────────────────────┤
-│  3. ldr r0, [pc, #8]      ────────────────┐         │
-│     Load address of "hello, world" into r0│         │
-├─────────────────────────────────────────────────────┤
-│  4. bl __wrap_puts                        │         │
-│     Print the string                      │         │
-├─────────────────────────────────────────────────────┤
-│  5. b.n (back to step 3)  ────────────────┘         │
-│     Infinite loop!                                  │
-└─────────────────────────────────────────────────────┘
++-----------------------------------------------------+
+|  1. push {r3, lr}                                   |
+|     Save registers to stack                         |
++-----------------------------------------------------+
+|  2. bl stdio_init_all                               |
+|     Initialize standard I/O                         |
++-----------------------------------------------------+
+|  3. ldr r0, [pc, #8]      ----------------+         |
+|     Load address of "hello, world" into r0|         |
++-----------------------------------------------------+
+|  4. bl __wrap_puts                        |         |
+|     Print the string                      |         |
++-----------------------------------------------------+
+|  5. b.n (back to step 3)  ----------------+         |
+|     Infinite loop!                                  |
++-----------------------------------------------------+
 ```
 
 ---
 
-## ✅ Practice Exercises
-
-Try these on your own to reinforce what you learned:
-
-These prompts are intentionally aligned 1:1 with the four Week 1 solution files:
-- `WEEK01-01-S.md`
-- `WEEK01-02-S.md`
-- `WEEK01-03-S.md`
-- `WEEK01-04-S.md`
-
-### Exercise 1: Analyze `stdio_init_all` in Ghidra
-1. Open your `0x0001_hello-world` project in Ghidra.
-2. Find `stdio_init_all` in the Symbol Tree.
-3. Answer exactly:
-   - What does the function return?
-   - What parameters does it take?
-   - What functions does it call?
-   - What is its purpose?
-4. Reflection:
-   - Why would we need to initialize standard I/O before using `printf()`?
-   - Can you find other functions in the Symbol Tree that might be related to I/O?
-   - How does this function support the `printf("hello, world\r\n")` call in `main`?
-
-### Exercise 2: Locate and Characterize the String
-1. In Ghidra, go to **Window → Defined Strings**.
-2. Find `"hello, world\r\n"` and record its address.
-3. Answer exactly:
-   - What is the address, and is it Flash or RAM?
-   - How many bytes does the string take?
-   - How many times is it referenced, and by which function(s)?
-   - How is the string encoded?
-4. Reflection:
-   - Why is the string stored in Flash instead of RAM?
-   - What would happen if you tried to modify this string at runtime?
-   - How does the Listing view help you understand string storage?
-
-### Exercise 3: Trace Cross-References and Data Flow
-1. In `main`, locate `DAT_10000244` and open its references.
-2. Fill in:
-   - Data reference address
-   - Number of references
-   - Reference type (read or write)
-   - Function using it
-   - Next instruction after `ldr`
-3. Answer exactly:
-   - What is the address of the data reference?
-   - How many places reference this data?
-   - Is it a read or write operation? Why?
-   - What happens next after the `ldr`?
-4. Complete the data flow chain from string storage to print call.
-5. Reflection:
-   - Why does the compiler use an indirect pointer reference here?
-   - What is a literal pool?
-   - How does cross-referencing help in reverse engineering?
-
-### Exercise 4: Verify Runtime View in GDB
-1. Start OpenOCD and connect GDB as shown in Part 4.
-2. Break at `main` and continue to the breakpoint.
-3. Answer exactly:
-   - Was GDB able to connect to OpenOCD?
-   - Did the program stop at the `main` breakpoint?
-   - What is the address of `main`'s first instruction, and is it Flash or RAM?
-   - What is the `sp` value at `main`, and is it Flash or RAM?
-   - What is the first instruction in `main`, and what does it do?
-   - Does GDB match what Ghidra shows?
-4. Capture register values for `pc`, `sp`, `lr`, and `r0-r3`.
-5. Reflection:
-   - Why does the stack pointer start where it does?
-   - Why does `push {r3, lr}` include `r3`?
-   - How does the infinite loop work in assembly?
-
-Use these solution keys after attempting the exercises:
-- `WEEK01-01-S.md`
-- `WEEK01-02-S.md`
-- `WEEK01-03-S.md`
-- `WEEK01-04-S.md`
-
-> 💡 **Note:** The detailed hands-on GDB debugging (stepping through code, watching the stack, examining memory) will be covered in Week 2!
+> **Note:** The detailed hands-on GDB debugging (stepping through code, watching the stack, examining memory) will be covered in Week 2!
 
 ---
 
@@ -807,3 +726,5 @@ Use these solution keys after attempting the exercises:
 | **Stack**           | Memory region for temporary storage during function calls |
 | **Stack Pointer**   | Register that points to the top of the stack              |
 | **XIP**             | Execute In Place - running code directly from flash       |
+
+

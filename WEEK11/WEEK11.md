@@ -1,6 +1,6 @@
-# Week 11: Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote Control and NEC Protocol Basics
+﻿?# Week 11: Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote Control and NEC Protocol Basics
 
-## 🎯 What You'll Learn This Week
+## ? What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
 - Understand C structures (structs) and how they organize related data
@@ -15,7 +15,7 @@ By the end of this tutorial, you will be able to:
 
 ---
 
-## 📚 Part 1: Understanding C Structures (Structs)
+## Part 1: Understanding C Structures (Structs)
 
 ### What is a Struct?
 
@@ -34,25 +34,25 @@ typedef struct {
 ```
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Structure as a Container                                       │
-│                                                                 │
-│  simple_led_ctrl_t leds                                         │
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │  led1_pin: 16     led2_pin: 17     led3_pin: 18            ││
-│  │  ┌────────┐       ┌────────┐       ┌────────┐              ││
-│  │  │   16   │       │   17   │       │   18   │              ││
-│  │  └────────┘       └────────┘       └────────┘              ││
-│  │                                                             ││
-│  │  led1_state: false  led2_state: false  led3_state: false   ││
-│  │  ┌────────┐       ┌────────┐       ┌────────┐              ││
-│  │  │ false  │       │ false  │       │ false  │              ││
-│  │  └────────┘       └────────┘       └────────┘              ││
-│  └─────────────────────────────────────────────────────────────┘│
-│                                                                 │
-│  All 6 members live together as ONE variable called "leds"      │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Structure as a Container                                       |
+|                                                                 |
+|  simple_led_ctrl_t leds                                         |
+|  +-------------------------------------------------------------+|
+|  |  led1_pin: 16     led2_pin: 17     led3_pin: 18            ||
+|  |  +--------+       +--------+       +--------+              ||
+|  |  |   16   |       |   17   |       |   18   |              ||
+|  |  +--------+       +--------+       +--------+              ||
+|  |                                                             ||
+|  |  led1_state: false  led2_state: false  led3_state: false   ||
+|  |  +--------+       +--------+       +--------+              ||
+|  |  | false  |       | false  |       | false  |              ||
+|  |  +--------+       +--------+       +--------+              ||
+|  +-------------------------------------------------------------+|
+|                                                                 |
+|  All 6 members live together as ONE variable called "leds"      |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Why Use Structs?
@@ -75,28 +75,28 @@ typedef struct {
 
 ---
 
-## 📚 Part 2: Struct Memory Layout
+## Part 2: Struct Memory Layout
 
 ### How Structs are Stored in Memory
 
 When you create a struct, the compiler places each member in consecutive memory locations:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Memory Layout of simple_led_ctrl_t                             │
-│                                                                 │
-│  Address    Member          Size    Value                       │
-│  ─────────────────────────────────────────────────────────────  │
-│  0x2000000  led1_pin        1 byte  16 (0x10)                   │
-│  0x2000001  led2_pin        1 byte  17 (0x11)                   │
-│  0x2000002  led3_pin        1 byte  18 (0x12)                   │
-│  0x2000003  led1_state      1 byte  0 (false)                   │
-│  0x2000004  led2_state      1 byte  0 (false)                   │
-│  0x2000005  led3_state      1 byte  0 (false)                   │
-│                                                                 │
-│  Total struct size: 6 bytes                                     │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Memory Layout of simple_led_ctrl_t                             |
+|                                                                 |
+|  Address    Member          Size    Value                       |
+|  -------------------------------------------------------------  |
+|  0x2000000  led1_pin        1 byte  16 (0x10)                   |
+|  0x2000001  led2_pin        1 byte  17 (0x11)                   |
+|  0x2000002  led3_pin        1 byte  18 (0x12)                   |
+|  0x2000003  led1_state      1 byte  0 (false)                   |
+|  0x2000004  led2_state      1 byte  0 (false)                   |
+|  0x2000005  led3_state      1 byte  0 (false)                   |
+|                                                                 |
+|  Total struct size: 6 bytes                                     |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Accessing Struct Members
@@ -129,21 +129,21 @@ ptr->led1_pin = 16;              // Using arrow with pointer
 ```
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Dot vs Arrow Operator                                          │
-│                                                                 │
-│  struct_variable.member    ◄── Use with actual struct           │
-│                                                                 │
-│  pointer_to_struct->member ◄── Use with pointer to struct       │
-│                                                                 │
-│  The arrow (->) is shorthand for (*pointer).member              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Dot vs Arrow Operator                                          |
+|                                                                 |
+|  struct_variable.member    ?-- Use with actual struct           |
+|                                                                 |
+|  pointer_to_struct->member ?-- Use with pointer to struct       |
+|                                                                 |
+|  The arrow (->) is shorthand for (*pointer).member              |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ---
 
-## 📚 Part 3: Designated Initializers
+## Part 3: Designated Initializers
 
 ### Clean Struct Initialization
 
@@ -168,29 +168,29 @@ simple_led_ctrl_t leds = {
 
 ---
 
-## 📚 Part 4: Understanding the NEC IR Protocol
+## Part 4: Understanding the NEC IR Protocol
 
 ### What is Infrared (IR) Communication?
 
 **Infrared** communication uses invisible light pulses to send data. Your TV remote uses IR to send commands to your TV. The LED in the remote flashes on and off very quickly in specific patterns that represent different buttons.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  IR Communication                                               │
-│                                                                 │
-│  Remote Control                        IR Receiver              │
-│  ┌──────────┐                         ┌──────────┐              │
-│  │  Button  │                         │          │              │
-│  │    1     │ ─── IR Light Pulses ──► │  ████    │              │
-│  │  ┌───┐   │     ~~~~~~~~~~~~►       │  Sensor  │              │
-│  │  │ ● │   │                         │          │              │
-│  │  └───┘   │                         └────┬─────┘              │
-│  │  IR LED  │                              │                    │
-│  └──────────┘                              ▼                    │
-│                                       GPIO Pin                  │
-│                                       (Digital signal)          │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  IR Communication                                               |
+|                                                                 |
+|  Remote Control                        IR Receiver              |
+|  +----------+                         +----------+              |
+|  |  Button  |                         |          |              |
+|  |    1     | --- IR Light Pulses --- |  ++    |              |
+|  |  +---+   |     ~~~~~~~~~~~~?       |  Sensor  |              |
+|  |  | ?? |   |                         |          |              |
+|  |  +---+   |                         +----+-----+              |
+|  |  IR LED  |                              |                    |
+|  +----------+                              ?                    |
+|                                       GPIO Pin                  |
+|                                       (Digital signal)          |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### The NEC Protocol
@@ -204,18 +204,18 @@ simple_led_ctrl_t leds = {
 5. **Command Inverse** - 8 bits (for error checking)
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  NEC Protocol Frame                                             │
-│                                                                 │
-│  ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐  │
-│  │ Leader  │ Address │ Address │ Command │ Command │  Stop   │  │
-│  │  Pulse  │  8-bit  │ Inverse │  8-bit  │ Inverse │  Bit    │  │
-│  │ 9+4.5ms │         │  8-bit  │         │  8-bit  │         │  │
-│  └─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘  │
-│                                                                 │
-│  Total: 32 bits of data (+ leader + stop)                       │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  NEC Protocol Frame                                             |
+|                                                                 |
+|  +---------+---------+---------+---------+---------+---------+  |
+|  | Leader  | Address | Address | Command | Command |  Stop   |  |
+|  |  Pulse  |  8-bit  | Inverse |  8-bit  | Inverse |  Bit    |  |
+|  | 9+4.5ms |         |  8-bit  |         |  8-bit  |         |  |
+|  +---------+---------+---------+---------+---------+---------+  |
+|                                                                 |
+|  Total: 32 bits of data (+ leader + stop)                       |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### NEC Command Codes for Our Remote
@@ -230,7 +230,7 @@ simple_led_ctrl_t leds = {
 
 ---
 
-## 📚 Part 5: Understanding Functions in C
+## Part 5: Understanding Functions in C
 
 ### What is a Function?
 
@@ -249,30 +249,30 @@ int result = add_numbers(5, 3);  // result = 8
 ### Function Components
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Anatomy of a Function                                          │
-│                                                                 │
-│  return_type  function_name ( parameters ) {                    │
-│      // function body                                           │
-│      return value;                                              │
-│  }                                                              │
-│                                                                 │
-│  Example:                                                       │
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │ int    ir_to_led_number ( int ir_command ) {                ││
-│  │ ───    ───────────────   ───────────────                    ││
-│  │  │           │                  │                           ││
-│  │  │           │                  └── Parameter (input)       ││
-│  │  │           └── Function name                              ││
-│  │  └── Return type (what it gives back)                       ││
-│  │                                                             ││
-│  │     if (ir_command == 0x0C) return 1;  ◄── Body             ││
-│  │     if (ir_command == 0x18) return 2;                       ││
-│  │     return 0;                          ◄── Return value     ││
-│  │ }                                                           ││
-│  └─────────────────────────────────────────────────────────────┘│
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Anatomy of a Function                                          |
+|                                                                 |
+|  return_type  function_name ( parameters ) {                    |
+|      // function body                                           |
+|      return value;                                              |
+|  }                                                              |
+|                                                                 |
+|  Example:                                                       |
+|  +-------------------------------------------------------------+|
+|  | int    ir_to_led_number ( int ir_command ) {                ||
+|  | ---    ---------------   ---------------                    ||
+|  |  |           |                  |                           ||
+|  |  |           |                  +-- Parameter (input)       ||
+|  |  |           +-- Function name                              ||
+|  |  +-- Return type (what it gives back)                       ||
+|  |                                                             ||
+|  |     if (ir_command == 0x0C) return 1;  ?-- Body             ||
+|  |     if (ir_command == 0x18) return 2;                       ||
+|  |     return 0;                          ?-- Return value     ||
+|  | }                                                           ||
+|  +-------------------------------------------------------------+|
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Types of Functions
@@ -286,7 +286,7 @@ int result = add_numbers(5, 3);  // result = 8
 
 ---
 
-## 📚 Part 6: Functions with Struct Pointers
+## Part 6: Functions with Struct Pointers
 
 ### Passing Structs to Functions
 
@@ -306,32 +306,32 @@ leds_all_off(&my_leds);  // Pass the ADDRESS of my_leds
 ```
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Passing Struct by Pointer                                      │
-│                                                                 │
-│  main() {                                                       │
-│      simple_led_ctrl_t leds;    ◄── Struct lives here           │
-│      leds_all_off(&leds);       ◄── Pass ADDRESS (pointer)      │
-│  }                                  │                           │
-│                                     │                           │
-│                                     ▼                           │
-│  leds_all_off(simple_led_ctrl_t *leds) {                        │
-│      gpio_put(leds->led1_pin, false);                           │
-│              ────                                               │
-│               │                                                 │
-│               └── Arrow because leds is a POINTER               │
-│  }                                                              │
-│                                                                 │
-│  WHY use pointers?                                              │
-│  • Efficient: Only 4 bytes (address) instead of entire struct   │
-│  • Allows modification: Function can change the original        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Passing Struct by Pointer                                      |
+|                                                                 |
+|  main() {                                                       |
+|      simple_led_ctrl_t leds;    ?-- Struct lives here           |
+|      leds_all_off(&leds);       ?-- Pass ADDRESS (pointer)      |
+|  }                                  |                           |
+|                                     |                           |
+|                                     ?                           |
+|  leds_all_off(simple_led_ctrl_t *leds) {                        |
+|      gpio_put(leds->led1_pin, false);                           |
+|              ----                                               |
+|               |                                                 |
+|               +-- Arrow because leds is a POINTER               |
+|  }                                                              |
+|                                                                 |
+|  WHY use pointers?                                              |
+|  - Efficient: Only 4 bytes (address) instead of entire struct   |
+|  - Allows modification: Function can change the original        |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ---
 
-## 📚 Part 7: How Compilers Handle Structs
+## Part 7: How Compilers Handle Structs
 
 ### Struct "Flattening" in Assembly
 
@@ -357,32 +357,32 @@ bl   gpio_init      ; call gpio_init(18)
 ```
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Struct Flattening                                              │
-│                                                                 │
-│  C Level (High-level abstraction):                              │
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │  gpio_init(leds.led1_pin);                                  ││
-│  │  gpio_init(leds.led2_pin);                                  ││
-│  │  gpio_init(leds.led3_pin);                                  ││
-│  └─────────────────────────────────────────────────────────────┘│
-│                      │                                          │
-│                      │ Compiler transforms                      │
-│                      ▼                                          │
-│  Assembly Level (Flattened):                                    │
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │  movs r0, #16       ; Just the VALUE, no struct reference   ││
-│  │  bl   gpio_init                                             ││
-│  │  movs r0, #17       ; Next value directly                   ││
-│  │  bl   gpio_init                                             ││
-│  │  movs r0, #18       ; Next value directly                   ││
-│  │  bl   gpio_init                                             ││
-│  └─────────────────────────────────────────────────────────────┘│
-│                                                                 │
-│  The struct abstraction DISAPPEARS at the assembly level!       │
-│  We just see individual values being loaded and used.           │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Struct Flattening                                              |
+|                                                                 |
+|  C Level (High-level abstraction):                              |
+|  +-------------------------------------------------------------+|
+|  |  gpio_init(leds.led1_pin);                                  ||
+|  |  gpio_init(leds.led2_pin);                                  ||
+|  |  gpio_init(leds.led3_pin);                                  ||
+|  +-------------------------------------------------------------+|
+|                      |                                          |
+|                      | Compiler transforms                      |
+|                      ?                                          |
+|  Assembly Level (Flattened):                                    |
+|  +-------------------------------------------------------------+|
+|  |  movs r0, #16       ; Just the VALUE, no struct reference   ||
+|  |  bl   gpio_init                                             ||
+|  |  movs r0, #17       ; Next value directly                   ||
+|  |  bl   gpio_init                                             ||
+|  |  movs r0, #18       ; Next value directly                   ||
+|  |  bl   gpio_init                                             ||
+|  +-------------------------------------------------------------+|
+|                                                                 |
+|  The struct abstraction DISAPPEARS at the assembly level!       |
+|  We just see individual values being loaded and used.           |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Why This Matters for Reverse Engineering
@@ -393,7 +393,7 @@ bl   gpio_init      ; call gpio_init(18)
 
 ---
 
-## 📚 Part 8: Setting Up Your Environment
+## Part 8: Setting Up Your Environment
 
 ### Prerequisites
 
@@ -422,61 +422,61 @@ Before we start, make sure you have:
 
 | LED    | GPIO Pin | Resistor  |
 | ------ | -------- | --------- |
-| Red    | GPIO 16  | 220Ω-330Ω |
-| Green  | GPIO 17  | 220Ω-330Ω |
-| Yellow | GPIO 18  | 220Ω-330Ω |
+| Red    | GPIO 16  | 220-330 ohm |
+| Green  | GPIO 17  | 220-330 ohm |
+| Yellow | GPIO 18  | 220-330 ohm |
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Complete Wiring Diagram                                        │
-│                                                                 │
-│  Pico 2                     Components                          │
-│  ┌──────────┐                                                   │
-│  │          │              ┌─────────────┐                      │
-│  │ GPIO 5   │──────────────┤ IR Receiver │                      │
-│  │          │              │  (VS1838B)  │                      │
-│  │          │              └──────┬──────┘                      │
-│  │          │                     │                             │
-│  │ GPIO 16  │───[220Ω]───(RED LED)────┐                         │
-│  │          │                         │                         │
-│  │ GPIO 17  │───[220Ω]───(GRN LED)────┤                         │
-│  │          │                         │                         │
-│  │ GPIO 18  │───[220Ω]───(YEL LED)────┤                         │
-│  │          │                         │                         │
-│  │ 3.3V     │─────────────────────────┼── IR VCC                │
-│  │          │                         │                         │
-│  │ GND      │─────────────────────────┴── All GNDs              │
-│  │          │                                                   │
-│  └──────────┘                                                   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Complete Wiring Diagram                                        |
+|                                                                 |
+|  Pico 2                     Components                          |
+|  +----------+                                                   |
+|  |          |              +-------------+                      |
+|  | GPIO 5   |--------------+ IR Receiver |                      |
+|  |          |              |  (VS1838B)  |                      |
+|  |          |              +------+------+                      |
+|  |          |                     |                             |
+|  | GPIO 16  |---[220 ohm]---(RED LED)----+                         |
+|  |          |                         |                         |
+|  | GPIO 17  |---[220 ohm]---(GRN LED)----+                         |
+|  |          |                         |                         |
+|  | GPIO 18  |---[220 ohm]---(YEL LED)----+                         |
+|  |          |                         |                         |
+|  | 3.3V     |-------------------------+-- IR VCC                |
+|  |          |                         |                         |
+|  | GND      |-------------------------+-- All GNDs              |
+|  |          |                                                   |
+|  +----------+                                                   |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Project Structure
 
 ```
 Embedded-Hacking/
-├── 0x0023_structures/
-│   ├── build/
-│   │   ├── 0x0023_structures.uf2
-│   │   └── 0x0023_structures.bin
-│   ├── main/
-│   │   └── 0x0023_structures.c
-│   └── ir.h
-├── 0x0026_functions/
-│   ├── build/
-│   │   ├── 0x0026_functions.uf2
-│   │   ├── 0x0026_functions.bin
-│   │   └── 0x0026_functions.elf
-│   ├── main/
-│   │   └── 0x0026_functions.c
-│   └── ir.h
-└── uf2conv.py
++-- 0x0023_structures/
+|   +-- build/
+|   |   +-- 0x0023_structures.uf2
+|   |   +-- 0x0023_structures.bin
+|   +-- main/
+|   |   +-- 0x0023_structures.c
+|   +-- ir.h
++-- 0x0026_functions/
+|   +-- build/
+|   |   +-- 0x0026_functions.uf2
+|   |   +-- 0x0026_functions.bin
+|   |   +-- 0x0026_functions.elf
+|   +-- main/
+|   |   +-- 0x0026_functions.c
+|   +-- ir.h
++-- uf2conv.py
 ```
 
 ---
 
-## 🔬 Part 9: Hands-On Tutorial - Structures Code
+## ? Part 9: Hands-On Tutorial - Structures Code
 
 ### Step 1: Review the Source Code
 
@@ -551,24 +551,24 @@ int main(void) {
 ### Step 2: Understand the Program Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Program Flow                                                   │
-│                                                                 │
-│  1. Initialize UART (stdio_init_all)                            │
-│  2. Create LED struct with pins 16, 17, 18                      │
-│  3. Initialize GPIO pins as outputs                             │
-│  4. Initialize IR receiver on GPIO 5                            │
-│  5. Enter infinite loop:                                        │
-│     a. Check for IR key press                                   │
-│     b. If key received:                                         │
-│        - Print the NEC command code                             │
-│        - Turn all LEDs off                                      │
-│        - Check which button: 0x0C, 0x18, or 0x5E                │
-│        - Turn on the matching LED                               │
-│        - Apply states to GPIO pins                              │
-│     c. Sleep briefly and repeat                                 │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Program Flow                                                   |
+|                                                                 |
+|  1. Initialize UART (stdio_init_all)                            |
+|  2. Create LED struct with pins 16, 17, 18                      |
+|  3. Initialize GPIO pins as outputs                             |
+|  4. Initialize IR receiver on GPIO 5                            |
+|  5. Enter infinite loop:                                        |
+|     a. Check for IR key press                                   |
+|     b. If key received:                                         |
+|        - Print the NEC command code                             |
+|        - Turn all LEDs off                                      |
+|        - Check which button: 0x0C, 0x18, or 0x5E                |
+|        - Turn on the matching LED                               |
+|        - Apply states to GPIO pins                              |
+|     c. Sleep briefly and repeat                                 |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Step 3: Flash the Binary to Your Pico 2
@@ -582,13 +582,13 @@ int main(void) {
 ### Step 4: Verify It's Working
 
 **Open PuTTY (115200 baud) and test:**
-- Press "1" on remote → Red LED lights, terminal shows `NEC command: 0x0C`
-- Press "2" on remote → Green LED lights, terminal shows `NEC command: 0x18`
-- Press "3" on remote → Yellow LED lights, terminal shows `NEC command: 0x5E`
+- Press "1" on remote -> Red LED lights, terminal shows `NEC command: 0x0C`
+- Press "2" on remote -> Green LED lights, terminal shows `NEC command: 0x18`
+- Press "3" on remote -> Yellow LED lights, terminal shows `NEC command: 0x5E`
 
 ---
 
-## 🔬 Part 10: Debugging with GDB (Structures)
+## ? Part 10: Debugging with GDB (Structures)
 
 ### Step 5: Start OpenOCD (Terminal 1)
 
@@ -596,7 +596,7 @@ Open a terminal and start OpenOCD:
 
 ```powershell
 openocd ^
-  -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
+  -s "C:\Users\assem.KEVINTHOMAS\.pico-sdk\openocd\0.12.0+dev\scripts" ^
   -f interface/cmsis-dap.cfg ^
   -f target/rp2350.cfg ^
   -c "adapter speed 5000"
@@ -724,7 +724,7 @@ quit
 
 ---
 
-## 🔬 Part 11: Setting Up Ghidra for Structures
+## ? Part 11: Setting Up Ghidra for Structures
 
 ### Step 17: Start Ghidra
 
@@ -736,7 +736,7 @@ ghidraRun
 
 ### Step 18: Create a New Project
 
-1. Click **File** → **New Project**
+1. Click **File** -> **New Project**
 2. Select **Non-Shared Project**
 3. Click **Next**
 4. Enter Project Name: `0x0023_structures`
@@ -749,12 +749,12 @@ ghidraRun
 
 ### Step 20: Configure the Binary Format
 
-**Click the three dots (…) next to "Language" and:**
+**Click the three dots (...) next to "Language" and:**
 1. Search for "Cortex"
 2. Select **ARM Cortex 32 little endian default**
 3. Click **OK**
 
-**Click the "Options…" button and:**
+**Click the "Options..." button and:**
 1. Change **Block Name** to `.text`
 2. Change **Base Address** to `10000000`
 3. Click **OK**
@@ -769,12 +769,12 @@ Wait for analysis to complete.
 
 ---
 
-## 🔬 Part 12: Resolving Functions - Structures Project
+## ? Part 12: Resolving Functions - Structures Project
 
 ### Step 22: Navigate to Main
 
 1. Press `G` (Go to address) and type `10000234`
-2. Right-click → **Edit Function Signature**
+2. Right-click -> **Edit Function Signature**
 3. Change to: `int main(void)`
 4. Click **OK**
 
@@ -783,7 +783,7 @@ Wait for analysis to complete.
 At address `0x10000236`:
 
 1. Double-click on the called function
-2. Right-click → **Edit Function Signature**
+2. Right-click -> **Edit Function Signature**
 3. Change to: `bool stdio_init_all(void)`
 4. Click **OK**
 
@@ -803,7 +803,7 @@ bl   FUN_xxxxx      ; gpio_init
 ```
 
 This pattern reveals the struct members! Update the function signature:
-1. Right-click → **Edit Function Signature**
+1. Right-click -> **Edit Function Signature**
 2. Change to: `void gpio_init(uint gpio)`
 3. Click **OK**
 
@@ -816,7 +816,7 @@ movs r0, #0x5       ; GPIO 5 for IR receiver
 bl   FUN_xxxxx      ; ir_init
 ```
 
-1. Right-click → **Edit Function Signature**
+1. Right-click -> **Edit Function Signature**
 2. Change to: `void ir_init(uint pin)`
 3. Click **OK**
 
@@ -824,7 +824,7 @@ bl   FUN_xxxxx      ; ir_init
 
 Right after ir_init, look for the "IR receiver on GPIO" string being loaded:
 
-1. Right-click → **Edit Function Signature**
+1. Right-click -> **Edit Function Signature**
 2. Change to: `int printf(char *format, ...)`
 3. Check the **Varargs** checkbox
 4. Click **OK**
@@ -839,7 +839,7 @@ cmp  r0, #0         ; Check if >= 0
 blt  no_key         ; If negative, no key pressed
 ```
 
-1. Right-click → **Edit Function Signature**
+1. Right-click -> **Edit Function Signature**
 2. Change to: `int ir_getkey(void)`
 3. Click **OK**
 
@@ -852,13 +852,13 @@ movs r0, #0x0A      ; 10 milliseconds
 bl   FUN_xxxxx      ; sleep_ms
 ```
 
-1. Right-click → **Edit Function Signature**
+1. Right-click -> **Edit Function Signature**
 2. Change to: `void sleep_ms(uint ms)`
 3. Click **OK**
 
 ---
 
-## 🔬 Part 13: Recognizing Struct Patterns in Assembly
+## ? Part 13: Recognizing Struct Patterns in Assembly
 
 ### Step 29: Identify GPIO Set Direction
 
@@ -876,31 +876,31 @@ This is the compiler's version of `gpio_set_dir(pin, GPIO_OUT)`.
 Create a mental (or written) map:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Struct Member Mapping                                          │
-│                                                                 │
-│  Assembly Value   →   Struct Member   →   Physical LED          │
-│  ─────────────────────────────────────────────────────────────  │
-│  0x10 (16)        →   led1_pin        →   Red LED               │
-│  0x11 (17)        →   led2_pin        →   Green LED             │
-│  0x12 (18)        →   led3_pin        →   Yellow LED            │
-│                                                                 │
-│  NEC Code         →   State Member    →   Action                │
-│  ─────────────────────────────────────────────────────────────  │
-│  0x0C             →   led1_state=true →   Red LED ON            │
-│  0x18             →   led2_state=true →   Green LED ON          │
-│  0x5E             →   led3_state=true →   Yellow LED ON         │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Struct Member Mapping                                          |
+|                                                                 |
+|  Assembly Value   ->   Struct Member   ->   Physical LED          |
+|  -------------------------------------------------------------  |
+|  0x10 (16)        ->   led1_pin        ->   Red LED               |
+|  0x11 (17)        ->   led2_pin        ->   Green LED             |
+|  0x12 (18)        ->   led3_pin        ->   Yellow LED            |
+|                                                                 |
+|  NEC Code         ->   State Member    ->   Action                |
+|  -------------------------------------------------------------  |
+|  0x0C             ->   led1_state=true ->   Red LED ON            |
+|  0x18             ->   led2_state=true ->   Green LED ON          |
+|  0x5E             ->   led3_state=true ->   Yellow LED ON         |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ---
 
-## 🔬 Part 14: Hacking Structures
+## ? Part 14: Hacking Structures
 
 ### Step 31: Open the Bytes Editor
 
-1. Click **Window** → **Bytes**
+1. Click **Window** -> **Bytes**
 2. Click the pencil icon to enable editing
 
 ### Step 32: Swap LED Pin Assignments
@@ -916,19 +916,19 @@ We'll swap the red and green LED pins to reverse their behavior!
 
 **Before:**
 ```
-LED 1 (0x0C) → GPIO 16 → Red LED
-LED 2 (0x18) → GPIO 17 → Green LED
+LED 1 (0x0C) -> GPIO 16 -> Red LED
+LED 2 (0x18) -> GPIO 17 -> Green LED
 ```
 
 **After:**
 ```
-LED 1 (0x0C) → GPIO 17 → Green LED (SWAPPED!)
-LED 2 (0x18) → GPIO 16 → Red LED (SWAPPED!)
+LED 1 (0x0C) -> GPIO 17 -> Green LED (SWAPPED!)
+LED 2 (0x18) -> GPIO 16 -> Red LED (SWAPPED!)
 ```
 
 ### Step 33: Export and Flash
 
-1. Click **File** → **Export Program**
+1. Click **File** -> **Export Program**
 2. Set **Format** to **Binary**
 3. Name: `0x0023_structures-h.bin`
 4. Click **OK**
@@ -936,43 +936,43 @@ LED 2 (0x18) → GPIO 16 → Red LED (SWAPPED!)
 Convert and flash:
 
 ```powershell
-cd C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0023_structures
+cd C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\0x0023_structures
 python ..\uf2conv.py build\0x0023_structures-h.bin --base 0x10000000 --family 0xe48bff59 --output build\hacked.uf2
 ```
 
 ### Step 34: Verify the Hack
 
 **Open PuTTY and test:**
-- Press "1" on remote → **GREEN** LED lights (was red!)
+- Press "1" on remote -> **GREEN** LED lights (was red!)
 - Terminal still shows `NEC command: 0x0C`
-- Press "2" on remote → **RED** LED lights (was green!)
+- Press "2" on remote -> **RED** LED lights (was green!)
 - Terminal still shows `NEC command: 0x18`
 
 **The log says one thing, but the hardware does another!**
 
 ---
 
-## 🔬 Part 15: Security Implications - Log Desynchronization
+## ? Part 15: Security Implications - Log Desynchronization
 
 ### The Danger of Mismatched Logs
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Log vs Reality Desynchronization                               │
-│                                                                 │
-│  ┌─────────────────┐          ┌─────────────────┐               │
-│  │  Terminal Log   │          │  Physical LEDs  │               │
-│  ├─────────────────┤          ├─────────────────┤               │
-│  │ NEC: 0x0C       │ ◄─────── │ GREEN LED on    │ ◄── Mismatch! │
-│  │ (expects RED)   │          │ (not red!)      │               │
-│  ├─────────────────┤          ├─────────────────┤               │
-│  │ NEC: 0x18       │ ◄─────── │ RED LED on      │ ◄── Mismatch! │
-│  │ (expects GREEN) │          │ (not green!)    │               │
-│  └─────────────────┘          └─────────────────┘               │
-│                                                                 │
-│  The OPERATOR sees correct logs but WRONG physical behavior!   │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Log vs Reality Desynchronization                               |
+|                                                                 |
+|  +-----------------+          +-----------------+               |
+|  |  Terminal Log   |          |  Physical LEDs  |               |
+|  +-----------------+          +-----------------+               |
+|  | NEC: 0x0C       | ?------- | GREEN LED on    | ?-- Mismatch! |
+|  | (expects RED)   |          | (not red!)      |               |
+|  +-----------------+          +-----------------+               |
+|  | NEC: 0x18       | ?------- | RED LED on      | ?-- Mismatch! |
+|  | (expects GREEN) |          | (not green!)    |               |
+|  +-----------------+          +-----------------+               |
+|                                                                 |
+|  The OPERATOR sees correct logs but WRONG physical behavior!   |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Real-World Example: Stuxnet
@@ -990,7 +990,7 @@ Our LED example demonstrates the same principle:
 
 ---
 
-## 🔬 Part 16: Functions Project - Advanced Code
+## ? Part 16: Functions Project - Advanced Code
 
 ### Step 35: Review the Functions Code
 
@@ -1049,28 +1049,28 @@ int process_ir_led_command(int ir_command, simple_led_ctrl_t *leds, uint8_t blin
 ### Step 36: Understand the Function Call Chain
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Function Call Chain                                            │
-│                                                                 │
-│  main()                                                         │
-│    │                                                            │
-│    └──► process_ir_led_command(key, &leds, 3)                   │
-│           │                                                     │
-│           ├──► leds_all_off(&leds)                              │
-│           │      └──► gpio_put() × 3                            │
-│           │                                                     │
-│           ├──► ir_to_led_number(ir_command)                     │
-│           │      └──► returns 1, 2, or 3                        │
-│           │                                                     │
-│           ├──► get_led_pin(&leds, led_num)                      │
-│           │      └──► returns GPIO pin number                   │
-│           │                                                     │
-│           ├──► blink_led(pin, 3, 50)                            │
-│           │      └──► gpio_put() + sleep_ms() in loop           │
-│           │                                                     │
-│           └──► gpio_put(pin, true)                              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Function Call Chain                                            |
+|                                                                 |
+|  main()                                                         |
+|    |                                                            |
+|    +--? process_ir_led_command(key, &leds, 3)                   |
+|           |                                                     |
+|           +--? leds_all_off(&leds)                              |
+|           |      +--? gpio_put() * 3                            |
+|           |                                                     |
+|           +--? ir_to_led_number(ir_command)                     |
+|           |      +--? returns 1, 2, or 3                        |
+|           |                                                     |
+|           +--? get_led_pin(&leds, led_num)                      |
+|           |      +--? returns GPIO pin number                   |
+|           |                                                     |
+|           +--? blink_led(pin, 3, 50)                            |
+|           |      +--? gpio_put() + sleep_ms() in loop           |
+|           |                                                     |
+|           +--? gpio_put(pin, true)                              |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Step 37: Flash and Test
@@ -1078,13 +1078,13 @@ int process_ir_led_command(int ir_command, simple_led_ctrl_t *leds, uint8_t blin
 1. Flash `0x0026_functions.uf2` to your Pico 2
 2. Open PuTTY
 3. Press remote buttons:
-   - "1" → Red LED blinks 3 times, then stays on
-   - "2" → Green LED blinks 3 times, then stays on
-   - "3" → Yellow LED blinks 3 times, then stays on
+   - "1" -> Red LED blinks 3 times, then stays on
+   - "2" -> Green LED blinks 3 times, then stays on
+   - "3" -> Yellow LED blinks 3 times, then stays on
 
 ---
 
-## 🔬 Part 17: Debugging with GDB (Functions)
+## ? Part 17: Debugging with GDB (Functions)
 
 ### Step 38: Start OpenOCD (Terminal 1)
 
@@ -1092,7 +1092,7 @@ Open a terminal and start OpenOCD:
 
 ```powershell
 openocd ^
-  -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
+  -s "C:\Users\assem.KEVINTHOMAS\.pico-sdk\openocd\0.12.0+dev\scripts" ^
   -f interface/cmsis-dap.cfg ^
   -f target/rp2350.cfg ^
   -c "adapter speed 5000"
@@ -1160,7 +1160,7 @@ stepi 50
 info registers
 ```
 
-Watch the call chain: `process_ir_led_command` → `leds_all_off` → `ir_to_led_number` → `get_led_pin` → `blink_led`.
+Watch the call chain: `process_ir_led_command` -> `leds_all_off` -> `ir_to_led_number` -> `get_led_pin` -> `blink_led`.
 
 ### Step 45: Examine ir_to_led_number
 
@@ -1213,7 +1213,7 @@ quit
 
 ---
 
-## 🔬 Part 18: Analyzing .ELF Files in Ghidra
+## ? Part 18: Analyzing .ELF Files in Ghidra
 
 ### Step 50: Create New Ghidra Project
 
@@ -1246,7 +1246,7 @@ With .ELF files, you get more information:
 
 ---
 
-## 🔬 Part 19: Hacking the Functions Project
+## ? Part 19: Hacking the Functions Project
 
 ### Step 53: Find LED Pin Values
 
@@ -1268,14 +1268,14 @@ We'll swap the red (GPIO 16) and yellow (GPIO 18) LEDs:
 
 **Before:**
 ```
-Button 1 → LED 1 → GPIO 16 → Red
-Button 3 → LED 3 → GPIO 18 → Yellow
+Button 1 -> LED 1 -> GPIO 16 -> Red
+Button 3 -> LED 3 -> GPIO 18 -> Yellow
 ```
 
 **After:**
 ```
-Button 1 → LED 1 → GPIO 18 → Yellow (SWAPPED!)
-Button 3 → LED 3 → GPIO 16 → Red (SWAPPED!)
+Button 1 -> LED 1 -> GPIO 18 -> Yellow (SWAPPED!)
+Button 3 -> LED 3 -> GPIO 16 -> Red (SWAPPED!)
 ```
 
 ### Step 55: Export the Patched .BIN
@@ -1289,23 +1289,23 @@ Button 3 → LED 3 → GPIO 16 → Red (SWAPPED!)
 ### Step 56: Convert and Flash
 
 ```powershell
-cd C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0026_functions
+cd C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\0x0026_functions
 python ..\uf2conv.py build\0x0026_functions-h.bin --base 0x10000000 --family 0xe48bff59 --output build\hacked.uf2
 ```
 
 ### Step 57: Verify the Hack
 
 **Open PuTTY and test:**
-- Press "1" → **YELLOW** LED blinks (was red!)
+- Press "1" -> **YELLOW** LED blinks (was red!)
 - Terminal shows: `LED 1 activated on GPIO 16` (WRONG - it's actually GPIO 18!)
-- Press "3" → **RED** LED blinks (was yellow!)
+- Press "3" -> **RED** LED blinks (was yellow!)
 - Terminal shows: `LED 3 activated on GPIO 18` (WRONG - it's actually GPIO 16!)
 
 **Again, logs don't match reality!**
 
 ---
 
-## 📊 Part 20: Summary and Review
+## ? Part 20: Summary and Review
 
 ### What We Accomplished
 
@@ -1322,49 +1322,49 @@ python ..\uf2conv.py build\0x0026_functions-h.bin --base 0x10000000 --family 0xe
 ### Struct Operations Summary
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Struct Operations                                              │
-│                                                                 │
-│  Definition:                                                    │
-│  typedef struct {                                               │
-│      uint8_t pin;                                               │
-│      bool state;                                                │
-│  } led_t;                                                       │
-│                                                                 │
-│  Creation:                                                      │
-│  led_t led = { .pin = 16, .state = false };                     │
-│                                                                 │
-│  Access (variable):     led.pin                                 │
-│  Access (pointer):      ptr->pin  or  (*ptr).pin                │
-│                                                                 │
-│  Passing to function:   void func(led_t *led)                   │
-│  Calling:               func(&led)                              │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Struct Operations                                              |
+|                                                                 |
+|  Definition:                                                    |
+|  typedef struct {                                               |
+|      uint8_t pin;                                               |
+|      bool state;                                                |
+|  } led_t;                                                       |
+|                                                                 |
+|  Creation:                                                      |
+|  led_t led = { .pin = 16, .state = false };                     |
+|                                                                 |
+|  Access (variable):     led.pin                                 |
+|  Access (pointer):      ptr->pin  or  (*ptr).pin                |
+|                                                                 |
+|  Passing to function:   void func(led_t *led)                   |
+|  Calling:               func(&led)                              |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Function Types Summary
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Function Patterns                                              │
-│                                                                 │
-│  No params, no return:                                          │
-│  void leds_all_off(void)                                        │
-│                                                                 │
-│  With params, no return:                                        │
-│  void blink_led(uint8_t pin, uint8_t count, uint32_t delay)     │
-│                                                                 │
-│  No params, with return:                                        │
-│  int ir_getkey(void)                                            │
-│                                                                 │
-│  With params, with return:                                      │
-│  int ir_to_led_number(int ir_command)                           │
-│                                                                 │
-│  With struct pointer:                                           │
-│  uint8_t get_led_pin(simple_led_ctrl_t *leds, int led_num)      │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Function Patterns                                              |
+|                                                                 |
+|  No params, no return:                                          |
+|  void leds_all_off(void)                                        |
+|                                                                 |
+|  With params, no return:                                        |
+|  void blink_led(uint8_t pin, uint8_t count, uint32_t delay)     |
+|                                                                 |
+|  No params, with return:                                        |
+|  int ir_getkey(void)                                            |
+|                                                                 |
+|  With params, with return:                                      |
+|  int ir_to_led_number(int ir_command)                           |
+|                                                                 |
+|  With struct pointer:                                           |
+|  uint8_t get_led_pin(simple_led_ctrl_t *leds, int led_num)      |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Key Memory Addresses
@@ -1382,36 +1382,9 @@ python ..\uf2conv.py build\0x0026_functions-h.bin --base 0x10000000 --family 0xe
 
 ---
 
-## ✅ Practice Exercises
-
-### Exercise 1: Add a Fourth LED
-Modify the struct to include a fourth LED on GPIO 19.
-
-**Hint:** Add `led4_pin` and `led4_state` members.
-
-### Exercise 2: Change Blink Count
-Find and modify the blink count from 3 to 5 blinks.
-
-**Hint:** Look for the value passed to `process_ir_led_command`.
-
-### Exercise 3: Swap All Three LEDs
-Create a rotation where 1→Green, 2→Yellow, 3→Red.
-
-**Hint:** Patch all three GPIO values.
-
-### Exercise 4: Change Blink Speed
-Make the LEDs blink faster by changing the delay from 50ms to 25ms.
-
-**Hint:** Find `0x32` (50) in the function parameters.
-
-### Exercise 5: Disable One LED
-Make button 2 do nothing (LED stays off).
-
-**Hint:** NOP out the gpio_put call or change the NEC code comparison.
-
 ---
 
-## 🎓 Key Takeaways
+## ? Key Takeaways
 
 1. **Structs group related data** - Better organization than separate variables
 
@@ -1435,7 +1408,7 @@ Make button 2 do nothing (LED stays off).
 
 ---
 
-## 📖 Glossary
+## ? Glossary
 
 | Term                       | Definition                                         |
 | -------------------------- | -------------------------------------------------- |
@@ -1453,7 +1426,7 @@ Make button 2 do nothing (LED stays off).
 
 ---
 
-## 🔗 Additional Resources
+## ? Additional Resources
 
 ### NEC IR Command Reference
 
@@ -1486,7 +1459,7 @@ Make button 2 do nothing (LED stays off).
 
 ---
 
-## 🚨 Real-World Implications
+## ? Real-World Implications
 
 ### What You've Learned in This Course
 
@@ -1526,4 +1499,6 @@ This is just the beginning:
 
 **Congratulations on completing this course! You now have the curiosity, persistence, and skills that embedded systems engineers and security researchers thrive on. Keep experimenting, documenting, and sharing your work. The world needs more builders and defenders like you!**
 
-Happy hacking! 🔧
+Happy hacking! ?
+
+

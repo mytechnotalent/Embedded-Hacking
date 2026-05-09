@@ -13,7 +13,7 @@ By the end of this tutorial, you will be able to:
 
 ---
 
-## 📚 Part 1: Understanding Variables
+## Part 1: Understanding Variables
 
 ### What is a Variable?
 
@@ -24,16 +24,16 @@ A **variable** is like a labeled box where you can store information. Imagine yo
 - The **labels** are the variable names you choose
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Memory (SRAM) - Like a row of numbered boxes                   │
-│                                                                 │
-│  Box 0    Box 1    Box 2    Box 3    Box 4    ...               │
-│  ┌────┐   ┌────┐   ┌────┐   ┌────┐   ┌────┐                     │
-│  │ 42 │   │ 17 │   │  0 │   │255 │   │ 99 │                     │
-│  └────┘   └────┘   └────┘   └────┘   └────┘                     │
-│   age     score    count    max      temp                       │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Memory (SRAM) - Like a row of numbered boxes                   |
+|                                                                 |
+|  Box 0    Box 1    Box 2    Box 3    Box 4    ...               |
+|  +----+   +----+   +----+   +----+   +----+                     |
+|  | 42 |   | 17 |   |  0 |   |255 |   | 99 |                     |
+|  +----+   +----+   +----+   +----+   +----+                     |
+|   age     score    count    max      temp                       |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Declaration vs Definition
@@ -79,27 +79,27 @@ uint8_t age = 42;
 
 ---
 
-## 📚 Part 2: Memory Sections - Where Variables Live
+## Part 2: Memory Sections - Where Variables Live
 
 ### The Three Main Sections
 
 When your program is compiled, variables go to different places depending on how they're declared:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  .data Section (Flash → copied to RAM at startup)               │
-│  Contains: Initialized global/static variables                  │
-│  Example: int counter = 42;                                     │
-├─────────────────────────────────────────────────────────────────┤
-│  .bss Section (RAM - zeroed at startup)                         │
-│  Contains: Uninitialized global/static variables                │
-│  Example: int counter;  (will be 0)                             │
-├─────────────────────────────────────────────────────────────────┤
-│  .rodata Section (Flash - read only)                            │
-│  Contains: Constants, string literals                           │
-│  Example: const int MAX = 100;                                  │
-│  Example: "hello, world"                                        │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  .data Section (Flash -> copied to RAM at startup)               |
+|  Contains: Initialized global/static variables                  |
+|  Example: int counter = 42;                                     |
++-----------------------------------------------------------------+
+|  .bss Section (RAM - zeroed at startup)                         |
+|  Contains: Uninitialized global/static variables                |
+|  Example: int counter;  (will be 0)                             |
++-----------------------------------------------------------------+
+|  .rodata Section (Flash - read only)                            |
+|  Contains: Constants, string literals                           |
+|  Example: const int MAX = 100;                                  |
+|  Example: "hello, world"                                        |
++-----------------------------------------------------------------+
 ```
 
 ### What Happens to Uninitialized Variables?
@@ -118,22 +118,22 @@ uint8_t age; // This will be 0, not garbage!
 
 ---
 
-## 📚 Part 3: Understanding GPIO (General Purpose Input/Output)
+## Part 3: Understanding GPIO (General Purpose Input/Output)
 
 ### What is GPIO?
 
 **GPIO** stands for **General Purpose Input/Output**. These are pins on the microcontroller that you can control with software. Think of them as tiny switches you can turn on and off.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Raspberry Pi Pico 2                                            │
-│                                                                 │
-│  GPIO 16 ───────► Red LED                                       │
-│  GPIO 17 ───────► Green LED                                     │
-│  GPIO 18 ───────► Blue LED                                      │
-│  ...                                                            │
-│  GPIO 25 ───────► Onboard LED                                   │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Raspberry Pi Pico 2                                            |
+|                                                                 |
+|  GPIO 16 -------► Red LED                                       |
+|  GPIO 17 -------► Green LED                                     |
+|  GPIO 18 -------► Blue LED                                      |
+|  ...                                                            |
+|  GPIO 25 -------► Onboard LED                                   |
++-----------------------------------------------------------------+
 ```
 
 ### GPIO Functions in the Pico SDK
@@ -146,27 +146,6 @@ The Pico SDK provides simple functions to control GPIO pins:
 | `gpio_set_dir(pin, direction)` | Set pin as INPUT or OUTPUT      |
 | `gpio_put(pin, value)`         | Set pin HIGH (1) or LOW (0)     |
 | `sleep_ms(ms)`                 | Wait for specified milliseconds |
-
-### Basic LED Blink Code
-
-```c
-#include <stdio.h>
-#include "pico/stdlib.h"
-
-#define LED_PIN 16
-
-int main(void) {
-    gpio_init(LED_PIN);              // Initialize GPIO 16
-    gpio_set_dir(LED_PIN, GPIO_OUT); // Set as output
-    
-    while (true) {
-        gpio_put(LED_PIN, 1);        // LED ON
-        sleep_ms(500);               // Wait 500ms
-        gpio_put(LED_PIN, 0);        // LED OFF
-        sleep_ms(500);               // Wait 500ms
-    }
-}
-```
 
 ### What Happens Behind the Scenes?
 
@@ -186,7 +165,7 @@ The SIO (Single-cycle I/O) block is a special hardware unit in the RP2350 that p
 
 ---
 
-## 📚 Part 4: Setting Up Your Environment
+## Part 4: Setting Up Your Environment
 
 ### Prerequisites
 
@@ -203,17 +182,17 @@ Before we start, make sure you have:
 
 ```
 Embedded-Hacking/
-├── 0x0005_intro-to-variables/
-│   ├── build/
-│   │   ├── 0x0005_intro-to-variables.uf2
-│   │   └── 0x0005_intro-to-variables.bin
-│   └── 0x0005_intro-to-variables.c
-├── 0x0008_uninitialized-variables/
-│   ├── build/
-│   │   ├── 0x0008_uninitialized-variables.uf2
-│   │   └── 0x0008_uninitialized-variables.bin
-│   └── 0x0008_uninitialized-variables.c
-└── uf2conv.py
++-- 0x0005_intro-to-variables/
+|   +-- build/
+|   |   +-- 0x0005_intro-to-variables.uf2
+|   |   +-- 0x0005_intro-to-variables.bin
+|   +-- 0x0005_intro-to-variables.c
++-- 0x0008_uninitialized-variables/
+|   +-- build/
+|   |   +-- 0x0008_uninitialized-variables.uf2
+|   |   +-- 0x0008_uninitialized-variables.bin
+|   +-- 0x0008_uninitialized-variables.c
++-- uf2conv.py
 ```
 
 ---
@@ -285,7 +264,7 @@ Ghidra will open. Now we need to create a new project.
 
 ### Step 5: Create a New Project
 
-1. Click **File** → **New Project**
+1. Click **File** -> **New Project**
 2. Select **Non-Shared Project**
 3. Click **Next**
 4. Enter Project Name: `0x0005_intro-to-variables`
@@ -304,12 +283,12 @@ Ghidra will open. Now we need to create a new project.
 
 A dialog appears. The file is identified as a "BIN" (raw binary without debug symbols).
 
-**Click the three dots (…) next to "Language" and:**
+**Click the three dots (...) next to "Language" and:**
 1. Search for "Cortex"
 2. Select **ARM Cortex 32 little endian default**
 3. Click **OK**
 
-**Click the "Options…" button and:**
+**Click the "Options..." button and:**
 1. Change **Block Name** to `.text`
 2. Change **Base Address** to `10000000` (the XIP address!)
 3. Click **OK**
@@ -347,17 +326,6 @@ From our previous chapters, we know what some of these functions are:
 | `FUN_10000210` | `frame_dummy` | From Week 3 boot analysis  |
 | `FUN_10000234` | `main`        | This is where our code is! |
 
-**To rename `FUN_1000019a` to `data_cpy`:**
-1. Click on `FUN_1000019a` in the Symbol Tree
-2. In the Decompile window, right-click on the function name
-3. Select **Edit Function Signature**
-4. Change the name to `data_cpy`
-5. Click **OK**
-
-**Repeat for the other functions:**
-- Rename `FUN_10000210` to `frame_dummy`
-- Rename `FUN_10000234` to `main`
-
 ### Step 11: Update Main's Signature
 
 For `main`, let's also fix the return type:
@@ -379,6 +347,7 @@ You'll see something like:
 
 ```c
 void FUN_10000234(void)
+
 {
   FUN_10002f54();
   do {
@@ -390,28 +359,29 @@ void FUN_10000234(void)
 ### Step 13: Resolve stdio_init_all
 
 1. Click on `FUN_10002f54`
-2. Right-click → **Edit Function Signature**
+2. Right-click -> **Edit Function Signature**
 3. Change to: `bool stdio_init_all(void)`
 4. Click **OK**
 
 ### Step 14: Resolve printf
 
 1. Click on `FUN_100030e4`
-2. Right-click → **Edit Function Signature**
-3. Change the name to `printf`
+2. Right-click -> **Edit Function Signature**
+3. Change the name to `void printf (undefined4 param_1, ...)`
 4. Check the **Varargs** checkbox (printf takes variable arguments!)
 5. Click **OK**
 
 ### Step 15: Understand the Optimization
 
-Look at the decompiled code. This will look different if you resolved your functions however do you notice something interesting?
+Look at the updated decompiled code. This will look different if you resolved your functions however do you notice something interesting?
 
 ```c
-void FUN_10000234(void)
+int main(void)
+
 {
-  FUN_10002f54();
+  stdio_init_all();
   do {
-    FUN_100030e4(DAT_10000244,0x2b);
+    printf(DAT_10000244,0x2b);
   } while( true );
 }
 ```
@@ -459,7 +429,7 @@ The instruction now reads:
 
 ### Step 18: Export the Patched Binary
 
-1. Click **File** → **Export Program**
+1. Click **File** -> **Export Program**
 2. Set **Format** to **Raw Bytes**
 3. Navigate to your build directory
 4. Name the file `0x0005_intro-to-variables-h.bin`
@@ -476,7 +446,7 @@ The Pico 2 expects UF2 files, not raw BIN files. We need to convert it!
 **Open a terminal and navigate to your project directory:**
 
 ```powershell
-cd C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0005_intro-to-variables
+cd C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\0x0005_intro-to-variables
 ```
 
 **Run the conversion command:**
@@ -576,7 +546,7 @@ The value is `0` because uninitialized variables in the `.bss` section are zeroe
 1. Create a new project: `0x0008_uninitialized-variables`
 2. Import `0x0008_uninitialized-variables.bin`
 3. Set Language to **ARM Cortex 32 little endian**
-4. Set Base Address to `10000000`
+4. Set Base Address to `.text` and `10000000`
 5. Auto-analyze
 
 ### Step 24: Resolve the Functions
@@ -601,6 +571,7 @@ The decompiled main should look something like:
 
 ```c
 void FUN_10000234(void)
+
 {
   undefined4 extraout_r1;
   undefined4 extraout_r2;
@@ -639,7 +610,7 @@ This is where `gpio_init(LED_PIN)` is called with GPIO 16.
 We'll change the red LED (GPIO 16) to the green LED (GPIO 17)!
 
 1. Find the instruction `movs r0,#0x10`
-2. Right-click → **Patch Instruction**
+2. Right-click -> **Patch Instruction**
 3. Change `0x10` to `0x11` (17 in hex)
 4. Click **OK**
 
@@ -667,7 +638,7 @@ Let's also change the printed value from `0` to `0x42` (66 in decimal):
 1000024a    00 21    movs r1,#0x0
 ```
 
-1. Right-click → **Patch Instruction**
+1. Right-click -> **Patch Instruction**
 2. Change `0x0` to `0x42`
 3. Click **OK**
 
@@ -677,7 +648,7 @@ Let's also change the printed value from `0` to `0x42` (66 in decimal):
 
 ### Step 30: Export the Patched Binary
 
-1. Click **File** → **Export Program**
+1. Click **File** -> **Export Program**
 2. Format: **Raw Bytes**
 3. Filename: `0x0008_uninitialized-variables-h.bin`
 4. Click **OK**
@@ -685,7 +656,7 @@ Let's also change the printed value from `0` to `0x42` (66 in decimal):
 ### Step 31: Convert to UF2
 
 ```powershell
-cd C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0008_uninitialized-variables
+cd C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\0x0008_uninitialized-variables
 python ..\uf2conv.py build\0x0008_uninitialized-variables-h.bin --base 0x10000000 --family 0xe48bff59 --output build\hacked.uf2
 ```
 
@@ -711,7 +682,7 @@ And now the **GREEN LED on GPIO 17** should be blinking instead of the red one!
 
 ---
 
-## 📚 Part 15: Deep Dive - GPIO at the Assembly Level
+## Part 15: Deep Dive - GPIO at the Assembly Level
 
 ### Understanding the GPIO Coprocessor
 
@@ -738,21 +709,21 @@ When you call `gpio_init(16)`, here's what actually happens:
 
 ```
 Step 1: Configure pad (address 0x40038044)
-┌─────────────────────────────────────────────────────────────────┐
-│  - Clear OD bit (output disable)                                │
-│  - Set IE bit (input enable)                                    │
-│  - Clear ISO bit (isolation)                                    │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  - Clear OD bit (output disable)                                |
+|  - Set IE bit (input enable)                                    |
+|  - Clear ISO bit (isolation)                                    |
++-----------------------------------------------------------------+
 
 Step 2: Set function (address 0x40028084)
-┌─────────────────────────────────────────────────────────────────┐
-│  - Set FUNCSEL to 5 (SIO - Software I/O)                        │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  - Set FUNCSEL to 5 (SIO - Software I/O)                        |
++-----------------------------------------------------------------+
 
 Step 3: Enable output (via coprocessor)
-┌─────────────────────────────────────────────────────────────────┐
-│  - mcrr p0, #4, r4, r5, c4  (where r4=16, r5=1)                │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  - mcrr p0, #4, r4, r5, c4  (where r4=16, r5=1)                |
++-----------------------------------------------------------------+
 ```
 
 ### Raw Assembly LED Blink
@@ -820,31 +791,31 @@ delay2:
 ### The Binary Patching Workflow
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  1. Import .bin file into Ghidra                                │
-│     - Set language to ARM Cortex                                │
-│     - Set base address to 0x10000000                            │
-├─────────────────────────────────────────────────────────────────┤
-│  2. Analyze and resolve functions                               │
-│     - Rename functions to meaningful names                      │
-│     - Fix function signatures                                   │
-├─────────────────────────────────────────────────────────────────┤
-│  3. Find the values/instructions to patch                       │
-│     - Look in the assembly listing                              │
-│     - Right-click → Patch Instruction                           │
-├─────────────────────────────────────────────────────────────────┤
-│  4. Export the patched binary                                   │
-│     - File → Export Program                                     │
-│     - Format: Raw Bytes                                         │
-├─────────────────────────────────────────────────────────────────┤
-│  5. Convert to UF2                                              │
-│     - python uf2conv.py file.bin --base 0x10000000              │
-│       --family 0xe48bff59 --output hacked.uf2                   │
-├─────────────────────────────────────────────────────────────────┤
-│  6. Flash and verify                                            │
-│     - Hold BOOTSEL, plug in, drag UF2                           │
-│     - Check serial output and LED behavior                      │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  1. Import .bin file into Ghidra                                |
+|     - Set language to ARM Cortex                                |
+|     - Set base address to 0x10000000                            |
++-----------------------------------------------------------------+
+|  2. Analyze and resolve functions                               |
+|     - Rename functions to meaningful names                      |
+|     - Fix function signatures                                   |
++-----------------------------------------------------------------+
+|  3. Find the values/instructions to patch                       |
+|     - Look in the assembly listing                              |
+|     - Right-click -> Patch Instruction                           |
++-----------------------------------------------------------------+
+|  4. Export the patched binary                                   |
+|     - File -> Export Program                                     |
+|     - Format: Raw Bytes                                         |
++-----------------------------------------------------------------+
+|  5. Convert to UF2                                              |
+|     - python uf2conv.py file.bin --base 0x10000000              |
+|       --family 0xe48bff59 --output hacked.uf2                   |
++-----------------------------------------------------------------+
+|  6. Flash and verify                                            |
+|     - Hold BOOTSEL, plug in, drag UF2                           |
+|     - Check serial output and LED behavior                      |
++-----------------------------------------------------------------+
 ```
 
 ### Key Memory Sections
@@ -860,34 +831,12 @@ delay2:
 
 | Action            | How To Do It                          |
 | ----------------- | ------------------------------------- |
-| Rename function   | Right-click → Edit Function Signature |
-| Patch instruction | Right-click → Patch Instruction       |
-| Export binary     | File → Export Program → Raw Bytes     |
+| Rename function   | Right-click -> Edit Function Signature |
+| Patch instruction | Right-click -> Patch Instruction       |
+| Export binary     | File -> Export Program -> Raw Bytes     |
 | Go to address     | Press 'G' and enter address           |
 
 ---
-
-## ✅ Practice Exercises
-
-### Exercise 1: Change the Delay
-The LED blinks every 500ms. Find the `sleep_ms(500)` calls in the binary and change them to `sleep_ms(100)` for faster blinking.
-
-**Hint:** Look for the value `0x1F4` (500 in hex) being loaded into a register.
-
-### Exercise 2: Reverse the LED
-Instead of GPIO 16 → ON → OFF, make it GPIO 16 → OFF → ON (start with LED on).
-
-**Hint:** Find and swap the two `gpio_put` calls (the ones with values 0 and 1).
-
-### Exercise 3: Add a Second LED
-Patch the binary so that BOTH GPIO 16 and GPIO 17 blink together.
-
-**Hint:** You'll need to find space for additional instructions or modify existing ones cleverly.
-
-### Exercise 4: Change the Format String
-The program prints "age: %d\r\n". Can you find this string in Ghidra and figure out where it's stored?
-
-**Hint:** Look in the `.rodata` section around address `0x10001xxx`.
 
 ---
 
@@ -954,3 +903,4 @@ The RP2350 GPIO coprocessor instructions:
 **Remember:** Every binary you encounter in the real world can be analyzed and understood using these same techniques. Practice makes perfect!
 
 Happy hacking! 🔧
+

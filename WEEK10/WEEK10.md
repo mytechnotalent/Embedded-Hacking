@@ -1,6 +1,6 @@
-# Week 10: Conditionals in Embedded Systems: Debugging and Hacking Static & Dynamic Conditionals w/ SG90 Servo Motor PWM Basics
+﻿?# Week 10: Conditionals in Embedded Systems: Debugging and Hacking Static & Dynamic Conditionals w/ SG90 Servo Motor PWM Basics
 
-## 🎯 What You'll Learn This Week
+## ? What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
 - Understand the difference between static and dynamic conditionals in C
@@ -15,7 +15,7 @@ By the end of this tutorial, you will be able to:
 
 ---
 
-## 📚 Part 1: Understanding Conditionals in C
+## Part 1: Understanding Conditionals in C
 
 ### What Are Conditionals?
 
@@ -30,7 +30,7 @@ By the end of this tutorial, you will be able to:
 
 ---
 
-## 📚 Part 2: Static Conditionals
+## Part 2: Static Conditionals
 
 ### What Makes a Conditional "Static"?
 
@@ -51,27 +51,27 @@ while (true) {
 ```
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Static Conditional Flow                                        │
-│                                                                 │
-│  choice = 1 (set once, never changes)                           │
-│       │                                                         │
-│       ▼                                                         │
-│  ┌─────────────┐                                                │
-│  │ choice == 1 │────YES────► printf("1")                        │
-│  └─────────────┘                                                │
-│       │NO (never taken)                                         │
-│       ▼                                                         │
-│  ┌─────────────┐                                                │
-│  │ choice == 2 │────YES────► printf("2") (never reached)        │
-│  └─────────────┘                                                │
-│       │NO                                                       │
-│       ▼                                                         │
-│  printf("?") (never reached)                                    │
-│                                                                 │
-│  The branching logic EXISTS but only ONE path ever executes!    │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Static Conditional Flow                                        |
+|                                                                 |
+|  choice = 1 (set once, never changes)                           |
+|       |                                                         |
+|       ?                                                         |
+|  +-------------+                                                |
+|  | choice == 1 |----YES----? printf("1")                        |
+|  +-------------+                                                |
+|       |NO (never taken)                                         |
+|       ?                                                         |
+|  +-------------+                                                |
+|  | choice == 2 |----YES----? printf("2") (never reached)        |
+|  +-------------+                                                |
+|       |NO                                                       |
+|       ?                                                         |
+|  printf("?") (never reached)                                    |
+|                                                                 |
+|  The branching logic EXISTS but only ONE path ever executes!    |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### The if/else Statement
@@ -116,7 +116,7 @@ switch (choice) {
 
 ---
 
-## 📚 Part 3: Dynamic Conditionals
+## Part 3: Dynamic Conditionals
 
 ### What Makes a Conditional "Dynamic"?
 
@@ -139,31 +139,31 @@ while (true) {
 ```
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Dynamic Conditional Flow                                       │
-│                                                                 │
-│  ┌────────────────┐                                             │
-│  │ choice=getchar │◄──── User types 'x' on keyboard             │
-│  └────────────────┘                                             │
-│         │                                                       │
-│         ▼                                                       │
-│  ┌─────────────┐                                                │
-│  │ choice=='1' │────YES────► printf("1"), move servo            │
-│  └─────────────┘                                                │
-│         │NO                                                     │
-│         ▼                                                       │
-│  ┌─────────────┐                                                │
-│  │ choice=='2' │────YES────► printf("2"), move servo            │
-│  └─────────────┘                                                │
-│         │NO                                                     │
-│         ▼                                                       │
-│  printf("??")                                                   │
-│         │                                                       │
-│         └──────────────────► Loop back to getchar()             │
-│                                                                 │
-│  EACH iteration can take a DIFFERENT path!                      │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Dynamic Conditional Flow                                       |
+|                                                                 |
+|  +----------------+                                             |
+|  | choice=getchar |?---- User types 'x' on keyboard             |
+|  +----------------+                                             |
+|         |                                                       |
+|         ?                                                       |
+|  +-------------+                                                |
+|  | choice=='1' |----YES----? printf("1"), move servo            |
+|  +-------------+                                                |
+|         |NO                                                     |
+|         ?                                                       |
+|  +-------------+                                                |
+|  | choice=='2' |----YES----? printf("2"), move servo            |
+|  +-------------+                                                |
+|         |NO                                                     |
+|         ?                                                       |
+|  printf("??")                                                   |
+|         |                                                       |
+|         +------------------? Loop back to getchar()             |
+|                                                                 |
+|  EACH iteration can take a DIFFERENT path!                      |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### The getchar() Function
@@ -180,25 +180,25 @@ uint8_t choice = getchar();  // Waits for user to type something
 
 ---
 
-## 📚 Part 4: Understanding PWM (Pulse Width Modulation)
+## Part 4: Understanding PWM (Pulse Width Modulation)
 
 ### What is PWM?
 
 **PWM** (Pulse Width Modulation) is a technique for controlling power by rapidly switching a signal on and off. The ratio of "on time" to "off time" determines the average power delivered.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  PWM Signal - 50% Duty Cycle                                    │
-│                                                                 │
-│  HIGH ─┐     ┌─────┐     ┌─────┐     ┌─────┐                    │
-│        │     │     │     │     │     │     │                    │
-│  LOW   └─────┘     └─────┘     └─────┘     └─────                │
-│        ◄──T──►                                                  │
-│        ON  OFF                                                  │
-│                                                                 │
-│  Duty Cycle = ON time / Total period = 50%                      │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  PWM Signal - 50% Duty Cycle                                    |
+|                                                                 |
+|  HIGH -+     +-----+     +-----+     +-----+                    |
+|        |     |     |     |     |     |     |                    |
+|  LOW   +-----+     +-----+     +-----+     +-----                |
+|        ?--T--?                                                  |
+|        ON  OFF                                                  |
+|                                                                 |
+|  Duty Cycle = ON time / Total period = 50%                      |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### PWM for Servo Control
@@ -206,96 +206,96 @@ uint8_t choice = getchar();  // Waits for user to type something
 Servo motors use PWM differently - they care about the **pulse width**, not the duty cycle percentage:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Servo PWM Signal (50 Hz = 20ms period)                         │
-│                                                                 │
-│  0° Position (1ms pulse):                                       │
-│  HIGH ─┐                                                        │
-│        │ 1ms                                                    │
-│  LOW   └────────────────────────────── (19ms) ──────────        │
-│        ◄────────────── 20ms ─────────────────────────►          │
-│                                                                 │
-│  90° Position (1.5ms pulse):                                    │
-│  HIGH ─────┐                                                    │
-│            │ 1.5ms                                              │
-│  LOW       └─────────────────────────── (18.5ms) ───────        │
-│                                                                 │
-│  180° Position (2ms pulse):                                     │
-│  HIGH ─────────┐                                                │
-│                │ 2ms                                            │
-│  LOW           └───────────────────────── (18ms) ───────        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Servo PWM Signal (50 Hz = 20ms period)                         |
+|                                                                 |
+|  0? Position (1ms pulse):                                       |
+|  HIGH -??                                                        |
+|        | 1ms                                                    |
+|  LOW   +------------------------------ (19ms) ----------        |
+|        ?-------------- 20ms -------------------------?          |
+|                                                                 |
+|  90? Position (1.5ms pulse):                                    |
+|  HIGH -----+                                                    |
+|            | 1.5ms                                              |
+|  LOW       +--------------------------- (18.5ms) -------        |
+|                                                                 |
+|  180? Position (2ms pulse):                                     |
+|  HIGH ---------+                                                |
+|                | 2ms                                            |
+|  LOW           +------------------------- (18ms) -------        |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### The Magic Numbers
 
 | Angle | Pulse Width | PWM Ticks (at 1MHz) |
 | ----- | ----------- | ------------------- |
-| 0°    | 1000 µs     | 1000                |
-| 90°   | 1500 µs     | 1500                |
-| 180°  | 2000 µs     | 2000                |
+| 0?    | 1000 ?s     | 1000                |
+| 90?   | 1500 ?s     | 1500                |
+| 180?  | 2000 ?s     | 2000                |
 
 ---
 
-## 📚 Part 5: PWM Timing Calculations
+## Part 5: PWM Timing Calculations
 
 ### From 150 MHz to 50 Hz
 
 The RP2350's system clock runs at **150 MHz** (150 million cycles per second). A servo needs a **50 Hz** signal (one pulse every 20 ms). How do we bridge this gap?
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Clock Division Chain                                           │
-│                                                                 │
-│  System Clock: 150 MHz                                          │
-│        │                                                        │
-│        │ ÷ 150 (clock divider)                                  │
-│        ▼                                                        │
-│  PWM Tick Rate: 1 MHz (1 tick = 1 microsecond)                  │
-│        │                                                        │
-│        │ Count to 20,000 (wrap value = 19,999)                  │
-│        ▼                                                        │
-│  PWM Frequency: 50 Hz (20 ms period)                            │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Clock Division Chain                                           |
+|                                                                 |
+|  System Clock: 150 MHz                                          |
+|        |                                                        |
+|        | ? 150 (clock divider)                                  |
+|        ?                                                        |
+|  PWM Tick Rate: 1 MHz (1 tick = 1 microsecond)                  |
+|        |                                                        |
+|        | Count to 20,000 (wrap value = 19,999)                  |
+|        ?                                                        |
+|  PWM Frequency: 50 Hz (20 ms period)                            |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### The Math
 
 **Step 1: Clock Division**
 ```
-PWM Tick Rate = System Clock ÷ Divider
-1,000,000 Hz = 150,000,000 Hz ÷ 150
+PWM Tick Rate = System Clock ? Divider
+1,000,000 Hz = 150,000,000 Hz ? 150
 ```
 
 **Step 2: Frame Period**
 ```
-Period = (Wrap Value + 1) × Tick Duration
-20 ms = 20,000 ticks × 1 µs/tick
+Period = (Wrap Value + 1) * Tick Duration
+20 ms = 20,000 ticks * 1 ?s/tick
 ```
 
 **Step 3: Pulse Width to Ticks**
 ```
-Ticks = Pulse Width (µs) × 1 tick/µs
-1500 ticks = 1500 µs × 1
+Ticks = Pulse Width (?s) * 1 tick/?s
+1500 ticks = 1500 ?s * 1
 ```
 
-### Worked Example: 90° Angle
+### Worked Example: 90? Angle
 
-Let's calculate what happens when we command 90°:
+Let's calculate what happens when we command 90?:
 
 1. **Angle to Pulse Width:**
    ```
-   Pulse = MIN + (angle/180) × (MAX - MIN)
-   Pulse = 1000 + (90/180) × (2000 - 1000)
-   Pulse = 1000 + 0.5 × 1000
-   Pulse = 1500 µs
+   Pulse = MIN + (angle/180) * (MAX - MIN)
+   Pulse = 1000 + (90/180) * (2000 - 1000)
+   Pulse = 1000 + 0.5 * 1000
+   Pulse = 1500 ?s
    ```
 
 2. **Pulse to PWM Ticks:**
    ```
-   Level = 1500 µs × 1 tick/µs = 1500 ticks
+   Level = 1500 ?s * 1 tick/?s = 1500 ticks
    ```
 
 3. **Hardware Timing:**
@@ -305,35 +305,35 @@ Let's calculate what happens when we command 90°:
 
 ---
 
-## 📚 Part 6: Understanding the SG90 Servo Motor
+## Part 6: Understanding the SG90 Servo Motor
 
 ### What is the SG90?
 
 The **SG90** is a small, inexpensive hobby servo motor commonly used in robotics projects:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  SG90 Servo Motor                                               │
-│                                                                 │
-│     ┌───────────────┐                                           │
-│     │    ┌─────┐    │                                           │
-│     │    │ ARM │    │ ◄── Rotates 0° to 180°                    │
-│     │    └──┬──┘    │                                           │
-│     │       │       │                                           │
-│     │  ┌────┴────┐  │                                           │
-│     │  │  MOTOR  │  │                                           │
-│     │  │  GEAR   │  │                                           │
-│     │  │  BOX    │  │                                           │
-│     │  └─────────┘  │                                           │
-│     └───────┬───────┘                                           │
-│             │                                                   │
-│     ┌───────┼───────┐                                           │
-│     │       │       │                                           │
-│   ORANGE  RED    BROWN                                          │
-│   Signal  VCC    GND                                            │
-│   (PWM)   (5V)                                                  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  SG90 Servo Motor                                               |
+|                                                                 |
+|     +---------------+                                           |
+|     |    +-----+    |                                           |
+|     |    | ARM |    | ?-- Rotates 0? to 180?                    |
+|     |    +--+--+    |                                           |
+|     |       |       |                                           |
+|     |  +----+----+  |                                           |
+|     |  |  MOTOR  |  |                                           |
+|     |  |  GEAR   |  |                                           |
+|     |  |  BOX    |  |                                           |
+|     |  +---------+  |                                           |
+|     +-------+-------+                                           |
+|             |                                                   |
+|     +-------+-------+                                           |
+|     |       |       |                                           |
+|   ORANGE  RED    BROWN                                          |
+|   Signal  VCC    GND                                            |
+|   (PWM)   (5V)                                                  |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### SG90 Specifications
@@ -341,8 +341,8 @@ The **SG90** is a small, inexpensive hobby servo motor commonly used in robotics
 | Parameter         | Value                     |
 | ----------------- | ------------------------- |
 | **Voltage**       | 4.8V - 6V (typically 5V)  |
-| **Rotation**      | 0° to 180°                |
-| **Pulse Width**   | 1000µs - 2000µs           |
+| **Rotation**      | 0? to 180?                |
+| **Pulse Width**   | 1000 us - 2000 us           |
 | **Frequency**     | 50 Hz (20ms period)       |
 | **Stall Current** | ~650mA (can spike to 1A+) |
 
@@ -356,9 +356,9 @@ The **SG90** is a small, inexpensive hobby servo motor commonly used in robotics
 
 ---
 
-## 📚 Part 7: Power Supply Safety
+## Part 7: Power Supply Safety
 
-### ⚠️ CRITICAL WARNING ⚠️
+### CRITICAL WARNING
 
 **NEVER power the servo directly from the Pico's 3.3V pin!**
 
@@ -370,35 +370,35 @@ Servos can draw over 1000mA during movement spikes. The Pico's 3.3V regulator ca
 ### Correct Power Setup
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  CORRECT Power Wiring                                           │
-│                                                                 │
-│  USB ────► VBUS (5V) ───┬──► Servo VCC (Red)                    │
-│                         │                                       │
-│                         └──► Capacitor (+)                      │
-│                              │                                  │
-│  Pico GND ──────────────┬────┴──► Capacitor (-)                 │
-│                         │                                       │
-│                         └──────► Servo GND (Brown)              │
-│                                                                 │
-│  Pico GPIO 6 ──────────────────► Servo Signal (Orange)          │
-│                                                                 │
-│  IMPORTANT: Use a 1000µF 25V capacitor across the servo         │
-│  power to absorb current spikes!                                │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  CORRECT Power Wiring                                           |
+|                                                                 |
+|  USB ----? VBUS (5V) ---+--? Servo VCC (Red)                    |
+|                         |                                       |
+|                         +--? Capacitor (+)                      |
+|                              |                                  |
+|  Pico GND --------------+----+--? Capacitor (-)                 |
+|                         |                                       |
+|                         +------? Servo GND (Brown)              |
+|                                                                 |
+|  Pico GPIO 6 ------------------? Servo Signal (Orange)          |
+|                                                                 |
+|  IMPORTANT: Use a 1000 uF 25V capacitor across the servo         |
+|  power to absorb current spikes!                                |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Why the Capacitor?
 
-The **1000µF capacitor** acts as a tiny battery:
+The **1000 uF capacitor** acts as a tiny battery:
 - Absorbs sudden current demands when servo moves
 - Prevents voltage drops that could reset the Pico
 - Smooths out electrical noise
 
 ---
 
-## 📚 Part 8: Setting Up Your Environment
+## Part 8: Setting Up Your Environment
 
 ### Prerequisites
 
@@ -409,7 +409,7 @@ Before we start, make sure you have:
 4. Python installed (for UF2 conversion)
 5. A serial monitor (PuTTY, minicom, or screen)
 6. An SG90 servo motor
-7. A 1000µF 25V capacitor
+7. A 1000 uF 25V capacitor
 8. The sample projects: `0x001d_static-conditionals` and `0x0020_dynamic-conditionals`
 
 ### Hardware Setup
@@ -423,52 +423,52 @@ Connect your servo like this:
 | Orange (Signal) | GPIO 6     |
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Servo Wiring with Capacitor                                    │
-│                                                                 │
-│  Pico 2                              SG90 Servo                 │
-│  ┌──────────┐                       ┌──────────┐                │
-│  │          │                       │          │                │
-│  │ GPIO 6   │─────── Orange ───────►│ Signal   │                │
-│  │          │                       │          │                │
-│  │ VBUS(5V) │───┬─── Red ──────────►│ VCC      │                │
-│  │          │   │                   │          │                │
-│  │ GND      │───┼─── Brown ────────►│ GND      │                │
-│  │          │   │                   └──────────┘                │
-│  └──────────┘   │                                               │
-│                 │    ┌─────────┐                                │
-│                 └────┤ + CAP - ├──── GND                        │
-│                      │ 1000µF │                                 │
-│                      │  25V   │                                 │
-│                      └─────────┘                                │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Servo Wiring with Capacitor                                    |
+|                                                                 |
+|  Pico 2                              SG90 Servo                 |
+|  +----------+                       +----------+                |
+|  |          |                       |          |                |
+|  | GPIO 6   |------- Orange -------?| Signal   |                |
+|  |          |                       |          |                |
+|  | VBUS(5V) |---+--- Red ----------?| VCC      |                |
+|  |          |   |                   |          |                |
+|  | GND      |---+--- Brown --------?| GND      |                |
+|  |          |   |                   +----------+                |
+|  +----------+   |                                               |
+|                 |    +---------+                                |
+|                 +----+ + CAP - +---- GND                        |
+|                      | 1000 uF |                                 |
+|                      |  25V   |                                 |
+|                      +---------+                                |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Project Structure
 
 ```
 Embedded-Hacking/
-├── 0x001d_static-conditionals/
-│   ├── build/
-│   │   ├── 0x001d_static-conditionals.uf2
-│   │   └── 0x001d_static-conditionals.bin
-│   ├── main/
-│   │   └── 0x001d_static-conditionals.c
-│   └── servo.h
-├── 0x0020_dynamic-conditionals/
-│   ├── build/
-│   │   ├── 0x0020_dynamic-conditionals.uf2
-│   │   └── 0x0020_dynamic-conditionals.bin
-│   ├── main/
-│   │   └── 0x0020_dynamic-conditionals.c
-│   └── servo.h
-└── uf2conv.py
++-- 0x001d_static-conditionals/
+|   +-- build/
+|   |   +-- 0x001d_static-conditionals.uf2
+|   |   +-- 0x001d_static-conditionals.bin
+|   +-- main/
+|   |   +-- 0x001d_static-conditionals.c
+|   +-- servo.h
++-- 0x0020_dynamic-conditionals/
+|   +-- build/
+|   |   +-- 0x0020_dynamic-conditionals.uf2
+|   |   +-- 0x0020_dynamic-conditionals.bin
+|   +-- main/
+|   |   +-- 0x0020_dynamic-conditionals.c
+|   +-- servo.h
++-- uf2conv.py
 ```
 
 ---
 
-## 🔬 Part 9: Hands-On Tutorial - Static Conditionals Code
+## ? Part 9: Hands-On Tutorial - Static Conditionals Code
 
 ### Step 1: Review the Source Code
 
@@ -526,23 +526,23 @@ int main(void) {
 Since `choice = 1` and NEVER changes:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Static Conditional Execution                                   │
-│                                                                 │
-│  Every loop iteration:                                          │
-│                                                                 │
-│  1. Check if (choice == 1) → TRUE → print "1"                   │
-│  2. Check switch case 1 → MATCH → print "one"                   │
-│  3. Move servo to 0°                                            │
-│  4. Wait 500ms                                                  │
-│  5. Move servo to 180°                                          │
-│  6. Wait 500ms                                                  │
-│  7. Repeat forever...                                           │
-│                                                                 │
-│  Output always: "1" then "one" (forever)                        │
-│  Servo: sweeps 0° → 180° → 0° → 180° (forever)                  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Static Conditional Execution                                   |
+|                                                                 |
+|  Every loop iteration:                                          |
+|                                                                 |
+|  1. Check if (choice == 1) -> TRUE -> print "1"                   |
+|  2. Check switch case 1 -> MATCH -> print "one"                   |
+|  3. Move servo to 0?                                            |
+|  4. Wait 500ms                                                  |
+|  5. Move servo to 180?                                          |
+|  6. Wait 500ms                                                  |
+|  7. Repeat forever...                                           |
+|                                                                 |
+|  Output always: "1" then "one" (forever)                        |
+|  Servo: sweeps 0? -> 180? -> 0? -> 180? (forever)                  |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Step 3: Flash the Binary to Your Pico 2
@@ -567,12 +567,12 @@ one
 ```
 
 **Watch the servo:**
-- It should sweep from 0° to 180° every second
+- It should sweep from 0? to 180? every second
 - The movement is continuous and repetitive
 
 ---
 
-## 🔬 Part 10: Debugging with GDB (Static Conditionals)
+## ? Part 10: Debugging with GDB (Static Conditionals)
 
 ### Step 5: Start OpenOCD (Terminal 1)
 
@@ -580,7 +580,7 @@ Open a terminal and start OpenOCD:
 
 ```powershell
 openocd ^
-  -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
+  -s "C:\Users\assem.KEVINTHOMAS\.pico-sdk\openocd\0.12.0+dev\scripts" ^
   -f interface/cmsis-dap.cfg ^
   -f target/rp2350.cfg ^
   -c "adapter speed 5000"
@@ -704,7 +704,7 @@ quit
 
 ---
 
-## 🔬 Part 11: Setting Up Ghidra for Static Conditionals
+## ? Part 11: Setting Up Ghidra for Static Conditionals
 
 ### Step 17: Start Ghidra
 
@@ -716,7 +716,7 @@ ghidraRun
 
 ### Step 18: Create a New Project
 
-1. Click **File** → **New Project**
+1. Click **File** -> **New Project**
 2. Select **Non-Shared Project**
 3. Click **Next**
 4. Enter Project Name: `0x001d_static-conditionals`
@@ -730,12 +730,12 @@ ghidraRun
 
 ### Step 20: Configure the Binary Format
 
-**Click the three dots (…) next to "Language" and:**
+**Click the three dots (...) next to "Language" and:**
 1. Search for "Cortex"
 2. Select **ARM Cortex 32 little endian default**
 3. Click **OK**
 
-**Click the "Options…" button and:**
+**Click the "Options..." button and:**
 1. Change **Block Name** to `.text`
 2. Change **Base Address** to `10000000`
 3. Click **OK**
@@ -750,12 +750,12 @@ Wait for analysis to complete.
 
 ---
 
-## 🔬 Part 12: Resolving Functions in Ghidra (Static)
+## ? Part 12: Resolving Functions in Ghidra (Static)
 
 ### Step 22: Navigate to Main
 
 1. Press `G` (Go to address) and type `10000234`
-2. Right-click → **Edit Function Signature**
+2. Right-click -> **Edit Function Signature**
 3. Change to: `int main(void)`
 4. Click **OK**
 
@@ -764,7 +764,7 @@ Wait for analysis to complete.
 At address `0x10000236`:
 
 1. Double-click on the called function
-2. Right-click → **Edit Function Signature**
+2. Right-click -> **Edit Function Signature**
 3. Change to: `bool stdio_init_all(void)`
 4. Click **OK**
 
@@ -777,7 +777,7 @@ movs r0, #0x6      ; GPIO pin 6
 bl   FUN_xxxxx     ; servo_init
 ```
 
-1. Right-click → **Edit Function Signature**
+1. Right-click -> **Edit Function Signature**
 2. Change to: `void servo_init(uint pin)`
 3. Click **OK**
 
@@ -796,7 +796,7 @@ bl   FUN_xxxxx          ; puts
 - The hex `0x0d` is carriage return "\r"
 - We see "1" echoed in PuTTY
 
-1. Right-click → **Edit Function Signature**
+1. Right-click -> **Edit Function Signature**
 2. Change to: `int puts(char *s)`
 3. Click **OK**
 
@@ -808,7 +808,7 @@ Look for a function that loads float constants. Inside the function, you'll find
 
 These are the servo pulse limits!
 
-1. Right-click → **Edit Function Signature**
+1. Right-click -> **Edit Function Signature**
 2. Change to: `void servo_set_angle(float degrees)`
 3. Click **OK**
 
@@ -821,17 +821,17 @@ ldr  r0, =0x1f4    ; 500 milliseconds
 bl   FUN_xxxxx     ; sleep_ms
 ```
 
-1. Right-click → **Edit Function Signature**
+1. Right-click -> **Edit Function Signature**
 2. Change to: `void sleep_ms(uint ms)`
 3. Click **OK**
 
 ---
 
-## 🔬 Part 13: Hacking Static Conditionals
+## ? Part 13: Hacking Static Conditionals
 
 ### Step 28: Open the Bytes Editor
 
-1. Click **Window** → **Bytes**
+1. Click **Window** -> **Bytes**
 2. A new panel appears showing raw hex bytes
 3. Click the pencil icon to enable editing
 
@@ -874,7 +874,7 @@ Find the sleep_ms delay value:
 
 ### Step 32: Export and Flash
 
-1. Click **File** → **Export Program**
+1. Click **File** -> **Export Program**
 2. Set **Format** to **Binary**
 3. Name: `0x001d_static-conditionals-h.bin`
 4. Click **OK**
@@ -882,7 +882,7 @@ Find the sleep_ms delay value:
 Convert and flash:
 
 ```powershell
-cd C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x001d_static-conditionals
+cd C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\0x001d_static-conditionals
 python ..\uf2conv.py build\0x001d_static-conditionals-h.bin --base 0x10000000 --family 0xe48bff59 --output build\hacked.uf2
 ```
 
@@ -901,7 +901,7 @@ fun
 
 ---
 
-## 🔬 Part 14: Dynamic Conditionals - The Source Code
+## ? Part 14: Dynamic Conditionals - The Source Code
 
 ### Step 34: Review the Dynamic Code
 
@@ -958,8 +958,8 @@ int main(void) {
 
 | User Types    | Output      | Servo Action |
 | ------------- | ----------- | ------------ |
-| '1' (0x31)    | "1" + "one" | 0° → 180°    |
-| '2' (0x32)    | "2" + "two" | 180° → 0°    |
+| '1' (0x31)    | "1" + "one" | 0? -> 180?    |
+| '2' (0x32)    | "2" + "two" | 180? -> 0?    |
 | Anything else | "??" + "??" | No movement  |
 
 ### Step 36: Flash and Test
@@ -972,7 +972,7 @@ int main(void) {
 
 ---
 
-## 🔬 Part 15: Debugging with GDB (Dynamic Conditionals)
+## ? Part 15: Debugging with GDB (Dynamic Conditionals)
 
 ### Step 37: Start OpenOCD (Terminal 1)
 
@@ -980,7 +980,7 @@ Open a terminal and start OpenOCD:
 
 ```powershell
 openocd ^
-  -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
+  -s "C:\Users\assem.KEVINTHOMAS\.pico-sdk\openocd\0.12.0+dev\scripts" ^
   -f interface/cmsis-dap.cfg ^
   -f target/rp2350.cfg ^
   -c "adapter speed 5000"
@@ -1103,7 +1103,7 @@ quit
 
 ---
 
-## 🔬 Part 16: Setting Up Ghidra for Dynamic Conditionals
+## ? Part 16: Setting Up Ghidra for Dynamic Conditionals
 
 ### Step 49: Create New Project
 
@@ -1120,12 +1120,12 @@ Press `G` and go to `10000234`.
 
 Follow the same process:
 
-1. **main** at `0x10000234` → `int main(void)`
-2. **stdio_init_all** → `bool stdio_init_all(void)`
-3. **servo_init** → `void servo_init(uint pin)`
-4. **puts** → `int puts(char *s)`
-5. **servo_set_angle** → `void servo_set_angle(float degrees)`
-6. **sleep_ms** → `void sleep_ms(uint ms)`
+1. **main** at `0x10000234` -> `int main(void)`
+2. **stdio_init_all** -> `bool stdio_init_all(void)`
+3. **servo_init** -> `void servo_init(uint pin)`
+4. **puts** -> `int puts(char *s)`
+5. **servo_set_angle** -> `void servo_set_angle(float degrees)`
+6. **sleep_ms** -> `void sleep_ms(uint ms)`
 
 ### Step 52: Identify getchar
 
@@ -1140,7 +1140,7 @@ cmp  r4, #0x31      ; Compare to '1'
 beq  LAB_xxxxx      ; Branch if equal
 ```
 
-1. Right-click → **Edit Function Signature**
+1. Right-click -> **Edit Function Signature**
 2. Change to: `int getchar(void)`
 3. Click **OK**
 
@@ -1159,7 +1159,7 @@ This confirms it's a UART initialization function!
 
 ---
 
-## 🔬 Part 17: Understanding Branch Instructions
+## ? Part 17: Understanding Branch Instructions
 
 ### ARM Branch Instructions
 
@@ -1189,25 +1189,25 @@ skip_printf:
 ```
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Conditional Branch Flow                                        │
-│                                                                 │
-│  cmp r4, #0x31                                                  │
-│       │                                                         │
-│       │ (Sets flags based on r4 - 0x31)                         │
-│       ▼                                                         │
-│  beq target_address                                             │
-│       │                                                         │
-│       ├── If r4 == 0x31: Jump to target_address                 │
-│       │                                                         │
-│       └── If r4 != 0x31: Continue to next instruction           │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Conditional Branch Flow                                        |
+|                                                                 |
+|  cmp r4, #0x31                                                  |
+|       |                                                         |
+|       | (Sets flags based on r4 - 0x31)                         |
+|       ?                                                         |
+|  beq target_address                                             |
+|       |                                                         |
+|       +-- If r4 == 0x31: Jump to target_address                 |
+|       |                                                         |
+|       +-- If r4 != 0x31: Continue to next instruction           |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ---
 
-## 🔬 Part 18: Advanced Hacking - Creating Stealth Commands
+## ? Part 18: Advanced Hacking - Creating Stealth Commands
 
 ### The Goal
 
@@ -1219,14 +1219,14 @@ We want to create **secret commands** that:
 ### Step 54: Plan the Patches
 
 **Original behavior:**
-- '1' (0x31) → prints "1" and "one", moves servo
-- '2' (0x32) → prints "2" and "two", moves servo
+- '1' (0x31) -> prints "1" and "one", moves servo
+- '2' (0x32) -> prints "2" and "two", moves servo
 
 **Hacked behavior:**
-- 'x' (0x78) → moves servo SILENTLY
-- 'y' (0x79) → moves servo SILENTLY
-- '1' (0x31) → prints "1" and "one" (normal)
-- '2' (0x32) → prints "2" and "two" (normal)
+- 'x' (0x78) -> moves servo SILENTLY
+- 'y' (0x79) -> moves servo SILENTLY
+- '1' (0x31) -> prints "1" and "one" (normal)
+- '2' (0x32) -> prints "2" and "two" (normal)
 
 ### Step 55: Change Comparison Values
 
@@ -1244,12 +1244,12 @@ For the stealth keys, we need to jump PAST the printf calls directly to the serv
 
 **Original flow:**
 ```
-compare → branch → printf("1") → printf("one") → servo code
+compare -> branch -> printf("1") -> printf("one") -> servo code
 ```
 
 **Hacked flow:**
 ```
-compare 'x' → branch → [skip prints] → servo code
+compare 'x' -> branch -> [skip prints] -> servo code
 ```
 
 Change the `beq` target addresses:
@@ -1279,14 +1279,14 @@ Here's the complete patch list:
 
 ### Step 59: Hack the Angle Value
 
-Let's also change 180° to 30° for fun!
+Let's also change 180? to 30? for fun!
 
 **Original:** `0x43340000` (180.0f in IEEE-754)
 **New:** `0x41f00000` (30.0f in IEEE-754)
 
 **Calculation for 30.0f:**
 ```
-30.0 = 1.875 × 2^4
+30.0 = 1.875 * 2^4
 Sign = 0
 Exponent = 127 + 4 = 131 = 0x83
 Mantissa = 0.875 = 0x700000
@@ -1302,19 +1302,19 @@ Little-endian: 00 00 f0 41
 2. Convert to UF2:
 
 ```powershell
-cd C:\Users\flare-vm\Desktop\Embedded-Hacking-main\0x0020_dynamic-conditionals
+cd C:\Users\assem.KEVINTHOMAS\OneDrive\Documents\Embedded-Hacking\0x0020_dynamic-conditionals
 python ..\uf2conv.py build\0x0020_dynamic-conditionals-h.bin --base 0x10000000 --family 0xe48bff59 --output build\hacked.uf2
 ```
 
 3. Flash and test:
-   - Press '1' → prints "1" and "one", servo moves
-   - Press '2' → prints "2" and "two", servo moves
-   - Press 'x' → NO OUTPUT, but servo moves silently!
-   - Press 'y' → NO OUTPUT, but servo moves silently!
+   - Press '1' -> prints "1" and "one", servo moves
+   - Press '2' -> prints "2" and "two", servo moves
+   - Press 'x' -> NO OUTPUT, but servo moves silently!
+   - Press 'y' -> NO OUTPUT, but servo moves silently!
 
 ---
 
-## 📊 Part 19: Summary and Review
+## ? Part 19: Summary and Review
 
 ### What We Accomplished
 
@@ -1331,38 +1331,38 @@ python ..\uf2conv.py build\0x0020_dynamic-conditionals-h.bin --base 0x10000000 -
 ### Static vs Dynamic Summary
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Static Conditionals                                            │
-│  ───────────────────                                            │
-│  • Variable set once, never changes                             │
-│  • Same path taken every iteration                              │
-│  • Compiler may optimize out dead branches                      │
-│  • Example: int choice = 1; if (choice == 1)                    │
-├─────────────────────────────────────────────────────────────────┤
-│  Dynamic Conditionals                                           │
-│  ────────────────────                                           │
-│  • Variable changes based on input/sensors                      │
-│  • Different paths taken based on runtime state                 │
-│  • All branches must remain in binary                           │
-│  • Example: choice = getchar(); if (choice == '1')              │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Static Conditionals                                            |
+|  -------------------                                            |
+|  - Variable set once, never changes                             |
+|  - Same path taken every iteration                              |
+|  - Compiler may optimize out dead branches                      |
+|  - Example: int choice = 1; if (choice == 1)                    |
++-----------------------------------------------------------------+
+|  Dynamic Conditionals                                           |
+|  --------------------                                           |
+|  - Variable changes based on input/sensors                      |
+|  - Different paths taken based on runtime state                 |
+|  - All branches must remain in binary                           |
+|  - Example: choice = getchar(); if (choice == '1')              |
++-----------------------------------------------------------------+
 ```
 
 ### PWM Calculation Summary
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│  Servo PWM Calculation Chain                                    │
-│                                                                 │
-│  Angle (degrees) → Pulse Width (µs) → PWM Ticks → Servo Motion  │
-│                                                                 │
-│  0°   → 1000 µs → 1000 ticks → Fully counter-clockwise          │
-│  90°  → 1500 µs → 1500 ticks → Center position                  │
-│  180° → 2000 µs → 2000 ticks → Fully clockwise                  │
-│                                                                 │
-│  Formula: pulse = 1000 + (angle/180) × 1000                     │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------+
+|  Servo PWM Calculation Chain                                    |
+|                                                                 |
+|  Angle (degrees) -> Pulse Width (?s) -> PWM Ticks -> Servo Motion  |
+|                                                                 |
+|  0?   -> 1000 ?s -> 1000 ticks -> Fully counter-clockwise          |
+|  90?  -> 1500 ?s -> 1500 ticks -> Center position                  |
+|  180? -> 2000 ?s -> 2000 ticks -> Fully clockwise                  |
+|                                                                 |
+|  Formula: pulse = 1000 + (angle/180) * 1000                     |
+|                                                                 |
++-----------------------------------------------------------------+
 ```
 
 ### Key Memory Addresses
@@ -1378,36 +1378,9 @@ python ..\uf2conv.py build\0x0020_dynamic-conditionals-h.bin --base 0x10000000 -
 
 ---
 
-## ✅ Practice Exercises
-
-### Exercise 1: Change Servo Angle Range
-Modify the servo to sweep from 45° to 135° instead of 0° to 180°.
-
-**Hint:** Calculate IEEE-754 values for 45.0f and 135.0f.
-
-### Exercise 2: Add a Third Command
-Add support for key '3' that moves the servo to 90° (center position).
-
-**Hint:** You'll need to find space in the binary or modify existing code.
-
-### Exercise 3: Reverse the Servo Direction
-Make '1' do what '2' does and vice versa.
-
-**Hint:** Swap the branch targets.
-
-### Exercise 4: Speed Profile
-Create fast movement for '1' (100ms) and slow movement for '2' (1000ms).
-
-**Hint:** Find both sleep_ms calls and patch them differently.
-
-### Exercise 5: Complete Stealth Mode
-Make ALL servo movements silent - remove ALL printf and puts calls.
-
-**Hint:** NOP out every output function call.
-
 ---
 
-## 🎓 Key Takeaways
+## ? Key Takeaways
 
 1. **Static conditionals have fixed outcomes** - The same path always executes
 
@@ -1415,7 +1388,7 @@ Make ALL servo movements silent - remove ALL printf and puts calls.
 
 3. **PWM frequency = 50Hz for servos** - One pulse every 20ms
 
-4. **Pulse width encodes position** - 1ms=0°, 1.5ms=90°, 2ms=180°
+4. **Pulse width encodes position** - 1ms=0?, 1.5ms=90?, 2ms=180?
 
 5. **beq = branch if equal** - Jumps when comparison matches
 
@@ -1431,7 +1404,7 @@ Make ALL servo movements silent - remove ALL printf and puts calls.
 
 ---
 
-## 📖 Glossary
+## ? Glossary
 
 | Term                    | Definition                                          |
 | ----------------------- | --------------------------------------------------- |
@@ -1449,7 +1422,7 @@ Make ALL servo movements silent - remove ALL printf and puts calls.
 
 ---
 
-## 🔗 Additional Resources
+## ? Additional Resources
 
 ### ASCII Reference Table
 
@@ -1491,7 +1464,7 @@ Make ALL servo movements silent - remove ALL printf and puts calls.
 
 ---
 
-## 🚨 Real-World Implications
+## ? Real-World Implications
 
 ### Why Stealth Commands Matter
 
@@ -1526,4 +1499,6 @@ A fast-moving servo is like a nuclear fuel rod:
 
 **Remember:** The techniques you learned today demonstrate how conditional logic can be manipulated at the binary level. Understanding these attacks helps us build more secure embedded systems. Always use your skills ethically and responsibly!
 
-Happy hacking! 🔧
+Happy hacking! ?
+
+

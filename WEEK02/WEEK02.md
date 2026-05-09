@@ -23,7 +23,7 @@ This week builds directly on Week 1 concepts. You should already be comfortable 
 
 ---
 
-## 📚 Part 1: Understanding Live Hacking
+## Part 1: Understanding Live Hacking
 
 #### What is Live Hacking?
 
@@ -52,7 +52,7 @@ The techniques you'll learn today are *exactly* how this would be done. Understa
 
 ---
 
-## 📚 Part 2: Review - Memory Layout (from Week 1)
+## Part 2: Review - Memory Layout (from Week 1)
 
 > 🔄 **REVIEW:** In Week 1, we learned about the RP2350's memory layout. This knowledge is essential for our hack!
 
@@ -84,17 +84,17 @@ Our goal: **Make it print something else WITHOUT changing the source code!**
 #### Memory Map
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  Flash Memory (XIP) - READ ONLY                     │
-│  Starts at: 0x10000000                              │
-│  Contains: Program code, constant strings           │
-│  NOTE: We CANNOT write to flash during runtime!     │
-├─────────────────────────────────────────────────────┤
-│  SRAM - READ/WRITE                                  │
-│  Starts at: 0x20000000                              │
-│  Contains: Stack, Heap, Variables                   │
-│  NOTE: We CAN write to SRAM during runtime!         │
-└─────────────────────────────────────────────────────┘
++-----------------------------------------------------+
+|  Flash Memory (XIP) - READ ONLY                     |
+|  Starts at: 0x10000000                              |
+|  Contains: Program code, constant strings           |
+|  NOTE: We CANNOT write to flash during runtime!     |
++-----------------------------------------------------+
+|  SRAM - READ/WRITE                                  |
+|  Starts at: 0x20000000                              |
+|  Contains: Stack, Heap, Variables                   |
+|  NOTE: We CAN write to SRAM during runtime!         |
++-----------------------------------------------------+
 ```
 
 > 🔄 **REVIEW:** In Week 1, we saw SP values in the `0x20081xxx` range (for example `0x20081fc8`) - that's in the SRAM region. In this run you may see values like `0x20081ff8` depending on where execution is paused. The stack "grows downward" from the top of SRAM.
@@ -107,32 +107,32 @@ But SRAM (starting at `0x20000000`) is **read-write**! This is where we'll creat
 
 ---
 
-## 📚 Part 3: The Attack Plan
+## Part 3: The Attack Plan
 
 Here's our step-by-step attack strategy:
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  STEP 1: Start the debug server (OpenOCD)           │
-├─────────────────────────────────────────────────────┤
-│  STEP 2: Connect with GDB and halt the program      │
-├─────────────────────────────────────────────────────┤
-│  STEP 3: Set a breakpoint right before puts()       │
-├─────────────────────────────────────────────────────┤
-│  STEP 4: When we hit the breakpoint, r0 contains    │
-│          the address of "hello, world"              │
-├─────────────────────────────────────────────────────┤
-│  STEP 5: Create our malicious string in SRAM        │
-├─────────────────────────────────────────────────────┤
-│  STEP 6: Change r0 to point to OUR string           │
-├─────────────────────────────────────────────────────┤
-│  STEP 7: Continue execution - HACKED!               │
-└─────────────────────────────────────────────────────┘
++-----------------------------------------------------+
+|  STEP 1: Start the debug server (OpenOCD)           |
++-----------------------------------------------------+
+|  STEP 2: Connect with GDB and halt the program      |
++-----------------------------------------------------+
+|  STEP 3: Set a breakpoint right before puts()       |
++-----------------------------------------------------+
+|  STEP 4: When we hit the breakpoint, r0 contains    |
+|          the address of "hello, world"              |
++-----------------------------------------------------+
+|  STEP 5: Create our malicious string in SRAM        |
++-----------------------------------------------------+
+|  STEP 6: Change r0 to point to OUR string           |
++-----------------------------------------------------+
+|  STEP 7: Continue execution - HACKED!               |
++-----------------------------------------------------+
 ```
 
 ---
 
-## 📚 Part 4: Setting Up Your Environment
+## Part 4: Setting Up Your Environment
 
 #### Prerequisites
 
@@ -166,7 +166,7 @@ OpenOCD is the bridge between your computer and the Pico 2's debug interface. It
 
 ```powershell
 openocd ^
-  -s "C:\Users\flare-vm\.pico-sdk\openocd\0.12.0+dev\scripts" ^
+  -s "C:\Users\assem.KEVINTHOMAS\.pico-sdk\openocd\0.12.0+dev\scripts" ^
   -f interface/cmsis-dap.cfg ^
   -f target/rp2350.cfg ^
   -c "adapter speed 5000"
@@ -204,7 +204,7 @@ PuTTY will show us the output from our Pico 2. When we hack the program, we'll s
    - **Speed**: Enter `115200`
 3. Click **Open**
 
-> 💡 **Finding your COM port:** Open Device Manager → Ports (COM & LPT) → Look for "USB Serial Device" or "Pico" - note the COM number.
+> Tip: **Finding your COM port:** Open Device Manager -> Ports (COM & LPT) -> Look for "USB Serial Device" or "Pico" - note the COM number.
 
 **You should see:**
 
@@ -257,7 +257,7 @@ Now we need to connect GDB to OpenOCD. OpenOCD is listening on port `3333`.
 ```
 Remote debugging using :3333
 main ()
-    at C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0001_hello-world/0x0001_hello-world.c:5
+    at C:/Users/assem.KEVINTHOMAS/OneDrive/Documents/Embedded-Hacking/0x0001_hello-world/0x0001_hello-world.c:5
 5           stdio_init_all();
 ```
 
@@ -531,7 +531,7 @@ Now let's see what the push instruction did to our stack:
 
 **What changed:**
 - The stack pointer moved from `0x20082000` to `0x20081ff8`
-- That's 8 bytes lower (2 × 4-byte values)
+- That's 8 bytes lower (2 * 4-byte values)
 - Two new values appeared: `0xe000ed08` and `0x1000018f`
 
 ##### Step 9: Verify What Was Pushed
@@ -604,7 +604,7 @@ This is the value from `lr` (the return address), pushed second.
 Before push {r3, lr}:          After push {r3, lr}: 
 
 Address      Value              Address      Value
-─────────────────────          ─────────────────────
+---------------------          ---------------------
 0x20082000   (empty) ← SP      0x20082000   (old SP location)
                                0x20081ffc   0x1000018f (lr)
                                0x20081ff8   0xe000ed08 (r3) ← SP
@@ -868,7 +868,7 @@ We want to stop the program RIGHT BEFORE it calls `puts()`. That's at address `0
 **You should see:**
 
 ```
-Breakpoint 2 at 0x1000023c: file C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0001_hello-world/0x0001_hello-world.c, line 8
+Breakpoint 2 at 0x1000023c: file C:/Users/assem.KEVINTHOMAS/OneDrive/Documents/Embedded-Hacking/0x0001_hello-world/0x0001_hello-world.c, line 8
 ```
 
 **What does "hardware breakpoints" mean?**
@@ -894,7 +894,7 @@ Now let's run the program until it hits our breakpoint:
 Continuing.
 
 Thread 1 "rp2350.cm0" hit Breakpoint 2, 0x1000023c in main ()
-    at C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0001_hello-world/0x0001_hello-world.c:8
+    at C:/Users/assem.KEVINTHOMAS/OneDrive/Documents/Embedded-Hacking/0x0001_hello-world/0x0001_hello-world.c:8
 8               printf("hello, world\r\n");
 ```
 
@@ -1170,7 +1170,7 @@ This is the moment of truth! Let's continue the program and watch our hack take 
 Continuing.
 
 Thread 1 "rp2350.cm0" hit Breakpoint 2, 0x1000023c in main ()
-    at C:/Users/flare-vm/Desktop/Embedded-Hacking-main/0x0001_hello-world/0x0001_hello-world.c:8
+    at C:/Users/assem.KEVINTHOMAS/OneDrive/Documents/Embedded-Hacking/0x0001_hello-world/0x0001_hello-world.c:8
 8               printf("hello, world\r\n");
 ```
 
@@ -1204,7 +1204,7 @@ Now that we've performed the hack dynamically with GDB, let's use Ghidra to unde
 If you haven't already set up the Ghidra project from Week 1:
 
 1. Launch Ghidra
-2. Select **File → New Project** → **Non-Shared Project**
+2. Select **File -> New Project** -> **Non-Shared Project**
 3. Name it `0x0001_hello-world`
 4. Drag and drop `0x0001_hello-world.elf` into the project
 5. Double-click to open in CodeBrowser
@@ -1333,7 +1333,7 @@ Ghidra's cross-reference feature shows everywhere a value is used:
 
 1. Navigate back to `main` (press **G**, type `main`, press Enter)
 2. Click on `__wrap_puts` at address `0x1000023c`
-3. Right-click and select **References → Show References to __wrap_puts**
+3. Right-click and select **References -> Show References to __wrap_puts**
 
 This shows every place that calls `puts()`. In a larger program, you could find ALL the print statements and potentially modify any of them!
 
@@ -1430,9 +1430,9 @@ This step helps you understand the mechanics of modifying binary data. Once you'
 
 | Task | GDB (Dynamic) | Ghidra (Static) |
 | ---- | ------------- | --------------- |
-| Find main address | `x/1000i 0x10000000` + search | Symbol Tree → Functions → main |
+| Find main address | `x/1000i 0x10000000` + search | Symbol Tree -> Functions -> main |
 | Find string address | Step through `ldr`, examine `$r0` | Click on `ldr` - shows `= 100019CCh` |
-| See string content | `x/s $r0` | Double-click address → see `ds "hello, world"` |
+| See string content | `x/s $r0` | Double-click address -> see `ds "hello, world"` |
 | Identify attack point | Set breakpoints, step, observe | Read decompiled code, find function calls |
 | Verify memory type | Know address ranges | Check address prefix (`0x10...` vs `0x20...`) |
 
@@ -1448,7 +1448,7 @@ This step helps you understand the mechanics of modifying binary data. Once you'
 2. **Follow Cross-References** - Find all places a function or variable is used
 3. **Check Address Ranges** - Quickly identify Flash vs SRAM locations
 4. **Add Comments** - Press `;` to annotate what you discover for later
-5. **Rename Variables** - Right-click → Rename to give meaningful names
+5. **Rename Variables** - Right-click -> Rename to give meaningful names
 
 ---
 
@@ -1481,19 +1481,18 @@ We successfully performed a **live memory injection attack**:
 
 ```
 BEFORE OUR HACK:
-┌─────────────────┐      ┌──────────────────────────────┐
-│  r0 = 0x100019cc│ ───> │ Flash: "hello, world\r"      │
-└─────────────────┘      └──────────────────────────────┘
-         │
++-----------------+      +------------------------------+
+|  r0 = 0x100019cc| ---> | Flash: "hello, world\r"      |
++-----------------+      +------------------------------+
+         |
          ▼
     puts() prints "hello, world"
 
-
 AFTER OUR HACK:
-┌─────────────────┐      ┌──────────────────────────────┐
-│  r0 = 0x20040000│ ───> │ SRAM: "hacky, world"         │
-└─────────────────┘      └──────────────────────────────┘
-         │
++-----------------+      +------------------------------+
+|  r0 = 0x20040000| ---> | SRAM: "hacky, world"         |
++-----------------+      +------------------------------+
+         |
          ▼
     puts() prints "hacky, world"
 ```
@@ -1522,55 +1521,6 @@ AFTER OUR HACK:
 | `0x20040000` | Safe SRAM location (hack target) | Read-Write  |
 
 ---
-
-## ✅ Practice Exercises
-
-These prompts are intentionally aligned 1:1 with the Week 2 exercise and solution files:
-- `WEEK02-01.md` and `WEEK02-01-S.md`
-- `WEEK02-02.md` and `WEEK02-02-S.md`
-- `WEEK02-03.md` and `WEEK02-03-S.md`
-- `WEEK02-04.md` and `WEEK02-04-S.md`
-
-#### Exercise 1: Change the Message
-Try creating a different message! Write your name to SRAM and make the program print it:
-
-```gdb
-(gdb) set {char[12]} 0x20040000 = {'Y','o','u','r',' ','N','a','m','e','!','\r','\0'}
-(gdb) set $r0 = 0x20040000
-(gdb) c
-```
-
-#### Exercise 2: Use a Different SRAM Address
-The SRAM region is large. Try writing your string to a different address:
-
-```gdb
-(gdb) set {char[14]} 0x20041000 = {'h','a','c','k','e','d','!','!','!','\r','\0'}
-(gdb) set $r0 = 0x20041000
-(gdb) c
-```
-
-#### Exercise 3: Examine Memory Around Your String
-Look at the bytes around your injected string:
-
-```gdb
-(gdb) x/20b 0x20040000
-```
-
-What do you see? Can you identify each character?
-
-#### Exercise 4: Automate the Hack
-Create a GDB command sequence that does the full hack. You can use GDB's command feature:
-
-```gdb
-(gdb) define hack
-> set {char[13]} 0x20040000 = "hacky, world"
-> set $r0 = 0x20040000
-> c
-> end
-(gdb) hack
-```
-
-Now you can just type `hack` each time!
 
 ---
 
@@ -1646,3 +1596,5 @@ Imagine an attacker with physical access to an industrial control system:
 | **Stack Pointer**   | Register that points to the top of the stack | Part 2 - Memory layout |
 | **XIP**             | Execute In Place - running code directly from flash | Part 2 - Why we can't write to flash |
 | **Little-Endian**   | Storing the least significant byte at the lowest address | Part 10 - String storage |
+
+
