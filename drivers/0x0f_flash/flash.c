@@ -41,6 +41,12 @@ void flash_driver_write(uint32_t flash_offset, const uint8_t *data, uint32_t len
 }
 
 void flash_driver_read(uint32_t flash_offset, uint8_t *out, uint32_t len) {
+    if (out == NULL || flash_offset >= FLASH_DRIVER_SIZE_BYTES) {
+        return;
+    }
+    if (len > FLASH_DRIVER_SIZE_BYTES - flash_offset) {
+        len = FLASH_DRIVER_SIZE_BYTES - flash_offset;
+    }
     const uint8_t *flash_target_contents = (const uint8_t *)(XIP_BASE + flash_offset);
     memcpy(out, flash_target_contents, len);
 }
