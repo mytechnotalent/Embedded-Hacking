@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">GDB Analysis</text>
+<text class="dim" x="600" y="88" text-anchor="middle">Disassembly of main() at 0x10000234</text>
+
+<!-- Main disassembly panel -->
+<rect class="pnl" x="30" y="110" width="1140" height="420" rx="8"/>
+<text class="sub" x="50" y="145">Key Instructions from x/54i 0x10000234</text>
+<rect x="50" y="160" width="1100" height="355" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+
+<text class="grn" x="70" y="190">push  {r3, lr}</text>
+<text class="dim" x="540" y="190">// save return addr</text>
+<text class="txt" x="70" y="220">bl    stdio_init_all</text>
+<text class="dim" x="540" y="220">// init serial</text>
+<text class="txt" x="70" y="250">ldr   r1, [pc, #104]</text>
+<text class="dim" x="540" y="250">// r1 = 100000 (baud)</text>
+<text class="txt" x="70" y="280">ldr   r0, [pc, #104]</text>
+<text class="dim" x="540" y="280">// r0 = &amp;i2c1_inst</text>
+<text class="txt" x="70" y="310">bl    i2c_init</text>
+<text class="dim" x="540" y="310">// init I2C at 100kHz</text>
+<text class="txt" x="70" y="340">movs  r0, #2</text>
+<text class="dim" x="540" y="340">// GPIO 2 (SDA)</text>
+<text class="txt" x="70" y="370">bl    gpio_set_function</text>
+<text class="dim" x="540" y="370">// set pin to I2C</text>
+<text class="txt" x="70" y="400">movs  r1, #39</text>
+<text class="dim" x="540" y="400">// 0x27 = LCD addr</text>
+<text class="txt" x="70" y="430">bl    lcd_i2c_init</text>
+<text class="dim" x="540" y="430">// init LCD device</text>
+
+<text class="red" x="70" y="460">b.n   0x1000028e</text>
+<text class="dim" x="540" y="460">// infinite loop start</text>
+<text class="dim" x="70" y="490">...</text>
+<text class="dim" x="120" y="490">AAPCS: r0-r3 = first 4 args, r0 = return value</text>
+
+<!-- Bottom: Literal Pool -->
+<rect class="pnl" x="30" y="545" width="1140" height="230" rx="8"/>
+<text class="sub" x="50" y="580">Literal Pool at 0x100002A4</text>
+<rect x="50" y="595" width="1100" height="160" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+
+<text class="amb" x="70" y="625">0x000186A0</text>
+<text class="dim" x="300" y="625">I2C baudrate (100000)</text>
+<text class="amb" x="70" y="655">0x2000062C</text>
+<text class="dim" x="300" y="655">&amp;i2c1_inst struct in RAM</text>
+<text class="amb" x="70" y="685">0x10003EE8</text>
+<text class="dim" x="300" y="685">"Reverse" string in flash</text>
+<text class="amb" x="70" y="715">0x10003EF0</text>
+<text class="dim" x="300" y="715">"Engineering" string in flash</text>
+<text class="amb" x="640" y="625">0x10003EFC</text>
+<text class="dim" x="870" y="625">"FAV_NUM: %d\r\n"</text>
+<text class="amb" x="640" y="655">0x10003F0C</text>
+<text class="dim" x="870" y="655">"OTHER_FAV_NUM: %d\r\n"</text>
+</svg>

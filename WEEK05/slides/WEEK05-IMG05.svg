@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Float in Ghidra</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Analyzing 42.5 in the Binary</text>
+
+<!-- Decompiled View -->
+<rect x="40" y="110" width="540" height="280" rx="8" class="pnl"/>
+<text x="310" y="148" text-anchor="middle" class="sub">Decompiled main()</text>
+
+<rect x="60" y="168" width="500" height="205" rx="6" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="80" y="198" class="txt">int main(void) {</text>
+<text x="100" y="228" class="cyn">stdio_init_all();</text>
+<text x="100" y="258" class="txt">uVar1 = DAT_1000024c;</text>
+<text x="100" y="288" class="txt">do {</text>
+<text x="120" y="318" class="amb">printf(fmt,0,uVar1);</text>
+<text x="100" y="348" class="txt">} while(true);</text>
+
+<!-- Key Discovery -->
+<rect x="620" y="110" width="540" height="280" rx="8" class="pnl"/>
+<text x="890" y="148" text-anchor="middle" class="sub">Key Discovery</text>
+
+<text x="640" y="190" class="txt">printf with %f always</text>
+<text x="640" y="220" class="txt">receives a</text>
+<text x="830" y="220" class="red">double</text>
+<text x="960" y="220" class="txt">(64-bit)</text>
+
+<text x="640" y="260" class="dim">C promotes float to double</text>
+<text x="640" y="290" class="dim">for variadic functions!</text>
+
+<rect x="640" y="310" width="500" height="60" rx="4" fill="#0a0a0f" stroke="#ffaa00" stroke-width="2"/>
+<text x="890" y="348" text-anchor="middle" class="amb">42.5 sent as double</text>
+
+<!-- Register Pair -->
+<rect x="40" y="410" width="1120" height="180" rx="8" class="pnl"/>
+<text x="600" y="448" text-anchor="middle" class="sub">Register Pair r2:r3</text>
+
+<rect x="60" y="470" width="520" height="50" rx="4" fill="#0a0a0f" stroke="#00d4ff" stroke-width="1"/>
+<text x="80" y="510" class="cyn">r2 (low):</text>
+<text x="260" y="510" class="grn">0x00000000</text>
+
+<rect x="600" y="470" width="540" height="50" rx="4" fill="#0a0a0f" stroke="#ffaa00" stroke-width="1"/>
+<text x="620" y="510" class="amb">r3 (high):</text>
+<text x="810" y="510" class="grn">0x40454000</text>
+
+<text x="60" y="565" class="txt">Combined: 0x4045400000000000</text>
+<text x="680" y="565" class="grn">= 42.5</text>
+
+<!-- Assembly -->
+<rect x="40" y="610" width="1120" height="170" rx="8" class="pnl"/>
+<text x="600" y="648" text-anchor="middle" class="sub">Assembly View</text>
+
+<rect x="60" y="668" width="1080" height="90" rx="6" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="80" y="698" class="grn">1000023a</text>
+<text x="260" y="698" class="amb">00 24</text>
+<text x="380" y="698" class="txt">movs r4, #0x0</text>
+<text x="640" y="698" class="dim">// r2 = 0</text>
+
+<text x="80" y="733" class="grn">1000023c</text>
+<text x="260" y="733" class="amb">03 4d</text>
+<text x="380" y="733" class="txt">ldr r5,[DAT...]</text>
+<text x="640" y="733" class="dim">// r3 = 0x40454000</text>
+</svg>

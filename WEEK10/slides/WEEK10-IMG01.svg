@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">Conditionals Overview</text>
+<text class="dim" x="600" y="88" text-anchor="middle">Static vs Dynamic Decision Making</text>
+
+<!-- What Are Conditionals -->
+<rect class="pnl" x="30" y="110" width="1140" height="120" rx="8"/>
+<text class="sub" x="50" y="150">What Are Conditionals?</text>
+<text class="txt" x="50" y="185">Structures that let programs choose</text>
+<text class="txt" x="50" y="215">different paths based on conditions</text>
+
+<!-- Static -->
+<rect class="pnl" x="30" y="250" width="555" height="260" rx="8"/>
+<text class="sub" x="50" y="290">Static Conditional</text>
+<text class="dim" x="50" y="320">Value fixed at compile time</text>
+
+<rect x="50" y="340" width="515" height="150" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="cyn" x="70" y="370">int choice = 1;</text>
+<text class="dim" x="370" y="370">// never changes</text>
+<text class="txt" x="70" y="400">if (choice == 1)</text>
+<text class="grn" x="100" y="430">printf("1");</text>
+<text class="dim" x="370" y="430">// always runs</text>
+<text class="red" x="70" y="460">else printf("2");</text>
+<text class="dim" x="370" y="460">// never runs</text>
+
+<!-- Dynamic -->
+<rect class="pnl" x="615" y="250" width="555" height="260" rx="8"/>
+<text class="sub" x="635" y="290">Dynamic Conditional</text>
+<text class="dim" x="635" y="320">Value changes at runtime</text>
+
+<rect x="635" y="340" width="515" height="150" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="cyn" x="655" y="370">choice = getchar();</text>
+<text class="dim" x="655" y="398">// user types a key</text>
+<text class="txt" x="655" y="428">if (choice == '1')</text>
+<text class="grn" x="685" y="458">printf("1");</text>
+<text class="dim" x="895" y="458">// maybe runs</text>
+
+<!-- Two Control Structures -->
+<rect class="pnl" x="30" y="530" width="555" height="230" rx="8"/>
+<text class="sub" x="50" y="570">if/else</text>
+
+<text class="amb" x="50" y="605">Feature</text>
+<text class="amb" x="280" y="605">Description</text>
+<line x1="50" y1="615" x2="565" y2="615" stroke="#1a1a2e" stroke-width="1"/>
+<text class="txt" x="50" y="645">Condition</text>
+<text class="dim" x="280" y="645">Any boolean expr</text>
+<text class="txt" x="50" y="675">Values</text>
+<text class="dim" x="280" y="675">Ranges, complex logic</text>
+<text class="txt" x="50" y="705">Fall-through</text>
+<text class="dim" x="280" y="705">No</text>
+<text class="txt" x="50" y="735">Best for</text>
+<text class="dim" x="280" y="735">2-3 conditions</text>
+
+<!-- switch/case -->
+<rect class="pnl" x="615" y="530" width="555" height="230" rx="8"/>
+<text class="sub" x="635" y="570">switch/case</text>
+
+<text class="amb" x="635" y="605">Feature</text>
+<text class="amb" x="865" y="605">Description</text>
+<line x1="635" y1="615" x2="1150" y2="615" stroke="#1a1a2e" stroke-width="1"/>
+<text class="txt" x="635" y="645">Condition</text>
+<text class="dim" x="865" y="645">Single variable</text>
+<text class="txt" x="635" y="675">Values</text>
+<text class="dim" x="865" y="675">Discrete only</text>
+<text class="txt" x="635" y="705">Fall-through</text>
+<text class="dim" x="865" y="705">Yes (no break)</text>
+<text class="txt" x="635" y="735">Best for</text>
+<text class="dim" x="865" y="735">Many conditions</text>
+</svg>

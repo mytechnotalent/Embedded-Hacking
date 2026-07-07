@@ -1,0 +1,101 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Program Counter Flow</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Instruction Execution</text>
+
+  <!-- Left Panel: PC stepping through instructions -->
+  <rect x="30" y="105" width="540" height="675" class="pnl" rx="8"/>
+  <text x="300" y="148" text-anchor="middle" class="sub">PC Execution</text>
+  <line x1="50" y1="163" x2="550" y2="163" stroke="#1a1a2e"/>
+
+  <!-- Instruction list -->
+  <text x="55" y="205" class="dim">ADDR</text>
+  <text x="220" y="205" class="dim">INSTRUCTION</text>
+
+  <!-- Line 1 -->
+  <rect x="55" y="220" width="490" height="45" rx="4" fill="#0f1a0f" stroke="#00ff41" stroke-width="2"/>
+  <text x="70" y="250" class="amb">0x1000</text>
+  <text x="230" y="250" class="grn">MOV r0, #5</text>
+  <text x="490" y="250" text-anchor="end" class="red">PC</text>
+
+  <!-- Line 2 -->
+  <rect x="55" y="275" width="490" height="45" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+  <text x="70" y="305" class="amb">0x1002</text>
+  <text x="230" y="305" class="txt">MOV r1, #3</text>
+
+  <!-- Line 3 -->
+  <rect x="55" y="330" width="490" height="45" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+  <text x="70" y="360" class="amb">0x1004</text>
+  <text x="230" y="360" class="txt">ADD r0, r1</text>
+
+  <!-- Line 4 -->
+  <rect x="55" y="385" width="490" height="45" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+  <text x="70" y="415" class="amb">0x1006</text>
+  <text x="230" y="415" class="txt">BL func</text>
+
+  <!-- Line 5: branch target -->
+  <rect x="55" y="440" width="490" height="45" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+  <text x="70" y="470" class="amb">0x1010</text>
+  <text x="230" y="470" class="txt">func: PUSH {lr}</text>
+
+  <!-- Line 6 -->
+  <rect x="55" y="495" width="490" height="45" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+  <text x="70" y="525" class="amb">0x1012</text>
+  <text x="230" y="525" class="txt">SUB r0, #1</text>
+
+  <!-- Line 7 -->
+  <rect x="55" y="550" width="490" height="45" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+  <text x="70" y="580" class="amb">0x1014</text>
+  <text x="230" y="580" class="txt">POP {pc}</text>
+
+  <!-- Arrow showing jump -->
+  <line x1="520" y1="407" x2="520" y2="462" stroke="#ff0040" stroke-width="2" stroke-dasharray="6"/>
+  <polygon points="510,462 520,480 530,462" fill="#ff0040"/>
+  <text x="340" y="640" text-anchor="middle" class="dim">BL = jump to function target</text>
+  <text x="340" y="670" text-anchor="middle" class="dim">POP {pc} = return to caller</text>
+
+  <!-- Right Panel: Key Concepts -->
+  <rect x="600" y="105" width="570" height="675" class="pnl" rx="8"/>
+  <text x="885" y="148" text-anchor="middle" class="sub">Key Concepts</text>
+  <line x1="620" y1="163" x2="1150" y2="163" stroke="#1a1a2e"/>
+
+  <text x="625" y="205" class="cyn">r15 = PC</text>
+  <text x="625" y="240" class="txt">Points to current</text>
+  <text x="625" y="272" class="txt">instruction + 4</text>
+  <text x="625" y="304" class="dim">Prefetch pipeline</text>
+
+  <line x1="620" y1="332" x2="1150" y2="332" stroke="#1a1a2e"/>
+
+  <text x="625" y="372" class="grn">Sequential</text>
+  <text x="625" y="407" class="txt">Thumb next = +2 or +4</text>
+  <text x="625" y="439" class="dim">depends on instruction encoding</text>
+  <text x="625" y="471" class="dim">Cortex-M33 executes Thumb only</text>
+
+  <line x1="620" y1="499" x2="1150" y2="499" stroke="#1a1a2e"/>
+
+  <text x="625" y="539" class="red">Branch</text>
+  <text x="625" y="574" class="txt">B   = unconditional</text>
+  <text x="625" y="606" class="txt">BL  = save LR, jump</text>
+  <text x="625" y="638" class="txt">BX  = branch reg</text>
+  <text x="625" y="670" class="txt">BEQ = branch if Z=1</text>
+  <text x="900" y="606" class="dim">not linear +2 stepping</text>
+
+  <line x1="620" y1="698" x2="1150" y2="698" stroke="#1a1a2e"/>
+
+  <text x="625" y="738" class="amb">GDB tip</text>
+  <text x="625" y="770" class="dim">stepi = step 1 instr</text>
+</svg>

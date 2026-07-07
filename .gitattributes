@@ -1,0 +1,6 @@
+*.c linguist-detectable=true
+*.cmake linguist-detectable=false
+*.py linguist-detectable=false
+*.txt linguist-detectable=false
+*.json linguist-detectable=false
+*.ps1 linguist-detectable=false

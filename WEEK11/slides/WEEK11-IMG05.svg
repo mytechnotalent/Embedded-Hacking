@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">Struct Pointers in Functions</text>
+<text class="dim" x="600" y="88" text-anchor="middle">Passing Data Efficiently</text>
+
+<!-- Why Pointers -->
+<rect class="pnl" x="30" y="110" width="555" height="160" rx="8"/>
+<text class="sub" x="50" y="150">Why Pass by Pointer?</text>
+<text class="grn" x="50" y="185">Efficient</text>
+<text class="dim" x="250" y="185">4 bytes (address) not 6</text>
+<text class="grn" x="50" y="215">Modifiable</text>
+<text class="dim" x="250" y="215">Function can change original</text>
+<text class="grn" x="50" y="245">Standard</text>
+<text class="dim" x="250" y="245">Embedded systems practice</text>
+
+<!-- Arrow Operator -->
+<rect class="pnl" x="615" y="110" width="555" height="160" rx="8"/>
+<text class="sub" x="635" y="150">Arrow Operator</text>
+<text class="txt" x="635" y="185">leds->led1_pin</text>
+<text class="dim" x="635" y="215">Same as (*leds).led1_pin</text>
+<text class="dim" x="635" y="245">Use -> when leds is a pointer</text>
+
+<!-- leds_all_off -->
+<rect class="pnl" x="30" y="290" width="555" height="200" rx="8"/>
+<text class="sub" x="50" y="330">leds_all_off()</text>
+<rect x="50" y="348" width="515" height="125" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="cyn" x="70" y="378">void leds_all_off(</text>
+<text class="cyn" x="100" y="408">simple_led_ctrl_t *leds) {</text>
+<text class="txt" x="100" y="438">gpio_put(leds->led1_pin, 0);</text>
+<text class="txt" x="100" y="463">gpio_put(leds->led2_pin, 0);</text>
+
+<!-- blink_led -->
+<rect class="pnl" x="615" y="290" width="555" height="200" rx="8"/>
+<text class="sub" x="635" y="330">blink_led()</text>
+<rect x="635" y="348" width="515" height="125" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="cyn" x="655" y="378">void blink_led(uint8_t pin,</text>
+<text class="cyn" x="685" y="408">uint8_t count, uint32_t ms){</text>
+<text class="txt" x="685" y="438">gpio_put(pin, true);</text>
+<text class="txt" x="685" y="463">sleep_ms(ms);</text>
+
+<!-- process_ir_led_command -->
+<rect class="pnl" x="30" y="510" width="1140" height="250" rx="8"/>
+<text class="sub" x="50" y="550">process_ir_led_command() -- Main Command Processor</text>
+<rect x="50" y="568" width="1100" height="170" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="cyn" x="70" y="598">int process_ir_led_command(int cmd,</text>
+<text class="cyn" x="100" y="628">simple_led_ctrl_t *leds, uint8_t blink_count) {</text>
+<text class="txt" x="100" y="660">leds_all_off(leds);</text>
+<text class="dim" x="600" y="660">// turn all off first</text>
+<text class="txt" x="100" y="690">int num = ir_to_led_number(cmd);</text>
+<text class="dim" x="600" y="690">// map NEC to LED</text>
+<text class="txt" x="100" y="720">blink_led(get_led_pin(leds, num),</text>
+<text class="dim" x="600" y="720">// blink then stay on</text>
+</svg>

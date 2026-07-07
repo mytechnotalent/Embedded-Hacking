@@ -1,0 +1,85 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .cmd{font:bold 18px 'Courier New',monospace}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">GDB Debug Session</text>
+<text x="600" y="88" text-anchor="middle" class="dim">GDB Fundamentals</text>
+
+  <!-- Left Panel: Connection Steps -->
+  <rect x="30" y="105" width="540" height="675" class="pnl" rx="8"/>
+  <text x="300" y="148" text-anchor="middle" class="sub">Setup Steps</text>
+  <line x1="50" y1="163" x2="550" y2="163" stroke="#1a1a2e"/>
+
+  <!-- Step 1 -->
+  <text x="55" y="198" class="dim">Step 1: Start OpenOCD</text>
+  <rect x="55" y="213" width="490" height="88" rx="5" fill="#0f0f1a" stroke="#00d4ff" stroke-width="2"/>
+  <text x="300" y="233" text-anchor="middle" class="cyn cmd">openocd -s &lt;scripts&gt;</text>
+  <text x="300" y="253" text-anchor="middle" class="cyn cmd">-f interface/cmsis-dap.cfg</text>
+  <text x="300" y="273" text-anchor="middle" class="cyn cmd">-f target/rp2350.cfg</text>
+  <text x="300" y="293" text-anchor="middle" class="cyn cmd">-c "adapter speed 5000"</text>
+
+  <!-- Step 2 -->
+  <text x="55" y="331" class="dim">Step 2: Launch GDB</text>
+  <rect x="55" y="346" width="490" height="58" rx="5" fill="#0f1a0f" stroke="#00ff41" stroke-width="2"/>
+  <text x="300" y="369" text-anchor="middle" class="grn cmd">arm-none-eabi-gdb</text>
+  <text x="300" y="391" text-anchor="middle" class="grn cmd">build\0x0001_hello-world.elf</text>
+
+  <!-- Step 3 -->
+  <text x="55" y="434" class="dim">Step 3: Connect to target</text>
+  <rect x="55" y="449" width="490" height="50" rx="5" fill="#1a1a0f" stroke="#ffaa00" stroke-width="2"/>
+  <text x="300" y="481" text-anchor="middle" class="amb">target extended-remote :3333</text>
+
+  <!-- Step 4 -->
+  <text x="55" y="529" class="dim">Step 4: Reset + halt</text>
+  <rect x="55" y="544" width="490" height="50" rx="5" fill="#1a0f0f" stroke="#ff0040" stroke-width="2"/>
+  <text x="300" y="576" text-anchor="middle" class="red">monitor reset halt</text>
+
+  <!-- Step 5 -->
+  <text x="55" y="624" class="dim">Step 5: Set breakpoint</text>
+  <rect x="55" y="639" width="490" height="50" rx="5" fill="#0f1a0f" stroke="#00ff41" stroke-width="2"/>
+  <text x="300" y="671" text-anchor="middle" class="grn">break main</text>
+
+  <text x="300" y="725" text-anchor="middle" class="dim">Then: continue (c)</text>
+
+  <!-- Right Panel: What Each Does -->
+  <rect x="600" y="105" width="570" height="675" class="pnl" rx="8"/>
+  <text x="885" y="148" text-anchor="middle" class="sub">What Each Does</text>
+  <line x1="620" y1="163" x2="1150" y2="163" stroke="#1a1a2e"/>
+
+  <text x="625" y="205" class="cyn">openocd</text>
+  <text x="625" y="240" class="txt">Loads probe + chip</text>
+  <text x="625" y="272" class="txt">config files</text>
+  <text x="625" y="304" class="dim">Then listens on :3333</text>
+
+  <line x1="620" y1="337" x2="1150" y2="337" stroke="#1a1a2e"/>
+
+  <text x="625" y="377" class="grn">arm-none-eabi-gdb</text>
+  <text x="625" y="412" class="txt">ARM debugger from</text>
+  <text x="625" y="444" class="txt">the embedded toolchain</text>
+
+  <line x1="620" y1="472" x2="1150" y2="472" stroke="#1a1a2e"/>
+
+  <text x="625" y="512" class="amb">target extended-remote</text>
+  <text x="625" y="547" class="txt">GDB connects to</text>
+  <text x="625" y="579" class="txt">OpenOCD server</text>
+
+  <line x1="620" y1="607" x2="1150" y2="607" stroke="#1a1a2e"/>
+
+  <text x="625" y="647" class="red">monitor reset halt</text>
+  <text x="625" y="682" class="txt">Reset chip + stop</text>
+  <text x="625" y="714" class="txt">at very first instr</text>
+  <text x="625" y="746" class="dim">Clean starting state</text>
+</svg>

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">Hacking the Float</text>
+<text class="dim" x="600" y="88" text-anchor="middle">Changing the DHT11 Scaling Constant</text>
+
+<!-- DHT11 Scaling Formula -->
+<rect class="pnl" x="30" y="110" width="1140" height="150" rx="8"/>
+<text class="sub" x="50" y="150">DHT11 Scaling Calculation</text>
+<text class="txt" x="50" y="190">result = integer + (decimal x 0.1)</text>
+<text class="dim" x="50" y="218">Example: temp = 23 + (8 x 0.1) = 23.8C</text>
+<text class="amb" x="700" y="190">0.1f is our target!</text>
+
+<!-- Key Offsets -->
+<rect class="pnl" x="30" y="280" width="1140" height="200" rx="8"/>
+<text class="sub" x="50" y="320">Key Offsets in Binary</text>
+
+<text class="amb" x="50" y="360">Offset</text>
+<text class="amb" x="200" y="360">Bytes</text>
+<text class="amb" x="480" y="360">Meaning</text>
+<line x1="50" y1="370" x2="1140" y2="370" stroke="#1a1a2e" stroke-width="1"/>
+
+<text class="grn" x="50" y="400">0x410</text>
+<text class="txt" x="200" y="400">a6 ee 25 7a</text>
+<text class="dim" x="480" y="400">vfma.f32 s14,s12,s11 (humidity)</text>
+
+<text class="grn" x="50" y="435">0x414</text>
+<text class="txt" x="200" y="435">e6 ee a5 7a</text>
+<text class="dim" x="480" y="435">vfma.f32 s15,s13,s11 (temp)</text>
+
+<text class="red" x="50" y="470">0x42C</text>
+<text class="cyn" x="200" y="470">cd cc cc 3d</text>
+<text class="amb" x="480" y="470">0.1f -- the scaling constant</text>
+
+<!-- The Hack -->
+<rect class="pnl" x="30" y="500" width="1140" height="260" rx="8"/>
+<text class="sub" x="50" y="540">The Hack: 0.1f --> 5.0f</text>
+
+<text class="txt" x="50" y="580">At offset 0x42C, change:</text>
+
+<rect x="50" y="600" width="500" height="50" rx="6" fill="#0a0a0f" stroke="#ff0040"/>
+<text class="red" x="70" y="632">Original: cd cc cc 3d</text>
+<text class="dim" x="380" y="632">(0.1f)</text>
+
+<rect x="600" y="600" width="500" height="50" rx="6" fill="#0a0a0f" stroke="#00ff41"/>
+<text class="grn" x="620" y="632">Patched:  00 00 a0 40</text>
+<text class="dim" x="930" y="632">(5.0f)</text>
+
+<text class="txt" x="50" y="685">New result: 23 + (8 x 5.0) = 63.0C</text>
+<text class="dim" x="50" y="715">Decimal part is now multiplied by 5.0 instead of 0.1</text>
+<text class="dim" x="50" y="740">Export .bin from Ghidra, convert to UF2, flash to Pico</text>
+</svg>
