@@ -1,5 +1,19 @@
 # Week 10: Conditionals in Embedded Systems: Debugging and Hacking Static & Dynamic Conditionals w/ SG90 Servo Motor PWM Basics
 
+---
+**LEGAL DISCLAIMER:**
+The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
+
+You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
+
+By using this repository and course, you acknowledge and agree that:
+1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
+2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
+3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
+
+**IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
+---
+
 ## What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
@@ -136,7 +150,7 @@ uint8_t choice = 0;
 
 while (true) {
     choice = getchar(); // User types a key - VALUE CHANGES!
-    
+
     if (choice == '1') {
         printf("1\r\n");
     } else if (choice == '2') {
@@ -197,7 +211,7 @@ uint8_t choice = getchar();  // Waits for user to type something
 
 ```text
   PWM Signal - 50% Duty Cycle
-  
+
   HIGH  +-----+     +-----+     +-----+
         |     |     |     |     |     |
   LOW   +     +-----+     +-----+     +-----
@@ -484,11 +498,11 @@ Let's examine the static conditionals code:
 
 int main(void) {
     stdio_init_all();
-    
+
     int choice = 1;  // STATIC - never changes!
-    
+
     servo_init(SERVO_GPIO);
-    
+
     while (true) {
         // if/else conditional
         if (choice == 1) {
@@ -498,7 +512,7 @@ int main(void) {
         } else {
             printf("?\r\n");
         }
-        
+
         // switch/case conditional
         switch (choice) {
             case 1:
@@ -510,7 +524,7 @@ int main(void) {
             default:
                 printf("??\r\n");
         }
-        
+
         // Servo movement
         servo_set_angle(0.0f);
         sleep_ms(500);
@@ -661,15 +675,15 @@ nexti
 Keep pressing **Enter** to repeat the `nexti` command and watch the instructions.
 
 **Wait, where is the `cmp` instruction?!**
-You might notice that there is NO `cmp` instruction comparing our `choice` variable anywhere! Why? Because we hardcoded `int choice = 1;` at the start of our C code and never changed it. 
+You might notice that there is NO `cmp` instruction comparing our `choice` variable anywhere! Why? Because we hardcoded `int choice = 1;` at the start of our C code and never changed it.
 
-The C compiler is smart (even at basic optimization levels). It realized the `if (choice == 1)` condition would *always* be true, and the `else` conditions would *never* happen. Instead of wasting CPU cycles checking a condition that never changes, the compiler **optimized out the check entirely**! It just compiled the code inside the `choice == 1` block unconditionally. 
+The C compiler is smart (even at basic optimization levels). It realized the `if (choice == 1)` condition would *always* be true, and the `else` conditions would *never* happen. Instead of wasting CPU cycles checking a condition that never changes, the compiler **optimized out the check entirely**! It just compiled the code inside the `choice == 1` block unconditionally.
 
 This is the defining characteristic of a "Static Conditional"—the condition is resolved at compile-time, not run-time!
 
 ### Step 12: Examine the Printf/Puts Arguments
 
-If you look closely at your disassembly, you'll notice there are no `printf` calls! The compiler optimized our simple `printf` statements into `puts` (specifically `__wrap_puts` in the Pico SDK) because they didn't contain any complex formatting variables. 
+If you look closely at your disassembly, you'll notice there are no `printf` calls! The compiler optimized our simple `printf` statements into `puts` (specifically `__wrap_puts` in the Pico SDK) because they didn't contain any complex formatting variables.
 
 When you reach a `bl <__wrap_puts>` instruction, check `r0` for the string address:
 
@@ -677,13 +691,13 @@ When you reach a `bl <__wrap_puts>` instruction, check `r0` for the string addre
 x/s $r0
 ```
 
-You should see strings like `"1\r"` or `"one\r"`. 
+You should see strings like `"1\r"` or `"one\r"`.
 
 *(Wait, what happened to the `\n`? Because the `puts` function automatically adds a newline to the end of whatever it prints, the compiler cleverly trimmed the `\n` out of the string literal in memory to save space!)*
 
 ### Step 13: Watch the Servo Commands
 
-Let's set a breakpoint on `servo_set_angle`. How do you know the address? If you look at your `main` disassembly, you can find the `bl` instruction calling it (for example, `0x10000310`). 
+Let's set a breakpoint on `servo_set_angle`. How do you know the address? If you look at your `main` disassembly, you can find the `bl` instruction calling it (for example, `0x10000310`).
 
 But hardcoded addresses change every time you recompile! Luckily, GDB is smart enough to resolve function names directly from the ELF file:
 
@@ -846,7 +860,7 @@ bl         FUN_10001884                        undefined FUN_10001884()
 
 ### Step 26: Resolve servo_set_angle
 
-Look for a function call (like `bl FUN_10000310`) that occurs right after the float arguments are loaded into `r0`. 
+Look for a function call (like `bl FUN_10000310`) that occurs right after the float arguments are loaded into `r0`.
 
 ```assembly
 mov        r0,r5
@@ -899,9 +913,9 @@ bl         FUN_10000e20                        undefined FUN_10000e20()
 
 ### Step 29: Hack #1 - Change "1" to "2"
 
-First, we need to find the string "1" in the binary. 
+First, we need to find the string "1" in the binary.
 
-1. Go back to your `main` assembly code and look for the first `puts` call. 
+1. Go back to your `main` assembly code and look for the first `puts` call.
 2. In the `ldr` instruction right before it, look for the reference next to the arrow: `r0=>DAT_10001c54`. **Double-click exactly on `DAT_10001c54`**. *(Warning: Do NOT click the reference inside the brackets like `[DAT_10000274]`, or you'll end up in the pointer table instead of the string!)*
 3. The Listing and Bytes windows will automatically jump to the string's exact address!
 4. Look at your **Bytes** window. You should see the byte `31` (which is ASCII for "1").
@@ -986,14 +1000,14 @@ fun
 
 int main(void) {
     stdio_init_all();
-    
+
     uint8_t choice = 0;  // DYNAMIC - changes with user input!
-    
+
     servo_init(SERVO_GPIO);
-    
+
     while (true) {
         choice = getchar();  // Wait for keyboard input
-        
+
         if (choice == 0x31) {       // '1'
             printf("1\r\n");
         } else if (choice == 0x32) { // '2'
@@ -1001,7 +1015,7 @@ int main(void) {
         } else {
             printf("??\r\n");
         }
-        
+
         switch (choice) {
             case '1':
                 printf("one\r\n");
@@ -1126,7 +1140,7 @@ If you pressed '1', you should see `0x31`. If you pressed '2', you should see `0
 
 ### Step 44: Execute the Comparison
 
-Right now, GDB is paused *before* the `cmp` instruction runs (the `=>` arrow points to the instruction that will execute *next*). 
+Right now, GDB is paused *before* the `cmp` instruction runs (the `=>` arrow points to the instruction that will execute *next*).
 
 To see the result of the comparison, we must execute the `cmp` instruction by stepping forward exactly once:
 
@@ -1146,7 +1160,7 @@ info registers xpsr
 ```
 *(Note: Older ARM chips call this `cpsr`, but Cortex-M chips like the Pico's RP2350 call it `xpsr`!)*
 
-The zero flag (`Z`) determines if the branch is taken. The flags are stored in the highest nibble (the first hex digit) of the `xpsr` register in the order `N Z C V`. 
+The zero flag (`Z`) determines if the branch is taken. The flags are stored in the highest nibble (the first hex digit) of the `xpsr` register in the order `N Z C V`.
 
 If you typed '1', the comparison resulted in zero difference, setting the `Z` flag to 1. You should see `xpsr` start with a `6` (like `0x69000000`). `6` in binary is `0110`, which means the `Z` flag (the second bit) is 1! The `beq.n` instruction will see this flag and take the branch.
 
@@ -1315,7 +1329,7 @@ We want to create **secret commands** that:
 
 Navigate to the `main` function and find the two `cmp` instructions right after `getchar`:
 
-1. At address `1000024a`, you will see `cmp r4,#0x31`. 
+1. At address `1000024a`, you will see `cmp r4,#0x31`.
    - Right-click it, select **Patch Instruction**, and change it to `cmp r4,#0x78` (which is ASCII 'x').
 2. At address `1000024e`, you will see `cmp r4,#0x32`.
    - Right-click it, select **Patch Instruction**, and change it to `cmp r4,#0x79` (which is ASCII 'y').

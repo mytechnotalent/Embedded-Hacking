@@ -1,5 +1,19 @@
 # Week 9: Operators in Embedded Systems: Debugging and Hacking Operators w/ DHT11 Temperature & Humidity Sensor Single-Wire Protocol Basics.
 
+---
+**LEGAL DISCLAIMER:**
+The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
+
+You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
+
+By using this repository and course, you acknowledge and agree that:
+1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
+2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
+3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
+
+**IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
+---
+
 ## What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
@@ -404,7 +418,7 @@ int main(void) {
     int increment_operator = x++;
     bool relational_operator = (x > y);
     bool logical_operator = (x > y) && (y > x);
-    int bitwise_operator = (x<<1);  // x is now 6 because of x++ or 0b00000110 and (x<<1) is 0b00001100 or 12 
+    int bitwise_operator = (x<<1);  // x is now 6 because of x++ or 0b00000110 and (x<<1) is 0b00001100 or 12
     int assignment_operator = (x += 5);
 
     while (true) {
@@ -414,14 +428,14 @@ int main(void) {
         printf("logical_operator: %d\r\n", logical_operator);
         printf("bitwise_operator: %d\r\n", bitwise_operator);
         printf("assignment_operator: %d\r\n", assignment_operator);
-        
+
         float hum, temp;
         if (dht11_read(&hum, &temp)) {
             printf("Humidity: %.1f%%, Temperature: %.1f?C\r\n", hum, temp);
         } else {
             printf("DHT11 read failed\r\n");
         }
-        
+
         sleep_ms(2000);
     }
 }
@@ -559,7 +573,7 @@ x/32i 0x10000240
 
 You may see values like:
 - `#0x32` (50) for arithmetic_operator
-- `#0x5` (5) for increment_operator  
+- `#0x5` (5) for increment_operator
 - `#0x0` (0) for relational and logical operators
 - `#0xc` (12) for bitwise_operator
 - `#0xb` (11) for assignment_operator
@@ -787,7 +801,7 @@ movs r0, #0x4      ; GPIO pin 4
 bl   FUN_xxxxx     ; dht11_init
 ```
 
-**How do we know it's dht11_init?** 
+**How do we know it's dht11_init?**
 - The argument `4` is the GPIO pin number
 - We physically connected the DHT11 to GPIO 4!
 
@@ -997,7 +1011,7 @@ import struct
 original = struct.unpack('<f', bytes.fromhex('cdcccc3d'))[0]
 print(f"Original: {original}")  # 0.1
 
-# New value  
+# New value
 new = struct.unpack('<f', bytes.fromhex('0000a040'))[0]
 print(f"New: {new}")  # 5.0
 ```
@@ -1010,7 +1024,7 @@ print(f"New: {new}")  # 5.0
 >>> print(f"Original: {original}")  # 0.1
 Original: 0.10000000149011612
 >>>
->>> # New value                                                             
+>>> # New value
 >>> new = struct.unpack('<f', bytes.fromhex('0000a040'))[0]
 >>> print(f"New: {new}")  # 5.0
 New: 5.0

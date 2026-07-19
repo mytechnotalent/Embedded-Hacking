@@ -1,5 +1,19 @@
 # Week 6: Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ GPIO Input Basics
 
+---
+**LEGAL DISCLAIMER:**
+The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
+
+You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
+
+By using this repository and course, you acknowledge and agree that:
+1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
+2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
+3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
+
+**IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
+---
+
 ## What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
@@ -32,15 +46,15 @@ Think of it like this:
 |  +------------------------------------------------------------+ |
 |  | Loop 1: Create -> Set to 42 -> Increment to 43 -> Destroy    |
 |  | Loop 2: Create -> Set to 42 -> Increment to 43 -> Destroy    |
-|  | Loop 3: Create -> Set to 42 -> Increment to 43 -> Destroy    | 
+|  | Loop 3: Create -> Set to 42 -> Increment to 43 -> Destroy    |
 |  | Result: Always appears as 42!                                |
 |  +------------------------------------------------------------+ |
 |                                                                 |
 |  STATIC:                                                        |
 |  +------------------------------------------------------------+ |
-|  | Loop 1: Already exists -> Read 42 -> Increment -> Store 43   | 
-|  | Loop 2: Already exists -> Read 43 -> Increment -> Store 44   | 
-|  | Loop 3: Already exists -> Read 44 -> Increment -> Store 45   | 
+|  | Loop 1: Already exists -> Read 42 -> Increment -> Store 43   |
+|  | Loop 2: Already exists -> Read 43 -> Increment -> Store 44   |
+|  | Loop 3: Already exists -> Read 44 -> Increment -> Store 45   |
 |  | Result: Keeps incrementing!                                  |
 |  +------------------------------------------------------------+ |
 |                                                                 |
@@ -237,7 +251,7 @@ The compiler sees that incrementing `regular_fav_num` has no lasting effect (bec
 
 ### Function Inlining
 
-Sometimes the compiler **inlines** functions, meaning it replaces a function call with the function's code directly. 
+Sometimes the compiler **inlines** functions, meaning it replaces a function call with the function's code directly.
 
 **Original code:**
 ```c
@@ -326,28 +340,28 @@ Let's examine the static variables code:
 
 int main(void) {
     stdio_init_all();
-    
+
     const uint BUTTON_GPIO = 15;
     const uint LED_GPIO = 16;
     bool pressed = 0;
-    
+
     gpio_init(BUTTON_GPIO);
     gpio_set_dir(BUTTON_GPIO, GPIO_IN);
     gpio_pull_up(BUTTON_GPIO);
-    
+
     gpio_init(LED_GPIO);
     gpio_set_dir(LED_GPIO, GPIO_OUT);
-    
+
     while (true) {
         uint8_t regular_fav_num = 42;
         static uint8_t static_fav_num = 42;
-        
+
         printf("regular_fav_num: %d\r\n", regular_fav_num);
         printf("static_fav_num: %d\r\n", static_fav_num);
-        
+
         regular_fav_num++;
         static_fav_num++;
-        
+
         pressed = gpio_get(BUTTON_GPIO);
         gpio_put(LED_GPIO, pressed ? 0 : 1);
     }
@@ -582,7 +596,7 @@ GDB will stop at `movs r1, #42`  that is the compiler's constant for `regular_fa
 
 This is where the static variable is actually manipulated:
 
-```gdb   
+```gdb
 (gdb) x/4i $pc
 => 0x10000278 <main+68>:        ldrb    r3, [r4, #0] <- load static_fav_num from RAM into r3
    0x1000027a <main+70>:        movs    r2, #16      <- load LED pin number (16) into r2 for later

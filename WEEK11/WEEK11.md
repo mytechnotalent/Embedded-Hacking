@@ -1,4 +1,18 @@
-﻿# Week 11: Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote Control and NEC Protocol Basics
+# Week 11: Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote Control and NEC Protocol Basics
+
+---
+**LEGAL DISCLAIMER:**
+The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
+
+You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
+
+By using this repository and course, you acknowledge and agree that:
+1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
+2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
+3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
+
+**IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
+---
 
 ## What You'll Learn This Week
 
@@ -503,7 +517,7 @@ typedef struct {
 
 int main(void) {
     stdio_init_all();
-    
+
     simple_led_ctrl_t leds = {
         .led1_pin = 16,
         .led2_pin = 17,
@@ -512,34 +526,34 @@ int main(void) {
         .led2_state = false,
         .led3_state = false
     };
-    
+
     gpio_init(leds.led1_pin); gpio_set_dir(leds.led1_pin, GPIO_OUT);
     gpio_init(leds.led2_pin); gpio_set_dir(leds.led2_pin, GPIO_OUT);
     gpio_init(leds.led3_pin); gpio_set_dir(leds.led3_pin, GPIO_OUT);
-    
+
     ir_init(IR_PIN);
     printf("IR receiver on GPIO %d ready\n", IR_PIN);
-    
+
     while (true) {
         int key = ir_getkey();
         if (key >= 0) {
             printf("NEC command: 0x%02X\n", key);
-            
+
             // Turn all off first
             leds.led1_state = false;
             leds.led2_state = false;
             leds.led3_state = false;
-            
+
             // Check NEC codes
             if (key == 0x0C) leds.led1_state = true; // GPIO16
             if (key == 0x18) leds.led2_state = true; // GPIO17
             if (key == 0x5E) leds.led3_state = true; // GPIO18
-            
+
             // Apply states
             gpio_put(leds.led1_pin, leds.led1_state);
             gpio_put(leds.led2_pin, leds.led2_state);
             gpio_put(leds.led3_pin, leds.led3_state);
-            
+
             sleep_ms(10);
         } else {
             sleep_ms(1);
@@ -673,7 +687,7 @@ You should see `r0 = 16`. If you set breakpoints on the subsequent calls (`0x100
 
 ### Step 13: Examine IR Key Processing
 
-Because `ir_getkey` is polled in a loop and returns `-1` constantly when no key is pressed, breaking at the immediate return (`0x10000274`) will just flood you with `-1`s! 
+Because `ir_getkey` is polled in a loop and returns `-1` constantly when no key is pressed, breaking at the immediate return (`0x10000274`) will just flood you with `-1`s!
 
 Instead, set a breakpoint *inside* the `if (key >= 0)` block at `0x10000278`. This is right after the `blt.n` conditional branch that skips over the processing logic when no key is pressed:
 
@@ -1061,15 +1075,15 @@ void blink_led(uint8_t pin, uint8_t count, uint32_t delay_ms) {
 // Main command processor
 int process_ir_led_command(int ir_command, simple_led_ctrl_t *leds, uint8_t blink_count) {
     if (!leds || ir_command < 0) return -1;
-    
+
     leds_all_off(leds);
     int led_num = ir_to_led_number(ir_command);
     if (led_num == 0) return 0;
-    
+
     uint8_t pin = get_led_pin(leds, led_num);
     blink_led(pin, blink_count, 50);
     gpio_put(pin, true);
-    
+
     return led_num;
 }
 ```
@@ -1162,7 +1176,7 @@ You'll see multiple function prologues (push) and epilogues (pop) for the helper
 
 The C code relies heavily on helper functions (`process_ir_led_command`, `leds_all_off`, `ir_to_led_number`, `blink_led`). But if you scroll through the disassembly, you'll notice a distinct lack of function prologues, epilogues, or `bl` calls to anything other than `sleep_ms` or `printf`!
 
-The compiler has aggressively **inlined** every single helper function into the main loop. 
+The compiler has aggressively **inlined** every single helper function into the main loop.
 
 Let's trace exactly how the compiler flattened this logic. First, set a breakpoint right when a key press is detected:
 
@@ -1175,7 +1189,7 @@ continue
 
 ### Step 44: Examine leds_all_off (Inlined)
 
-In the C code, `process_ir_led_command` starts by calling `leds_all_off(&leds)`. 
+In the C code, `process_ir_led_command` starts by calling `leds_all_off(&leds)`.
 
 Let's look at the next few instructions starting from our breakpoint:
 ```gdb
@@ -1213,7 +1227,7 @@ Instead of a separate function, it simply compares the button code in `r4` (`12`
 
 ### Step 46: Watch the blink_led Loop
 
-Let's set a breakpoint where the blinking loop begins for Button 1 (which handles the Red LED on pin 16). 
+Let's set a breakpoint where the blinking loop begins for Button 1 (which handles the Red LED on pin 16).
 
 ```gdb
 break *0x100002c6

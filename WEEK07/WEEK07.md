@@ -1,5 +1,19 @@
 # Week 7: Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C Basics
 
+---
+**LEGAL DISCLAIMER:**
+The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
+
+You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
+
+By using this repository and course, you acknowledge and agree that:
+1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
+2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
+3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
+
+**IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
+---
+
 ## What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
@@ -409,19 +423,19 @@ const int OTHER_FAV_NUM = 1337;
 
 int main(void) {
     stdio_init_all();
-    
+
     i2c_init(I2C_PORT, 100000);
     gpio_set_function(I2C_SDA_PIN, GPIO_FUNC_I2C);
     gpio_set_function(I2C_SCL_PIN, GPIO_FUNC_I2C);
     gpio_pull_up(I2C_SDA_PIN);
     gpio_pull_up(I2C_SCL_PIN);
-    
+
     lcd_i2c_init(I2C_PORT, 0x27, 4, 0x08);
     lcd_set_cursor(0, 0);
     lcd_puts("Reverse");
     lcd_set_cursor(1, 0);
     lcd_puts("Engineering");
-    
+
     while (true) {
         printf("FAV_NUM: %d\r\n", FAV_NUM);
         printf("OTHER_FAV_NUM: %d\r\n", OTHER_FAV_NUM);

@@ -1,4 +1,18 @@
-﻿# Week 5: Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floats w/ Intermediate GPIO Output Assembler Analysis
+# Week 5: Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floats w/ Intermediate GPIO Output Assembler Analysis
+
+---
+**LEGAL DISCLAIMER:**
+The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
+
+You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
+
+By using this repository and course, you acknowledge and agree that:
+1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
+2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
+3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
+
+**IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
+---
 
 ## What You'll Learn This Week
 
@@ -180,7 +194,7 @@ Let's look at a simple program that uses a `float` variable:
 
 int main(void) {
     float fav_num = 42.5;
-    
+
     stdio_init_all();
 
     while (true)
@@ -327,7 +341,7 @@ int main(void)
   undefined4 extraout_r1;
   undefined4 uVar2;
   undefined4 extraout_r1_00;
-  
+
   FUN_10002f5c();
   uVar1 = DAT_1000024c;
   uVar2 = extraout_r1;
@@ -365,7 +379,7 @@ int main(void)
   undefined4 extraout_r1;
   undefined4 uVar2;
   undefined4 extraout_r1_00;
-  
+
   stdio_init_all();
   uVar1 = DAT_1000024c;
   uVar2 = extraout_r1;
@@ -523,17 +537,17 @@ Look at the **Listing** window (assembly view). Find the main function:
 
 ```
                              *************************************************************
-                             *                           FUNCTION                          
+                             *                           FUNCTION
                              *************************************************************
                              int  __stdcall  main (void )
              int               r0:4           <RETURN>
-                             main+1                                          XREF[1,1]:   1000018c (c) , 1000018a (*)   
+                             main+1                                          XREF[1,1]:   1000018c (c) , 1000018a (*)
                              main
         10000234 38 b5           push       {r3,r4,r5,lr}
         10000236 02 f0 91 fe     bl         stdio_init_all                                   bool stdio_init_all(void)
         1000023a 00 24           movs       r4,#0x0
         1000023c 03 4d           ldr        r5,[DAT_1000024c ]                               = 40454000h
-                             LAB_1000023e                                    XREF[1]:     10000248 (j)   
+                             LAB_1000023e                                    XREF[1]:     10000248 (j)
         1000023e 22 46           mov        r2,r4
         10000240 2b 46           mov        r3,r5
         10000242 03 48           ldr        r0=>s_fav_num:_%f_100034a8 ,[DAT_10000250 ]      = "fav_num: %f\r\n"
@@ -542,9 +556,9 @@ Look at the **Listing** window (assembly view). Find the main function:
         10000248 f9 e7           b          LAB_1000023e
         1000024a 00              ??         00h
         1000024b bf              ??         BFh
-                             DAT_1000024c                                    XREF[1]:     main:1000023c (R)   
+                             DAT_1000024c                                    XREF[1]:     main:1000023c (R)
         1000024c 00 40 45 40     undefine   40454000h
-                             DAT_10000250                                    XREF[1]:     main:10000242 (R)   
+                             DAT_10000250                                    XREF[1]:     main:10000242 (R)
         10000250 a8 34 00 10     undefine   100034A8h                                        *  ->  100034a8
 ```
 
@@ -555,10 +569,10 @@ Look at the **Listing** window (assembly view). Find the main function:
 In the Listing view, click on the data reference to find the format string:
 
 ```
-                             s_fav_num:_%f_100034a8                          XREF[1]:     main:10000242 (*)   
+                             s_fav_num:_%f_100034a8                          XREF[1]:     main:10000242 (*)
         100034a8 66 61 76        ds         "fav_num: %f\r\n"
-                 5f 6e 75 
-                 6d 3a 20 
+                 5f 6e 75
+                 6d 3a 20
 ```
 
 This confirms `printf` is called with the format string `"fav_num: %f\r\n"` and the double-precision value of `42.5`.
@@ -729,7 +743,7 @@ Let's look at a program that uses a `double` variable:
 
 int main(void) {
     double fav_num = 42.52525;
-    
+
     stdio_init_all();
 
     while (true)
@@ -873,7 +887,7 @@ int main(void)
   undefined4 extraout_r1;
   undefined4 uVar3;
   undefined4 extraout_r1_00;
-  
+
   uVar2 = DAT_10000258;
   uVar1 = DAT_10000254;
   FUN_10002f64();
@@ -913,7 +927,7 @@ int main(void)
   undefined4 extraout_r1;
   undefined4 uVar3;
   undefined4 extraout_r1_00;
-  
+
   uVar2 = DAT_10000258;
   uVar1 = DAT_10000254;
   stdio_init_all();
@@ -1071,29 +1085,29 @@ Look at the **Listing** window (assembly view). Find the main function:
 
 ```
                              *************************************************************
-                             *                           FUNCTION                          
+                             *                           FUNCTION
                              *************************************************************
                              int  __stdcall  main (void )
              int               r0:4           <RETURN>
-                             main+1                                          XREF[1,1]:   1000018c (c) , 1000018a (*)   
+                             main+1                                          XREF[1,1]:   1000018c (c) , 1000018a (*)
                              main
         10000238 38 b5           push       {r3,r4,r5,lr}
         1000023a 06 a5           adr        r5,[0x10000254 ]
         1000023c d5 e9 00 45     ldrd       r4,r5,[r5,#0x0 ]=>DAT_10000254                   = 645A1CACh
                                                                                              = 4045433Bh
         10000240 02 f0 90 fe     bl         stdio_init_all                                   bool stdio_init_all(void)
-                             LAB_10000244                                    XREF[1]:     1000024e (j)   
+                             LAB_10000244                                    XREF[1]:     1000024e (j)
         10000244 22 46           mov        r2,r4
         10000246 2b 46           mov        r3,r5
         10000248 01 48           ldr        r0=>s_fav_num:_%lf_100034b0 ,[DAT_10000250 ]      = "fav_num: %lf\r\n"
                                                                                              = 100034B0h
         1000024a 02 f0 53 ff     bl         printf                                           int printf(char * format, ...)
         1000024e f9 e7           b          LAB_10000244
-                             DAT_10000250                                    XREF[1]:     main:10000248 (R)   
+                             DAT_10000250                                    XREF[1]:     main:10000248 (R)
         10000250 b0 34 00 10     undefine   100034B0h                                        ?  ->  100034b0
-                             DAT_10000254                                    XREF[1]:     main:1000023c (R)   
+                             DAT_10000254                                    XREF[1]:     main:1000023c (R)
         10000254 ac 1c 5a 64     undefine   645A1CACh
-                             DAT_10000258                                    XREF[1]:     main:1000023c (R)   
+                             DAT_10000258                                    XREF[1]:     main:1000023c (R)
         10000258 3b 43 45 40     undefine   4045433Bh
 ```
 
@@ -1104,10 +1118,10 @@ Look at the **Listing** window (assembly view). Find the main function:
 In the Listing view, click on the data reference to find the format string:
 
 ```
-                             s_fav_num:_%lf_100034b0                         XREF[1]:     main:10000248 (*)   
+                             s_fav_num:_%lf_100034b0                         XREF[1]:     main:10000248 (*)
         100034b0 66 61 76        ds         "fav_num: %lf\r\n"
-                 5f 6e 75 
-                 6d 3a 20 
+                 5f 6e 75
+                 6d 3a 20
 ```
 
 This confirms `printf` is called with the format string `"fav_num: %lf\r\n"` and the double-precision value of `42.52525`.
@@ -1349,5 +1363,5 @@ The RP2350 GPIO coprocessor instructions:
 
 **Remember:** Every binary you encounter in the real world can be analyzed and understood using these same techniques. Whether it's an integer, a float, or a double - it's all just bits waiting to be decoded. Practice makes perfect!
 
-Happy hacking! 
+Happy hacking!
 

@@ -1,4 +1,18 @@
-﻿# Week 4: Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Basics
+# Week 4: Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Basics
+
+---
+**LEGAL DISCLAIMER:**
+The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
+
+You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
+
+By using this repository and course, you acknowledge and agree that:
+1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
+2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
+3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
+
+**IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
+---
 
 ## What You'll Learn This Week
 
@@ -211,11 +225,11 @@ First, let's look at the code we'll be analyzing:
 
 int main(void) {
     uint8_t age = 42;
-    
+
     age = 43;
-    
+
     stdio_init_all();
-    
+
     while (true)
         printf("age: %d\r\n", age);
 }
@@ -395,7 +409,7 @@ The compiler **optimized it out**! Here's what happened:
 3. Compiler removes the unused `42` and just uses `43` directly
 
 **What is `0x2b`?** Let's check:
-- `0x2b` in hexadecimal = `43` in decimal 
+- `0x2b` in hexadecimal = `43` in decimal
 
 The compiler replaced our variable with the constant value!
 
@@ -496,12 +510,12 @@ Now let's work with a more complex example that includes GPIO control.
 
 int main(void) {
     uint8_t age; // Uninitialized!
-    
+
     stdio_init_all();
-    
+
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
-    
+
     while (true) {
         printf("age: %d\r\n", age);
 
@@ -577,7 +591,7 @@ void FUN_10000234(void)
   undefined4 extraout_r2;
   undefined4 in_cr0;
   undefined4 in_cr4;
-  
+
   FUN_100030cc();
   FUN_100002b4(0x10);
   coprocessor_moveto2(0,4,0x10,1,in_cr4);
@@ -757,24 +771,24 @@ loop:
     movs r4, #0x10      ; GPIO 16
     movs r5, #0x01      ; High
     mcrr p0, #4, r4, r5, c0
-    
+
     ; Delay
     ldr r2, =0x17D7840  ; ~25 million iterations
 delay1:
     subs r2, r2, #1
     bne delay1
-    
+
     ; LED OFF
     movs r4, #0x10      ; GPIO 16
     movs r5, #0x00      ; Low
     mcrr p0, #4, r4, r5, c0
-    
+
     ; Delay
     ldr r2, =0x17D7840
 delay2:
     subs r2, r2, #1
     bne delay2
-    
+
     b loop              ; Repeat forever
 ```
 
@@ -905,6 +919,6 @@ The RP2350 GPIO coprocessor instructions:
 
 **Remember:** Every binary you encounter in the real world can be analyzed and understood using these same techniques. Practice makes perfect!
 
-Happy hacking! 
+Happy hacking!
 
 
