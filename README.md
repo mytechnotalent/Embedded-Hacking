@@ -18,11 +18,11 @@ By using this repository and course, you acknowledge and agree that:
 
 <br>
 
-# Today's Tutorial [July 5, 2026]
-## Lesson 236: Go Hacking Course (Chapter 3: Hacking Hello Distributed System World)
-This chapter covers hacking of the basic hello world style Go program for the x64 architecture.
+# Today's Tutorial [July 19, 2026]
+## Lesson 249: Hacking Rust Course (Chapter 4: Scalar Data Types)
+This chapter covers scalar data types within a Rust program for the x64 architecture.
 
--> Click [HERE](https://github.com/mytechnotalent/Go-Hacking/blob/main/Go%20Hacking.pdf) to read the FREE pdf book.
+-> Click [HERE](https://github.com/mytechnotalent/Hacking-Rust/blob/main/Hacking%20Rust.pdf) to read the FREE pdf book.
 
 <br>
 
