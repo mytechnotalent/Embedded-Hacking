@@ -1,5 +1,7 @@
 ![image](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded%20Hacking.png?raw=true)
 
+<br>
+
 ---
 **LEGAL DISCLAIMER:**
 The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
@@ -13,6 +15,8 @@ By using this repository and course, you acknowledge and agree that:
 
 **IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
 ---
+
+<br>
 
 ## FREE Reverse Engineering Self-Study Course [HERE](https://github.com/mytechnotalent/Reverse-Engineering-Tutorial)
 
@@ -78,7 +82,6 @@ Introduction and Overview of Embedded Reverse Engineering: Ethics, Scoping, and 
 
 ### Week 1 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01.md)
 
-
 ### Chapter 1: hello, world
 This chapter covers the basics of setting up a dev environment and basic template firmware for the Pico 2 MCU in addition to printing hello, world.
 
@@ -96,7 +99,6 @@ Hello, World - Debugging and Hacking Basics: Debugging and Hacking a Basic Progr
 
 ### Week 2 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK02/WEEK02.md)
 
-
 ### Chapter 3: Hacking hello, world
 This chapter covers the hacking of our firmware for the Pico 2 MCU hello, world program.
 
@@ -109,7 +111,6 @@ Embedded System Analysis: Understanding the RP2350 Architecture w/ Comprehensive
 
 ### Week 3 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03.md)
 
-
 ### Chapter 4: Embedded System Analysis
 This chapter covers a comprehensive embedded system analysis reviewing parts of the RP2350 datasheet and helpful firmware analysis tools.
 
@@ -121,7 +122,6 @@ Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Ba
 ### Week 4 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-SLIDES.pdf)
 
 ### Week 4 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04.md)
-
 
 ### Chapter 5: Intro To Variables
 This chapter covers an introduction to variables as it relates to embedded development on the Pico 2.
@@ -159,7 +159,6 @@ Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floa
 ### Week 5 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-SLIDES.pdf)
 
 ### Week 5 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05.md)
-
 
 ### Chapter 11: Integer Data Type
 This chapter covers the integer data type in addition to a deeper assembler dive into GPIO outputs as it relates to embedded development on the Pico 2.
@@ -213,7 +212,6 @@ Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ 
 
 ### Week 6 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06.md)
 
-
 ### Chapter 20: Static Variables
 This chapter covers static variables as well as an intro to GPIO inputs as we work with push buttons as it relates to embedded development on the Pico 2.
 
@@ -235,7 +233,6 @@ Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C B
 ### Week 7 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-SLIDES.pdf)
 
 ### Week 7 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07.md)
-
 
 ### Chapter 23: Constants
 This chapter covers constants as well as an intro to I2C as we work a 1602 LCD as it relates to embedded development on the Pico 2.
@@ -262,7 +259,6 @@ Operators in Embedded Systems: Debugging and Hacking Operators w/ DHT11 Temperat
 
 ### Week 9 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09.md)
 
-
 ### Chapter 26: Operators
 This chapter covers operators as well as an intro to single-wire protocol as we work a DHT11 temperature and humidity sensor as it relates to embedded development on the Pico 2.
 
@@ -284,7 +280,6 @@ Conditionals in Embedded Systems: Debugging and Hacking Static & Dynamic Conditi
 ### Week 10 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-SLIDES.pdf)
 
 ### Week 10 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10.md)
-
 
 ### Chapter 29: Static Conditionals
 This chapter covers static conditionals as well as an intro to PWM as we work a SG90 servo motor as it relates to embedded development on the Pico 2.
@@ -322,7 +317,6 @@ Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote
 ### Week 11 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-SLIDES.pdf)
 
 ### Week 11 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11.md)
-
 
 ### Chapter 35: Structures
 This chapter covers structures as well as an intro to infrared basics as we work a infrared receiver and infrared remote controller as it relates to embedded development on the Pico 2.
@@ -367,6 +361,26 @@ In the aftermath of a catastrophic medical device failure, you are thrust into t
 
 ### Final Project Option 2: Operation Dark Eclipse
 Forty-two stories beneath frozen tundra, a shadow intelligence alliance called Dark Eyes operates centrifuges enriching weapons-grade material for a first strike against Washington, D.C. and Agent NIGHTINGALE gave her life to extract the single firmware file that now sits before you. Conventional warfare cannot reach this fortress buried beneath rock and concrete, but you can: as the architect of a precision cyber weapon in the tradition of Stuxnet, you must reverse engineer the RP2350-based centrifuge controller, craft binary patches that double the spin speed while falsifying every sensor readout to show nominal operation, and execute the sabotage that will cascade-destroy their enrichment program and set their nuclear ambitions back a decade. Every skill from the entire semester ARM assembly, Ghidra analysis, IEEE-754 floating-point manipulation, branch modification, log desynchronization converges in this final mission. Agent NIGHTINGALE's seven-year-old daughter still watches the driveway, waiting for a mother who will never return. Honor that sacrifice. Complete the mission. Do not fail.
+
+<br>
+
+## RP2350 ARM Assembler Drivers
+
+### An RP2350 UART driver written entirely in ARM Assembler. [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver)
+
+### An RP2350 blink driver written entirely in ARM Assembler. [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver)
+
+### An RP2350 button driver written entirely in ARM Assembler. [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver)
+
+<br>
+
+## RP2350 RISC-V Assembler Drivers
+
+### An RP2350 UART driver written entirely in RISC-V Assembler. [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver_RISCV)
+
+### An RP2350 blink driver written entirely in RISC-V Assembler. [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver_RISCV)
+
+### An RP2350 button driver written entirely in RISC-V Assembler. [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver_RISCV)
 
 <br>
 
