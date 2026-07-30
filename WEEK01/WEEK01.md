@@ -101,13 +101,13 @@ When you call a function, the processor needs to remember where to come back to.
 **Example:** 
 ```
 main() calls print_hello()
-   â†“
+    ↓
 LR = address right after the call in main()
-   â†“
+    ↓
 print_hello() runs
-   â†“
+    ↓
 print_hello() finishes, looks at LR
-   â†“
+    ↓
 Jumps back to main() at the address stored in LR
 ```
 
