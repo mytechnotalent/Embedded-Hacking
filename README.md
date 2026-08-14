@@ -59,12 +59,12 @@ Students must have a working understanding of the following items:
 <br>
 
 # Hardware [View Full Parts List](PARTS.md)
-## Raspberry Pi Pico 2 w/ Header [BUY](https://www.pishop.us/product/raspberry-pi-pico-2-with-header)
-## USB A-Male to USB Micro-B Cable [BUY](https://www.pishop.us/product/usb-a-male-to-usb-micro-b-cable-6-inches)
-## Raspberry Pi Pico Debug Probe [BUY](https://www.pishop.us/product/raspberry-pi-debug-probe)
-## Complete Component Kit for Raspberry Pi [BUY](https://www.pishop.us/product/complete-component-kit-for-raspberry-pi)
+## Complete Component Kit for Raspberry Pi [BUY](https://www.pishop.us/product/custom-kit-for-pitt-edu)
+### 10% PiShop DISCOUNT CODE - UPKT_HS320548_10PC
+## 5mm LEDs (1 Red, 1 Green, 1 Yellow) [BUY](https://www.amazon.com/s?k=5mm+led+kit)
+## 100, 220 or 330 Ohm Resistors (for LEDs) [BUY](https://www.amazon.com/s?k=resistor+assortment+kit)
+## 1x SG90 Servo Motor [BUY](https://www.amazon.com/s?k=sg90+micro+servo+motor)
 ## 10pc 25v 1000uF Capacitor [BUY](https://www.amazon.com/Cionyce-Capacitor-Electrolytic-CapacitorsMicrowave/dp/B0B63CCQ2N?th=1)
-### 10% PiShop DISCOUNT CODE - KVPE_HS320548_10PC
 
 <br><br>
 
