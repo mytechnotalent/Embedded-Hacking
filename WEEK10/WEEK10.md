@@ -1,22 +1,25 @@
 # Week 10: Conditionals in Embedded Systems: Debugging and Hacking Static & Dynamic Conditionals w/ SG90 Servo Motor PWM Basics
 
----
+***
 **LEGAL DISCLAIMER:**
 The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
 
 You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
 
 By using this repository and course, you acknowledge and agree that:
+
 1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
 2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
 3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
 
 **IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
----
+
+***
 
 ## What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
+
 - Understand the difference between static and dynamic conditionals in C
 - Know how if/else statements and switch/case blocks work at the assembly level
 - Understand Pulse Width Modulation (PWM) and how it controls servo motors
@@ -377,6 +380,7 @@ The **SG90** is a small, inexpensive hobby servo motor commonly used in robotics
 **NEVER power the servo directly from the Pico's 3.3V pin!**
 
 Servos can draw over 1000mA during movement spikes. The Pico's 3.3V regulator cannot handle this and you will:
+
 - Cause brownouts (Pico resets)
 - Damage the Pico's voltage regulator
 - Potentially damage your USB port
@@ -410,6 +414,7 @@ Servos can draw over 1000mA during movement spikes. The Pico's 3.3V regulator ca
 ### Why the Capacitor?
 
 The **1000 uF capacitor** acts as a tiny battery:
+
 - Absorbs sudden current demands when servo moves
 - Prevents voltage drops that could reset the Pico
 - Smooths out electrical noise
@@ -421,6 +426,7 @@ The **1000 uF capacitor** acts as a tiny battery:
 ### Prerequisites
 
 Before we start, make sure you have:
+
 1. A Raspberry Pi Pico 2 board
 2. A Raspberry Pi Pico Debug Probe
 3. Ghidra installed (for static analysis)
@@ -599,6 +605,7 @@ one
 ```
 
 **Watch the servo:**
+
 - It should sweep from 0° to 180° every second
 - The movement is continuous and repetitive
 
@@ -789,11 +796,13 @@ ghidraRun
 ### Step 20: Configure the Binary Format
 
 **Click the three dots (...) next to "Language" and:**
+
 1. Search for "Cortex"
 2. Select **ARM Cortex 32 little endian default**
 3. Click **OK**
 
 **Click the "Options..." button and:**
+
 1. Change **Block Name** to `.text`
 2. Change **Base Address** to `10000000`
 3. Click **OK**
@@ -849,9 +858,10 @@ bl         FUN_10001884                        undefined FUN_10001884()
 ```
 
 **How do we know it's puts?**
+
 - It takes a single string argument
 - The hex `0x31` is ASCII "1"
-- The hex `0x0d` is carriage return "\r"
+- The hex `0x0d` is carriage return `"\r"`
 - We saw "1" echoed in PuTTY
 
 1. Right-click -> **Edit Function Signature**
@@ -879,6 +889,7 @@ mov.cc.w   r3,#0x3e8
 ```
 
 These values are:
+
 - `0x7D0` (2000 decimal) - maximum pulse width
 - `0x3E8` (1000 decimal) - minimum pulse width
 
@@ -931,6 +942,7 @@ Next, let's change the word "one" to "fun":
 4. Click on the `6f` byte and type `66 75 6e` on your keyboard to overwrite those three bytes with "f-u-n".
 
 **ASCII Reference:**
+
 | Character | Hex  |
 | --------- | ---- |
 | o         | 0x6f |
@@ -1226,6 +1238,7 @@ Follow the same process:
 ### Step 52: Identify getchar
 
 Look for a function that:
+
 - Returns a value in `r0`
 - That value is then compared against `0x31` ("1")
 
@@ -1249,6 +1262,7 @@ ldr  r0, =0x40070000   ; UART0 base address
 ```
 
 Check the RP2350 datasheet Section 2.2 (Address Map):
+
 - `0x40070000` = UART0
 
 This confirms it's a UART initialization function!
@@ -1311,6 +1325,7 @@ skip_printf:
 ### The Goal
 
 We want to create **secret commands** that:
+
 1. Respond to 'x' and 'y' instead of '1' and '2'
 2. Move the servo WITHOUT printing anything
 3. Leave NO trace in the terminal
@@ -1318,10 +1333,12 @@ We want to create **secret commands** that:
 ### Step 54: Plan the Patches
 
 **Original behavior:**
+
 - '1' (0x31) -> prints "1" and "one", moves servo
 - '2' (0x32) -> prints "2" and "two", moves servo
 
 **Hacked behavior:**
+
 - 'x' (0x78) -> moves servo SILENTLY (replacing '1')
 - 'y' (0x79) -> moves servo SILENTLY (replacing '2')
 
@@ -1395,6 +1412,7 @@ The compiler stored the 180.0 float value (`0x43340000`) in a literal pool at ad
 **New:** `0x41f00000` (30.0f)
 
 Here is how to apply the patch:
+
 1. Press `G` and jump to address `100002c4`.
 2. In your **Bytes** window (make sure the Pencil icon is still clicked!), you will see the raw little-endian bytes: `00 00 34 43`.
 3. Click on the first `00` and type `00 00 f0 41`.
@@ -1545,8 +1563,8 @@ python ..\uf2conv.py build\0x0020_dynamic-conditionals-h.bin --base 0x10000000 -
 | '2'       | 0x32 | 50      |
 | 'x'       | 0x78 | 120     |
 | 'y'       | 0x79 | 121     |
-| '\r'      | 0x0d | 13      |
-| '\n'      | 0x0a | 10      |
+| `'\r'`      | 0x0d | 13      |
+| `'\n'`      | 0x0a | 10      |
 
 ### IEEE-754 Common Angles
 
@@ -1583,11 +1601,13 @@ python ..\uf2conv.py build\0x0020_dynamic-conditionals-h.bin --base 0x10000000 -
 The ability to create hidden commands has serious implications:
 
 **Legitimate Uses:**
+
 - Factory test modes
 - Debugging interfaces
 - Emergency recovery features
 
 **Malicious Uses:**
+
 - Backdoors in firmware
 - Hidden surveillance features
 - Unauthorized control of systems
@@ -1595,6 +1615,7 @@ The ability to create hidden commands has serious implications:
 ### Real-World Example
 
 Imagine a drone with hacked firmware:
+
 - Normal keys ('1', '2') control it visibly with logging
 - Hidden keys ('x', 'y') control it with NO log entries
 - An attacker could operate the drone while security monitors show nothing
@@ -1602,6 +1623,7 @@ Imagine a drone with hacked firmware:
 ### The Nuclear Fuel Rod Analogy
 
 A fast-moving servo is like a nuclear fuel rod:
+
 - Both are small components with immense power
 - Both require precise control to prevent damage
 - Both can "go critical" if pushed beyond limits

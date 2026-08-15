@@ -1,22 +1,25 @@
 # Week 11: Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote Control and NEC Protocol Basics
 
----
+***
 **LEGAL DISCLAIMER:**
 The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
 
 You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
 
 By using this repository and course, you acknowledge and agree that:
+
 1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
 2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
 3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
 
 **IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
----
+
+***
 
 ## What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
+
 - Understand C structures (structs) and how they organize related data
 - Know how structs are represented in memory and assembly code
 - Understand the NEC infrared (IR) protocol for remote control communication
@@ -81,6 +84,7 @@ typedef struct {
 | `bool led3_state = false;` | ... (all in one container!) |
 
 **Benefits of Structs:**
+
 1. **Organization** - Related data stays together
 2. **Readability** - Code is easier to understand
 3. **Maintainability** - Changes are easier to make
@@ -175,6 +179,7 @@ simple_led_ctrl_t leds = {
 ```
 
 **Benefits:**
+
 - Clear which value goes to which member
 - Order doesn't matter (can rearrange lines)
 - Self-documenting code
@@ -412,6 +417,7 @@ bl   gpio_init      ; call gpio_init(18)
 ### Prerequisites
 
 Before we start, make sure you have:
+
 1. A Raspberry Pi Pico 2 board
 2. A Raspberry Pi Pico Debug Probe
 3. Ghidra installed (for static analysis)
@@ -596,6 +602,7 @@ int main(void) {
 ### Step 4: Verify It's Working
 
 **Open PuTTY (115200 baud) and test:**
+
 - Press "1" on remote -> Red LED lights, terminal shows `NEC command: 0x0C`
 - Press "2" on remote -> Green LED lights, terminal shows `NEC command: 0x18`
 - Press "3" on remote -> Yellow LED lights, terminal shows `NEC command: 0x5E`
@@ -740,6 +747,7 @@ info registers r1 r2 r3 r4
 ```
 
 Depending on which button you pressed, one of the state registers will be `1` (ON) and the others will be `0` (OFF):
+
 - `r1` = State for the **Red** LED (GPIO 16)
 - `r3` = State for the **Green** LED (GPIO 17)
 - `r4` = State for the **Yellow** LED (GPIO 18)
@@ -785,11 +793,13 @@ ghidraRun
 ### Step 20: Configure the Binary Format
 
 **Click the three dots (...) next to "Language" and:**
+
 1. Search for "Cortex"
 2. Select **ARM Cortex 32 little endian default**
 3. Click **OK**
 
 **Click the "Options..." button and:**
+
 1. Change **Block Name** to `.text`
 2. Change **Base Address** to `10000000`
 3. Click **OK**
@@ -838,6 +848,7 @@ Look for three consecutive calls with values 16, 17, 18:
 ```
 
 This pattern reveals the struct members! Update the function signature:
+
 1. Right-click on `FUN_10000558` -> **Edit Function Signature**
 2. Change to: `void gpio_init(uint gpio)`
 3. Click **OK**
@@ -985,6 +996,7 @@ python ..\uf2conv.py build\0x0023_structures-h.bin --base 0x10000000 --family 0x
 ### Step 34: Verify the Hack
 
 **Open PuTTY and test:**
+
 - Press "1" on remote -> **GREEN** LED lights (was red!)
 - Terminal still shows `NEC command: 0x0C`
 - Press "2" on remote -> **RED** LED lights (was green!)
@@ -1020,12 +1032,14 @@ python ..\uf2conv.py build\0x0023_structures-h.bin --base 0x10000000 --family 0x
 ### Real-World Example: Stuxnet
 
 **Stuxnet** was a cyberweapon that:
+
 - Attacked Iranian nuclear centrifuges
 - Made centrifuges spin at dangerous speeds
 - Fed FALSE "everything normal" data to operators
 - Operators saw stable readings while equipment was destroyed
 
 Our LED example demonstrates the same principle:
+
 - Logs show expected behavior
 - Hardware performs different actions
 - Attackers can hide malicious activity
@@ -1319,6 +1333,7 @@ quit
 ### Step 52: Explore the Symbol Tree
 
 With .ELF files, you get more information:
+
 1. Look at the **Symbol Tree** panel
 2. Expand **Functions** - you may see named functions!
 3. Expand **Labels** - data labels may appear
@@ -1342,6 +1357,7 @@ movs r0, #0x12      ; led3_pin = 18
 We'll swap the red (GPIO 16) and yellow (GPIO 18) LEDs:
 
 **Find and patch in the .bin file:**
+
 1. Change `0x10` (16) to `0x12` (18)
 2. Change `0x12` (18) to `0x10` (16)
 
@@ -1375,6 +1391,7 @@ python ..\uf2conv.py build\0x0026_functions-h.bin --base 0x10000000 --family 0xe
 ### Step 57: Verify the Hack
 
 **Open PuTTY and test:**
+
 - Press "1" -> **YELLOW** LED blinks (was red!)
 - Terminal shows: `LED 1 activated on GPIO 16` (WRONG - it's actually GPIO 18!)
 - Press "3" -> **RED** LED blinks (was yellow!)
@@ -1554,12 +1571,14 @@ Over these weeks, you've built skills that few people possess:
 The techniques you've learned can be used for:
 
 **Good:**
+
 - Security research
 - Debugging proprietary systems
 - Understanding how things work
 - Career in cybersecurity
 
 **Danger:**
+
 - Unauthorized system access
 - Sabotage of critical infrastructure
 - Fraud and deception
@@ -1569,6 +1588,7 @@ The techniques you've learned can be used for:
 ### Keep Learning
 
 This is just the beginning:
+
 - Explore more complex protocols (SPI, CAN bus)
 - Learn dynamic analysis with debuggers
 - Study cryptographic implementations

@@ -1,22 +1,25 @@
 # Week 2: Hello, World - Debugging and Hacking Basics: Debugging and Hacking a Basic Program for the Pico 2
 
----
+***
 **LEGAL DISCLAIMER:**
 The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
 
 You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
 
 By using this repository and course, you acknowledge and agree that:
+
 1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
 2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
 3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
 
 **IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
----
+
+***
 
 ## What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
+
 - Connect to a live embedded system using OpenOCD and GDB
 - Step through code instruction by instruction and watch the stack change
 - Examine memory, registers, and decode little-endian values
@@ -28,6 +31,7 @@ By the end of this tutorial, you will be able to:
 
 ## Review from Week 1
 This week builds directly on Week 1 concepts. You should already be comfortable with:
+
 - **Registers** (`r0`-`r12`, SP, LR, PC) - We'll watch them change and manipulate `r0` to change program behavior
 - **Memory Layout** (Flash at `0x10000000`, RAM at `0x20000000`) - Critical for understanding where we can write
 - **The Stack** and how `push`/`pop` work - We'll watch this in action
@@ -48,6 +52,7 @@ Think of it like this: imagine a train is heading to New York City. Live hacking
 #### Why is This Important?
 
 Live hacking techniques are used for:
+
 - **Security Research**: Finding vulnerabilities in embedded systems
 - **Penetration Testing**: Testing if systems can be compromised
 - **Malware Analysis**: Understanding how malicious code works
@@ -58,6 +63,7 @@ Live hacking techniques are used for:
 > **"With great power comes great responsibility!"**
 
 Imagine you're a security researcher testing an industrial control system at a power plant. You need to verify that an attacker couldn't:
+
 1. Change the values being displayed to engineers
 2. Make dangerous equipment appear safe
 3. Hide malicious activity from monitoring systems
@@ -89,6 +95,7 @@ int main(void) {
 ```
 
 This simple program:
+
 1. Initializes I/O with `stdio_init_all()`
 2. Enters an infinite `while(true)` loop
 3. Prints `"hello, world\r\n"` forever
@@ -151,6 +158,7 @@ Here's our step-by-step attack strategy:
 #### Prerequisites
 
 Before we start, make sure you have:
+
 1. A Raspberry Pi Pico 2 board with debug probe connected
 2. OpenOCD installed and configured
 3. GDB (arm-none-eabi-gdb) installed
@@ -160,6 +168,7 @@ Before we start, make sure you have:
 #### What You'll Need Open
 
 You will need **THREE** terminal windows:
+
 1. **Terminal 1**: Running OpenOCD (the debug server)
 2. **Terminal 2**: Running GDB (where we do the hacking)
 3. **PuTTY**: Running your serial monitor (to see output)
@@ -183,6 +192,7 @@ openocd -s "$env:USERPROFILE\.pico-sdk\openocd\0.12.0+dev\scripts" -f interface/
 ```
 
 **What this command means:**
+
 - `openocd` = the OpenOCD program
 - `-s ...` = path to OpenOCD scripts folder
 - `-f interface/cmsis-dap.cfg` = use the CMSIS-DAP debug probe configuration
@@ -239,6 +249,7 @@ arm-none-eabi-gdb build\0x0001_hello-world.elf
 ```
 
 **What this command means:**
+
 - `arm-none-eabi-gdb` = the ARM version of GDB
 - `build\0x0001_hello-world.elf` = our compiled program with debug symbols
 
@@ -284,6 +295,7 @@ The program is still running (you can see "hello, world" still printing in PuTTY
 ```
 
 **What this command means:**
+
 - `monitor` = send a command to OpenOCD (not GDB)
 - `reset` = reset the processor
 - `halt` = stop execution immediately
@@ -316,6 +328,7 @@ Our program code starts at address `0x10000000`. Let's look at the first 1000 in
 ```
 
 **What this command means:**
+
 - `x` = examine memory
 - `/1000i` = show 1000 instructions
 - `0x10000000` = starting address
@@ -379,6 +392,7 @@ Note: automatically using hardware breakpoints for read-only addresses.
 ```
 
 **What this means:**
+
 - `b` = set breakpoint
 - `*0x10000234` = at this exact memory address
 - GDB confirms the breakpoint is set and even tells us which line of C code this corresponds to!
@@ -404,6 +418,7 @@ Thread 1 "rp2350.cm0" hit Breakpoint 1, main ()
 ```
 
 **What happened:**
+
 - The processor ran until it reached address `0x10000234`
 - It stopped right before executing the instruction at that address
 - GDB shows us we're at line 5 of our C source code
@@ -446,6 +461,7 @@ Before we execute the `push` instruction, let's see what's on the stack:
 ```
 
 **What this command means:**
+
 - `x` = examine memory
 - `/10x` = show 10 values in hexadecimal
 - `$sp` = starting at the stack pointer address
@@ -459,6 +475,7 @@ Before we execute the `push` instruction, let's see what's on the stack:
 ```
 
 **What this shows:**
+
 - The stack pointer is at address `0x20082000`
 - The stack is empty (all zeros)
 - This is the "top" of our stack in RAM
@@ -475,6 +492,7 @@ Now let's trace back where this initial `0x20082000` value came from. It comes f
 ```
 
 **What this shows:**
+
 - The first command `x/x $sp` reads one word at the stack pointer (currently `0x00000000`)
 - The second command `x/x 0x10000000` reads the **first entry in the vector table** at address `0x10000000`
 - That vector table entry contains `0x20082000` - this is the **initial stack pointer value**!
@@ -492,6 +510,7 @@ Now let's execute just ONE assembly instruction:
 ```
 
 **What this command means:**
+
 - `si` = step instruction (execute one assembly instruction)
 
 **You should see:**
@@ -540,6 +559,7 @@ Now let's see what the push instruction did to our stack:
 ```
 
 **What changed:**
+
 - The stack pointer moved from `0x20082000` to `0x20081ff8`
 - That's 8 bytes lower (2 * 4-byte values)
 - Two new values appeared: `0xe000ed08` and `0x1000018f`
@@ -621,6 +641,7 @@ Address      Value              Address      Value
 ```
 
 **Key Points:**
+
 1. The stack grows DOWNWARD (addresses get smaller)
 2. The SP always points to the last item pushed
 3. `r3` was pushed first, then `lr` was pushed on top of it
@@ -657,6 +678,7 @@ We don't need to examine every instruction inside `stdio_init_all` - it's just s
 ```
 
 **What this command means:**
+
 - `n` = next (step over function calls, don't go inside them)
 
 **You should see:**
@@ -731,6 +753,7 @@ This is loading a **pointer** - the address of our "hello, world" string!
 The value `0x6c6c6568` looks strange, but it's actually ASCII characters! Let's decode it:
 
 **ASCII Table Reference:**
+
 | Hex    | Character |
 | ------ | --------- |
 | `0x68` | h         |
@@ -753,6 +776,7 @@ Let's tell GDB to show this as a string instead of a hex number:
 ```
 
 **What this command means:**
+
 - `x` = examine memory
 - `/s` = show as a string
 - `$r0` = at the address stored in `r0`
@@ -807,6 +831,7 @@ Let's look at the main function to understand what we're dealing with:
 ```
 
 **What this command means:**
+
 - `x` = examine memory (Week 1 review!)
 - `/5i` = show 5 instructions
 - `0x10000234` = the address of main (we found this in Week 1!)
@@ -823,6 +848,7 @@ Let's look at the main function to understand what we're dealing with:
 ```
 
 >  **REVIEW:** This is the same disassembly we analyzed in Week 1! Remember:
+>
 > - `push {r3, lr}` saves registers to the stack
 > - `bl` is "branch with link" - it calls a function and saves the return address in LR
 > - `b.n` is the infinite loop that jumps back to the `ldr` instruction
@@ -847,6 +873,7 @@ while (true)
 ```
 
 The compiler:
+
 1. Loads the string address into `r0` (first argument)
 2. Calls `puts()` (optimized from `printf()` since we're just printing a string)
 3. Loops back forever with `b.n`
@@ -872,6 +899,7 @@ We want to stop the program RIGHT BEFORE it calls `puts()`. That's at address `0
 ```
 
 **What this command means:**
+
 - `b` = set a breakpoint (same as Week 1!)
 - `*0x1000023c` = at this exact memory address (the asterisk means "address")
 
@@ -896,6 +924,7 @@ Now let's run the program until it hits our breakpoint:
 ```
 
 **What this command means:**
+
 - `c` = continue (run until something stops us)
 
 **You should see:**
@@ -921,6 +950,7 @@ Let's double-check where we are using the `disas` command:
 ```
 
 **What this command means:**
+
 - `disas` = disassemble the current function
 
 **You should see:**
@@ -957,6 +987,7 @@ Let's see what string `r0` is currently pointing to:
 ```
 
 **What this command means:**
+
 - `x` = examine memory (Week 1 review!)
 - `/s` = display as a string
 - `$r0` = the address stored in register `r0`
@@ -1054,7 +1085,7 @@ We need to write 13 bytes (12 characters + null terminator) to SRAM:
 | r         | -         |
 | l         | -         |
 | d         | -         |
-| \r        | -         |
+| `\r`        | -         |
 | \0        | -         |
 
 **Type this command:**
@@ -1064,6 +1095,7 @@ We need to write 13 bytes (12 characters + null terminator) to SRAM:
 ```
 
 **What this command means:**
+
 - `set` = modify memory
 - `{char[13]}` = treat the target as an array of 13 characters
 - `0x20040000` = the address where we're writing (safe SRAM offset)
@@ -1108,6 +1140,7 @@ Now for the magic moment! We'll change `r0` from pointing to the original string
 ```
 
 **What this command means:**
+
 - `set` = modify a value
 - `$r0` = the `r0` register
 - `= 0x20040000` = change it to this address (where our string is)
@@ -1277,6 +1310,7 @@ In our GDB hack, we set a breakpoint at `0x1000023c` - right before `bl __wrap_p
 **Click on address `0x1000023c` in the Listing view.**
 
 Notice:
+
 - The instruction is `bl __wrap_puts` - a function call
 - The previous instruction at `0x1000023a` loaded `r0` with the string address
 - Ghidra shows `= "hello, world\r"` right in the listing!
@@ -1363,6 +1397,7 @@ int main(void)
 ```
 
 From this view, you can immediately see:
+
 - The program loops forever (`do { } while (true)`)
 - It calls `__wrap_puts()` with a string argument
 - To change the output, you need to change what's passed to `puts()`
@@ -1387,7 +1422,7 @@ When you navigate to the string address `0x100019cc`, you'll see the string stor
                  20  77  6f 
 ```
 
-This shows the raw bytes of our string: `68 65 6c 6c 6f 2c 20 77 6f...` which spell out "hello, world\r" in ASCII.
+This shows the raw bytes of our string: `68 65 6c 6c 6f 2c 20 77 6f...` which spell out `"hello, world\r"` in ASCII.
 
 ##### Step 8: Patching Data in Ghidra (Preview)
 

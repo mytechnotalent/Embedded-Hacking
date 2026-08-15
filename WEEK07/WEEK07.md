@@ -1,22 +1,25 @@
 # Week 7: Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C Basics
 
----
+***
 **LEGAL DISCLAIMER:**
 The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
 
 You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
 
 By using this repository and course, you acknowledge and agree that:
+
 1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
 2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
 3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
 
 **IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
----
+
+***
 
 ## What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
+
 - Understand the difference between `#define` macros and `const` variables
 - Know how constants are stored differently in memory (compile-time vs runtime)
 - Understand the I2C (Inter-Integrated Circuit) communication protocol
@@ -341,6 +344,7 @@ bl  i2c_init                   ; Call the function
 ### Prerequisites
 
 Before we start, make sure you have:
+
 1. A Raspberry Pi Pico 2 board
 2. A Raspberry Pi Pico Debug Probe
 3. OpenOCD installed and configured
@@ -463,6 +467,7 @@ int main(void) {
 ### Step 3: Verify It's Working
 
 **Check the LCD:**
+
 - Line 1 should show: `Reverse`
 - Line 2 should show: `Engineering`
 
@@ -613,6 +618,7 @@ Look for this instruction:
 **Surprise!** The `const` variable is ALSO embedded as an immediate value - not loaded from memory! The compiler saw that `OTHER_FAV_NUM` is never address-taken (`&OTHER_FAV_NUM` is never used), so it optimized the `const` the same way as `#define` - as a constant embedded directly in the instruction.
 
 The difference is the instruction encoding:
+
 - `FAV_NUM` (42): `movs r1, #0x2a` - 16-bit Thumb instruction (values 0-255)
 - `OTHER_FAV_NUM` (1337): `movw r1, #0x539` - 32-bit Thumb-2 instruction (values 0-65535)
 
@@ -636,8 +642,8 @@ These are the values that `ldr rN, [pc, #offset]` instructions load:
 | `0x100002a8`      | `0x2000062C`   | &i2c1_inst (I2C struct in RAM) |
 | `0x100002ac`      | `0x10003EE8`   | "Reverse" string address       |
 | `0x100002b0`      | `0x10003EF0`   | "Engineering" string address   |
-| `0x100002b4`      | `0x10003EFC`   | "FAV_NUM: %d\r\n" format str  |
-| `0x100002b8`      | `0x10003F0C`   | "OTHER_FAV_NUM: %d\r\n" fmt   |
+| `0x100002b4`      | `0x10003EFC`   | `"FAV_NUM: %d\r\n"` format str  |
+| `0x100002b8`      | `0x10003F0C`   | `"OTHER_FAV_NUM: %d\r\n"` fmt   |
 
 > Tip: **Why does the disassembly at `0x100002a4` show `strh r0, [r4, #52]` instead of data?** Same reason as Week 6 - GDB's `x/i` tries to decode raw data as instructions. Use `x/wx` to see the actual word values or we can also use `x/x`.
 
@@ -728,6 +734,7 @@ The value 42 is embedded directly in a 16-bit Thumb instruction. This is expecte
 The value 1337 is ALSO embedded directly in an instruction - but this time a 32-bit Thumb-2 `movw` because the value doesn't fit in 8 bits.
 
 **Why wasn't `const` stored in memory?** In theory, `const int OTHER_FAV_NUM = 1337` creates a variable in the `.rodata` section. But the compiler optimized it away because:
+
 1. We never take the address of `OTHER_FAV_NUM` (no `&OTHER_FAV_NUM`)
 2. The value fits in a 16-bit `movw` immediate
 3. Loading from an immediate is faster than loading from memory
@@ -798,6 +805,7 @@ file_offset = address - 0x10000000
 ```
 
 For example:
+
 - Address `0x1000028e` -> file offset `0x28E` (654 in decimal)
 - Address `0x10003ee8` -> file offset `0x3EE8` (16104 in decimal)
 
@@ -905,6 +913,7 @@ python ..\uf2conv.py build\0x0017_constants-h.bin --base 0x10000000 --family 0xe
 ### Step 23: Verify the Hack
 
 **Check the LCD:**
+
 - Line 1 should now show: `Exploit` (instead of "Reverse")
 - Line 2 should still show: `Engineering`
 

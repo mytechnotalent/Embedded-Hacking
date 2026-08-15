@@ -1,22 +1,25 @@
 # Week 5: Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floats w/ Intermediate GPIO Output Assembler Analysis
 
----
+***
 **LEGAL DISCLAIMER:**
 The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
 
 You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
 
 By using this repository and course, you acknowledge and agree that:
+
 1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
 2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
 3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
 
 **IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
----
+
+***
 
 ## What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
+
 - Understand how integers and floating-point numbers are stored in memory
 - Know the difference between signed and unsigned integers (`uint8_t` vs `int8_t`)
 - Understand how floats and doubles are represented using IEEE 754 encoding
@@ -141,6 +144,7 @@ Use this exact process any time you need to encode a decimal float manually.
 Quick decode check (reverse direction, fully expanded):
 
 Given the 32-bit pattern:
+
 - `0 | 10000100 | 01010100000000000000000`
 
 Decode it field by field:
@@ -207,6 +211,7 @@ int main(void) {
 > An ARM **literal pool** is a small table of constants that the assembler places near code in memory. Instead of encoding a large immediate value directly in an instruction, the CPU executes a load instruction (such as `ldr`) that reads the constant from that nearby table. That is why Ghidra can show constant loads rather than a classic stack local.
 
 **What this code does:**
+
 1. Declares a `float` variable `fav_num` and initializes it to `42.5`
 2. Initializes the serial output
 3. Prints `fav_num` forever in a loop using the `%f` format specifier
@@ -272,11 +277,13 @@ Ghidra will open. Now we need to create a new project.
 A dialog appears. The file is identified as a "BIN" (raw binary without debug symbols).
 
 **Click the three dots (...) next to "Language" and:**
+
 1. Search for "Cortex"
 2. Select **ARM Cortex 32 little endian default**
 3. Click **OK**
 
 **Click the "Options..." button and:**
+
 1. Change **Block Name** to `.text`
 2. Change **Base Address** to `10000000` (the XIP address!)
 3. Click **OK**
@@ -298,6 +305,7 @@ Wait for analysis to complete (watch the progress bar in the bottom right).
 Look at the **Symbol Tree** panel on the left. Expand **Functions**.
 
 You'll see function names like:
+
 - `FUN_1000019a`
 - `FUN_10000210`
 - `FUN_10000234`
@@ -752,6 +760,7 @@ int main(void) {
 ```
 
 **What this code does:**
+
 1. Declares a `double` variable `fav_num` and initializes it to `42.52525`
 2. Initializes the serial output
 3. Prints `fav_num` forever in a loop using the `%lf` format specifier
@@ -817,11 +826,13 @@ Ghidra will open. Now we need to create a new project.
 A dialog appears. The file is identified as a "BIN" (raw binary without debug symbols).
 
 **Click the three dots (...) next to "Language" and:**
+
 1. Search for "Cortex"
 2. Select **ARM Cortex 32 little endian default**
 3. Click **OK**
 
 **Click the "Options..." button and:**
+
 1. Change **Block Name** to `.text`
 2. Change **Base Address** to `10000000` (the XIP address!)
 3. Click **OK**
@@ -843,6 +854,7 @@ Wait for analysis to complete (watch the progress bar in the bottom right).
 Look at the **Symbol Tree** panel on the left. Expand **Functions**.
 
 You'll see function names like:
+
 - `FUN_1000019a`
 - `FUN_10000210`
 - `FUN_10000238`
@@ -983,7 +995,7 @@ The sign bit is bit 63 of the 64-bit double, which is bit 31 of r3 (the high reg
 ```
 r3 = 0x4045433B = 0100 0000 0100 0101 0100 0011 0011 1011
                   ^
-                  r3 bit 31 = 0 -> sign = 0 -> Positive number âœ“
+                  r3 bit 31 = 0 -> sign = 0 -> Positive number ✓
 ```
 
 **2. Exponent - bits 62-52 = bits 30-20 of r3**
@@ -1164,12 +1176,14 @@ Look in the Listing view for the two data constants:
 ### Step 20: Patch Both Constants
 
 **Patch the low word:**
+
 1. Click on the data at address `10000254` containing `645A1CAC`
 2. Open the Bytes window and enable byte editing (Pencil icon)
 3. Overwrite bytes `ac 1c 5a 64` with `8f c2 f5 28` (little-endian for `0x645A1CAC -> 0x28F5C28F`)
 4. Press Enter
 
 **Patch the high word:**
+
 1. Click on the data at address `10000258` containing `4045433B`
 2. Keep byte editing enabled in the Bytes window
 3. Overwrite bytes `3b 43 45 40` with `5c ff 58 40` (little-endian for `0x4045433B -> 0x4058FF5C`)

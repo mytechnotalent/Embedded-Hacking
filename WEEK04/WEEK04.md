@@ -1,22 +1,25 @@
 # Week 4: Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Basics
 
----
+***
 **LEGAL DISCLAIMER:**
 The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
 
 You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
 
 By using this repository and course, you acknowledge and agree that:
+
 1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
 2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
 3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
 
 **IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
----
+
+***
 
 ## What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
+
 - Understand what variables are and how they're stored in memory
 - Know the difference between initialized, uninitialized, and constant variables
 - Use Ghidra to analyze binaries without debug symbols
@@ -142,11 +145,11 @@ uint8_t age; // This will be 0, not garbage!
 +-----------------------------------------------------------------+
 |  Raspberry Pi Pico 2                                            |
 |                                                                 |
-|  GPIO 16 -------â–º Red LED                                       |
-|  GPIO 17 -------â–º Green LED                                     |
-|  GPIO 18 -------â–º Blue LED                                      |
+|  GPIO 16 -------► Red LED                                       |
+|  GPIO 17 -------► Green LED                                     |
+|  GPIO 18 -------► Blue LED                                      |
 |  ...                                                            |
-|  GPIO 25 -------â–º Onboard LED                                   |
+|  GPIO 25 -------► Onboard LED                                   |
 +-----------------------------------------------------------------+
 ```
 
@@ -167,11 +170,11 @@ Each high-level function calls lower-level code. Let's trace `gpio_init()`:
 
 ```
 gpio_init(LED_PIN)
-    â†“
+    ↓
 gpio_set_dir(LED_PIN, GPIO_IN)            // Initially set as input
-    â†“
+    ↓
 gpio_put(LED_PIN, 0)                      // Set output value to 0
-    â†“
+    ↓
 gpio_set_function(LED_PIN, GPIO_FUNC_SIO) // Connect to SIO block
 ```
 
@@ -184,6 +187,7 @@ The SIO (Single-cycle I/O) block is a special hardware unit in the RP2350 that p
 ### Prerequisites
 
 Before we start, make sure you have:
+
 1. A Raspberry Pi Pico 2 board
 2. Ghidra installed (for static analysis)
 3. Python installed (for UF2 conversion)
@@ -236,6 +240,7 @@ int main(void) {
 ```
 
 **What this code does:**
+
 1. Declares a variable `age` and initializes it to `42`
 2. Changes `age` to `43`
 3. Initializes the serial output
@@ -298,11 +303,13 @@ Ghidra will open. Now we need to create a new project.
 A dialog appears. The file is identified as a "BIN" (raw binary without debug symbols).
 
 **Click the three dots (...) next to "Language" and:**
+
 1. Search for "Cortex"
 2. Select **ARM Cortex 32 little endian default**
 3. Click **OK**
 
 **Click the "Options..." button and:**
+
 1. Change **Block Name** to `.text`
 2. Change **Base Address** to `10000000` (the XIP address!)
 3. Click **OK**
@@ -324,6 +331,7 @@ Wait for analysis to complete (watch the progress bar in the bottom right).
 Look at the **Symbol Tree** panel on the left. Expand **Functions**.
 
 You'll see function names like:
+
 - `FUN_1000019a`
 - `FUN_10000210`
 - `FUN_10000234`
@@ -409,6 +417,7 @@ The compiler **optimized it out**! Here's what happened:
 3. Compiler removes the unused `42` and just uses `43` directly
 
 **What is `0x2b`?** Let's check:
+
 - `0x2b` in hexadecimal = `43` in decimal
 
 The compiler replaced our variable with the constant value!
@@ -470,6 +479,7 @@ python ..\uf2conv.py build\0x0005_intro-to-variables-h.bin --base 0x10000000 --f
 ```
 
 **What this command means:**
+
 - `uf2conv.py` = the conversion script
 - `--base 0x10000000` = the XIP base address
 - `--family 0xe48bff59` = the RP2350 family ID
@@ -529,6 +539,7 @@ int main(void) {
 ```
 
 **What this code does:**
+
 1. Declares `age` without initializing it (will be 0 due to BSS zeroing)
 2. Initializes GPIO 16 as an output
 3. In a loop: prints age, blinks the LED
@@ -644,6 +655,7 @@ This is used in `gpio_set_dir`. Patch this to `0x11` as well.
 
 This is inside the loop for `gpio_put`. Patch this to `0x11` as well.
 Patch each one with **Patch Instruction**, then verify:
+
 - `10000244`: `10 23` -> `11 23`
 - `10000252`: `10 24` -> `11 24`
 
@@ -694,6 +706,7 @@ age: 66
 And now the **GREEN LED on GPIO 17** should be blinking instead of the red one!
 
  **We successfully:**
+
 1. Changed the printed value from 0 to 66
 2. Changed which LED blinks from red (GPIO 16) to green (GPIO 17)
 
@@ -713,6 +726,7 @@ mcrr p0, #4, r4, r5, c4    ; GPIO direction control
 ```
 
 **What this means:**
+
 - `mcrr` = Move to Coprocessor from two ARM Registers
 - `p0` = Coprocessor 0 (the GPIO coprocessor)
 - `r4` = Contains the GPIO pin number

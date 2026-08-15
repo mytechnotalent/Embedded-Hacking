@@ -1,22 +1,25 @@
 # Week 6: Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ GPIO Input Basics
 
----
+***
 **LEGAL DISCLAIMER:**
 The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
 
 You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
 
 By using this repository and course, you acknowledge and agree that:
+
 1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
 2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
 3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
 
 **IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
----
+
+***
 
 ## What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
+
 - Understand the difference between regular (automatic) variables and static variables
 - Know where different types of variables are stored (stack vs static storage)
 - Configure GPIO pins as inputs and use internal pull-up resistors
@@ -35,6 +38,7 @@ By the end of this tutorial, you will be able to:
 A **static variable** is a special kind of variable that "remembers" its value between function calls or loop iterations. Unlike regular variables that get created and destroyed each time, static variables **persist** for the entire lifetime of your program.
 
 Think of it like this:
+
 - **Regular variable:** Like writing on a whiteboard that gets erased after each class
 - **Static variable:** Like writing in a notebook that you keep forever
 
@@ -218,10 +222,12 @@ gpio_put(LED_GPIO, pressed ? 0 : 1);
 ```
 
 This is a compact if-else statement:
+
 - If `pressed` is **true (1)**: output `0` (LED OFF... wait, that seems backwards!)
 - If `pressed` is **false (0)**: output `1` (LED ON)
 
 **Why is it inverted?** Because of the pull-up resistor!
+
 - Button **released** -> GPIO reads `1` -> `pressed = 1` -> output `0` -> LED OFF
 - Button **pressed** -> GPIO reads `0` -> `pressed = 0` -> output `1` -> LED ON
 
@@ -273,6 +279,7 @@ This is why when you look for `gpio_pull_up` in the binary, you might find `gpio
 ### Prerequisites
 
 Before we start, make sure you have:
+
 1. A Raspberry Pi Pico 2 board
 2. A Raspberry Pi Pico Debug Probe
 3. OpenOCD installed and configured
@@ -287,6 +294,7 @@ Before we start, make sure you have:
 ### Hardware Setup
 
 Connect your button like this:
+
 - One side of button -> GPIO 15
 - Other side of button -> GND
 
@@ -408,12 +416,14 @@ static_fav_num: 45
 ```
 
 **Notice the difference:**
+
 - `regular_fav_num` stays at 42 every time (it's recreated each loop)
 - `static_fav_num` increases each time (it persists and remembers its value)
 
 ### Step 4: Test the Button
 
 Now test the button behavior:
+
 - **Button NOT pressed:** LED should be OFF
 - **Button PRESSED:** LED should turn ON
 
@@ -687,6 +697,8 @@ You can see this directly. Run `x/10i 0x1000028e` in GDB and you will get exactl
 ```gdb
 (gdb) x/s 0x10003578
 0x10003578:     "static_fav_num: %d\r\n"
+```
+
 - `0x10003578`  flash address of the `"static_fav_num: %d\r\n"` string literal, also in **`.rodata`** in flash for the same reason.
 
 So the pool contains addresses into three different regions: RAM `.data` (the static variable), and flash `.rodata` (both format strings). Only the RAM address needed to be in the pool, the flash addresses could in principle be reached other ways, but they are also too large to encode as 16-bit immediates, so they go in the pool too.
@@ -985,6 +997,7 @@ file_offset = address - 0x10000000
 ```
 
 For example:
+
 - Address `0x10000264` -> file offset `0x264` (612 in decimal)
 - Address `0x10000286` -> file offset `0x286` (646 in decimal)
 
@@ -1046,6 +1059,7 @@ To change `eor.w r3, r3, #1` to `eor.w r3, r3, #0`:
 > ?? **Why offset `0x288` and not `0x286`?** The immediate value `#1` is in the **third byte** of the 4-byte instruction. The instruction starts at file offset `0x286`, so the immediate byte is at `0x286 + 2 = 0x288`.
 
 Now the logic is permanently changed:
+
 - Button released (input = 1): `1 XOR 0 = 1` -> LED **ON**
 - Button pressed (input = 0): `0 XOR 0 = 0` -> LED **OFF**
 
@@ -1076,6 +1090,7 @@ python ..\uf2conv.py build\0x0014_static-variables-h.bin --base 0x10000000 --fam
 ```
 
 **What this command means:**
+
 - `uf2conv.py` = the conversion script (in the parent `Embedded-Hacking` directory)
 - `--base 0x10000000` = the XIP base address where code runs from
 - `--family 0xe48bff59` = the RP2350 family ID
@@ -1099,10 +1114,12 @@ static_fav_num: 43
 ```
 
 **Check the LED behavior:**
+
 - LED should now be **ON by default** (when button is NOT pressed)
 - LED should turn **OFF** when you press the button
 
  **BOOM! We successfully:**
+
 1. Changed the printed value from 42 to 43
 2. Inverted the LED/button logic
 

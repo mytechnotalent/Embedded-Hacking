@@ -1,22 +1,25 @@
 # Week 1: Introduction and Overview of Embedded Reverse Engineering: Ethics, Scoping, and Basic Concepts
 
----
+***
 **LEGAL DISCLAIMER:**
 The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
 
 You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
 
 By using this repository and course, you acknowledge and agree that:
+
 1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
 2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
 3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
 
 **IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
----
+
+***
 
 ## What You'll Learn This Week
 
 By the end of this week, you will be able to: 
+
 - Understand what a microcontroller is and how it works
 - Know the basic registers of the ARM Cortex-M33 processor
 - Understand memory layout (Flash vs RAM) and why it matters
@@ -40,6 +43,7 @@ The RP2350 has two "brains" inside it - we call these **cores**.  One brain uses
 ### What is Reverse Engineering?
 
 Reverse engineering is like being a detective for code. Instead of writing code and compiling it, we take compiled code (the 1s and 0s that the computer actually runs) and figure out what it does.  This is useful for:
+
 - Understanding how things work
 - Finding bugs or security issues
 - Learning how software interacts with hardware
@@ -68,6 +72,7 @@ The ARM Cortex-M33 has several important registers:
 These 13 registers are your "scratch paper." When the processor needs to add two numbers, subtract, or do any calculation, it uses these registers to hold the values.
 
 **Example:** If you want to add 5 + 3:
+
 1. Put 5 in `r0`
 2. Put 3 in `r1`
 3. Add them and store the result (8) in `r2`
@@ -75,6 +80,7 @@ These 13 registers are your "scratch paper." When the processor needs to add two
 ##### The Stack Pointer (`r13` / SP)
 
 The **stack** is a special area of memory that works like a stack of plates: 
+
 - When you add something, you put it on top (called a **PUSH**)
 - When you remove something, you take it from the top (called a **POP**)
 
@@ -85,11 +91,11 @@ The two Arm ABI documents we verified give the formal proof for these rules.  In
 ```
 Higher Memory Address (0x20082000)
 +------------------+
-|                  |  â† Stack starts here (empty)
+|                  |  ← Stack starts here (empty)
 +------------------+
-|   Pushed Item 1  |  â† SP points here after 1 push
+|   Pushed Item 1  |  ← SP points here after 1 push
 +------------------+
-|   Pushed Item 2  |  â† SP points here after 2 pushes
+|   Pushed Item 2  |  ← SP points here after 2 pushes
 +------------------+
 Lower Memory Address (0x20081FF8)
 ```
@@ -196,6 +202,7 @@ stdio_init_all();
 ```
 
 This function initializes all the standard I/O (input/output) for the Pico. It sets up:
+
 - **USB CDC** (so you can see output when connected to a computer via USB)
 - **UART** (serial communication pins)
 
@@ -225,6 +232,7 @@ while (true)
 ### Why This Code is Perfect for Learning
 
 This simple program is ideal for reverse engineering practice because:
+
 - It has a clear, recognizable function call (`printf`)
 - It has an infinite loop we can observe
 - It's small enough to understand completely
@@ -258,6 +266,7 @@ When done correctly, your Pico 2 will appear as a USB mass storage device (like 
 ##### Step 3: Flash and Run
 
 Back in VS Code, click the **Run** button in the status bar. The extension will:
+
 1. Copy the compiled `.uf2` file to the Pico 2
 2. The Pico 2 will automatically reboot and start running your code
 
@@ -270,6 +279,7 @@ Once flashed, your Pico 2 will immediately start executing the hello-world progr
 ### Prerequisites
 
 Before we start, make sure you have: 
+
 1. A Raspberry Pi Pico 2 board
 2. GDB (GNU Debugger) installed
 3. OpenOCD or another debug probe connection
@@ -312,6 +322,7 @@ Breakpoint 1 at 0x10000234: file ../0x0001_hello-world.c, line 5.
 ```
 
 **What this tells us:**
+
 - GDB found our `main` function
 - It's located at address `0x10000234` in flash memory
 - The source file and line number are shown (because we have debug symbols)
@@ -347,6 +358,7 @@ End of assembler dump.
 ```
 
 **Understanding the output:**
+
 - The `=>` arrow shows where we're currently stopped
 - Each line shows: `address <offset>: instruction operands`
 - We can see the calls to `stdio_init_all` and `__wrap_puts` (printf was optimized to puts)
@@ -492,6 +504,7 @@ xpsr           0x69000000          1761607680
 ```
 
 **Key registers to watch:**
+
 | Register | Value        | Meaning                                         |
 | -------- | ------------ | ----------------------------------------------- |
 | `pc`     | `0x10000234` | Program Counter - we're at the start of `main`  |
@@ -637,6 +650,7 @@ int main(void)
 ##### Why We Start with .elf Files
 
 We're using the `.elf` file because it contains symbols that help us learn:
+
 - Function names are visible (`main`, `stdio_init_all`, `puts`)
 - Variable names may be preserved
 - The structure of the code is easier to understand

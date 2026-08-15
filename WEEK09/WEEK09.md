@@ -1,22 +1,25 @@
 # Week 9: Operators in Embedded Systems: Debugging and Hacking Operators w/ DHT11 Temperature & Humidity Sensor Single-Wire Protocol Basics.
 
----
+***
 **LEGAL DISCLAIMER:**
 The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
 
 You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
 
 By using this repository and course, you acknowledge and agree that:
+
 1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
 2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
 3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
 
 **IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
----
+
+***
 
 ## What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
+
 - Understand all six types of C operators (arithmetic, increment, relational, logical, bitwise, assignment)
 - Know how the DHT11 temperature and humidity sensor communicates with the Pico 2
 - Understand how post-increment operators affect variable values
@@ -339,6 +342,7 @@ if (dht11_read(&hum, &temp)) {
 ### Prerequisites
 
 Before we start, make sure you have:
+
 1. A Raspberry Pi Pico 2 board
 2. A Raspberry Pi Pico Debug Probe
 3. Ghidra installed (for static analysis)
@@ -572,6 +576,7 @@ x/32i 0x10000240
 ```
 
 You may see values like:
+
 - `#0x32` (50) for arithmetic_operator
 - `#0x5` (5) for increment_operator
 - `#0x0` (0) for relational and logical operators
@@ -589,6 +594,7 @@ i r r0 r1
 ```
 
 You should see:
+
 - `r0` = address of format string
 - `r1` = value to print
 
@@ -674,11 +680,13 @@ ghidraRun
 ### Step 20: Configure the Binary Format
 
 **Click the three dots (...) next to "Language" and:**
+
 1. Search for "Cortex"
 2. Select **ARM Cortex 32 little endian default**
 3. Click **OK**
 
 **Click the "Options..." button and:**
+
 1. Change **Block Name** to `.text`
 2. Change **Base Address** to `10000000`
 3. Click **OK**
@@ -802,6 +810,7 @@ bl   FUN_xxxxx     ; dht11_init
 ```
 
 **How do we know it's dht11_init?**
+
 - The argument `4` is the GPIO pin number
 - We physically connected the DHT11 to GPIO 4!
 
@@ -843,6 +852,7 @@ bl   FUN_xxxxx      ; dht11_read
 ```
 
 **Understanding the stack offsets:**
+
 - `sp + 0x8` = address of `hum` variable
 - `sp + 0xc` = address of `temp` variable
 - These are `float` pointers passed to the function
@@ -1201,6 +1211,7 @@ Imagine a scenario where temperature sensors control critical systems:
 - **HVAC systems** - Climate control in sensitive environments
 
 By manipulating sensor readings, an attacker could:
+
 - Cause equipment to overheat while displaying normal temperatures
 - Trigger false alarms
 - Bypass safety interlocks

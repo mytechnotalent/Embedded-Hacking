@@ -1,22 +1,25 @@
 # Week 3: Embedded System Analysis: Understanding the RP2350 Architecture w/ Comprehensive Firmware Analysis
 
----
+***
 **LEGAL DISCLAIMER:**
 The information, tools, and code provided in this repository and course are strictly for educational, research, and defensive purposes only. 
 
 You are explicitly prohibited from using any materials contained herein to access, test, modify, or exploit any device, network, or system that you do not own 100% or for which you do not have explicit, documented, and legally binding authorization to interact with.
 
 By using this repository and course, you acknowledge and agree that:
+
 1. Any illegal, unauthorized, or malicious use of this information is solely your responsibility.
 2. The author(s) and contributor(s) of this repository and course shall not be held liable for any damages, legal repercussions, criminal charges, or unauthorized actions resulting from the use, misuse, or abuse of the contents herein.
 3. You will comply with all applicable local, state, national, and international laws regarding cybersecurity and computer fraud.
 
 **IF YOU DO NOT AGREE WITH THESE TERMS, DO NOT USE THIS REPOSITORY AND COURSE.**
----
+
+***
 
 ## What You'll Learn This Week
 
 By the end of this tutorial, you will be able to:
+
 - Understand how the RP2350 boots from the on-chip bootrom
 - Know what the vector table is and why it's important
 - Trace the complete boot sequence from power-on to `main()`
@@ -28,6 +31,7 @@ By the end of this tutorial, you will be able to:
 
 ## Review from Weeks 1-2
 This week builds on your GDB and Ghidra skills from previous weeks:
+
 - **GDB Commands** (`x`, `b`, `c`, `si`, `disas`, `i r`) - We'll use all of these to trace the boot process
 - **Memory Layout** (Flash at `0x10000000`, RAM at `0x20000000`) - Understanding where code and data live
 - **Registers** (`r0`-`r12`, SP, LR, PC) - We'll watch how they're initialized during boot
@@ -161,6 +165,7 @@ Here's what it looks like in the Pico SDK:
 ```
 
 **The magic numbers:**
+
 - `0xffffded3` = Start marker ("I'm a valid Pico binary!")
 - `0xab123579` = End marker ("End of the header block")
 
@@ -192,6 +197,7 @@ Contents of section .text:
 ```
 
 Command 1 explained (`--start-address=0x1000013c --stop-address=0x10000150`):
+
 - Starts at `0x1000013c`, so it does **not** include the start marker at `0x10000138` (`d3deffff`).
 - Shows IMAGE_DEF body fields and the end marker:
   - `42012110` = `42 01 21 10` (item type/size + secure mode field)
@@ -201,6 +207,7 @@ Command 1 explained (`--start-address=0x1000013c --stop-address=0x10000150`):
 - `4ff00000` at `0x1000014c` is already the next instruction word after IMAGE_DEF.
 
 Command 2 explained (`--start-address=0x10000130 --stop-address=0x10000154`):
+
 - Starts earlier, so it captures context **and** both IMAGE_DEF markers.
 - `a0010010 90a31ae7` = binary-info context before IMAGE_DEF.
 - `d3deffff` at `0x10000138` = `PICOBIN_BLOCK_MARKER_START`.
@@ -223,6 +230,7 @@ assuming a fixed address.
 **XIP (Execute In Place)** means the processor can run code directly from flash memory without copying it to RAM first.
 
 Think of it like reading a book:
+
 - **Without XIP**: You photocopy every page into a notebook, then read from the notebook
 - **With XIP**: You just read directly from the book!
 
@@ -266,6 +274,7 @@ The XIP flash region starts at address `0x10000000`. This is where your compiled
 ### What is the Vector Table?
 
 The **vector table** is a list of addresses at the very beginning of your program. It tells the CPU:
+
 1. Where to set the stack pointer
 2. Where to start executing code (reset handler)
 3. Where to go when errors or interrupts happen
@@ -297,10 +306,12 @@ On ARM Cortex-M processors, all code runs in **Thumb mode**. The processor uses 
 | `0` (even) | ARM   | "This is ARM code" (not used on Cortex-M) |
 
 So `0x1000015d` means:
+
 - The actual code is at `0x1000015c` (even address)
 - The `+1` tells the processor "use Thumb mode"
 
 **GDB vs Ghidra:**
+
 - GDB shows `0x1000015d` (with Thumb bit)
 - Ghidra shows `0x1000015c` (actual instruction address)
 - Both are correct! They're just displaying it differently.
@@ -350,6 +361,7 @@ __StackTop = ORIGIN(SCRATCH_Y) + LENGTH(SCRATCH_Y);
 ```
 
 Let's do the math:
+
 - `ORIGIN(SCRATCH_Y)` = `0x20081000`
 - `LENGTH(SCRATCH_Y)` = `0x1000` (4 KB)
 - `__StackTop` = `0x20081000` + `0x1000` = **`0x20082000`**
@@ -365,6 +377,7 @@ This value (`0x20082000`) is what we see at offset `0x00` in the vector table!
 ### Prerequisites
 
 Before we start, make sure you have:
+
 1. A Raspberry Pi Pico 2 board with debug probe connected
 2. OpenOCD installed and configured
 3. GDB (`arm-none-eabi-gdb`) installed
@@ -409,6 +422,7 @@ Let's look at the first 4 entries of the vector table at `0x10000000`:
 ```
 
 **What this command means:**
+
 - `x` = examine memory (Week 1 review!)
 - `/4x` = show 4 values in hexadecimal
 - `0x10000000` = the address of the vector table
@@ -451,6 +465,7 @@ Let's confirm our math by examining what's at `0x10000000`:
 ```
 
 This matches:
+
 - `SCRATCH_Y` starts at `0x20081000`
 - `SCRATCH_Y` is 4 KB (`0x1000` bytes)
 - `0x20081000` + `0x1000` = `0x20082000` 
@@ -510,6 +525,7 @@ This is "Compare and Branch if Zero". If `r0` is `0` (meaning we're on Core 0), 
 The RP2350 has **two cores**, but only **Core 0** should run the startup code! If both cores tried to initialize the same memory and peripherals, chaos would ensue.
 
 So the reset handler checks:
+
 - **Core 0?** -> Continue with startup
 - **Core 1?** -> Go back to the bootrom and wait
 
@@ -629,11 +645,13 @@ The data copy table contains entries that describe what to copy where. Let's exa
 ```
 
 The data_cpy_table contains multiple entries. Each entry has three values:
+
 1. **Source address** (in flash)
 2. **Destination address** (in RAM)
 3. **End address** (where to stop copying)
 
 In the output above, we see:
+
 - **First entry**: `0x10001b4c` (source), `0x20000110` (dest), `0x200002ac` (end)
 - **Second entry starts**: `0x10001ce8` (source of next entry), ...
 
@@ -904,6 +922,7 @@ That's not real code - it's the magic number `0xffffded3` being misinterpreted!
 ### Why Use Ghidra for Boot Analysis?
 
 While GDB is excellent for dynamic analysis (watching code execute), Ghidra excels at:
+
 - **Seeing the big picture** - Understanding code flow without running it
 - **Cross-references** - Finding all places that call a function
 - **Decompilation** - Seeing C-like code even for assembly routines
@@ -1222,14 +1241,17 @@ Understanding the boot process is critical for both attackers and defenders. Kno
 #### Real-World Applications
 
 **Industrial Control Systems:**
+
 - An attacker with physical access could replace firmware to hide malicious behavior
 - Understanding the boot sequence helps identify the earliest point where security checks can be added
 
 **IoT Devices:**
+
 - Compromised boot code could establish backdoors before the main application runs
 - Secure boot implementations verify the vector table and reset handler integrity
 
 **Medical Devices:**
+
 - Boot-time attacks could modify critical safety parameters before device operation
 - Understanding initialization helps implement tamper detection
 
@@ -1269,6 +1291,7 @@ Understanding the boot process is critical for both attackers and defenders. Kno
 #### 4. Memory Protection Unit (MPU)
 
 Configure the Cortex-M33's MPU to:
+
 - Mark code regions as execute-only (no reading code as data)
 - Separate privileged and unprivileged memory regions
 - Prevent execution from RAM regions (defend against code injection)
@@ -1364,6 +1387,7 @@ https://datasheets.raspberrypi.com/rp2350/rp2350-datasheet.pdf
 ### Pico SDK Source Code
 
 The startup code lives in:
+
 - `crt0.S` - Main startup assembly (vector table at `.section .vectors`, reset handler, data copy, BSS clear, platform_entry)
 - `memmap_default.ld` - Default linker script (section ordering: `.vectors` -> `.binary_info_header` -> `.embedded_block` -> `.reset`)
 - `embedded_start_block.inc.S` - IMAGE_DEF block (replaces RP2040's `boot2_generic_03h.S`)
@@ -1545,6 +1569,7 @@ well within the 4 KB scan window the bootrom uses (Datasheet 5.9.5, p. 429).
 ```
 
 >  **Datasheet References:**
+>
 > - 5.1.5.1 (p. 357): Block markers `0xffffded3` (start) and `0xab123579` (end)
 > - 5.9.5 (p. 429): IMAGE_DEF must appear within first 4 kB of flash image
 > - 5.9.5.1 (p. 429): Bootrom enters via reset handler at vector table offset +4
