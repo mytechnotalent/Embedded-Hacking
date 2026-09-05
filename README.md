@@ -82,6 +82,13 @@ Introduction and Overview of Embedded Reverse Engineering: Ethics, Scoping, and 
 
 ### Week 1 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01.md)
 
+### Week 1a Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01a.md)
+
+### Chapter 2a: Understanding the ARM Stack
+This chapter uses OpenOCD and GDB to step through inline Cortex-M33 stack instructions and inspect each saved register in SRAM.
+
+-> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.pdf) to read the FREE pdf book.
+
 ### Chapter 1: hello, world
 This chapter covers the basics of setting up a dev environment and basic template firmware for the Pico 2 MCU in addition to printing hello, world.
 
