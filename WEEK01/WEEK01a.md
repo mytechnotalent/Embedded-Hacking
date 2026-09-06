@@ -148,8 +148,8 @@ __asm volatile(
 This lowers `sp` by 8 bytes. At the new stack pointer, the saved values are:
 
 ```text
-[sp]     = r4
-[sp + 4] = lr
+[sp + 4]      = lr    (higher address, visual top)
+[sp]          = r4    (lower address)  <- SP <- TOP OF STACK
 ```
 
 ##### Second Push: `push {r3, r2, r6}`
@@ -159,17 +159,17 @@ This is deliberately written in a confusing order. The source says `r3` first, b
 After one `si`, the stack layout proves the actual rule:
 
 ```text
-[sp]     = r2
-[sp + 4] = r3
-[sp + 8] = r6
-[sp + 12] = r4
-[sp + 16] = lr
+[sp + 16]     = lr    (highest address, visual top)
+[sp + 12]     = r4
+[sp + 8]      = r6
+[sp + 4]      = r3
+[sp]          = r2    (lowest address)  <- SP <- TOP OF STACK
 ```
 
 The first three words were written by this instruction; `r4` and `lr` remain from
 the preceding `push {r4, lr}`. The lowest register number in this push is stored
-at the lowest address. Because the stack grows down, `r6` is closest to the stack
-pointer value from before this instruction.
+at the lowest address. Because the stack grows down, `[sp]` is the lower address
+and the older `lr` at `[sp + 16]` is the higher address at the visual top.
 
 ##### High Registers: `stmdb sp!, {r9, r10}`
 
@@ -178,8 +178,8 @@ The 16-bit Thumb `push` encoding cannot encode high registers `r8` through `r12`
 `r10`.
 
 ```text
-[sp]     = r9
-[sp + 4] = r10
+[sp + 4]      = r10   (higher address, visual top)
+[sp]          = r9    (lower address)  <- SP <- TOP OF STACK
 ```
 
 ##### The Restore Instructions
@@ -277,7 +277,9 @@ c
 disas main
 ```
 
-You should see this instruction pattern. Your addresses can differ after a rebuild.
+You should see this instruction pattern from the current `build\0x0001a_stack.elf`.
+The instruction addresses are determined by the ELF. The register contents shown
+later are live target state and are not determined by the ELF.
 
 ```text
 => main:          push    {r3, lr}
@@ -291,7 +293,7 @@ You should see this instruction pattern. Your addresses can differ after a rebui
    main+24:       b.n     main+6
 ```
 
-Notice that GDB displays `{r2, r3, r6}`, not the source spelling `{r3, r2, r6}`. That is the encoded register set in canonical order. Depending on the disassembler, register `r10` may be displayed as its conventional alias, `sl`.
+Notice that GDB displays `{r2, r3, r6}`, not the source spelling `{r3, r2, r6}`. That is the encoded register set in canonical order. Some disassemblers display `r10` as its conventional alias, `sl`; `{r9, sl}` and `{r9, r10}` name the same register set.
 
 ### Basic GDB Commands: Your First Steps
 
@@ -308,125 +310,330 @@ Notice that GDB displays `{r2, r3, r6}`, not the source spelling `{r3, r2, r6}`.
 
 ### Watching the Stack Change
 
+> **Important: the instruction addresses and stack offsets below come from the
+> current ELF. The Step 4 register capture is from the live GDB session shown
+> here. Register contents and old SRAM words are target state, not constants
+> that can be recovered from the ELF. The deterministic rule is that `push
+> {r4, lr}` decreases `sp` by 8 bytes, stores `r4` at the new `[sp]`, and
+> stores `lr` at `[sp + 4]`.
+
 ##### Step 1: Inspect the Stack Before the Compiler Prologue
 
 At the breakpoint, GDB is paused before `push {r3, lr}`. Inspect the current stack pointer and the two words below it:
 
 ```gdb
-p/x $sp
-x/2wx $sp-8
+(gdb) p/x $sp
+$1 = 0x20082000
+(gdb) x/2wx $sp-8
+0x20081ff8:     0x88526891      0x10000187
 ```
+
+The stack pointer is at `0x20082000`. The two words below it contain previous values (before the prologue).
 
 ##### Step 2: Execute One Instruction
 
-```gdb
-si
-```
-
-The arrow moves to `bl stdio_init_all`. Inspect what the compiler prologue placed on the stack:
+Execute the compiler prologue `push {r3, lr}`:
 
 ```gdb
-p/x $sp
-x/wx $sp
-x/wx $sp+4
+(gdb) si
+0x100001e2      7           stdio_init_all();
+(gdb) p/x $sp
+$2 = 0x20081ff8
+(gdb) p/x $r3
+$3 = 0xe000ed08
+(gdb) x/wx $sp
+0x20081ff8:     0xe000ed08
+(gdb) p/x $lr
+$4 = 0x1000018b
+(gdb) x/wx $sp+4
+0x20081ffc:     0x1000018b
 ```
 
-The stack pointer moved down 8 bytes. `[sp]` is the saved `r3`; `[sp+4]` is the saved `lr`.
+The prologue saved two values to the stack:
+```text
+[sp + 4]      = 0x1000018b  (lr, higher address, visual top)
+[sp]          = 0xe000ed08  (r3, lower address)  <- SP <- TOP OF STACK
+```
+
+**Stack layout after prologue** (memory grows downward; **higher hex addresses = deeper in stack = older data**):
+
+```text
+Address       Pointer      Value         Label
+0x20082000   ----------   ----------    (previous data — HIGHEST address, visual top)
+0x20081ffc   ----------   0x1000018b    (lr, higher address)
+0x20081ff8   <- [sp]      0xe000ed08    (r3, lowest address)  <- SP <- TOP OF STACK
+
+MEMORY ORDER:  0x20081ff8 < 0x20081ffc < 0x20082000
+         (visual bottom)          (visual top)
+```
+
+**Memory address explanation for newcomers:**
+- Hex address `0x20081ffc` is **LARGER** than `0x20081ff8` (compare the last hex digits: `ffc` > `ff8`)
+- **Larger addresses = higher in memory = deeper in the stack**
+- When we PUSH, sp **DECREASES** (goes to a smaller address, moving DOWN on the page)
+- When we POP, sp **INCREASES** (goes to a larger address, moving UP on the page)
+
+The stack pointer dropped 8 bytes: from `0x20082000` to `0x20081ff8` (it went DOWN, to a smaller/lower address).
 
 ##### Step 3: Step Over `stdio_init_all`
 
-Do not step into the library initialization code. Use `ni`:
+Do not step into the library initialization code. Use `ni` to execute it and return:
 
 ```gdb
-ni
-disas main
+(gdb) ni
+0x100001e6      15          __asm volatile(
+(gdb) disas main
+Dump of assembler code for function main:
+   0x100001e0 <+0>:     push    {r3, lr}
+   0x100001e2 <+2>:     bl      0x10001594 <stdio_init_all>
+=> 0x100001e6 <+6>:     push    {r4, lr}
+   0x100001e8 <+8>:     push    {r2, r3, r6}
+   ...
 ```
 
-The arrow now points at the first inline instruction: `push {r4, lr}`.
+The arrow now points at `push {r4, lr}`, the first inline assembly instruction.
 
 ##### Step 4: Prove the First Inline Push
 
-Read the registers before saving them:
+Read the registers and stack pointer before the first inline push:
 
 ```gdb
-p/x $r4
-p/x $lr
-p/x $sp
+(gdb) p/x $r4
+$3 = 0x100001cc
+(gdb) p/x $lr
+$4 = 0x1000159b
+(gdb) p/x $sp
+$5 = 0x20081ff8
 ```
 
-Execute one instruction and examine the new top of the stack:
+Now execute the first inline push:
 
 ```gdb
-si
-x/wx $sp
-x/wx $sp+4
+(gdb) si
+0x100001e8      16          "push {r4, lr}\n"
+(gdb) p/x $sp
+$6 = 0x20081ff0
+(gdb) x/wx $sp
+0x20081ff0:     0x100001cc
+(gdb) x/wx $sp+4
+0x20081ff4:     0x1000159b
 ```
 
-The values at `[sp]` and `[sp+4]` match the values shown for `r4` and `lr`. This push reduced `sp` by 8 bytes.
+**After first inline push `push {r4, lr}`:**
+- SP = `0x20081ff0` (**new TOP of stack, sp decreased**)
+- `r4` = `0x100001cc` (now saved on stack)
+- `lr` = `0x1000159b` (now saved on stack)
+
+The first push saved:
+```text
+[sp + 4]      = 0x1000159b  (lr, higher address, visual top)
+[sp]          = 0x100001cc  (r4, lower address)  <- SP <- TOP OF STACK
+```
+
+**Stack layout after first inline push**:
+
+```text
+Address       Pointer      Value         Label
+0x20081ffc   ----------   0x1000018b    (lr from prologue — highest address, visual top)
+0x20081ff8   ----------   0xe000ed08    (r3 from prologue — higher address)
+0x20081ff4   ----------   0x1000159b    (lr — higher address)
+0x20081ff0   <- [sp]      0x100001cc    (r4, lowest address)  <- SP <- TOP OF STACK
+
+MEMORY ORDER:  0x20081ff0 < 0x20081ff4 < 0x20081ff8 < 0x20081ffc
+       (visual bottom)                    (visual top)
+       Most recent                         Least recent
+```
+
+**The stack pointer dropped from `0x20081ff8` to `0x20081ff0` — that's 8 bytes down (toward lower addresses).**
+**The value at `[sp]` (the TOP) is now `0x100001cc` (r4).**
+**Address `0x20081ff0` is SMALLER than `0x20081ff8`, so sp moved DOWN.**
+
 
 ##### Step 5: Prove Register-List Ordering
 
-Read the three registers before executing the deliberately unordered list:
+Read the three registers before executing the deliberately unordered list `push {r3, r2, r6}`:
 
 ```gdb
-p/x $r2
-p/x $r3
-p/x $r6
-p/x $sp
+(gdb) p/x $r2
+$18 = 0x200005cc
+(gdb) p/x $r3
+$19 = 0xe000ed08
+(gdb) p/x $r6
+$20 = 0x04f54710
+(gdb) p/x $sp
+$21 = 0x20081ff0
 ```
 
-Now execute only that instruction:
+Now execute the second inline push:
 
 ```gdb
-si
-x/wx $sp
-x/wx $sp+4
-x/wx $sp+8
+(gdb) si
+0x100001ea <+10>:       stmdb   sp!, {r9, sl}
+(gdb) p/x $sp
+$22 = 0x20081fe4
+(gdb) x/wx $sp
+0x20081fe4:     0x200005cc
+(gdb) x/wx $sp+4
+0x20081fe8:     0xe000ed08
+(gdb) x/wx $sp+8
+0x20081fec:     0x04f54710
 ```
 
-Compare the values from the first three commands with the three words in SRAM:
+The second push saved three registers in **numeric order** despite the source spelling `{r3, r2, r6}`:
+```text
+[sp + 8]      = 0x04f54710  (r6, higher address, visual top)
+[sp + 4]      = 0xe000ed08  (r3, higher address)
+[sp]          = 0x200005cc  (r2, lower address)  <- SP <- TOP OF STACK
+```
+
+**Stack layout after second inline push** (**lower hex addresses = most recent = TOP**):
 
 ```text
-[sp]     matches r2
-[sp + 4] matches r3
-[sp + 8] matches r6
+Address       Pointer      Value         Label
+0x20081ffc   ----------   0x1000018b    (lr — HIGHEST address, OLDEST data, visual top)
+0x20081ff8   ----------   0xe000ed08    (r3 — higher address)
+0x20081ff4   ----------   0x1000159b    (lr — higher address)
+0x20081ff0   ----------   0x100001cc    (r4 — higher address)
+0x20081fec   ----------   0x04f54710    (r6 — higher address)
+0x20081fe8   ----------   0xe000ed08    (r3 — higher address)
+0x20081fe4   <- [sp]      0x200005cc    (r2, lowest address)  <- SP <- TOP OF STACK
+
+ADDRESS ORDERING:  0x20081fe4 < 0x20081fe8 < ... < 0x20081ffc
+                  (visual bottom)                  (visual top)
+                  Hex comparison: fe4 < fe8 < fec < ff0 < ff4 < ff8 < ffc
+                  Most recent data at the visual bottom
 ```
 
-This is the proof. The source ordered the list as `r3`, `r2`, `r6`, but the stack is laid out by ascending register number. A multi-register push is one CPU instruction, so individual transfers inside that instruction cannot be separately stepped.
+**The stack pointer dropped from `0x20081ff0` to `0x20081fe4` — that's 12 bytes down (three 4-byte registers).**
+**When comparing hex: `0x20081fe4` is SMALLER than `0x20081ff0`, so sp moved to a LOWER address.**
+**The value at `[sp]` (the TOP) is now `0x200005cc` (r2).**
+
+Notice: the source wrote `r3` first, but the CPU pushed `r2` first because `r2` has a lower register number. The encoded register mask is `{r2, r3, r6}`, and the stack layout proves it.
 
 ##### Step 6: Prove the High-Register Save
 
-Read the values and execute one instruction:
+Read the high registers before the `stmdb sp!, {r9, r10}` instruction:
 
 ```gdb
-p/x $r9
-p/x $r10
-p/x $sp
-si
-x/wx $sp
-x/wx $sp+4
+(gdb) p/x $r9
+$23 = 0x00000000
+(gdb) p/x $r10
+$24 = 0x10000000
+(gdb) p/x $sp
+$25 = 0x20081fe4
 ```
 
-`stmdb sp!, {r9, r10}` moved `sp` down by 8 bytes. The first word equals `r9`; the second equals `r10`.
+Execute the high-register save:
+
+```gdb
+(gdb) si
+0x100001ee <+14>:       ldmia.w sp!, {r9, sl}
+(gdb) p/x $sp
+$26 = 0x20081fdc
+(gdb) p/x $r9
+$27 = 0x00000000
+(gdb) p/x $r10
+$28 = 0x10000000
+(gdb) x/wx $sp
+0x20081fdc:     0x00000000
+(gdb) x/wx $sp+4
+0x20081fe0:     0x10000000
+(gdb) x/wx $sp+8
+0x20081fe4:     0x200005cc
+(gdb) x/wx $sp+12
+0x20081fe8:     0xe000ed08
+(gdb) x/wx $sp+16
+0x20081fec:     0x04f54710
+(gdb) x/wx $sp+20
+0x20081ff0:     0x100001cc
+(gdb) x/wx $sp+24
+0x20081ff4:     0x1000159b
+(gdb) x/wx $sp+28
+0x20081ff8:     0xe000ed08
+```
+
+**After high-register save `stmdb sp!, {r9, r10}`:**
+- SP = `0x20081fdc` (**new TOP of stack, sp decreased further**)
+- `r9` = `0x00000000` (now saved on stack)
+- `r10` = `0x10000000` (now saved on stack)
+
+The `stmdb sp!, {r9, r10}` instruction saved:
+```text
+[sp + 4]      = 0x10000000  (r10, higher address, visual top)
+[sp]          = 0x00000000  (r9, lower address)  <- SP <- TOP OF STACK
+```
+
+**The stack pointer dropped from `0x20081fe4` to `0x20081fdc` — that's 8 more bytes down.**
+**The value at `[sp]` (the TOP) is now `0x00000000` (r9).**
+**This is the DEEPEST point of the stack during inline assembly.**
+
+```text
+Address       Pointer      Value         Label
+0x20081ff8   ----------   0xe000ed08    (saved prologue r3, highest address, visual top)
+0x20081ff4   ----------   0x1000159b    (lr, higher address)
+0x20081ff0   ----------   0x100001cc    (r4, higher address)
+0x20081fec   ----------   0x04f54710    (r6, higher address)
+0x20081fe8   ----------   0xe000ed08    (r3, higher address)
+0x20081fe4   ----------   0x200005cc    (r2, higher address)
+0x20081fe0   ----------   0x10000000    (r10, higher address)
+0x20081fdc   <- [sp]      0x00000000    (r9, lowest address)  <- SP <- TOP OF STACK
+```
 
 ##### Step 7: Watch the Restores
 
-Execute and inspect each restore separately:
+At this point, the stack is at maximum depth. Now execute the restore instructions one by one:
+
+**Restore 1: ldmia sp!, {r9, r10}**
 
 ```gdb
-si
-p/x $sp
-x/3wx $sp
-
-si
-p/x $sp
-x/2wx $sp
-
-si
-p/x $sp
+(gdb) si
+0x100001f2 <+18>:       pop     {r2, r3, r6}
+(gdb) p/x $sp
+$29 = 0x20081fe4
+(gdb) p/x $r9
+$30 = 0x00000000
+(gdb) p/x $r10
+$31 = 0x10000000
 ```
 
-The three instructions raise `sp` by 8, 12, and 8 bytes respectively. The final value is the same stack pointer you saw before the first inline push.
+`ldmia sp!` restored `r9` and `r10` from the stack and raised `sp` by 8 bytes (from `0x20081fdc` to `0x20081fe4`).
+**SP is now `0x20081fe4`; `[sp]` contains r2, so `SP <- TOP OF STACK` at the next group.**
+
+**Restore 2: pop {r2, r3, r6}**
+
+```gdb
+(gdb) si
+0x100001f4 <+20>:       ldmia.w sp!, {r4, lr}
+(gdb) p/x $sp
+$32 = 0x20081ff0
+(gdb) p/x $r2
+$33 = 0x200005cc
+(gdb) p/x $r3
+$34 = 0xe000ed08
+(gdb) p/x $r6
+$35 = 0x04f54710
+```
+
+`pop {r2, r3, r6}` restored the three registers from SRAM and raised `sp` by 12 bytes (from `0x20081fe4` to `0x20081ff0`).
+**SP is now `0x20081ff0`; `[sp]` contains r4, so `SP <- TOP OF STACK` at the final group.**
+
+**Restore 3: ldmia.w sp!, {r4, lr}**
+
+```gdb
+(gdb) si
+0x100001f8 <+24>:       b.n     0x100001e6 <main+6>
+(gdb) p/x $sp
+$36 = 0x20081ff8
+(gdb) p/x $r4
+$37 = 0x100001cc
+(gdb) p/x $lr
+$38 = 0x1000159b
+```
+
+`ldmia.w sp!, {r4, lr}` restored `r4` and `lr` from SRAM and raised `sp` by 8 bytes (from `0x20081ff0` to `0x20081ff8`).
+**SP is now `0x20081ff8`; `[sp]` contains the saved prologue r3, so `SP <- TOP OF STACK` for the remaining prologue stack data.**
+
+**Result:** After all three restore instructions, `sp` is back at `0x20081ff8`, exactly where it was before the inline assembly block started. The loop branches back to `push {r4, lr}` at address `0x100001e6` and repeats forever without consuming stack space.
 
 ### Understanding the Stack Diagram
 
@@ -435,7 +642,7 @@ At the deepest point, after `stmdb sp!, {r9, r10}`, the inline assembly has save
 ```text
 Before inline assembly:              At maximum inline stack depth:
 
-old SP  <- SP                        old SP
+old SP  <- SP                         old SP
                                       [old SP - 4]  lr
                                       [old SP - 8]  r4
                                       [old SP - 12] r6
@@ -464,22 +671,22 @@ The restoration sequence removes the top group first: `r9/r10`, then `r2/r3/r6`,
 ```text
 +-----------------------------------------------------+
 | 1. push {r3, lr}                                    |
-|    Compiler saves its prologue registers             |
+|    Compiler saves its prologue registers            |
 +-----------------------------------------------------+
-| 2. bl stdio_init_all                                 |
-|    Initialize standard I/O                           |
+| 2. bl stdio_init_all                                |
+|    Initialize standard I/O                          |
 +-----------------------------------------------------+
 | 3. push {r4, lr}                                    |
-|    Save the first inline group                       |
+|    Save the first inline group                      |
 +-----------------------------------------------------+
 | 4. push {r3, r2, r6}                                |
-|    Source order differs from stack-memory order      |
+|    Source order differs from stack-memory order     |
 +-----------------------------------------------------+
-| 5. stmdb / ldmia / pop / pop                         |
-|    Save and restore all groups                       |
+| 5. stmdb / ldmia / pop / pop                        |
+|    Save and restore all groups                      |
 +-----------------------------------------------------+
-| 6. b.n main+6                                        |
-|    Repeat with the original stack pointer            |
+| 6. b.n main+6                                       |
+|    Repeat with the original stack pointer           |
 +-----------------------------------------------------+
 ```
 
