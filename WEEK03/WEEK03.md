@@ -345,14 +345,20 @@ MEMORY
 
 **What this means:**
 
-| Region    | Start Address | Size     | Purpose               |
-| --------- | ------------- | -------- | --------------------- |
-| Flash     | `0x10000000`  | (varies) | Your code (XIP)       |
-| RAM       | `0x20000000`  | 512 KB   | Main RAM              |
-| SCRATCH_X | `0x20080000`  | 4 KB     | Core 0 scratch memory |
-| SCRATCH_Y | `0x20081000`  | 4 KB     | Core 0 stack          |
+| Region    | Start Address | Size     | Purpose                                      |
+| --------- | ------------- | -------- | -------------------------------------------- |
+| Flash     | `0x10000000`  | (varies) | Your code (XIP)                              |
+| RAM       | `0x20000000`  | 512 KB   | Main striped SRAM                            |
+| SCRATCH_X | `0x20080000`  | 4 KB     | SRAM8: shared, non-striped SRAM              |
+| SCRATCH_Y | `0x20081000`  | 4 KB     | SRAM9: shared, non-striped SRAM              |
 
-### Where Does the Stack Come From?
+`SCRATCH_X` and `SCRATCH_Y` are linker-script names for SRAM8 and SRAM9. They
+are **not hardware-assigned to Core 0 or Core 1**: both cores can access both
+banks. Software may reserve either bank for per-core data to reduce bank
+contention. This particular linker script selects `SCRATCH_Y` for the Core 0
+stack; that is a software allocation choice, not a property of SRAM9.
+
+### Where Does This Build's Core 0 Stack Come From?
 
 The linker script calculates the initial stack pointer:
 
@@ -366,7 +372,9 @@ Let's do the math:
 - `LENGTH(SCRATCH_Y)` = `0x1000` (4 KB)
 - `__StackTop` = `0x20081000` + `0x1000` = **`0x20082000`**
 
-This value (`0x20082000`) is what we see at offset `0x00` in the vector table!
+This value (`0x20082000`) is what we see at offset `0x00` in the vector table.
+It is the initial Core 0 stack pointer for this build because its linker script
+chose `SCRATCH_Y`; it does not reserve `SCRATCH_Y` for Core 0 in hardware.
 
 ---
 
@@ -791,44 +799,89 @@ Each type of exception has its own handler:
 
 ## Part 13: Finding Where Main is Called
 
-### Step 12: Look at Platform Entry
+### Step 12: Trace Reset Handler to `main`
 
-After all the setup, the code finally calls `main()`. Let's find it:
-
-**Type this command:**
+Start at the Cortex-M vector table. Word `0x00000000` is the initial stack
+pointer; word `0x00000004` is the **reset handler address** loaded into `pc`
+when the processor resets:
 
 ```gdb
-(gdb) x/10i 0x10000186
+(gdb) x/2wx 0x00000000
 ```
 
-**You should see:**
+Disassemble the reset-handler address shown at `0x00000004`, then continue
+through startup until `platform_entry`:
 
-```
-0x10000186 <platform_entry>:
-ldr r1, [pc, #80]   @ (0x100001d8 <data_cpy_table+56>)
-0x10000188 <platform_entry+2>:       blx     r1
-0x1000018a <platform_entry+4>:
-ldr r1, [pc, #80]   @ (0x100001dc <data_cpy_table+60>)
-0x1000018c <platform_entry+6>:       blx     r1
-0x1000018e <platform_entry+8>:
-ldr r1, [pc, #80]   @ (0x100001e0 <data_cpy_table+64>)
-0x10000190 <platform_entry+10>:      blx     r1
-0x10000192 <platform_entry+12>:      bkpt    0x0000
-0x10000194 <platform_entry+14>:
-b.n 0x10000192 <platform_entry+12>
-0x10000196 <data_cpy_loop>:  ldmia   r1!, {r0}
-0x10000198 <data_cpy_loop+2>:        stmia   r2!, {r0}
+```gdb
+(gdb) x/10i RESET_HANDLER_ADDRESS
+(gdb) b platform_entry
+(gdb) c
 ```
 
-### Understanding Platform Entry
+At `platform_entry`, the three `ldr r1` / `blx r1` pairs are indirect calls:
 
-The platform entry code makes **three function calls** using `ldr` + `blx`:
+```text
+0x10000186 <platform_entry+0>:  ldr     r1, [pc, #80]
+0x10000188 <platform_entry+2>:  blx     r1       (first call)
+0x1000018a <platform_entry+4>:  ldr     r1, [pc, #80]
+0x1000018c <platform_entry+6>:  blx     r1       (second call)
+0x1000018e <platform_entry+8>:  ldr     r1, [pc, #80]
+0x10000190 <platform_entry+10>: blx     r1       (third call)
+```
 
-1. **First call**: `runtime_init()` - SDK initialization
-2. **Second call**: `main()` - YOUR CODE!
-3. **Third call**: `exit()` - Called when main returns
+### Prove That the Second Call Is `main`
 
-After `main()` returns, `exit()` is called to handle cleanup. The `bkpt` instruction after `exit()` should never be reached - it's there to catch errors if `exit()` somehow returns.
+Stop at the second `blx r1`. `r1` holds the target; inspect it and then
+disassemble that address:
+
+```gdb
+(gdb) b *0x1000018c
+(gdb) c
+
+Thread 1 "rp2350.dap.core0" hit Breakpoint 1, platform_entry ()
+   at C:/Users/assem.KEVINTHOMAS/.pico-sdk/sdk/2.2.0/src/rp2_common/pico_crt0/crt0.S:515
+515         blx r1
+(gdb) x/x 0x1000018c
+0x1000018c <platform_entry+6>:  0x49144788
+(gdb) disas
+Dump of assembler code for function platform_entry:
+   0x10000186 <+0>:     ldr     r1, [pc, #80]   @ (0x100001d8 <data_cpy_table+56>)
+   0x10000188 <+2>:     blx     r1
+   0x1000018a <+4>:     ldr     r1, [pc, #80]   @ (0x100001dc <data_cpy_table+60>)
+=> 0x1000018c <+6>:     blx     r1
+   0x1000018e <+8>:     ldr     r1, [pc, #80]   @ (0x100001e0 <data_cpy_table+64>)
+   0x10000190 <+10>:    blx     r1
+   0x10000192 <+12>:    bkpt    0x0000
+   0x10000194 <+14>:    b.n     0x10000192 <platform_entry+12>
+End of assembler dump.
+(gdb) x/x 0x1000018c
+0x1000018c <platform_entry+6>:  0x49144788
+(gdb) x/x $r1
+0x10000235 <main>:      0x99f001b5
+(gdb) disas $r1
+Dump of assembler code for function main:
+   0x10000234 <+0>:     push    {r3, lr}
+   0x10000236 <+2>:     bl      0x1000156c <stdio_init_all>
+  0x1000023a <+6>:     ldr     r0, [pc, #8]    @ (0x10000244 <main+16>)
+   0x1000023c <+8>:     bl      0x100015fc <__wrap_puts>
+   0x10000240 <+12>:    b.n     0x1000023a <main+6>
+  0x10000242 <+14>:    nop
+  0x10000244 <+16>:    adds    r4, r1, r7
+  0x10000246 <+18>:    asrs    r0, r0, #32
+End of assembler dump.
+(gdb) x/x 0x100001dc
+0x100001dc <data_cpy_table+60>: 0x10000235
+```
+
+`x/x $r1` reports `0x10000235 <main>` because Thumb function pointers have
+bit 0 set. The actual instruction starts at `0x10000234`, as `disas $r1`
+shows. The preceding `ldr r1, [pc, #80]` reads the literal-pool word at
+`0x100001dc`; `x/x 0x100001dc` confirms that word is `0x10000235`.
+This proves that the **second** indirect call enters `main()`.
+
+The first call performs runtime initialization. When `main()` returns, the
+third call enters the SDK exit path; the following `bkpt` catches the
+unexpected case where that exit path returns.
 
 ### Step 13: Set a Breakpoint at Main
 
@@ -1031,11 +1084,14 @@ void _reset_handler(void)
 
 ### Step 18: Trace the Path to Main
 
-Let's find how the boot code eventually calls `main()`:
+Use the same evidence chain as GDB, but statically in the Listing view:
 
-1. In the Symbol Tree, find the `main` function
-2. Right-click on `main` and select **References -> Show References to main**
-3. This shows everywhere `main` is called from!
+1. In the Symbol Tree, find the `main` function at `0x10000234`.
+2. Right-click `main` and select **References -> Show References to main**.
+3. Double-click the reference at `0x1000018c` to jump to the second `blx r1`.
+4. Select the instruction immediately above it: `ldr r1,[DAT_100001dc]` at
+  `0x1000018a`.
+5. Double-click `DAT_100001dc`, or press **G** and enter `0x100001dc`.
 
 **You should see:**
 
@@ -1043,7 +1099,16 @@ Let's find how the boot code eventually calls `main()`:
 | ------------------------- | ---- | ------------------ |
 | `1000018c`         | CALL | `blx r1` (to main) |
 
-4. Double-click on the reference to jump to `1000018c`
+At `0x100001dc`, Ghidra shows the literal-pool value `0x10000235`. That is
+the Thumb function pointer loaded into `r1` immediately before the call.
+Clear bit 0 to obtain the actual first instruction address:
+
+```text
+0x10000235  (Thumb function pointer; bit 0 is set)
+0x10000234  (main's first instruction; bit 0 cleared)
+```
+
+This proves the second indirect call at `0x1000018c` reaches `main`.
 
 ### Step 19: Examine Platform Entry
 
@@ -1071,7 +1136,14 @@ In Ghidra, look at `platform_entry`:
         10000194 fd  e7           b          LAB_10000192
 ```
 
->  **Key Insight:** Ghidra's decompiler makes the boot sequence crystal clear! You can see exactly what functions are called before `main()`.
+The `DAT_100001dc = 10000235h` annotation is the static proof. The preceding
+`ldr` loads that Thumb function pointer into `r1`; the following `blx r1` at
+`0x1000018c` calls it. Ghidra clears the Thumb bit and labels the target
+`main` at `0x10000234`.
+
+> **Key Insight:** The reset vector identifies the reset handler, the reset
+> handler reaches `platform_entry`, and this literal-pool entry proves that
+> `platform_entry`'s second indirect call reaches `main`.
 
 ### Step 20: Create a Boot Sequence Graph
 
