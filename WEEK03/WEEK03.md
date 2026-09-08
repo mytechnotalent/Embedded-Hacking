@@ -801,19 +801,26 @@ Each type of exception has its own handler:
 
 ### Step 12: Trace Reset Handler to `main`
 
-Start at the Cortex-M vector table. Word `0x00000000` is the initial stack
-pointer; word `0x00000004` is the **reset handler address** loaded into `pc`
-when the processor resets:
+Start at the **application** Cortex-M vector table in XIP flash. The RP2350
+bootrom occupies `0x00000000`; it is not this firmware's vector table. Word
+`0x10000000` is this image's initial stack pointer, and word `0x10000004` is
+the **reset-handler pointer** loaded into `pc` when the bootrom enters the
+application:
 
 ```gdb
-(gdb) x/2wx 0x00000000
+(gdb) x/2wx 0x10000000
+0x10000000 <__vectors>:  0x20082000  0x1000015d
 ```
 
-Disassemble the reset-handler address shown at `0x00000004`, then continue
-through startup until `platform_entry`:
+`0x1000015d` is a Thumb function pointer: bit 0 is set to indicate Thumb
+state. Clear that bit before disassembly, so the reset handler's first
+instruction address is `0x1000015c`. Then continue through startup until
+`platform_entry`:
 
 ```gdb
-(gdb) x/10i RESET_HANDLER_ADDRESS
+(gdb) x/10i 0x1000015c
+(gdb) x/x 0x10000004
+0x10000004 <__vectors+4>:  0x1000015d
 (gdb) b platform_entry
 (gdb) c
 ```
