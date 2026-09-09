@@ -29,7 +29,7 @@ Compact's emergency firmware build shipped a miscompiled safety threshold and
 a false status string to its GRID-7 relay fleet. Students reverse engineer
 the supplied RP2350 image with Ghidra, locate two real defects, patch them
 directly in the binary, export a corrected image, flash it to real hardware,
-and verify the corrected behavior on a physical Pico 2 — the same workflow
+and verify the corrected behavior on a physical Pico 2 - the same workflow
 used in the FINAL projects.
 
 Students must use only Weeks 1-3 concepts: ARM registers and stack behavior,
@@ -66,15 +66,15 @@ Students will demonstrate the ability to:
 | # | Deliverable | Format | Task |
 |---|-------------|--------|------|
 | 1 | Ghidra project screenshot (project name, processor, base address) | PNG/JPG | Task 1 |
-| 2 | `main()`, status-loop, and vector-table address table | Inside `CTF-01-Answers.md` | Task 1 |
-| 3 | Bug #1 analysis: both addresses, original/patched bytes, immediate-value reasoning | Inside `CTF-01-Answers.md` | Task 2 |
-| 4 | Bug #2 analysis: string address, original/patched bytes, character-by-character mapping | Inside `CTF-01-Answers.md` | Task 3 |
-| 5 | Recovered dispatch frame and its address | Inside `CTF-01-Answers.md` | Task 4 |
-| 6 | `CTF-01_fixed.bin` — exported patched binary | BIN file | Task 5 |
-| 7 | `CTF-01_fixed.uf2` — UF2-converted binary | UF2 file | Task 5 |
-| 8 | Verification transcript: corrected UART output on real hardware | Inside `CTF-01-Answers.md` | Task 5 |
-| 9 | Summary table of all patches (address, original bytes, patched bytes) | Inside `CTF-01-Answers.md` | Task 5 |
-| 10 | Written reflection (two short answers) | Inside `CTF-01-Answers.md` | Task 6 |
+| 2 | `main()`, status-loop, and vector-table address table | Inside `CTF-S.md` | Task 1 |
+| 3 | Bug #1 analysis: both addresses, original/patched bytes, immediate-value reasoning | Inside `CTF-S.md` | Task 2 |
+| 4 | Bug #2 analysis: string address, original/patched bytes, character-by-character mapping | Inside `CTF-S.md` | Task 3 |
+| 5 | Recovered dispatch frame and its address | Inside `CTF-S.md` | Task 4 |
+| 6 | `CTF-01_fixed.bin` - exported patched binary | BIN file | Task 5 |
+| 7 | `CTF-01_fixed.uf2` - UF2-converted binary | UF2 file | Task 5 |
+| 8 | Verification transcript: corrected UART output on real hardware | Inside `CTF-S.md` | Task 5 |
+| 9 | Summary table of all patches (address, original bytes, patched bytes) | Inside `CTF-S.md` | Task 5 |
+| 10 | Written reflection (two short answers) | Inside `CTF-S.md` | Task 6 |
 
 ---
 
@@ -100,7 +100,7 @@ CTF-01.uf2  980F04369C23AD32A063DFE18DE5AF08DF3830138FC7E7898B1F011B4F5E1D9D
 
 ---
 
-##  Task 1: Setup and Initial Analysis — 15 points
+##  Task 1: Setup and Initial Analysis - 15 points
 
 | Criterion | Points | Full Credit | Partial Credit | No Credit |
 |-----------|--------|-------------|----------------|-----------|
@@ -111,10 +111,10 @@ CTF-01.uf2  980F04369C23AD32A063DFE18DE5AF08DF3830138FC7E7898B1F011B4F5E1D9D
 
 ---
 
-##  Task 2: Find and Patch Bug #1 — Miscalibrated Safety Threshold — 30 points
+##  Task 2: Find and Patch Bug #1 - Miscalibrated Safety Threshold - 30 points
 
 **What to find:** the frozen reading is compared against a miscompiled
-safety constant at **two separate addresses** — once for the operator-facing
+safety constant at **two separate addresses** - once for the operator-facing
 status and once for the automated dispatch decision.
 
 | Criterion | Points | Full Credit | Partial Credit | No Credit |
@@ -128,7 +128,7 @@ status and once for the automated dispatch decision.
 
 ---
 
-##  Task 3: Find and Patch Bug #2 — The False Signal Banner — 20 points
+##  Task 3: Find and Patch Bug #2 - The False Signal Banner - 20 points
 
 | Criterion | Points | Full Credit | Partial Credit | No Credit |
 |-----------|--------|-------------|----------------|-----------|
@@ -139,7 +139,7 @@ status and once for the automated dispatch decision.
 
 ---
 
-##  Task 4: Recover the Quarantined Dispatch Frame — 10 points
+##  Task 4: Recover the Quarantined Dispatch Frame - 10 points
 
 | Criterion | Points | Full Credit | Partial Credit | No Credit |
 |-----------|--------|-------------|----------------|-----------|
@@ -150,7 +150,7 @@ Students must **not** patch this value; it is evidence only.
 
 ---
 
-##  Task 5: Export and Verify — 20 points
+##  Task 5: Export and Verify - 20 points
 
 | Criterion | Points | Full Credit | Partial Credit | No Credit |
 |-----------|--------|-------------|----------------|-----------|
@@ -161,7 +161,7 @@ Students must **not** patch this value; it is evidence only.
 
 ---
 
-##  Task 6: Written Reflection — 5 points
+##  Task 6: Written Reflection - 5 points
 
 | Criterion | Points | Full Credit | Partial Credit | No Credit |
 |-----------|--------|-------------|----------------|-----------|

@@ -58,7 +58,7 @@ to the fleet, containing two real, independently patchable defects.
 
 Students must reconstruct the boot path, locate both defects with Ghidra,
 patch the binary directly, export and convert it, and prove the corrected
-behavior on real hardware — the same workflow used in the FINAL projects.
+behavior on real hardware - the same workflow used in the FINAL projects.
 
 ---
 
@@ -92,10 +92,10 @@ behavior on real hardware — the same workflow used in the FINAL projects.
 
 ---
 
-##  Task 2: Bug #1 Solution — Miscalibrated Safety Threshold
+##  Task 2: Bug #1 Solution - Miscalibrated Safety Threshold
 
 `grid_deviation` is declared `volatile`, so the compiler cannot reuse one
-comparison for both output paths — it emits **two independent** compare
+comparison for both output paths - it emits **two independent** compare
 instructions, one for `operator_state` and one for `dispatch_state`:
 
 ```text
@@ -145,7 +145,7 @@ line) are each computed from their **own** re-read of `grid_deviation`
 against their **own** copy of the compiled threshold. Patching only
 location A fixes what is *displayed* to a human operator while leaving the
 *automated dispatch decision* (location B) still authorizing a black start
-on a dangerous reading — the worst possible partial fix, because it makes
+on a dangerous reading - the worst possible partial fix, because it makes
 the display look trustworthy while the machine still does the wrong thing.
 
 ### Grid math with the frozen reading (87)
@@ -157,7 +157,7 @@ the display look trustworthy while the machine still does the wrong thing.
 
 ---
 
-##  Task 3: Bug #2 Solution — The False Signal Banner
+##  Task 3: Bug #2 Solution - The False Signal Banner
 
 The unconditional boot-banner string lives in `.rodata`:
 
@@ -167,7 +167,7 @@ The unconditional boot-banner string lives in `.rodata`:
 | `"NORMAL"` substring to patch | `0x10003680` |
 
 Call site: `0x10000224` loads `r0 = 0x10003678`; `0x10000226` calls
-`__wrap_puts`. This line prints once, at boot, and is never re-evaluated —
+`__wrap_puts`. This line prints once, at boot, and is never re-evaluated -
 it does not depend on `grid_deviation` at all.
 
 ### Exact Byte Patch (6 bytes, same length: `NORMAL` -> `DANGER`)
@@ -202,7 +202,7 @@ a guess from the narrative. Students must not patch this value.
 
 ##  Task 5: Export and Verify Solution
 
-### Expected UART Transcript — Before Patching
+### Expected UART Transcript - Before Patching
 
 ```text
 GLOBAL EMBEDDED RESPONSE NETWORK
@@ -215,7 +215,7 @@ LAST FRAME: QUARANTINED
 RESPONSE>
 ```
 
-### Expected UART Transcript — After All Three Byte Patches
+### Expected UART Transcript - After All Three Byte Patches
 
 ```text
 GLOBAL EMBEDDED RESPONSE NETWORK
@@ -262,7 +262,7 @@ Accept equivalent addresses when a student's Ghidra auto-analysis produces
 slightly different intermediate labels, provided the byte-level patch
 locations and values match this key. Do not award credit for a `0x3C` patch
 to the threshold immediates without a correct explanation of the `<`/`<=`
-compiler transform — that is a coincidentally-close but technically
+compiler transform - that is a coincidentally-close but technically
 incorrect answer for the boundary case `grid_deviation == 60`.
 
 A complete answer finds both threshold locations, explains the compiler's
@@ -276,7 +276,7 @@ behavior on real hardware.
 There is no single "correct" essay for either question. Grade for specific,
 grounded reasoning tied to *this* incident, not generic statements.
 
-**Question 1 — Why "rushed under emergency pressure" is not an excuse:**
+**Question 1 - Why "rushed under emergency pressure" is not an excuse:**
 An acceptable answer names the actual failure mode: an eleven-minute compile
 with no review path shipped an integer threshold that was never checked
 against the documented 60-unit engineering limit, and a hardcoded status
@@ -287,12 +287,12 @@ credit requires the student to connect the excuse to the specific missing
 safeguard (code review or automated bounds-checking), not just assert that
 pressure is never an excuse.
 
-**Question 2 — One practice per bug:**
+**Question 2 - One practice per bug:**
 - Bug #1 (miscalibrated, duplicated threshold): a unit test or static
   analysis rule that checks every comparison against `SAFE_THRESHOLD`
   matches a single source of truth, or a code review that would have asked
   "why is this threshold checked in two places instead of one shared
-  function?"
+  function-
 - Bug #2 (hardcoded status string): a hardware-in-the-loop smoke test that
   compares the boot banner's signal word against the actual latched
   reading, which would have caught a string that never changes regardless

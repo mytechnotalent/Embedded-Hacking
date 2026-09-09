@@ -28,8 +28,8 @@
 
 **WorldGrid Compact** is the emergency interconnection standard shared by
 three allied national grid operators. When any member's primary SCADA
-network goes dark, a fleet of small embedded relay nodes — call sign
-**GRID-7** — is the only thing standing between an orderly recovery and an
+network goes dark, a fleet of small embedded relay nodes - call sign
+**GRID-7** - is the only thing standing between an orderly recovery and an
 uncontrolled cascade. Each relay node watches the last known grid frequency
 deviation, decides whether conditions are safe, and either **holds** the
 automatic black-start dispatch or **authorizes** it.
@@ -46,18 +46,18 @@ pushed it within **eleven minutes** of the attack being detected.
 
 The engineer who built that emergency image, **Dr. Elias Renner**, has not
 slept in thirty-one hours. He compiled the fix, ran a five-second bench
-test, and shipped it — because the alternative was leaving the relay fleet
+test, and shipped it - because the alternative was leaving the relay fleet
 completely blind. It appears to work. The relay boots. It prints a status
 report. It reports **GRID STATUS: STABLE** and **DISPATCH PATH:
 AUTHORIZED**.
 
 There is a problem: the frozen frequency reading latched at the moment
-communications were cut shows a deviation of **0.87 Hz** — nearly *50%
+communications were cut shows a deviation of **0.87 Hz** - nearly *50%
 beyond* WorldGrid's hard engineering limit of **0.60 Hz**. A deviation this
 large, if trusted, means the grid is nowhere near stable enough for an
 automatic black-start dispatch. If the fleet authorizes dispatch on a false
 "STABLE" reading, cascading generator trips will follow within minutes,
-and GRID-7 and WATER-3 will go dark for the second time — this time with no
+and GRID-7 and WATER-3 will go dark for the second time - this time with no
 backup plan.
 
 **Dr. Renner's rushed build has a bug. Multiple relay nodes are already
@@ -68,7 +68,7 @@ and cannot be recovered.**
 
 ### The Only Surviving Evidence
 
-One relay node — the training/verification unit — still holds the exact
+One relay node - the training/verification unit - still holds the exact
 miscompiled image that shipped to the fleet. This binary, and this binary
 alone, is the only remaining copy of the emergency build. There is no
 source code. There is no build log. There is only the compiled image, a
@@ -86,11 +86,11 @@ reading machine code.
 
 **The options are:**
 
-1. ❌ **Trust the fleet's reported status** — dispatch fires on a false
+1. ❌ **Trust the fleet's reported status** - dispatch fires on a false
    reading, cascading failure follows within the hour.
-2. ❌ **Shut the entire relay fleet down** — buys time, but leaves 40
+2. ❌ **Shut the entire relay fleet down** - buys time, but leaves 40
    million people with no automated recovery path at all.
-3.  **REVERSE ENGINEER THE EMERGENCY BUILD** — find the exact
+3.  **REVERSE ENGINEER THE EMERGENCY BUILD** - find the exact
    miscompiled bytes, patch them, verify the corrected image on real
    hardware, and hand the fix to the field team so the *rest of the fleet*
    can be safely repatched before the next attempt.
@@ -171,7 +171,7 @@ The relay should latch the frozen deviation reading, compare it against the
 +-----------------------------------------------------------------+
 ```
 
-###  Observed (Buggy) Behavior — What You Will See When You First Flash `CTF-01.uf2`
+###  Observed (Buggy) Behavior - What You Will See When You First Flash `CTF-01.uf2`
 
 ```text
 GLOBAL EMBEDDED RESPONSE NETWORK
@@ -186,7 +186,7 @@ RESPONSE>
 
 This is exactly what Dr. Renner's team is seeing on the deployed fleet. It
 is wrong, and it is wrong in **two independent ways** inside the compiled
-binary. Do not assume the first readable sentence is the full truth —
+binary. Do not assume the first readable sentence is the full truth -
 treat every printed line as evidence to be checked against the machine
 code, not as a fact on its own.
 
@@ -211,7 +211,7 @@ actual filenames in your report.
 You do not have the source code. It was overwritten fifteen minutes after
 the emergency build shipped. You have only the compiled image. Your job is
 to reverse engineer it with Ghidra, locate the defects, and patch the
-binary directly — exactly the way Dr. Renner's field team will need to
+binary directly - exactly the way Dr. Renner's field team will need to
 patch the rest of the deployed fleet.
 
 ### What The Firmware Does
@@ -219,27 +219,27 @@ patch the rest of the deployed fleet.
 1. Initializes UART0 and stdio.
 2. Reads a frozen grid-frequency-deviation reading that was latched in
    memory before communications were severed.
-3. Compares that reading against a compiled-in safety threshold — **twice**,
+3. Compares that reading against a compiled-in safety threshold - **twice**,
    once for each independent status line it reports.
 4. Prints a boot banner containing an unconditional signal-quality line.
 5. Enters an infinite loop printing the grid classification and dispatch
    decision once per second.
 
-###  Bug Summary — What You Are Graded On
+###  Bug Summary - What You Are Graded On
 
 | Bug # | Category | Severity | Description | Hint |
 |-------|----------|----------|--------------|------|
-| **Bug #1** | Miscompiled safety constant | **CRITICAL** | The safety threshold used to classify the frozen reading was compiled far too permissive. It is used **twice** — once for the operator-facing status and once for the automated dispatch decision — and **both** copies must be corrected. | The real WorldGrid safety limit is 60 (0.60 Hz). Search for the wrong immediate value used in the comparison. |
-| **Bug #2** | Hardcoded string literal | **HIGH** | The boot banner unconditionally prints a signal-quality word that does not reflect the actual reading, regardless of what the relay later reports. | The correct word describes the true state of a 0.87 Hz deviation against a 0.60 Hz limit — not "NORMAL". |
+| **Bug #1** | Miscompiled safety constant | **CRITICAL** | The safety threshold used to classify the frozen reading was compiled far too permissive. It is used **twice** - once for the operator-facing status and once for the automated dispatch decision - and **both** copies must be corrected. | The real WorldGrid safety limit is 60 (0.60 Hz). Search for the wrong immediate value used in the comparison. |
+| **Bug #2** | Hardcoded string literal | **HIGH** | The boot banner unconditionally prints a signal-quality word that does not reflect the actual reading, regardless of what the relay later reports. | The correct word describes the true state of a 0.87 Hz deviation against a 0.60 Hz limit - not "NORMAL". |
 
 **Important:** The replacement text for Bug #2 **must be the same length**
-as the original — patching a shorter or longer string will corrupt
+as the original - patching a shorter or longer string will corrupt
 adjacent flash data.
 
-###  A Third Finding — Not a Bug, a Recovery Task
+###  A Third Finding - Not a Bug, a Recovery Task
 
 Somewhere in this image is the **quarantined black-start authorization
-frame** — the exact frame the relay is supposed to transmit to the
+frame** - the exact frame the relay is supposed to transmit to the
 regional dispatcher once a human operator confirms it is safe to proceed.
 It is never printed by the firmware. Recovering it (without patching
 anything) is required evidence for your final report.
@@ -251,7 +251,7 @@ anything) is required evidence for your final report.
 ###  Submission Document
 
 Whenever a task asks you to **Document** or **answer**, write your answers
-in a single file named `CTF-01-Answers.md` (or `.txt`).
+in a single file named `CTF-S.md` (or `.txt`).
 
 ### Task 1: Setup and Initial Analysis
 
@@ -271,14 +271,14 @@ in a single file named `CTF-01-Answers.md` (or `.txt`).
   pointer as stored (note its Thumb bit) versus the actual instruction
   address.
 
-### Task 2: Find and Patch Bug #1 — The Miscalibrated Safety Threshold
+### Task 2: Find and Patch Bug #1 - The Miscalibrated Safety Threshold
 
 1. Find **both** locations where the frozen reading is compared against
    the miscompiled safety constant.
 2. Document the exact address, the original instruction, and the original
    immediate value at each location.
 3. Determine the correct immediate value. **Caution:** the compiler may
-   not have encoded the raw threshold you expect — a strict "less than"
+   not have encoded the raw threshold you expect - a strict "less than"
    comparison against an unsigned value is often optimized into a
    "less-or-equal" comparison against one less than the threshold. Show
    your reasoning.
@@ -289,7 +289,7 @@ in a single file named `CTF-01-Answers.md` (or `.txt`).
 - Why is a false "STABLE" classification on an 0.87 Hz reading dangerous
   for an automated black-start dispatch?
 
-### Task 3: Find and Patch Bug #2 — The False Signal Banner
+### Task 3: Find and Patch Bug #2 - The False Signal Banner
 
 1. Find the boot-banner string that unconditionally reports the wrong
    signal quality.
@@ -307,7 +307,7 @@ in a single file named `CTF-01-Answers.md` (or `.txt`).
    hidden black-start authorization frame.
 2. Document its address and explain why it is never transmitted by the
    current firmware.
-3. Do **not** attempt to patch this value — it is evidence, not a bug.
+3. Do **not** attempt to patch this value - it is evidence, not a bug.
 
 ### Task 5: Export and Verify
 
@@ -319,7 +319,7 @@ in a single file named `CTF-01-Answers.md` (or `.txt`).
 3. Flash `CTF-01_fixed.uf2` to your Pico 2 and capture the corrected UART
    output.
 4. Confirm that the corrected image now reports **GRID STATUS: CRITICAL**,
-   **DISPATCH PATH: HELD**, and the corrected signal-quality word — an
+   **DISPATCH PATH: HELD**, and the corrected signal-quality word - an
    honest, safe report instead of a false "all clear."
 5. Build a summary table of every patch: address, original bytes, patched
    bytes, and a one-line description.
@@ -339,7 +339,7 @@ in a single file named `CTF-01-Answers.md` (or `.txt`).
 
 Submit a folder containing:
 
-- `CTF-01-Answers.md`;
+- `CTF-S.md`;
 - screenshots or terminal transcripts;
 - `CTF-01_fixed.bin` and `CTF-01_fixed.uf2`;
 - the original image hash.
