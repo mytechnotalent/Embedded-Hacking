@@ -118,6 +118,12 @@ Embedded System Analysis: Understanding the RP2350 Architecture w/ Comprehensive
 
 ### Week 3 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03.md)
 
+### CTF Instructions [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-I.md)
+
+### CTF Rubric [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-R.md)
+
+### CTF Solution [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-S.md)
+
 ### Chapter 4: Embedded System Analysis
 This chapter covers a comprehensive embedded system analysis reviewing parts of the RP2350 datasheet and helpful firmware analysis tools.
 
