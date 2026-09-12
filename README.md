@@ -377,23 +377,31 @@ Forty-two stories beneath frozen tundra, a shadow intelligence alliance called D
 
 <br>
 
+## RP2350 C Projects
+
+### Encryption C RP2350 [HERE](https://github.com/mytechnotalent/encryption-c-rp2350)
+
+### MeshCore Bare RP2350 [HERE](https://github.com/mytechnotalent/meshcore-bare-rp2350) 
+
+<br>
+
 ## RP2350 ARM Assembler Drivers
 
-### An RP2350 UART driver written entirely in ARM Assembler. [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver)
+### UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver)
 
-### An RP2350 blink driver written entirely in ARM Assembler. [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver)
+### Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver)
 
-### An RP2350 button driver written entirely in ARM Assembler. [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver)
+### Button Driver [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver)
 
 <br>
 
 ## RP2350 RISC-V Assembler Drivers
 
-### An RP2350 UART driver written entirely in RISC-V Assembler. [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver_RISCV)
+### UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver_RISCV)
 
-### An RP2350 blink driver written entirely in RISC-V Assembler. [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver_RISCV)
+### Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver_RISCV)
 
-### An RP2350 button driver written entirely in RISC-V Assembler. [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver_RISCV)
+### Button Driver [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver_RISCV)
 
 <br>
 
