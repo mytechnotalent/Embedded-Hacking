@@ -377,15 +377,19 @@ Forty-two stories beneath frozen tundra, a shadow intelligence alliance called D
 
 <br>
 
-## RP2350 C Projects
-
-### Encryption C RP2350 [HERE](https://github.com/mytechnotalent/encryption-c-rp2350)
+## Pico 2 W  C Projects
 
 ### MeshCore Bare RP2350 [HERE](https://github.com/mytechnotalent/meshcore-bare-rp2350) 
 
 <br>
 
-## RP2350 ARM Assembler Drivers
+## Pico 2 C Projects
+
+### Encryption C RP2350 [HERE](https://github.com/mytechnotalent/encryption-c-rp2350)
+
+<br>
+
+## Pico 2 ARM Assembler Drivers
 
 ### UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver)
 
@@ -395,7 +399,7 @@ Forty-two stories beneath frozen tundra, a shadow intelligence alliance called D
 
 <br>
 
-## RP2350 RISC-V Assembler Drivers
+## Pico 2 RISC-V Assembler Drivers
 
 ### UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver_RISCV)
 
