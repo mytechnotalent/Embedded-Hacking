@@ -377,15 +377,43 @@ Forty-two stories beneath frozen tundra, a shadow intelligence alliance called D
 
 <br>
 
-## Pico 2 W  C Projects
+## Pico 2 W C MeshCore Project
 
 ### MeshCore Bare RP2350 [HERE](https://github.com/mytechnotalent/meshcore-bare-rp2350) 
 
 <br>
 
-## Pico 2 C Projects
+## Pico 2 C Encryption Project
 
 ### Encryption C RP2350 [HERE](https://github.com/mytechnotalent/encryption-c-rp2350)
+
+<br>
+
+## Pico 2 C IoT Projects
+
+IN DEVELOPMENT
+
+<br>
+
+## Pico 2 Rust Drivers
+
+### UART Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_UART_Driver)
+
+### Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_Blink_Driver)
+
+### Button Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_Button_Driver)
+
+<br>
+
+## Pico 2 Rust Encryption Project
+
+### Encryption [HERE](https://github.com/mytechnotalent/encryption)
+
+<br>
+
+## Pico 2 Rust IoT Projects
+
+IN DEVELOPMENT
 
 <br>
 
