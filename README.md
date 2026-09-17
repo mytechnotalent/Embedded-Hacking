@@ -59,12 +59,6 @@ Students must have a working understanding of the following items:
 <br>
 
 # Hardware [View Full Parts List](PARTS.md)
-## Complete Component Kit for Raspberry Pi [BUY](https://www.pishop.us/product/custom-kit-for-pitt-edu)
-### 10% PiShop DISCOUNT CODE - UPKT_HS320548_10PC
-## 5mm LEDs (1 Red, 1 Green, 1 Yellow) [BUY](https://www.amazon.com/s?k=5mm+led+kit)
-## 100, 220 or 330 Ohm Resistors (for LEDs) [BUY](https://www.amazon.com/s?k=resistor+assortment+kit)
-## 1x SG90 Servo Motor [BUY](https://www.amazon.com/s?k=sg90+micro+servo+motor)
-## 10pc 25v 1000uF Capacitor [BUY](https://www.amazon.com/Cionyce-Capacitor-Electrolytic-CapacitorsMicrowave/dp/B0B63CCQ2N?th=1)
 
 <br><br>
 
@@ -414,6 +408,160 @@ IN DEVELOPMENT
 ## Pico 2 Rust IoT Projects
 
 IN DEVELOPMENT
+
+<br>
+
+## Pico 2 ARM Assembler Tutorial
+
+## Chapter 1: What Is a Computer?
+This lesson will teach you what is a computer with the fundamental model of computation that every computer shares with an intro to the RP2350 and ARM Cortex-M33.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-01.md) to read the lesson and see the code.
+
+## Chapter 2: Chapter 2: Number Systems — Binary, Hexadecimal, and Decimal
+This lesson will teach the basics of the three main number systems which are decimal, binary and hexadecimal.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-02.md) to read the lesson and see the code.
+
+## Chapter 3: Memory — Addresses, Bytes, Words, and Endianness
+This lesson will teach the basics addresses, bytes, words and endianness within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-03.md) to read the lesson and see the code.
+
+## Chapter 4: What Is a Register?)
+This lesson will teach the general purpose registers within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-04.md) to read the lesson and see the code.
+
+## Chapter 5: Load-Store Architecture — How ARM Accesses Memory
+This lesson will teach how ARM accesses memory with load and store architecture within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-05.md) to read the lesson and see the code.
+
+## Chapter 6: The Fetch-Decode-Execute Cycle in Detail
+This lesson will teach the fetch and decode cycle in more detail within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-06.md) to read the lesson and see the code.
+
+## Chapter 7: ARM Cortex-M33 ISA Overview
+This lesson will teach the ARM Cortex-M33 ISA overview within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-07.md) to read the lesson and see the code.
+
+## Chapter 8: ARM Immediate and Move Instructions
+This lesson will teach ARM immediate and move instructions within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-08.md) to read the lesson and see the code.
+
+## Chapter 9: ARM Arithmetic and Logic Instructions
+This lesson will teach ARM arithmetic and logic instructions within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-09.md) to read the lesson and see the code.
+
+## Chapter 10: ARM Memory Access Instructions
+This lesson will teach ARM memory access instructions within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-10.md) to read the lesson and see the code.
+
+## Chapter 11: ARM Branch Instructions
+This lesson will teach ARM branch instructions within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-11.md) to read the lesson and see the code.
+
+## Chapter 12: ARM Calls, Returns, and the Stack Frame)
+This lesson will teach ARM calls, returns and the stack frame within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-12.md) to read the lesson and see the code.
+
+## Chapter 13: Assembler Directives
+This lesson will teach assembler directives within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-13.md) to read the lesson and see the code.
+
+## Chapter 14: Labels, Symbols, and the Symbol Table
+This lesson will teach labels, symbols and the symbol table within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-14.md) to read the lesson and see the code.
+
+## Chapter 15: Sections, Memory Layout, and the Linker Script
+This lesson will teach sections, memory layout, and the linker script within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-15.md) to read the lesson and see the code.
+
+## Chapter 16: System Registers and Coprocessor Interface
+This lesson will teach system registers and coprocessor interface within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-16.md) to read the lesson and see the code.
+
+## Chapter 17: Bit Manipulation Patterns
+This lesson will teach bit manipulation patterns within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-17.md) to read the lesson and see the code.
+
+## Chapter 18: RP2350 Hardware Architecture
+This lesson will teach RP2350 hardware architecture within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-18.md) to read the lesson and see the code.
+
+## Chapter 19: The Linker Script
+This lesson will teach the linker script within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-19.md) to read the lesson and see the code.
+
+## Chapter 20: The Build System
+This lesson will teach the build system within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-20.md) to read the lesson and see the code.
+
+## Chapter 21: image_def.s — The PICOBIN Boot Block
+This lesson will teach the PICOBIN boot block within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-21.md) to read the lesson and see the code.
+
+## Chapter 22: constants.s — Memory Addresses and Constants
+This lesson will teach memory addresses and constants within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-22.md) to read the lesson and see the code.
+
+## Chapter 23: vector_table.s and stack.s — Boot Foundation
+This lesson will teach the boot foundation within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-23.md) to read the lesson and see the code.
+
+## Chapter 24: reset_handler.s — The Boot Sequence
+This lesson will teach the boot sequence within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-24.md) to read the lesson and see the code.
+
+## Chapter 25: xosc.s — Crystal Oscillator and Clock Configuration)
+This lesson will teach the crystal oscillator and clock configuration within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-25.md) to read the lesson and see the code.
+
+## Chapter 26: reset.s — Releasing Peripherals from Reset
+This lesson will teach releasing peripherals from reset within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-26.md) to read the lesson and see the code.
+
+## Chapter 27: gpio.s Part 1 — GPIO_Config
+This lesson will teach GPIO config within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-27.md) to read the lesson and see the code.
+
+## Chapter 28: gpio.s Part 2, delay.s, and coprocessor.s — Output Control and Timing
+This lesson will teach output control and timing within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-28.md) to read the lesson and see the code.
+
+## Chapter 29: main.s — The Blink Loop
+This lesson will teach the blink loop within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-29.md) to read the lesson and see the code.
+
+## Chapter 30: Full Integration — From Source to Blinking LED
+This lesson will teach the full source to blinking LED within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-30.md) to read the lesson and see the code.
 
 <br>
 
