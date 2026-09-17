@@ -411,6 +411,160 @@ IN DEVELOPMENT
 
 <br>
 
+## Pico 2 Rust Tutorial
+
+### Chapter 1: What Is Embedded Rust?
+This lesson will teach what embedded Rust is within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-01.md) to read the lesson and see the code.
+
+### Chapter 2: Number Systems and Memory
+This lesson will teach number systems and memory within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-02.md) to read the lesson and see the code.
+
+### Chapter 3: Rust Essentials
+This lesson will teach the Rust essentials within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-03.md) to read the lesson and see the code.
+
+### Chapter 4: Ownership, Borrowing, and Lifetimes
+This lesson will teach ownership, borrowing and lifetimes within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-04.md) to read the lesson and see the code.
+
+### Chapter 5: Structs, Enums, and Pattern Matching
+This lesson will teach structs, enums and pattern matching within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-05.md) to read the lesson and see the code.
+
+### Chapter 6: Traits and Generics
+This lesson will teach traits and generics within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-06.md) to read the lesson and see the code.
+
+### Chapter 7: no_std and no_main
+This lesson will teach no_std and no_main within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-07.md) to read the lesson and see the code.
+
+### Chapter 8: Cargo, Targets, and the Toolchain
+This lesson will teach cargo, targets and the toolchain within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-08.md) to read the lesson and see the code.
+
+### Chapter 9: memory.x and the Linker Script
+This lesson will teach the memory.x linker script within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-09.md) to read the lesson and see the code.
+
+### Chapter 10: build.rs, Makefile, and Flashing
+This lesson will teach the build.rs, Makefile and flashing process within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-10.md) to read the lesson and see the code.
+
+### Chapter 11: Memory-Mapped I/O
+This lesson will teach memory-mapped I/O within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-11.md) to read the lesson and see the code.
+
+### Chapter 12: Real-Time and Concurrency
+This lesson will teach real-time and concurrency within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-12.md) to read the lesson and see the code.
+
+### Chapter 13: Futures and async/await
+This lesson will teach futures and async/await within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-13.md) to read the lesson and see the code.
+
+### Chapter 14: The Embassy Executor
+This lesson will teach the Embassy executor within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-14.md) to read the lesson and see the code.
+
+### Chapter 15: embassy-time
+This lesson will teach embassy-time within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-15.md) to read the lesson and see the code.
+
+### Chapter 16: The embassy-rp HAL
+This lesson will teach the embassy-rp HAL within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-16.md) to read the lesson and see the code.
+
+### Chapter 17: GPIO with embassy-rp
+This lesson will teach GPIO with embassy-rp within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-17.md) to read the lesson and see the code.
+
+### Chapter 18: Driver Architecture
+This lesson will teach the driver architecture within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-18.md) to read the lesson and see the code.
+
+### Chapter 19: config.rs — Blink Configuration
+This lesson will teach the config.rs blink configuration within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-19.md) to read the lesson and see the code.
+
+### Chapter 20: led.rs — The LED State Machine
+This lesson will teach the led.rs LED state machine within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-20.md) to read the lesson and see the code.
+
+### Chapter 21: main.rs — The Async Blink Loop
+This lesson will teach the main.rs async blink loop within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-21.md) to read the lesson and see the code.
+
+### Chapter 22: Button Hardware and Debouncing
+This lesson will teach button hardware and debouncing within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-22.md) to read the lesson and see the code.
+
+### Chapter 23: button.rs — The Button Controller
+This lesson will teach the button.rs button controller within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-23.md) to read the lesson and see the code.
+
+### Chapter 24: main.rs — The Button Polling Loop
+This lesson will teach the main.rs button polling loop within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-24.md) to read the lesson and see the code.
+
+### Chapter 25: Host Testing with cargo test
+This lesson will teach host testing with cargo test within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-25.md) to read the lesson and see the code.
+
+### Chapter 26: UART Fundamentals and the Echo Protocol
+This lesson will teach UART fundamentals and the echo protocol within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-26.md) to read the lesson and see the code.
+
+### Chapter 27: uart.rs — The Echo State Machine
+This lesson will teach the uart.rs echo state machine within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-27.md) to read the lesson and see the code.
+
+### Chapter 28: Interrupts and DMA — Interrupt-Driven UART
+This lesson will teach interrupts and DMA interrupt-driven UART within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-28.md) to read the lesson and see the code.
+
+### Chapter 29: main.rs — The UART Echo Loop
+This lesson will teach the main.rs UART echo loop within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-29.md) to read the lesson and see the code.
+
+### Chapter 30: The Complete Integration
+This lesson will teach the complete integration within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-30.md) to read the lesson and see the code.
+
+<br>
+
 ## Pico 2 ARM Assembler Tutorial
 
 ### Chapter 1: What Is a Computer?
@@ -582,6 +736,160 @@ This lesson will teach the full source to blinking LED within the MCU.
 ### Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver_RISCV)
 
 ### Button Driver [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver_RISCV)
+
+<br>
+
+## Pico 2 RISC-V Assembler Tutorial
+
+### Chapter 1: What Is a Computer?
+This lesson will teach you what is a computer with the fundamental model of computation that every computer shares with an intro to the RP2350 and RISC-V.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-01.md) to read the lesson and see the code.
+
+### Chapter 2: Number Systems — Binary, Hexadecimal, and Decimal
+This lesson will teach the basics of the three main number systems which are decimal, binary and hexadecimal.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-02.md) to read the lesson and see the code.
+
+### Chapter 3: Memory — Addresses, Bytes, Words, and Endianness
+This lesson will teach the basics of addresses, bytes, words and endianness within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-03.md) to read the lesson and see the code.
+
+### Chapter 4: What Is a Register?
+This lesson will teach the general purpose registers within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-04.md) to read the lesson and see the code.
+
+### Chapter 5: Load-Store Architecture — How RISC-V Accesses Memory
+This lesson will teach how RISC-V accesses memory with load and store architecture within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-05.md) to read the lesson and see the code.
+
+### Chapter 6: The Fetch-Decode-Execute Cycle in Detail
+This lesson will teach the fetch, decode and execute cycle in detail within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-06.md) to read the lesson and see the code.
+
+### Chapter 7: RISC-V Hazard3 ISA Overview
+This lesson will teach the RISC-V Hazard3 ISA overview within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-07.md) to read the lesson and see the code.
+
+### Chapter 8: RISC-V Immediate and Upper-Immediate Instructions
+This lesson will teach RISC-V immediate and upper-immediate instructions within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-08.md) to read the lesson and see the code.
+
+### Chapter 9: RISC-V Arithmetic and Logic Instructions
+This lesson will teach RISC-V arithmetic and logic instructions within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-09.md) to read the lesson and see the code.
+
+### Chapter 10: RISC-V Memory Access — Load and Store Deep Dive
+This lesson will teach RISC-V memory access load and store instructions in deep detail within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-10.md) to read the lesson and see the code.
+
+### Chapter 11: RISC-V Branch Instructions
+This lesson will teach RISC-V branch instructions within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-11.md) to read the lesson and see the code.
+
+### Chapter 12: RISC-V Jumps, Calls, and Returns
+This lesson will teach RISC-V jumps, calls and returns within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-12.md) to read the lesson and see the code.
+
+### Chapter 13: RISC-V Pseudo-Instructions
+This lesson will teach RISC-V pseudo-instructions within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-13.md) to read the lesson and see the code.
+
+### Chapter 14: Assembler Directives
+This lesson will teach assembler directives within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-14.md) to read the lesson and see the code.
+
+### Chapter 15: Calling Convention and Stack Frames
+This lesson will teach the calling convention and stack frames within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-15.md) to read the lesson and see the code.
+
+### Chapter 16: Bitwise Operations for Hardware Programming
+This lesson will teach bitwise operations for hardware programming within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-16.md) to read the lesson and see the code.
+
+### Chapter 17: Memory-Mapped I/O
+This lesson will teach memory-mapped I/O within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-17.md) to read the lesson and see the code.
+
+### Chapter 18: The RP2350 — Architecture and Hardware
+This lesson will teach the RP2350 architecture and hardware within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-18.md) to read the lesson and see the code.
+
+### Chapter 19: The Linker Script — Placing Code in Memory
+This lesson will teach the linker script and how code is placed in memory within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-19.md) to read the lesson and see the code.
+
+### Chapter 20: The Build Pipeline — From Assembly to Flashable Binary
+This lesson will teach the build pipeline from assembly to flashable binary within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-20.md) to read the lesson and see the code.
+
+### Chapter 21: Boot Metadata — image_def.s
+This lesson will teach the image_def.s boot metadata within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-21.md) to read the lesson and see the code.
+
+### Chapter 22: The Constants File — constants.s
+This lesson will teach the constants.s file within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-22.md) to read the lesson and see the code.
+
+### Chapter 23: Stack and Vector Table — stack.s and vector_table.s
+This lesson will teach the stack and vector table within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-23.md) to read the lesson and see the code.
+
+### Chapter 24: Boot Sequence — reset_handler.s
+This lesson will teach the reset_handler.s boot sequence within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-24.md) to read the lesson and see the code.
+
+### Chapter 25: Oscillator Initialization — xosc.s
+This lesson will teach the xosc.s oscillator initialization within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-25.md) to read the lesson and see the code.
+
+### Chapter 26: Reset Controller — reset.s
+This lesson will teach the reset.s reset controller within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-26.md) to read the lesson and see the code.
+
+### Chapter 27: GPIO Configuration — gpio.s Part 1
+This lesson will teach the gpio.s GPIO configuration part 1 within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-27.md) to read the lesson and see the code.
+
+### Chapter 28: GPIO Set/Clear, Delay, and Coprocessor — gpio.s Part 2, delay.s, coprocessor.s
+This lesson will teach the gpio.s GPIO set/clear, delay.s and coprocessor.s within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-28.md) to read the lesson and see the code.
+
+### Chapter 29: Application Entry Point — main.s
+This lesson will teach the main.s application entry point within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-29.md) to read the lesson and see the code.
+
+### Chapter 30: Full Integration — Build, Flash, Wire, and Test
+This lesson will teach the full build, flash, wire and test integration within the MCU.
+
+-> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-30.md) to read the lesson and see the code.
 
 <br>
 
