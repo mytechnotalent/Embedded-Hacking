@@ -389,28 +389,6 @@ IN DEVELOPMENT
 
 <br>
 
-## Pico 2 Rust Drivers
-
-### UART Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_UART_Driver)
-
-### Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_Blink_Driver)
-
-### Button Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_Button_Driver)
-
-<br>
-
-## Pico 2 Rust Encryption Project
-
-### Encryption [HERE](https://github.com/mytechnotalent/encryption)
-
-<br>
-
-## Pico 2 Rust IoT Projects
-
-IN DEVELOPMENT
-
-<br>
-
 ## Pico 2 Rust Tutorial
 
 ### Chapter 1: What Is Embedded Rust?
@@ -562,6 +540,28 @@ This lesson will teach the main.rs UART echo loop within the MCU.
 This lesson will teach the complete integration within the MCU.
 
 -> Click [HERE](https://github.com/mytechnotalent/RP2350-Rust-Tutorial/blob/main/CHAPTER-30.md) to read the lesson and see the code.
+
+<br>
+
+## Pico 2 Rust Drivers
+
+### UART Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_UART_Driver)
+
+### Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_Blink_Driver)
+
+### Button Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_Button_Driver)
+
+<br>
+
+## Pico 2 Rust Encryption Project
+
+### Encryption [HERE](https://github.com/mytechnotalent/encryption)
+
+<br>
+
+## Pico 2 Rust IoT Projects
+
+IN DEVELOPMENT
 
 <br>
 
@@ -729,16 +729,6 @@ This lesson will teach the full source to blinking LED within the MCU.
 
 <br>
 
-## Pico 2 RISC-V Assembler Drivers
-
-### UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver_RISCV)
-
-### Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver_RISCV)
-
-### Button Driver [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver_RISCV)
-
-<br>
-
 ## Pico 2 RISC-V Assembler Tutorial
 
 ### Chapter 1: What Is a Computer?
@@ -890,6 +880,16 @@ This lesson will teach the main.s application entry point within the MCU.
 This lesson will teach the full build, flash, wire and test integration within the MCU.
 
 -> Click [HERE](https://github.com/mytechnotalent/RP2350-RISCV-ASM-Tutorial/blob/main/CHAPTER-30.md) to read the lesson and see the code.
+
+<br>
+
+## Pico 2 RISC-V Assembler Drivers
+
+### UART Driver [HERE](https://github.com/mytechnotalent/RP2350_UART_Driver_RISCV)
+
+### Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Blink_Driver_RISCV)
+
+### Button Driver [HERE](https://github.com/mytechnotalent/RP2350_Button_Driver_RISCV)
 
 <br>
 
