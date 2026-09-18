@@ -772,7 +772,7 @@ int main(void) {
 1. Hold the BOOTSEL button on your Pico 2
 2. Plug in the USB cable (while holding BOOTSEL)
 3. Release BOOTSEL - a drive called "RPI-RP2" appears
-4. Drag and drop `0x000A_intro-to-doubles.uf2` onto the drive
+4. Drag and drop `0x0011_double-floating-point-data-type.uf2` onto the drive
 5. The Pico will reboot and start running!
 
 ### Step 2: Verify It's Working
@@ -809,7 +809,7 @@ Ghidra will open. Now we need to create a new project.
 1. Click **File** -> **New Project**
 2. Select **Non-Shared Project**
 3. Click **Next**
-4. Enter Project Name: `0x000A_intro-to-doubles`
+4. Enter Project Name: `0x0011_double-floating-point-data-type`
 5. Click **Finish**
 
 ### Step 5: Import the Binary
