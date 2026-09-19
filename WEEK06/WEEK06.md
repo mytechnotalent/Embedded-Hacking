@@ -1171,7 +1171,7 @@ static_fav_num: 43
 |     - Identify key instructions and addresses                   |
 +-----------------------------------------------------------------+
 |  2. Understand compiler optimizations                           |
-|     - Some functions get inlined (gpio_pull_up -> gpio_set_pulls)|
+|     - Some functions inlined (gpio_pull_up -> gpio_set_pulls)   |
 |     - Some variables are optimized away                         |
 +-----------------------------------------------------------------+
 |  3. Calculate file offsets                                      |

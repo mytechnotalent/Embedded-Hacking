@@ -104,7 +104,7 @@ When your program is compiled, variables go to different places depending on how
 
 ```
 +-----------------------------------------------------------------+
-|  .data Section (Flash -> copied to RAM at startup)               |
+|  .data Section (Flash -> copied to RAM at startup)              |
 |  Contains: Initialized global/static variables                  |
 |  Example: int counter = 42;                                     |
 +-----------------------------------------------------------------+
@@ -753,7 +753,7 @@ Step 2: Set function (address 0x40028084)
 
 Step 3: Enable output (via coprocessor)
 +-----------------------------------------------------------------+
-|  - mcrr p0, #4, r4, r5, c4  (where r4=16, r5=1)                |
+|  - mcrr p0, #4, r4, r5, c4  (where r4=16, r5=1)                 |
 +-----------------------------------------------------------------+
 ```
 
@@ -836,7 +836,7 @@ delay2:
 |     - Patch Instruction, then verify old bytes -> new bytes     |
 +-----------------------------------------------------------------+
 |  4. Export the patched binary                                   |
-|     - File -> Export Program                                     |
+|     - File -> Export Program                                    |
 |     - Format: Raw Bytes                                         |
 +-----------------------------------------------------------------+
 |  5. Convert to UF2                                              |

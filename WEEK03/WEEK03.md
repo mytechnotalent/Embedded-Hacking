@@ -1194,8 +1194,8 @@ Ghidra can visualize the call flow:
 |     - Finds IMAGE_DEF within first 4 kB of flash image          |
 +-----------------------------------------------------------------+
 |  3. VECTOR TABLE (0x10000000)                                   |
-|     - Reads SP from offset 0x00 -> 0x20082000                    |
-|     - Reads Reset Handler from offset 0x04 -> 0x1000015d         |
+|     - Reads SP from offset 0x00 -> 0x20082000                   |
+|     - Reads Reset Handler from offset 0x04 -> 0x1000015d        |
 +-----------------------------------------------------------------+
 |  4. RESET HANDLER (0x1000015c)                                  |
 |     - Checks CPUID (Core 0 continues, Core 1 waits)             |
@@ -1630,20 +1630,20 @@ well within the 4 KB scan window the bootrom uses (Datasheet 5.9.5, p. 429).
 |  PROVEN BOOT SEQUENCE (0x0001_hello-world)                      |
 +-----------------------------------------------------------------+
 |  1. Bootrom reads 0x10000000                                    |
-|     -> SP  = 0x20082000  (offset +0x00 of vector table)          |
-|     -> RST = 0x1000015d  (offset +0x04, Thumb -> 0x1000015c)     |
+|     -> SP  = 0x20082000  (offset +0x00 of vector table)         |
+|     -> RST = 0x1000015d  (offset +0x04, Thumb -> 0x1000015c)    |
 +-----------------------------------------------------------------+
 |  2. Bootrom scans first 4 kB for IMAGE_DEF                      |
-|     -> Found at 0x10000138 (this build)                          |
-|     -> Start marker: d3 de ff ff                                 |
-|     -> End marker:   79 35 12 ab                                 |
+|     -> Found at 0x10000138 (this build)                         |
+|     -> Start marker: d3 de ff ff                                |
+|     -> End marker:   79 35 12 ab                                |
 +-----------------------------------------------------------------+
 |  3. Bootrom jumps to reset handler at 0x1000015c                |
-|     -> _reset_handler (crt0.S) runs                              |
-|     -> Checks CPUID - Core 1 sent back to bootrom                |
-|     -> Core 0: .data copied, .bss zeroed, platform_entry called  |
+|     -> _reset_handler (crt0.S) runs                             |
+|     -> Checks CPUID - Core 1 sent back to bootrom               |
+|     -> Core 0: .data copied, .bss zeroed, platform_entry called |
 +-----------------------------------------------------------------+
-|  4. platform_entry calls runtime_init -> main -> exit             |
+|  4. platform_entry calls runtime_init -> main -> exit           |
 +-----------------------------------------------------------------+
 ```
 

@@ -1282,10 +1282,10 @@ fav_num: 99.990000
 |     - Split into high/low words                                 |
 +-----------------------------------------------------------------+
 |  5. Patch the constant(s) in Ghidra                             |
-|     - Edit bytes in the Bytes window (Pencil mode)             |
+|     - Edit bytes in the Bytes window (Pencil mode)              |
 |     - Replace the old encoding with the new one                 |
 +-----------------------------------------------------------------+
-|  6. Export -> Convert to UF2 -> Flash -> Verify                    |
+|  6. Export -> Convert to UF2 -> Flash -> Verify                 |
 |     - Same workflow as integer patching                         |
 +-----------------------------------------------------------------+
 ```
