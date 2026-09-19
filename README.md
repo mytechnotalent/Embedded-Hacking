@@ -377,12 +377,6 @@ Forty-two stories beneath frozen tundra, a shadow intelligence alliance called D
 
 <br>
 
-## Pico 2 C Encryption Project
-
-### Encryption C RP2350 [HERE](https://github.com/mytechnotalent/encryption-c-rp2350)
-
-<br>
-
 ## Pico 2 C IoT Projects
 
 IN DEVELOPMENT
@@ -550,12 +544,6 @@ This lesson will teach the complete integration within the MCU.
 ### Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_Blink_Driver)
 
 ### Button Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_Button_Driver)
-
-<br>
-
-## Pico 2 Rust Encryption Project
-
-### Encryption [HERE](https://github.com/mytechnotalent/encryption)
 
 <br>
 
