@@ -377,16 +377,16 @@ Forty-two stories beneath frozen tundra, a shadow intelligence alliance called D
 
 <br>
 
-## Pico 2 W C MeshCore Project
-
-### MeshCore Bare RP2350 [HERE](https://github.com/mytechnotalent/meshcore-bare-rp2350) 
-
-<br>
-
 ## Pico 2 C IoT Projects & CTFs
 
 ### The Cold Chain & Agricultural Environmental Monitor [HERE](https://github.com/mytechnotalent/cold-chain-monitor)
 ### The Cold Chain & Agricultural Environmental Monitor CTF [HERE](https://github.com/mytechnotalent/CTF_cold-chain-monitor)
+
+<br>
+
+## Pico 2 W C MeshCore Project
+
+### MeshCore Bare RP2350 [HERE](https://github.com/mytechnotalent/meshcore-bare-rp2350) 
 
 <br>
 
