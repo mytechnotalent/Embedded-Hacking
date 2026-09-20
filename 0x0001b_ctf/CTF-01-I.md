@@ -1,6 +1,6 @@
-# CTF Challenge - Operation Black Start
+# Operation Black Start - Student Instructions
 
-## ⚠ WORLDGRID EMERGENCY INCIDENT ⚠
+**⚠ WORLDGRID EMERGENCY INCIDENT ⚠**
 
 ```
 +----------------------------------------------------------------------------------------+
@@ -22,7 +22,22 @@
 
 ---
 
-##  INCIDENT BRIEFING
+## Project Overview
+
+WorldGrid Compact's emergency firmware build for its GRID-7 relay fleet
+shipped a miscompiled safety threshold and a hardcoded false status string,
+so deployed relays report a false-safe "STABLE" status while the frozen
+frequency deviation reading of 0.87 Hz is nearly 50% beyond the 0.60 Hz
+engineering limit. The source was overwritten by the next build and cannot
+be recovered, so the only surviving evidence is the exact miscompiled
+training image. Students reverse engineer `CTF-01.bin` with Ghidra, locate
+and patch both defects directly in the binary, export a corrected image,
+flash it to a Pico 2, and prove the corrected behavior with GDB and a UART
+console.
+
+---
+
+## Scenario Briefing
 
 ### Background
 
@@ -118,7 +133,23 @@ no source code, no time for a rewrite, and no room for a guess.
 
 ---
 
-##  What This CTF Tests
+## Learning Objectives
+
+- Decode the RP2350 / ARM Cortex-M33 vector table and identify the reset
+  handler and initial stack pointer.
+- Trace the bootrom-to-reset handoff and translate Thumb reset-vector
+  addresses into real function entry points.
+- Locate a miscompiled boundary comparison and reason about the correct
+  immediate value the compiler should have encoded.
+- Patch compare instructions and a status string directly in a raw binary
+  with Ghidra.
+- Recover a hidden quarantined dispatch frame from the compiled image.
+- Export and UF2-convert a corrected image, then verify the corrected
+  behavior on real hardware with GDB and a UART console.
+
+---
+
+## What This Project Tests
 
 | Week | Concepts Tested |
 |------|-----------------|
@@ -128,7 +159,7 @@ no source code, no time for a rewrite, and no room for a guess.
 
 ---
 
-##  Part 1: Understanding the Relay Node
+## Part 1: Understanding the System
 
 ### GRID-7 Relay Hardware
 
@@ -192,21 +223,7 @@ code, not as a fact on its own.
 
 ---
 
-##  How To Connect the Training Relay
-
-- Pico 2 **GPIO 0 / UART TX** -> USB-UART adapter **RX**
-- Pico 2 **GPIO 1 / UART RX** -> USB-UART adapter **TX**
-- Pico 2 **GND** -> USB-UART adapter **GND**
-- Use **3.3 V logic only**. Never connect a 5 V line to a Pico GPIO.
-- Connect the supplied SWD probe according to its documented pinout.
-
-The supplied image is `CTF-01.bin` (for Ghidra analysis) and `CTF-01.uf2`
-(for flashing). If your instructor supplies different filenames, record the
-actual filenames in your report.
-
----
-
-##  Part 2: The Miscompiled Firmware
+## Part 2: The Firmware
 
 You do not have the source code. It was overwritten fifteen minutes after
 the emergency build shipped. You have only the compiled image. Your job is
@@ -246,12 +263,10 @@ anything) is required evidence for your final report.
 
 ---
 
-##  Part 3: Your Assignment
-
-###  Submission Document
+## Part 3: Your Assignment
 
 Whenever a task asks you to **Document** or **answer**, write your answers
-in a single file named `CTF-S.md` (or `.txt`).
+in a single file named `CTF-01-Answers.md`.
 
 ### Task 1: Setup and Initial Analysis
 
@@ -335,18 +350,42 @@ in a single file named `CTF-S.md` (or `.txt`).
 
 ---
 
-##  Submission Format
+## How To Breadboard
+
+- Pico 2 **GPIO 0 / UART TX** -> USB-UART adapter **RX**
+- Pico 2 **GPIO 1 / UART RX** -> USB-UART adapter **TX**
+- Pico 2 **GND** -> USB-UART adapter **GND**
+- Use **3.3 V logic only**. Never connect a 5 V line to a Pico GPIO.
+- Connect the supplied SWD probe according to its documented pinout.
+
+The supplied image is `CTF-01.bin` (for Ghidra analysis) and `CTF-01.uf2`
+(for flashing). If your instructor supplies different filenames, record the
+actual filenames in your report.
+
+---
+
+## Memory Map Reference
+
+| Region | Address | Purpose |
+|--------|---------|---------|
+| Bootrom | `0x00000000` | Immutable boot code |
+| Flash/XIP | `0x10000000` | Vector table, code, constants, strings |
+| SRAM | `0x20000000` | Stack and writable state |
+
+---
+
+## Submission Format
 
 Submit a folder containing:
 
-- `CTF-S.md`;
+- `CTF-01-Answers.md`;
 - screenshots or terminal transcripts;
 - `CTF-01_fixed.bin` and `CTF-01_fixed.uf2`;
 - the original image hash.
 
 ---
 
-##  Success Criteria
+## Success Criteria
 
 You complete the challenge when you can prove all of the following:
 
@@ -361,7 +400,7 @@ You complete the challenge when you can prove all of the following:
 
 ---
 
-##  Academic Integrity and Safety
+## Academic Integrity
 
 By submitting this CTF work, you certify that:
 
@@ -379,7 +418,7 @@ and never confuse a clean-looking status line with a safe system.
 
 ---
 
-##  Reference Material
+## Reference Material
 
 - ARM Cortex-M33 Technical Reference Manual
 - RP2350 datasheet

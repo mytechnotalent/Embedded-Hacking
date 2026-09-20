@@ -112,11 +112,11 @@ Embedded System Analysis: Understanding the RP2350 Architecture w/ Comprehensive
 
 ### Week 3 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03.md)
 
-### CTF Instructions [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-I.md)
+### CTF-01 Instructions [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-01-I.md)
 
-### CTF Rubric [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-R.md)
+### CTF-01 Rubric [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-01-R.md)
 
-### CTF Solution [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-S.md)
+### CTF-01 Solution [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-01-S.md)
 
 ### Chapter 4: Embedded System Analysis
 This chapter covers a comprehensive embedded system analysis reviewing parts of the RP2350 datasheet and helpful firmware analysis tools.
@@ -258,6 +258,12 @@ This chapter covers hacking constants as well as an intro to I2C as we work a 16
 
 ## Week 8
 ### Midterm Exam
+
+### CTF-02 Instructions [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0017a_ctf/CTF-02-I.md)
+
+### CTF-02 Rubric [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0017a_ctf/CTF-02-R.md)
+
+### CTF-02 Solution [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0017a_ctf/CTF-02-S.md)
 
 ## Week 9
 Operators in Embedded Systems: Debugging and Hacking Operators w/ DHT11 Temperature & Humidity Sensor Single-Wire Protocol Basics
