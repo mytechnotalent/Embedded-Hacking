@@ -383,9 +383,10 @@ Forty-two stories beneath frozen tundra, a shadow intelligence alliance called D
 
 <br>
 
-## Pico 2 C IoT Projects
+## Pico 2 C IoT Projects & CTFs
 
-IN DEVELOPMENT
+### The Cold Chain & Agricultural Environmental Monitor [HERE](https://github.com/mytechnotalent/cold-chain-monitor)
+### The Cold Chain & Agricultural Environmental Monitor CTF [HERE](https://github.com/mytechnotalent/CTF_cold-chain-monitor)
 
 <br>
 
@@ -550,12 +551,6 @@ This lesson will teach the complete integration within the MCU.
 ### Blink Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_Blink_Driver)
 
 ### Button Driver [HERE](https://github.com/mytechnotalent/RP2350_Rust_Button_Driver)
-
-<br>
-
-## Pico 2 Rust IoT Projects
-
-IN DEVELOPMENT
 
 <br>
 
