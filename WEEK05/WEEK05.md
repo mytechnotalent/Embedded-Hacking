@@ -108,26 +108,48 @@ Use this exact process any time you need to encode a decimal float manually.
 
 2. Convert the number to binary.
   - Integer part: `42 = 101010 (base 2)`
+    - $42 = 32 + 8 + 2 = 2^5 + 2^3 + 2^1$
+    - In 6-bit binary: `101010`
   - Fractional part: use repeated multiply-by-2 on the fraction.
     - Start with `0.5`
-    - `0.5 * 2 = 1.0` -> integer part is `1` (this is the first binary fractional bit)
+    - $0.5 \times 2 = 1.0 \implies$ integer part is `1` (this is the first binary fractional bit)
     - Remaining fractional part is now `0.0`, so we stop.
     - Therefore `0.5 = 0.1 (base 2)`.
-  - Combined: `42.5 = 101010.1 (base 2)`
+  - Combined fixed-point binary: `42.5 = 101010.1 (base 2)`
 
-3. Normalize to the form `1.xxxxx * 2^n`.
-  - `101010.1 (base 2) = 1.010101 (base 2) * 2^5`
-  - So the true exponent is `n = 5`.
+3. Normalize to scientific form ($1.\text{mantissa} \times 2^n$) - Where the 5 comes from!
+  - **Why is the exponent 5?** Look at the powers of 2 for the integer part (42):
+    - $2^4 = 16$
+    - $2^5 = 32$
+    - $2^6 = 64$
+    - Because $32 \le 42 < 64$ (that is, $2^5 \le 42 < 2^6$), the largest power of 2 contained within 42 is $2^{\mathbf{5}}$. This mathematical bound guarantees that when normalized, the exponent **must be 5**.
+  - Now count the binary point shifts to bring the number into $1.xxxx$ form:
 
-4. Compute the stored exponent (bias 127 for float).
-  - `stored exponent = n + 127 = 5 + 127 = 132`
-  - `132` in binary is `10000100` (8 bits).
+```
+Original position:   1 0 1 0 1 0 . 1          x 2^0 (value: 42.5)
+Shift 1 place left:  1 0 1 0 1 . 0 1          x 2^1
+Shift 2 places left: 1 0 1 0 . 1 0 1          x 2^2
+Shift 3 places left: 1 0 1 . 0 1 0 1          x 2^3
+Shift 4 places left: 1 0 . 1 0 1 0 1          x 2^4
+Shift 5 places left: 1 . 0 1 0 1 0 1          x 2^5
+                     ^
+                     Binary point is now right after the first '1'!
+```
+
+  - We shifted the binary point **exactly 5 places to the left**, so the true exponent is $n = \mathbf{5}$:
+    $$101010.1_2 = 1.010101_2 \times 2^{\mathbf{5}}$$
+
+4. Compute the stored exponent (bias 127 for float, 1023 for double).
+  - For a 32-bit `float`:
+    $$\text{stored exponent} = n + 127 = 5 + 127 = 132 = 10000100_2$$
+  - For a 64-bit `double`:
+    $$\text{stored exponent} = n + 1023 = 5 + 1023 = 1028 = 10000000100_2$$
 
   > Tip: **Why 127?** The exponent field is 8 bits wide, giving $2^8 = 256$ total values. Half of that range should represent negative exponents and half positive. The midpoint is $(2^8 / 2) - 1 = 127$. So a stored exponent of `127` means a real exponent of **0**, values below `127` are negative exponents, and values above `127` are positive exponents. Doubles use an 11-bit exponent field so their midpoint (bias) is $( 2^{11} / 2) - 1 = 1023$ instead.
 
 5. Build the mantissa (fraction bits).
   - Take bits after the leading `1.` from `1.010101` -> `010101`
-  - Pad with zeros to 23 bits:
+  - Pad with zeros to 23 bits (for 32-bit float):
   - `01010100000000000000000`
 
 6. Assemble all fields.
@@ -147,32 +169,42 @@ Given the 32-bit pattern:
 
 - `0 | 10000100 | 01010100000000000000000`
 
-Decode it field by field:
+Decode it field by field back to decimal:
 
 1. Sign bit
-  - Sign bit is `0` -> number is positive.
-  - So the sign multiplier is `(+1)`.
+  - Sign bit is `0` -> number is positive: `(+1)`.
 
 2. Exponent field
   - Exponent bits are `10000100`.
-  - Convert to decimal: `10000100 (base 2) = 132`.
-  - Float bias is `127`, so true exponent is:
-  - `132 - 127 = 5`.
+  - Convert to decimal: $10000100_2 = 128 + 4 = 132$.
+  - Float bias is `127`, so subtract the bias to recover the true exponent:
+    $$132 - 127 = \mathbf{5}$$
+  - Recovering **5** tells us the significand was scaled by $2^5$.
 
 3. Mantissa field
   - Stored mantissa bits are `01010100000000000000000`.
-  - IEEE 754 normal numbers use an implicit leading `1`, so significand becomes:
-  - `1.010101 (base 2)`.
+  - IEEE 754 normal numbers restore the implicit leading `1.`, so significand becomes:
+    $$1.010101_2$$
 
-4. Rebuild the value
-  - Formula: `value = (+1) * 1.010101 (base 2) * 2^5`.
-  - Shift binary point right by 5:
-  - `1.010101 * 2^5 = 101010.1 (base 2)`.
+4. Rebuild the value (undo the normalization)
+  - Formula: $\text{value} = (+1) \times 1.010101_2 \times 2^5$.
+  - Multiplying by $2^5$ shifts the binary point **5 places to the right**:
 
-5. Convert `101010.1 (base 2)` to decimal
-  - Integer part: `101010 = 32 + 8 + 2 = 42`
-  - Fraction part: `.1 = 1/2 = 0.5`
-  - Total: `42 + 0.5 = 42.5`
+```
+Start:                1 . 0 1 0 1 0 1          x 2^5
+Shift 1 place right:  1 0 . 1 0 1 0 1          x 2^4
+Shift 2 places right: 1 0 1 . 0 1 0 1          x 2^3
+Shift 3 places right: 1 0 1 0 . 1 0 1          x 2^2
+Shift 4 places right: 1 0 1 0 1 . 0 1          x 2^1
+Shift 5 places right: 1 0 1 0 1 0 . 1          x 2^0 = 101010.1
+```
+
+  - Resulting fixed-point binary: $101010.1_2$.
+
+5. Convert $101010.1_2$ to decimal
+  - Integer part: $101010_2 = 32 + 8 + 2 = 42$
+  - Fraction part: $.1_2 = 1/2 = 0.5$
+  - Total: $42 + 0.5 = \mathbf{42.5} \checkmark$
 
 So the decoded value is exactly `42.5`.
 
@@ -423,12 +455,12 @@ r2 (low  32 bits): 0x00000000 = 0000 0000 0000 0000 0000 0000 0000 0000
 Laid out as a single 64-bit value with every bit numbered:
 
 ```
-Bit:    63  62-52 (11 bits)         51-32 (20 bits)                            31-0 (32 bits)
-      +---+-----------------------+------------------------------------------+----------------------------------+
-      | 0 | 1 0 0 0 0 0 0 0 1 0 0 | 0 1 0 1 0 1 0 0 0 0 0 0 0  0 0 0 0 0 0 0 | 00000000000000000000000000000000 |
-      +---+-----------------------+------------------------------------------+----------------------------------+
-       Sign     Exponent (11)              Mantissa high 20 bits                  Mantissa low 32 bits
-                                           (from r3 bits 19-0)                    (from r2, all zero)
+Bit: 63   62-52 (11b)   51-32 (20b from r3)   31-0 (32b from r2)
++---+-------------+---------------------+---------------------+
+| 0 | 10000000100 | 01010100000000000000| 00000000...00000000 |
++---+-------------+---------------------+---------------------+
+Sign   Exponent     Mantissa (High 20)    Mantissa (Low 32)
+                    (from r3 bits 19-0)   (from r2, all zero)
 ```
 
 **Step-by-step field extraction:**
@@ -488,7 +520,7 @@ $$\text{real exponent} = \text{stored exponent} - \text{bias}$$
 
 $$\text{real exponent} = 1028 - 1023 = \mathbf{5}$$
 
-This means the number is scaled by $2^5 = 32$. In other words, the mantissa gets shifted left by 5 binary places.
+This confirms the number is scaled by $2^5 = 32$. When reconstructing the value, multiplying the significand $1.010101_2$ by $2^5$ shifts the binary point 5 places to the right, recovering $101010.1_2 = 42.5$.
 
 **3. Mantissa - bits 51-0 of the 64-bit value**
 
@@ -978,12 +1010,12 @@ r2 (low  32 bits): 0x645A1CAC = 0110 0100 0101 1010 0001 1100 1010 1100
 Laid out as a single 64-bit value with every bit numbered:
 
 ```
-Bit:    63  62-52 (11 bits)         51-32 (20 bits)                            31-0 (32 bits)
-      +---+-----------------------+------------------------------------------+------------------------------------------+
-      | 0 | 1 0 0 0 0 0 0 0 1 0 0 | 0 1 0 1 0 1 0 0 0 0 1 1 0 0 1 1 1 0 1 1  | 01100100010110100001110010101100         |
-      +---+-----------------------+------------------------------------------+------------------------------------------+
-       Sign     Exponent (11)              Mantissa high 20 bits               Mantissa low 32 bits
-                                           (from r3 bits 19-0)                 (from r2)
+Bit: 63   62-52 (11b)   51-32 (20b from r3)   31-0 (32b from r2)
++---+-------------+---------------------+---------------------+
+| 0 | 10000000100 | 01010100001100111011| 01100100...10101100 |
++---+-------------+---------------------+---------------------+
+Sign   Exponent     Mantissa (High 20)    Mantissa (Low 32)
+                    (from r3 bits 19-0)   (from r2)
 ```
 
 **Step-by-step field extraction:**
@@ -1011,11 +1043,127 @@ Exponent bits: `10000000100`
 
 Convert to decimal: $2^{10} + 2^{2} = 1024 + 4 = 1028$
 
-Subtract the bias (same formula as Part 2 - the bias is 1023 for all doubles):
+Subtract the bias (the bias is 1023 for all 64-bit doubles):
 
 $$\text{real exponent} = 1028 - 1023 = \mathbf{5}$$
 
-This means the mantissa gets shifted left by 5 binary places (i.e. multiplied by $2^5 = 32$).
+#### Deep Dive: Where Did the Exponent 5 Come From?
+
+If you are wondering why the real exponent is **5**, let's walk through the foundational math step-by-step using `42.5`. This shows both how decimal `42.5` converts into IEEE 754 format, and how that converted value breaks down step-by-step back to `42.5`.
+
+##### 1. Forward Conversion: Decimal 42.5 to IEEE 754
+
+**Step A: The Power-of-2 Bounding Rule (Why 5?)**
+Why is the exponent 5 and not 4 or 6? Look at the powers of 2 around the integer part (42):
+- $2^4 = 16$
+- $2^5 = 32$
+- $2^6 = 64$
+
+Because $32 \le 42 < 64$ (that is, $2^{\mathbf{5}} \le 42 < 2^6$), the largest power of 2 contained within 42 is $2^{\mathbf{5}}$. This mathematical bound guarantees that when normalized, the exponent **must be 5**.
+
+**Step B: Convert 42.5 to Fixed-Point Binary**
+- Integer part (42):
+  - $42 - 32 = 10 \implies 2^5$ bit is `1`
+  - $10 < 16 \implies 2^4$ bit is `0`
+  - $10 - 8 = 2 \implies 2^3$ bit is `1`
+  - $2 < 4 \implies 2^2$ bit is `0`
+  - $2 - 2 = 0 \implies 2^1$ bit is `1`
+  - $0 \implies 2^0$ bit is `0`
+  - Result: $42_{10} = 101010_2$
+- Fractional part (0.5):
+  - $0.5 \times 2 = 1.0 \implies$ integer part `1`, remainder `0.0`
+  - Result: $0.5_{10} = 0.1_2$
+- Combined fixed-point binary:
+  $$42.5_{10} = 101010.1_2$$
+
+**Step C: Normalize to Scientific Notation (Counting the 5 Shifts Left)**
+IEEE 754 requires every normal non-zero number to be represented in scientific form:
+$$1.\text{mantissa} \times 2^n$$
+We start with $101010.1$ and shift the binary point to the left until exactly one non-zero bit (`1`) remains before the point:
+
+```
+Original position:   1 0 1 0 1 0 . 1          x 2^0 (value: 42.5)
+Shift 1 place left:  1 0 1 0 1 . 0 1          x 2^1
+Shift 2 places left: 1 0 1 0 . 1 0 1          x 2^2
+Shift 3 places left: 1 0 1 . 0 1 0 1          x 2^3
+Shift 4 places left: 1 0 . 1 0 1 0 1          x 2^4
+Shift 5 places left: 1 . 0 1 0 1 0 1          x 2^5
+                     ^
+                     Point is now immediately after the first 1!
+```
+
+Notice we shifted the binary point **exactly 5 places to the left**. That shift count is our true exponent:
+$$101010.1_2 = 1.010101_2 \times 2^{\mathbf{5}}$$
+**That is exactly where the 5 comes from!**
+
+**Step D: Add the Exponent Bias**
+IEEE 754 adds a fixed bias so exponents are stored as unsigned positive integers:
+- For `float` (bias 127): $\text{stored exponent} = 5 + 127 = 132 = 10000100_2$
+- For `double` (bias 1023): $\text{stored exponent} = 5 + 1023 = 1028 = 10000000100_2$
+
+**Step E: Assemble the 64-Bit Double Pattern for 42.5**
+- Sign (1 bit): `0` (positive)
+- Exponent (11 bits): `10000000100` (1028)
+- Mantissa (52 bits): `010101` followed by 46 zeros (the leading `1.` is implied)
+- Register distribution:
+  - `r3` (high 32 bits): `0x40454000`
+  - `r2` (low 32 bits): `0x00000000`
+
+##### 2. Reverse Breakdown: IEEE 754 Double Back to Decimal 42.5
+
+Now take `r3 = 0x40454000` and `r2 = 0x00000000` and break it down step-by-step back to `42.5`:
+
+**Step A: Recover the Real Exponent 5**
+- Extract the 11 exponent bits from `r3` (bits 30-20):
+  $$\text{Stored exponent} = 10000000100_2 = 1024 + 4 = 1028$$
+- Subtract the 1023 bias:
+  $$\text{Real Exponent} = 1028 - 1023 = \mathbf{5}$$
+Subtracting 1023 recovers our shift count of **5**, telling us the significand was scaled by $2^{\mathbf{5}}$.
+
+**Step B: Restore the Significand (Reattach Implicit 1)**
+- Stored mantissa bits from `r3`: `01010100000...`
+- Reattach the implicit leading `1.`:
+  $$\text{Significand} = 1.010101_2$$
+
+**Step C: Multiply by $2^5$ (Shift Binary Point 5 Places Right)**
+$$\text{Value} = 1.010101_2 \times 2^{\mathbf{5}}$$
+Multiplying by $2^5$ shifts the binary point **5 places to the right**:
+
+```
+Start:                1 . 0 1 0 1 0 1          x 2^5
+Shift 1 place right:  1 0 . 1 0 1 0 1          x 2^4
+Shift 2 places right: 1 0 1 . 0 1 0 1          x 2^3
+Shift 3 places right: 1 0 1 0 . 1 0 1          x 2^2
+Shift 4 places right: 1 0 1 0 1 . 0 1          x 2^1
+Shift 5 places right: 1 0 1 0 1 0 . 1          x 2^0 = 101010.1
+```
+
+The un-normalized fixed-point binary representation is:
+$$101010.1_2$$
+
+**Step D: Convert Fixed-Point Binary to Decimal**
+- Integer part (`101010`):
+  - $1 \times 2^5 = 32$
+  - $0 \times 2^4 = 0$
+  - $1 \times 2^3 = 8$
+  - $0 \times 2^2 = 0$
+  - $1 \times 2^1 = 2$
+  - $0 \times 2^0 = 0$
+  - Sum: $32 + 8 + 2 = 42$
+- Fractional part (`.1`):
+  - $1 \times 2^{-1} = 0.5$
+- Final Total:
+  $$42 + 0.5 = \mathbf{42.5} \checkmark$$
+
+##### 3. Why 42.52525 Shares the Exact Same Exponent 5
+
+Now return to `42.52525` in our binary (`r3 = 0x4045433B`):
+- The integer part of `42.52525` is still **42**.
+- Since $32 \le 42.52525 < 64$ ($2^{\mathbf{5}} \le 42.52525 < 2^6$), the largest power of 2 fitting in the number is still $2^{\mathbf{5}}$.
+- Normalizing $101010.10000110011101..._2$ to $1.xxxx...$ still requires shifting the binary point **5 places to the left**:
+  $$1.0101010000110011101..._2 \times 2^{\mathbf{5}}$$
+- Therefore, the stored exponent in `r3` is identically $5 + 1023 = 1028$ (`10000000100`), producing the exact same `0x404...` in the upper 12 bits of `r3`!
+- The only difference between `42.5` (`0x40454000_00000000`) and `42.52525` (`0x4045433B_645A1CAC`) is in the remaining mantissa bits that capture the fractional difference between `0.5` and `0.52525`.
 
 **3. Mantissa - bits 51-0**
 
