@@ -18,7 +18,7 @@ By using this repository and course, you acknowledge and agree that:
 
 <br>
 
-## FREE Reverse Engineering Self-Study Course [HERE](https://github.com/mytechnotalent/Reverse-Engineering-Tutorial)
+## FREE Reverse Engineering Self-Study Course [HERE](https://github.com/mytechnotalent/Reverse-Engineering)
 
 <br>
 
@@ -148,7 +148,7 @@ Introduction and Overview of Embedded Reverse Engineering: Ethics, Scoping, and 
 ### Chapter 2a: Understanding the ARM Stack
 This chapter uses OpenOCD and GDB to step through inline Cortex-M33 stack instructions and inspect each saved register in SRAM.
 
--> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/textbook/Embedded-Hacking.pdf) to read the FREE pdf book.
+-> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK01/WEEK01a.pdf) to read the FREE pdf lesson.
 
 ### Chapter 1: hello, world
 This chapter covers the basics of setting up a dev environment and basic template firmware for the Pico 2 MCU in addition to printing hello, world.
@@ -198,6 +198,11 @@ Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Ba
 ### Week 4 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04.md)
 
 ### Week 4a Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04a.md)
+
+### Chapter 10a: Hardware-Aware Reverse Engineering with CMSIS-SVD
+This chapter covers hardware-aware reverse engineering on stripped .bin firmware using CMSIS-SVD with live GDB dynamic inspection and Ghidra static analysis on the RP2350.
+
+-> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04a.pdf) to read the FREE pdf lesson.
 
 ### Chapter 5: Intro To Variables
 This chapter covers an introduction to variables as it relates to embedded development on the Pico 2.
@@ -437,7 +442,8 @@ Unknown Firmware Debugging and Hacking
 Final Review – Embedded Debugging and Hacking Techniques w/ Advanced Firmware Analysis Q&A
 
 ## Week 14
-### Final
+### Final Projects
+
 ### Final Project Option 1: The InfuSafe Pro Incident
 In the aftermath of a catastrophic medical device failure, you are thrust into the role of an FDA forensic investigator facing an impossible crisis: 23 patients dead, 100 million recalled insulin pumps sitting in warehouses worldwide, and 2.3 million lives hanging in the balance all while the only evidence remaining is raw binary firmware after a rogue engineer destroyed every line of source code before fleeing to Montenegro. Armed only with GDB, Ghidra, and the reverse engineering skills honed over the first seven weeks of this course, you must excavate the truth from machine code, identify the lethal bugs spawned by an AI code generator called "OopsieGPT," and determine whether these devices can be salvaged to save millions in underserved communities or if $4.7 billion in humanitarian medical technology must be incinerated. This is not a simulation; this is triage at the intersection of embedded systems security and human survival.
 
