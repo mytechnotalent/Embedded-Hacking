@@ -679,6 +679,19 @@ cd "$env:USERPROFILE"
 git clone https://github.com/leveldown-security/SVD-Loader-Ghidra.git
 ```
 
+> [!IMPORTANT]
+> **Ghidra 11/12+ Runtime Compatibility Fix (`#@runtime Jython`):**
+> Modern Ghidra versions default to `PyGhidra` (CPython 3) for `.py` scripts. If Ghidra was not launched via `pyghidraRun`, running `SVD-Loader.py` will fail with:
+> `Unable to load script: SVD-Loader.py - detail: Ghidra was not started with PyGhidra. Python is not available`
+>
+> `SVD-Loader` was developed for Ghidra's built-in **Jython** interpreter. To instruct Ghidra to use the built-in Jython engine, ensure `#@runtime Jython` is present at the top of `SVD-Loader.py`:
+> ```python
+> # Load specified SVD and generate peripheral memory maps & structures.
+> #@runtime Jython
+> #@author Thomas Roth <thomas.roth@leveldown.de>, Ryan Pavlik <ryan.pavlik@gmail.com>
+> ```
+> *(You can add this line using any text editor, or in Ghidra by right-clicking `SVD-Loader.py` in the Script Manager and selecting **Edit with basic editor**).*
+
 ### Step 2: Add the Script to Ghidra Script Manager
 
 1. In Ghidra's CodeBrowser, open the **Script Manager**:
@@ -700,9 +713,10 @@ git clone https://github.com/leveldown-security/SVD-Loader-Ghidra.git
 ### Step 3: Run SVD-Loader
 
 1. In the Script Manager search filter box, type: `SVD`
-2. Select **`SVD-Loader.py`** from the list.
-3. Click the green **Run Script** button in the top right.
-4. A file picker dialog opens:
+2. Locate **`SVD-Loader.py`** in the list.
+3. Check the checkbox in the **In Tool** column next to `SVD-Loader.py`. This binds `SVD-Loader` directly to your CodeBrowser toolbar and menu for convenient access!
+4. Select `SVD-Loader.py` and click the green **Run Script** button in the top right (or double-click the script entry).
+5. A file picker dialog opens:
    - Navigate to: `C:\Users\<username>\.svd\rp2350.svd`
    - Click **Open**.
 
