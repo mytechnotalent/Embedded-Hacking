@@ -886,9 +886,13 @@ Now that the SVD structures are loaded, let's examine subroutine `FUN_100002a8` 
 ```
 
 Look at the difference:
-1. **`*(uint *)(0x40038000 + param_1 * 4 + 4)`** is now recognized as indexing into `PADS_BANK0->GPIO[gpio]`.
+1. **`*(uint *)(0x40038000 + param_1 * 4 + 4)`** is recognized as indexing into `PADS_BANK0` electrical pad controls.
 2. **`& 0xffffff7f | 0x40`** is clearly revealed as clearing the `OD` (Output Disable) bit and setting the `IE` (Input Enable) bit.
-3. **`*(uint *)(0x40028000 + param_1 * 8 + 4) = param_2`** is recognized as setting the pin's multiplexer control register (`CTRL`) to function select `fn` ($2$ for `UART0`).
+3. **`*(uint *)(0x40028000 + param_1 * 8 + 4) = param_2`** immediately resolves in Ghidra's decompiler to:
+   ```c
+   (&Peripherals::IO_BANK0.GPIO0_CTRL)[param_1 * 2] = param_2;
+   ```
+   **Why `[param_1 * 2]`?** In RP2350's `IO_BANK0`, each GPIO pin has two 32-bit registers (8 bytes total): `GPIOx_STATUS` (offset $+0$) and `GPIOx_CTRL` (offset $+4$). Because `GPIO0_CTRL` is a pointer to a 4-byte `uint32_t`, indexing by `[param_1 * 2]` steps forward by $2 \times 4\text{ bytes} = 8\text{ bytes}$ per pin, landing directly on each pin's `CTRL` register to assign `param_2` ($2$ for `UART0`)!
 
 > [!NOTE]
 > **Understanding Assembly Listing vs. Decompiler Resolution:**
