@@ -446,31 +446,52 @@ Forty-two stories beneath frozen tundra, a shadow intelligence alliance called D
 
 <br>
 
+# Supplemental Material (Beyond the Scope of the Course)
+
 ## Pico 2 IoT Projects & CTFs & Pi 4B/5 Embedded Linux C IoT Project & CTF
 
 ### Act I of OPERATION COLD IRON [HERE](https://github.com/mytechnotalent/cold-chain-monitor)
+
 ### Act I of OPERATION COLD IRON CTF [HERE](https://github.com/mytechnotalent/CTF_cold-chain-monitor)
+
 ### Act II of OPERATION COLD IRON [HERE](https://github.com/mytechnotalent/access-gate)
+
 ### Act II of OPERATION COLD IRON CTF [HERE](https://github.com/mytechnotalent/CTF_access-gate)
+
 ### Act III of OPERATION COLD IRON [HERE](https://github.com/mytechnotalent/pipeline-valve-controller)
+
 ### Act III of OPERATION COLD IRON CTF [HERE](https://github.com/mytechnotalent/CTF_pipeline-valve-controller)
-### Act IV of OPERATION COLD IRON [HERE](https://github.com/mytechnotalent/CTF_pipeline-valve-controller)
+
+### Act IV of OPERATION COLD IRON [HERE](https://github.com/mytechnotalent/hvac-automation-node)
+
 ### Act IV of OPERATION COLD IRON CTF [HERE](https://github.com/mytechnotalent/CTF_hvac-automation-node)
+
 ### Act V of OPERATION COLD IRON [HERE](https://github.com/mytechnotalent/industrial-tamper-system)
+
 ### Act V of OPERATION COLD IRON CTF [HERE](https://github.com/mytechnotalent/CTF_industrial-tamper-system)
+
 ### Act VI of OPERATION COLD IRON [HERE](https://github.com/mytechnotalent/smart-logistics-dropbox)
+
 ### Act VI of OPERATION COLD IRON CTF [HERE](https://github.com/mytechnotalent/CTF_smart-logistics-dropbox)
+
 ### Act VII of OPERATION COLD IRON [HERE](https://github.com/mytechnotalent/factory-andon-station)
+
 ### Act VII of OPERATION COLD IRON CTF [HERE](https://github.com/mytechnotalent/CTF_factory-andon-station)
+
 ### Act VIII of OPERATION COLD IRON [HERE](https://github.com/mytechnotalent/datacenter-vent-controller)
+
 ### Act VIII of OPERATION COLD IRON CTF [HERE](https://github.com/mytechnotalent/CTF_datacenter-vent-controller)
+
 ### Act IX of OPERATION COLD IRON [HERE](https://github.com/mytechnotalent/smart-parking-barrier)
+
 ### Act IX of OPERATION COLD IRON CTF [HERE](https://github.com/mytechnotalent/CTF_smart-parking-barrier)
+
 ### Act X of OPERATION COLD IRON [HERE](https://github.com/mytechnotalent/chemical-warning-terminal)
+
 ### Act X of OPERATION COLD IRON CTF [HERE](https://github.com/mytechnotalent/CTF_chemical-warning-terminal)
-### Act X of OPERATION COLD IRON [HERE](https://github.com/mytechnotalent/chemical-warning-terminal)
-### Act X of OPERATION COLD IRON CTF [HERE](https://github.com/mytechnotalent/CTF_chemical-warning-terminal)
+
 ### OPERATION TELESCREEN [HERE](https://github.com/mytechnotalent/telescreen)
+
 ### OPERATION TELESCREEN CTF [HERE](https://github.com/mytechnotalent/CTF_telescreen)
 
 <br>
@@ -652,7 +673,7 @@ This lesson will teach you what is a computer with the fundamental model of comp
 
 -> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-01.md) to read the lesson and see the code.
 
-### Chapter 2: Chapter 2: Number Systems — Binary, Hexadecimal, and Decimal
+### Chapter 2: Number Systems — Binary, Hexadecimal, and Decimal
 This lesson will teach the basics of the three main number systems which are decimal, binary and hexadecimal.
 
 -> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-02.md) to read the lesson and see the code.
@@ -662,7 +683,7 @@ This lesson will teach the basics addresses, bytes, words and endianness within 
 
 -> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-03.md) to read the lesson and see the code.
 
-### Chapter 4: What Is a Register?)
+### Chapter 4: What Is a Register?
 This lesson will teach the general purpose registers within the MCU.
 
 -> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-04.md) to read the lesson and see the code.
@@ -702,7 +723,7 @@ This lesson will teach ARM branch instructions within the MCU.
 
 -> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-11.md) to read the lesson and see the code.
 
-### Chapter 12: ARM Calls, Returns, and the Stack Frame)
+### Chapter 12: ARM Calls, Returns, and the Stack Frame
 This lesson will teach ARM calls, returns and the stack frame within the MCU.
 
 -> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-12.md) to read the lesson and see the code.
@@ -767,7 +788,7 @@ This lesson will teach the boot sequence within the MCU.
 
 -> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-24.md) to read the lesson and see the code.
 
-### Chapter 25: xosc.s — Crystal Oscillator and Clock Configuration)
+### Chapter 25: xosc.s — Crystal Oscillator and Clock Configuration
 This lesson will teach the crystal oscillator and clock configuration within the MCU.
 
 -> Click [HERE](https://github.com/mytechnotalent/RP2350-ARM-ASM-Tutorial/blob/main/CHAPTER-25.md) to read the lesson and see the code.
