@@ -443,20 +443,25 @@ An SVD file contains a complete, machine-readable description of:
 +-----------------------------------------------------------------+
 ```
 
-### Step 1: Download `rp2350.svd`
+### Step 1: Obtain `rp2350.svd`
 
-Download the official `rp2350.svd` file directly from the open-source `cmsis-svd-data` repository. 
+A pre-downloaded copy of `rp2350.svd` is included directly in your course repository under `WEEK04/rp2350.svd`. You can also download the latest version directly from the official open-source `cmsis-svd-data` repository.
 
 Open a PowerShell terminal and create a dedicated `svd` directory in your user profile:
 
 ```powershell
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.svd"
+
+# Option A: Copy from local course folder
+Copy-Item "WEEK04\rp2350.svd" "$env:USERPROFILE\.svd\rp2350.svd"
+
+# Option B: Download directly from GitHub
 Invoke-WebRequest `
   -Uri "https://raw.githubusercontent.com/cmsis-svd/cmsis-svd-data/main/data/RaspberryPi/rp2350.svd" `
   -OutFile "$env:USERPROFILE\.svd\rp2350.svd"
 ```
 
-Verify that the file is downloaded:
+Verify that the file is in place:
 
 ```powershell
 Get-Item "$env:USERPROFILE\.svd\rp2350.svd"
