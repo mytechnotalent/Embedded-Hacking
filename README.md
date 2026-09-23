@@ -73,12 +73,64 @@ Students must have a working understanding of the following items:
 <br>
 
 # Datasheets & References
-- [RP2350 Datasheet](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/rp2350-datasheet.pdf)
-- [Raspberry Pi Pico C/C++ SDK](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/raspberry-pi-pico-c-sdk.pdf)
-- [Arm Cortex-M33 Technical Reference Manual](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/arm_cortex_m33_trm_100230_0100_03_en.pdf)
-- [Armv8-M Architecture Reference Manual (DDI0553B)](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/DDI0553B_y_armv8m_arm.pdf)
-- [Procedure Call Standard for the Arm Architecture (AAPCS32)](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/aapcs32.pdf)
-- [ARM Application Note 132 (advnote132)](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/advnote132.pdf)
+
+This repository includes the complete set of authoritative technical reference manuals and datasheets required for professional embedded engineering and reverse engineering on the Raspberry Pi Pico 2:
+
+### [RP2350 Datasheet](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/rp2350-datasheet.pdf)
+*RP2350 Datasheet: A microcontroller by Raspberry Pi (1,380 pages)*
+- **Core Architecture:** Dual Arm Cortex-M33 / Hazard3 RISC-V processors running up to 150MHz, 520kB on-chip SRAM across 10 striped banks, and 8kB one-time-programmable (OTP) storage.
+- **System Memory Map (Chapter 2):** Complete physical address map covering external XIP Flash (`0x10000000`), SRAM (`0x20000000`), APB/AHB peripherals (`0x40000000`), and core-local Single-Cycle I/O (`0xd0000000`).
+- **Peripheral Register Definitions:** Exhaustive register layouts, reset states, and bitfield descriptions for all 52 peripherals: `IO_BANK0` (pin multiplexing & `FUNCSEL`), `PADS_BANK0` (electrical drive strength, pulls, and Schmitt triggers), `UART0`/`UART1`, `SPI0`/`SPI1`, `I2C0`/`I2C1`, `PWM`, `DMA`, `CLOCKS`, and `WATCHDOG`.
+- **Programmable I/O (PIO):** Comprehensive architectural guide for the 3 on-chip PIO blocks (`PIO0`, `PIO1`, `PIO2`) with 12 state machines for deterministic, high-speed custom hardware protocols.
+- **Fast GPIO Coprocessor:** Hardware specification for single-cycle atomic GPIO output and direction control via dedicated ARM coprocessor instructions (`mcrr p0`).
+- **Bootrom & Hardware Security:** Covers the internal mask ROM boot flow, secure boot signature verification, SHA-256 cryptographic accelerator, and OTP key protection.
+
+### [Raspberry Pi Pico C/C++ SDK](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/raspberry-pi-pico-c-sdk.pdf)
+*Raspberry Pi Pico-series C/C++ SDK: Libraries and tools for development (821 pages)*
+- **SDK Architecture & Build System:** CMake configuration, target library linking (`pico_stdlib`, `hardware_gpio`), compiler flags, and the UF2 binary packaging workflow.
+- **Hardware Drivers (`hardware_*`):** Low-level driver API documentation:
+  - `hardware_gpio`: Functions like `gpio_init()`, `gpio_set_dir()`, `gpio_put()`, `gpio_get()`, and hardware pin interrupt handling.
+  - `hardware_uart`: Serial communication initialization (`uart_init()`, baud rate dividers, FIFO handling).
+  - `hardware_dma`: Channel configuration, transfer sizing, and background memory pacing.
+  - `hardware_clocks` & `hardware_resets`: PLL frequency configuration and peripheral unreset sequencing.
+- **High-Level Runtimes (`pico_*`):** Standard I/O stream redirection (`stdio_init_all()` over UART/USB CDC), multicore core 1 launching (`pico_multicore`), sleep timers, and thread synchronization.
+- **Hardware Structs (`hardware_structs`):** C struct definitions matching chip MMIO registers 1-to-1, used by reverse engineers to reconstruct decompiled peripheral accesses.
+
+### [Arm Cortex-M33 Technical Reference Manual](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/arm_cortex_m33_trm_100230_0100_03_en.pdf)
+*Arm® Cortex®-M33 Processor Technical Reference Manual (Doc ID: 100230_0100_03_en, 168 pages)*
+- **Core Microarchitecture:** 3-stage in-order pipeline, Harvard bus architecture (instruction and data buses), integer execution core, and optional IEEE 754 single/double-precision floating-point unit (FPU).
+- **Nested Vectored Interrupt Controller (NVIC):** Interrupt priorities, exception vector table mapping, low-latency interrupt entry, and hardware tail-chaining mechanics.
+- **Memory Protection & TrustZone:** Memory Protection Unit (MPU) supporting up to 16 configurable regions, and Security Attribution Unit (SAU) for hardware-enforced Secure vs Non-secure domain isolation.
+- **CoreSight Debug & Trace:** Debug Access Port (DAP) used by OpenOCD and the Raspberry Pi Debug Probe, Flash Patch and Breakpoint unit (FPB), Data Watchpoint and Trace (DWT), and Instrumentation Trace Macrocell (ITM).
+- **Coprocessor Interface:** Bus architecture connecting hardware accelerators directly to the core (utilized by the RP2350 for single-cycle GPIO and math acceleration).
+
+### [Armv8-M Architecture Reference Manual (DDI0553B)](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/DDI0553B_y_armv8m_arm.pdf)
+*Armv8-M Architecture Reference Manual (Doc ID: DDI0553B, 2,149 pages)*
+- **Authoritative Instruction Set Reference (Section C2.4, Pages 527–1454):** Complete alphabetical encyclopedia of every assembly instruction supported by the RP2350 Cortex-M33:
+  - Data processing: `MOV`, `MOVS`, `MVN`, `ADD`, `SUB`, `MUL`, `SDIV`, `UDIV`, `AND`, `ORR`, `EOR`, `BIC`.
+  - Memory load/store: `LDR`, `STR`, `LDRB`, `STRB`, `LDRH`, `STRH`, `LDRD`, `STRD`, `LDM`, `STM`, `PUSH`, `POP`.
+  - Control flow: `B`, `BL`, `BX`, `BLX`, `CBZ`, `CBNZ`, `TBB`, `TBH`.
+  - Coprocessor instructions: `MCR`, `MRC`, `MCRR`, `MRRC` (used by the RP2350 fast GPIO block).
+  - Floating-point instructions: `VMOV`, `VADD`, `VSUB`, `VMUL`, `VDIV`, `VCMP`, `VMRS`, `VMSR`.
+- **Machine Opcode Encodings:** Exact 16-bit Thumb and 32-bit Thumb-2 binary bit patterns for every instruction, essential for binary patching and shellcode analysis.
+- **Programmer's Model:** General-purpose registers (`r0`–`r12`), Stack Pointers (`SP`/`MSP`/`PSP`), Link Register (`LR`), Program Counter (`PC`), Status Registers (`APSR`, `IPSR`, `EPSR`, `xPSR`), and Special Registers (`CONTROL`, `PRIMASK`).
+- **Exception Mechanics:** Hardware state stacking upon exception entry (`r0`-`r3`, `r12`, `lr`, `pc`, `xPSR`), EXC_RETURN values, and fault analysis (HardFault, MemManage, BusFault, UsageFault).
+
+### [Procedure Call Standard for the Arm Architecture (AAPCS32)](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/aapcs32.pdf)
+*Procedure Call Standard for the Arm® Architecture (AAPCS32 / ABI, 41 pages)*
+- **Register Allocation Contract:** Defines caller and callee responsibilities across function calls:
+  - Parameter passing: `r0`–`r3` pass the first four 32-bit parameters (or 64-bit pairs like `r0`-`r1` and `r2`-`r3`). Additional parameters are pushed to the stack.
+  - Return values: `r0` returns 32-bit scalar values; `r0`-`r1` returns 64-bit integers and 64-bit IEEE 754 `double` floats.
+  - Scratch / Caller-Saved registers: `r0`–`r3`, `r12` (`IP`), and `r14` (`LR`) can be freely overwritten by called functions.
+  - Preserved / Callee-Saved registers: `r4`–`r11` must be preserved across function calls (saved via `push` in prologue and restored via `pop` in epilogue).
+- **Floating-Point ABI:** Register allocation for hardware VFP registers (`s0`–`s15`, `d0`–`d7`) vs software floating-point library calls.
+- **Data Alignment & Struct Packing:** Alignment rules (1, 2, 4, 8 bytes), structure member padding, and composite type memory layouts.
+
+### [ARM Application Note 132 (advnote132)](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/advnote132.pdf)
+*ABI Advisory Note – SP must be 8-byte aligned on entry to AAPCS-conforming functions (10 pages)*
+- **The 8-Byte Stack Alignment Rule:** Mandates that the Stack Pointer (`SP`) must be aligned to an 8-byte (doubleword) boundary at all public function call interfaces.
+- **Why Unaligned Stacks Fail:** 64-bit memory operations (`LDRD`, `STRD`) and double-precision floating-point operations require 8-byte alignment; misaligned stacks trigger hardware alignment faults or severe memory bus performance penalties.
+- **Prologue Disassembly Deconstruction:** Explains why compiler-generated assembly frequently emits `push {r4, lr}` (saving two 32-bit registers) even when `r4` is completely unused—the extra register push serves as deliberate padding to keep `SP` strictly 8-byte aligned!
 
 <br>
 
