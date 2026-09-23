@@ -904,5 +904,13 @@ This lesson will teach the full build, flash, wire and test integration within t
 
 <br>
 
+## Pico 2 Developer Projects
+
+### Authenticated LoRa Climate Control Node [HERE](https://github.com/mytechnotalent/iot-00001-greenhouse-climate-node)
+
+### IN DEVELOPMENT
+
+<br>
+
 # License
 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
