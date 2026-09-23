@@ -682,12 +682,20 @@ git clone https://github.com/leveldown-security/SVD-Loader-Ghidra.git
 ### Step 2: Add the Script to Ghidra Script Manager
 
 1. In Ghidra's CodeBrowser, open the **Script Manager**:
-   - Click the green "Play" icon on the toolbar, or go to **Window** -> **Script Manager**.
-2. Click the **Script Directories** icon (the small folder icon in the top right of the Script Manager toolbar).
-3. Click the green **`+`** icon to add a new directory.
-4. Browse to and select:
+   - Go to menu **Window** -> **Script Manager** (or click the **Script Manager** toolbar icon).
+
+> [!NOTE]
+> **Script Manager Toolbar Icons Explained:**
+> - **New Script (White Paper Icon):** To create a new script from scratch directly in Ghidra, you click the **piece of white paper** ("Create New Script") icon on the toolbar. Ghidra then prompts you to choose the script type: **`PyGhidra`** (Python 3 in Ghidra 11+), **`Java`**, or **`Jython`** (Python 2.7).
+> - **Manage Script Directories (Folder with List Icon):** Because `SVD-Loader` is an existing multi-file package that relies on the bundled `cmsis_svd` parser library, we do not need to create a blank script. Instead, we register its cloned directory.
+
+2. In the top-right toolbar of the Script Manager window, click the **Manage Script Directories** icon (looks like a small folder with a list).
+3. In the "Ghidra Script Directories / Bundle Manager" window that appears, click the **Display file chooser to add bundles to list** icon (the green `+` / folder icon on the top right).
+4. Browse to and select your cloned directory:
    `C:\Users\<username>\SVD-Loader-Ghidra`
-5. Click **OK**.
+5. Click **OK** / **Select**, then close the Script Directories window.
+
+*(Alternatively, you can copy both `SVD-Loader.py` and the `cmsis_svd` folder directly into your default `~/ghidra_scripts` or `C:\Users\<username>\ghidra_scripts` directory, which Ghidra discovers automatically).*
 
 ### Step 3: Run SVD-Loader
 
