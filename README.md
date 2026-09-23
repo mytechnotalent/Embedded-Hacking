@@ -60,10 +60,25 @@ Students must have a working understanding of the following items:
 
 # Hardware [View Full Parts List](PARTS.md)
 
+- [Fritzing Project](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/hardware/EHP2.fzz)
+- [Breadboard Diagram](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/hardware/EHP2_bb.png)
+- [Pico 2 Pinout](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/hardware/pico-2-r4-pinout.svg)
+- [Debug Probe Wiring](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/hardware/dp.png)
+
 <br><br>
 
 # Breadboard Design
-![image](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/EHP2_bb.png?raw=true)
+![image](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/hardware/EHP2_bb.png?raw=true)
+
+<br>
+
+# Datasheets & References
+- [RP2350 Datasheet](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/rp2350-datasheet.pdf)
+- [Raspberry Pi Pico C/C++ SDK](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/raspberry-pi-pico-c-sdk.pdf)
+- [Arm Cortex-M33 Technical Reference Manual](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/arm_cortex_m33_trm_100230_0100_03_en.pdf)
+- [Armv8-M Architecture Reference Manual (DDI0553B)](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/DDI0553B_y_armv8m_arm.pdf)
+- [Procedure Call Standard for the Arm Architecture (AAPCS32)](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/aapcs32.pdf)
+- [ARM Application Note 132 (advnote132)](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/datasheets/advnote132.pdf)
 
 <br>
 
@@ -129,6 +144,8 @@ Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Ba
 ### Week 4 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-SLIDES.pdf)
 
 ### Week 4 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04.md)
+
+### Week 4a Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04a.md)
 
 ### Chapter 5: Intro To Variables
 This chapter covers an introduction to variables as it relates to embedded development on the Pico 2.
