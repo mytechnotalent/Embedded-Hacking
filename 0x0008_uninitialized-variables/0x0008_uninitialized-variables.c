@@ -41,28 +41,21 @@
 /** @brief GPIO pin number for the LED */
 #define LED_PIN 16
 
-/**
- * @brief Toggle LED and print uninitialized variable value
- *
- * @details Blinks the LED on and off with a 500ms delay between each
- *          transition and prints the age variable each cycle.
- *
- * @param age value to print (uninitialized in this demo)
- */
-static void blink_and_print(uint8_t age) {
-    printf("age: %d\r\n", age);
-    gpio_put(LED_PIN, 1);
-    sleep_ms(500);
-    gpio_put(LED_PIN, 0);
-    sleep_ms(500);
-}
-
 int main(void) {
-    uint8_t age;
+    uint8_t age; // Uninitialized!
+
     stdio_init_all();
+
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
+
     while (true) {
-        blink_and_print(age);
+        printf("age: %d\r\n", age);
+
+        gpio_put(LED_PIN, 1);
+        sleep_ms(500);
+
+        gpio_put(LED_PIN, 0);
+        sleep_ms(500);
     }
 }

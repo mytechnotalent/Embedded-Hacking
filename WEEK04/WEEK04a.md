@@ -117,9 +117,37 @@ In this tutorial, you will master the two industry-standard tools that eliminate
 
 ---
 
-## Part 2: Reviewing the Target Code (`0x0008_uninitialized-variables.c`)
+## Part 2: Reviewing the Week 4 Target Programs
 
-We will use the Week 4 target program, located in `0x0008_uninitialized-variables/0x0008_uninitialized-variables.c`.
+In Week 4, we worked with two distinct programs:
+1. `0x0005_intro-to-variables.c`: Explored initialized variable allocation, assignments, and string printing.
+2. `0x0008_uninitialized-variables.c`: Explored uninitialized variable behavior in `.bss` and introduced real-time **GPIO hardware peripheral control**.
+
+Let's review both source files from your workspace:
+
+### Program 1: `0x0005_intro-to-variables.c`
+
+```c
+#include <stdio.h>
+#include "pico/stdlib.h"
+
+int main(void) {
+    uint8_t age = 42;
+
+    age = 43;
+
+    stdio_init_all();
+
+    while (true)
+        printf("age: %d\r\n", age);
+}
+```
+
+This first program taught us how variables are assigned registers and stack slots, but it only interacted with the console output.
+
+### Program 2: `0x0008_uninitialized-variables.c`
+
+To study hardware peripherals and Memory-Mapped I/O (MMIO), we turn to our primary target for this supplement:
 
 ```c
 #include <stdio.h>
@@ -127,21 +155,22 @@ We will use the Week 4 target program, located in `0x0008_uninitialized-variable
 
 #define LED_PIN 16
 
-static void blink_and_print(uint8_t age) {
-    printf("age: %d\r\n", age);
-    gpio_put(LED_PIN, 1);
-    sleep_ms(500);
-    gpio_put(LED_PIN, 0);
-    sleep_ms(500);
-}
-
 int main(void) {
-    uint8_t age;
+    uint8_t age; // Uninitialized!
+
     stdio_init_all();
+
     gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
+
     while (true) {
-        blink_and_print(age);
+        printf("age: %d\r\n", age);
+
+        gpio_put(LED_PIN, 1);
+        sleep_ms(500);
+
+        gpio_put(LED_PIN, 0);
+        sleep_ms(500);
     }
 }
 ```
