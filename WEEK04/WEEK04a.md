@@ -744,6 +744,14 @@ Created peripheral block: IO_BANK0 at 0x40028000 (size: 0x1000)
 Successfully imported all peripherals!
 ```
 
+### Step 4: Re-Run Auto-Analysis to Propagate References
+
+When you initially imported `0x0008_uninitialized-variables.bin`, Ghidra performed auto-analysis against only the initial Flash block (`0x10000000`). Now that `SVD-Loader.py` has created all 52 on-chip peripheral memory blocks, re-run analysis so Ghidra evaluates references against the newly created regions:
+
+1. Click menu **Analysis** -> **Auto Analyze '0x0008_uninitialized-variables.bin'...** (or press keyboard shortcut **`A`**).
+2. Ensure **Reference**, **Subroutine References**, and **Constant Reference Analyzer** are enabled.
+3. Click **Analyze**.
+
 ---
 
 ## Part 9: Decompiler Transformation: Before and After
@@ -782,6 +790,17 @@ Look at the difference:
 1. **`*(uint *)(0x40038000 + param_1 * 4 + 4)`** is now recognized as indexing into `PADS_BANK0->GPIO[gpio]`.
 2. **`& 0xffffff7f | 0x40`** is clearly revealed as clearing the `OD` (Output Disable) bit and setting the `IE` (Input Enable) bit.
 3. **`*(uint *)(0x40028000 + param_1 * 8 + 4) = 5`** is recognized as setting the pin's multiplexer control register (`CTRL`) to function select `5` (`SIO`).
+
+> [!NOTE]
+> **Understanding Assembly Listing vs. Decompiler Resolution:**
+> You may notice that in the raw disassembly Listing view, line `100002be` still appears as:
+> ```assembly
+> 100002be 00 f1 80 40    add.w    r0, r0, #0x40000000
+> ```
+> Why does `#0x40000000` not resolve to a peripheral label here?
+> - **Arithmetic Immediates vs. Memory Operands:** `add.w` is an ALU integer addition, not a load or store instruction. In assembly listings, immediate scalar constants remain literal numbers.
+> - **Intermediate Math vs. Target Address:** `0x40000000` is the APB/AHB bridge base. The actual peripheral register address (`0x40038044` for `PADS_BANK0_GPIO16`) is calculated dynamically at runtime by adding the pin index offset ($16 \times 4 = 0\text{x}40$), bank offset ($0\text{x}38000$), bridge base ($0\text{x}40000000$), and struct offset ($+4$).
+> - **Where Resolution Appears:** Ghidra resolves this in the **Decompiler window** via data-flow analysis, and in the Listing window as **XREF** annotations on the subsequent `str`/`ldr` instructions that dereference the calculated pointer. If you want `#0x40000000` to show a name in the Listing, right-click the number and select **Set Equate...** (press **`E`**) to label it `PERIPHERALS_BASE`.
 
 ### Exploring Structs in the Data Type Manager
 
