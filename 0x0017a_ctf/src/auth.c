@@ -329,15 +329,6 @@ static void dispatch_payload(const uint8_t payload[AUTH_PAYLOAD_SIZE])
     }
 }
 
-/**
- * @brief Initialize hardened authentication runtime state.
- *
- * Marks the module as ready, configures the LED GPIO pin as output, and
- * forces the LED low before any authentication attempts.
- *
- * @param None.
- * @return bool true when initialization completed.
- */
 bool auth_init(void)
 {
     g_auth_ready = true;
@@ -347,17 +338,6 @@ bool auth_init(void)
     return true;
 }
 
-/**
- * @brief Execute one hardened authentication attempt.
- *
- * Validates passphrase policy, derives the Argon2id key, performs
- * authenticated decryption, dispatches GPIO/UART payload bytes on success,
- * and clears transient sensitive buffers.
- *
- * @param passphrase Pointer to passphrase bytes.
- * @param passphrase_len Number of passphrase bytes.
- * @return auth_result_t Detailed outcome for caller-side handling.
- */
 auth_result_t auth_execute(const uint8_t *passphrase, size_t passphrase_len)
 {
     uint8_t key[AUTH_KEY_SIZE];

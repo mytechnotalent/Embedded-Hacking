@@ -32,15 +32,6 @@
 #include "grid.h"
 #include <stdio.h>
 
-/**
- * @brief Print the response controller's boot identity and unconditional signal line.
- *
- * Emits the boot banner, operation window, serial configuration banner,
- * unconditional signal quality line, and the interactive command prompt.
- *
- * @param None.
- * @return None.
- */
 void print_boot_banner(void)
 {
     printf("GLOBAL EMBEDDED RESPONSE NETWORK\r\n");
@@ -50,15 +41,6 @@ void print_boot_banner(void)
     printf("RESPONSE> ");
 }
 
-/**
- * @brief Print the recurring grid classification and dispatch authorization report.
- *
- * Evaluates the current operator state and dispatch state flags and transmits
- * the formatted status report over UART0 with the quarantined frame notification.
- *
- * @param None.
- * @return None.
- */
 void print_status(void)
 {
     printf("GRID STATUS: %s\r\n", operator_state ? "STABLE" : "CRITICAL");

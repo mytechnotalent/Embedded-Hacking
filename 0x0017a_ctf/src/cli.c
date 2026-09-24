@@ -125,30 +125,11 @@ static void finish_passphrase(char *buf, size_t *idx)
     print_prompt();
 }
 
-/**
- * @brief Print the UART passphrase prompt.
- *
- * Emits a newline-prefixed "> " prompt for the next hardened passphrase
- * attempt.
- *
- * @param None.
- * @return None.
- */
 void print_prompt(void)
 {
     printf("\r\n> ");
 }
 
-/**
- * @brief Process one UART polling step.
- *
- * Polls for a single character and routes it to append, backspace, or
- * submit handling. On timeout, executes tight loop contents and returns.
- *
- * @param buf Pointer to mutable passphrase buffer.
- * @param idx Pointer to current buffer length.
- * @return None.
- */
 void service_uart(char *buf, size_t *idx)
 {
     int ch = getchar_timeout_us(0);

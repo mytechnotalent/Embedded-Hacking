@@ -44,32 +44,12 @@ volatile uint32_t dispatch_state = 0;
 static volatile const char dispatch_frame[] =
     "WORLDGRID:BLACKSTART:GRID-7:WATER-3";
 
-/**
- * @brief Anchor the hidden dispatch frame in flash without transmitting it.
- *
- * Reads the first character of the quarantined black-start authorization
- * frame into a volatile local marker to prevent the compiler from optimizing
- * out the string literal from .rodata flash storage.
- *
- * @param None.
- * @return None.
- */
 void retain_dispatch_frame(void)
 {
     volatile char frame_marker = dispatch_frame[0];
     (void)frame_marker;
 }
 
-/**
- * @brief Classify the frozen telemetry reading against the compiled threshold.
- *
- * Evaluates the frozen grid deviation reading against SAFE_THRESHOLD twice,
- * once for the operator-facing status line and once for the automated
- * dispatch decision, mirroring the duplicated immediate comparison site.
- *
- * @param None.
- * @return None.
- */
 void evaluate_grid(void)
 {
     operator_state = (grid_deviation < SAFE_THRESHOLD) ? 1 : 0;
