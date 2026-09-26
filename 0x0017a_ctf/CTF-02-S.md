@@ -168,6 +168,14 @@ true (wrong); `87 <= 59` is false (correct).
 - The correct immediate is `0x3B` (59), not `0x3C` (60).
 - Verify the byte changes on hardware; the corrected console reads `CRITICAL`
   and `HELD`.
+- **Ghidra ARM/Thumb Context Note:** In raw `.bin` files, patching an instruction
+  that precedes an `IT` block (`ite ge`) using the GUI *Patch Instruction* action
+  triggers Ghidra's `ReDisassembleCommand`. The re-disassembler encounters an
+  internal context register conflict when trying to re-declare the `ITBlock`
+  context over existing instructions, collapsing Thumb decoding into 32-bit ARM
+  mode and swallowing Site B (`0x10000312`). Students must patch using the Bytes
+  window workflow (Clear `C` -> edit byte `5E` -> `3B` in Bytes window with pencil
+  icon -> Disassemble `D`) to keep Site B visible and cleanly aligned.
 
 ---
 
@@ -521,6 +529,12 @@ RESPONSE>
 - Verify the exported image with `python3 scripts/verify_ctf.py`; the shipped
   check expects `26/26 checks passed` against `CTF-02.bin`.
 - Confirm the UF2 conversion used base `0x10000000` and family `0xe48bff59`.
+- **Serial Terminal Timing:** Note that `print_identity()` (`TRACK: NORMAL`)
+  fires within the first 5 milliseconds of boot. In normal lab usage, PuTTY
+  attaches after boot and will display the continuous 2-second status loop
+  (`BLOCK STATE: CRITICAL`, `AUTO TRAIN: HELD`). To see the corrected banner,
+  the student must pulse `RUN` to `GND` while PuTTY is open, or demonstrate
+  the string change at `0x1000C4BF` via Ghidra static analysis.
 - The shipped image is 62,308 bytes; confirm the exported corrected image is a
   valid patched binary with all four fixes present.
 

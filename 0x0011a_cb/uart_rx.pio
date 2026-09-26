@@ -1,0 +1,43 @@
+;
+; Copyright (c) 2026 Kevin Thomas
+; SPDX-License-Identifier: MIT
+;
+.pio_version 0
+
+.program uart_rx
+
+; 8n1 UART receiver for GPS NMEA reception on a single GPIO pin.
+; Operates at 8 execution cycles per bit period.
+; IN pin 0 and JMP pin are mapped to the GPS RX GPIO pin.
+
+start:
+    wait 0 pin 0        ; Wait for start bit falling edge (1 cycle)
+    set x, 7    [10]    ; Preload bit counter (7 remaining), delay 1.5 bit periods (11 cycles)
+bitloop:
+    in pins, 1          ; Sample 1 bit from RX pin into ISR (1 cycle)
+    jmp x-- bitloop [6] ; Loop 8 times; each iteration is 8 execution cycles (7 cycles delay)
+    jmp pin good_stop   ; Verify stop bit is HIGH
+    wait 1 pin 0        ; Framing error: wait until line returns to idle HIGH
+    jmp start           ; Discard frame and re-synchronize
+good_stop:
+    push                ; Push 8-bit byte into RX FIFO (bits [31:24])
+
+% c-sdk {
+#include "hardware/clocks.h"
+#include "hardware/gpio.h"
+
+static inline void uart_rx_program_init(PIO pio, uint sm, uint offset, uint pin, uint baud) {
+    pio_sm_set_consecutive_pindirs(pio, sm, pin, 1, false);
+    pio_gpio_init(pio, pin);
+    gpio_pull_up(pin);
+    pio_sm_config c = uart_rx_program_get_default_config(offset);
+    sm_config_set_in_pins(&c, pin);
+    sm_config_set_jmp_pin(&c, pin);
+    sm_config_set_in_shift(&c, true, false, 32);
+    sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_RX);
+    float div = (float)clock_get_hz(clk_sys) / (8 * baud);
+    sm_config_set_clkdiv(&c, div);
+    pio_sm_init(pio, sm, offset, &c);
+    pio_sm_set_enabled(pio, sm, true);
+}
+%}

@@ -183,6 +183,14 @@ wrong); `87 <= 59` is false (CRITICAL/HELD, correct).
   strict `<`, compiled as `<= 94`.
 - Verify the byte changes on hardware: after patching, `operator_state`
   (`0x20000844`) and `dispatch_state` (`0x20000834`) read `0` and `0`.
+- **Ghidra ARM/Thumb Context Note:** In raw `.bin` files, patching an instruction
+  that precedes an `IT` block (`ite hi`) using the GUI *Patch Instruction* action
+  triggers Ghidra's `ReDisassembleCommand`. The re-disassembler encounters an
+  internal context register conflict when trying to re-declare the `ITBlock`
+  context over existing instructions, collapsing Thumb decoding into 32-bit ARM
+  mode and swallowing Site B (`0x1000020A`). Students must patch using the Bytes
+  window workflow (Clear `C` -> edit byte `5E` -> `3B` in Bytes window with pencil
+  icon -> Disassemble `D`) to keep Site B visible and cleanly aligned.
 
 ---
 
@@ -348,6 +356,12 @@ six string bytes).
 - Verify the exported image with `python3 scripts/verify_ctf.py`; the shipped
   check expects `11/11 checks passed` against `CTF-01.bin`.
 - Confirm the UF2 conversion used base `0x10000000` and family `0xe48bff59`.
+- **Serial Terminal Timing:** Note that `print_boot_banner()` (`SIGNAL: DANGER`)
+  fires within the first 5 milliseconds of boot. In normal lab usage, PuTTY
+  attaches after boot and will display the continuous 1-second status loop
+  (`GRID STATUS: CRITICAL`, `DISPATCH PATH: HELD`). To see `SIGNAL: DANGER`,
+  the student must pulse `RUN` to `GND` while PuTTY is open, or demonstrate
+  the string change at `0x10003680` via Ghidra static analysis.
 - If no console is available, accept the SWD capture showing `operator_state`
   and `dispatch_state` at `0` and `0` on the patched image.
 

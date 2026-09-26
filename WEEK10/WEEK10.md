@@ -954,12 +954,20 @@ Next, let's change the word "one" to "fun":
 
 ### Step 31: Hack #3 - Speed Up the Servo
 
-Let's change the 500ms delay to a 100ms delay. Since the compiler packed the `500` directly into a `mov.w` instruction, we can't just find it in the data section. Instead, let's use Ghidra's built-in assembler to rewrite the instruction!
+Let's change the 500ms delay to a 100ms delay. Since the compiler packed the `500` directly into a `mov.w` instruction, we can't just find it in the data section. Instead, let's use Ghidra to rewrite the instruction!
 
-1. In your `main` assembly code, look for the two `mov.w r0,#0x1f4` instructions (which happen right before calling `sleep_ms`).
-2. Right-click the first `mov.w r0,#0x1f4` instruction and select **Patch Instruction** (or press `Ctrl+Shift+G`).
-3. Delete the `#0x1f4` and type `#0x64` (which is 100 in hex). Press **Enter**!
-4. Repeat this for the second `mov.w r0,#0x1f4` instruction.
+**Method A: Bytes Window Workflow (Recommended)**
+1. Ensure the Bytes window is open (**Window** -> **Bytes: 0x001d_static-conditionals.bin**).
+2. Click the **pencil icon** (**Toggle Edit Mode**) in the Bytes window toolbar.
+3. In the **Listing** window, locate the first `mov.w r0,#0x1f4` instruction (right before calling `sleep_ms`) and press **`C`** (**Clear Code Bytes**).
+4. In the **Bytes** window at that offset, change the immediate byte from `f4` (`0x1f4`) to `64` (`0x64` = 100).
+5. In the **Listing** window, click back on the address and press **`D`** (**Disassemble**).
+6. Repeat for the second `mov.w r0,#0x1f4` instruction.
+
+**Method B: Patch Instruction**
+1. Right-click the first `mov.w r0,#0x1f4` instruction and select **Patch Instruction** (or press `Ctrl+Shift+G`).
+2. Delete the `#0x1f4` and type `#0x64` (which is 100 in hex). Press **Enter**!
+3. Repeat this for the second `mov.w r0,#0x1f4` instruction.
 
 **Before:** 500ms delay (servo moves slowly)
 **After:** 100ms delay (servo moves FAST!)
@@ -1346,10 +1354,22 @@ We want to create **secret commands** that:
 
 Navigate to the `main` function and find the two `cmp` instructions right after `getchar`:
 
-1. At address `1000024a`, you will see `cmp r4,#0x31`.
-   - Right-click it, select **Patch Instruction**, and change it to `cmp r4,#0x78` (which is ASCII 'x').
-2. At address `1000024e`, you will see `cmp r4,#0x32`.
-   - Right-click it, select **Patch Instruction**, and change it to `cmp r4,#0x79` (which is ASCII 'y').
+Address `1000024a` contains `cmp r4,#0x31` (`31 2c`), and address `1000024e` contains `cmp r4,#0x32` (`32 2c`).
+
+**Method A: Bytes Window Workflow (Recommended)**
+To ensure clean disassembly and prevent assembler context conflicts:
+1. Ensure the Bytes window is open (**Window** -> **Bytes: 0x001d_static-conditionals.bin**).
+2. Click the **pencil icon** (**Toggle Edit Mode**) in the Bytes window toolbar to enable editing.
+3. In the **Listing** window, click on address `1000024a` and press **`C`** (**Clear Code Bytes**).
+4. In the **Bytes** window at offset `1000024a`, click on byte `31` and change it to **`78`** (ASCII 'x').
+5. In the **Listing** window, click back on address `1000024a` and press **`D`** (**Disassemble**).
+6. In the **Listing** window, click on address `1000024e` and press **`C`** (**Clear Code Bytes**).
+7. In the **Bytes** window at offset `1000024e`, click on byte `32` and change it to **`79`** (ASCII 'y').
+8. In the **Listing** window, click back on address `1000024e` and press **`D`** (**Disassemble**).
+
+**Method B: Patch Instruction**
+1. At address `1000024a`, right-click `cmp r4,#0x31`, select **Patch Instruction**, and change it to `cmp r4,#0x78` (which is ASCII 'x').
+2. At address `1000024e`, right-click `cmp r4,#0x32`, select **Patch Instruction**, and change it to `cmp r4,#0x79` (which is ASCII 'y').
 
 ### Step 56: Redirect Branches to Skip Prints
 

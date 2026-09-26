@@ -140,7 +140,7 @@ CTF-01.uf2  980F04369C23AD32A063DFE18DE5AF08DF3830138FC7E7898B1F011B4F5E1D9D
 |-----------|--------|-------------|----------------|-----------|
 | Criterion 5.1: Export CTF-01_fixed.bin | 4 | Valid patched binary | Corrupted | Not submitted |
 | Criterion 5.2: Convert to CTF-01_fixed.uf2 | 4 | Correct base and family flags | Wrong flags | Not submitted |
-| Criterion 5.3: Hardware Verification | 8 | Corrected console output confirmed on hardware | Some lines corrected | No verification |
+| Criterion 5.3: Hardware Verification | 8 | Corrected console output confirmed (CRITICAL/HELD in 1s stream; DANGER at boot/Ghidra) | Some lines corrected | No verification |
 | Criterion 5.4: Summary Table of All Patches | 4 | Complete address and before/after table | Missing entries | No table |
 
 ### Task 6: Written Reflection (5 points)
@@ -158,6 +158,8 @@ CTF-01.uf2  980F04369C23AD32A063DFE18DE5AF08DF3830138FC7E7898B1F011B4F5E1D9D
 |---------|-------------|-----------|
 | Patching only one threshold site | One status line still lies | Patch both `0x100001FC` and `0x1000020A` |
 | Assuming the immediate equals the limit | Off-by-one, wrong boundary | Use `0x3B` (59), not `0x3C` (60) |
+| Using Patch Instruction before IT block | Re-disassembler context conflict swallows Site B | In Listing press `C` -> edit byte in Bytes window (pencil) -> press `D` |
+| Missing boot banner in serial terminal | PuTTY misses one-time 5ms boot banner | Pulse RUN to GND while connected to capture |
 | Replacing a string with a different length | Corrupts adjacent flash | `NORMAL` and `DANGER` are both 6 bytes |
 | Treating an odd vector address as invalid | Thumb analysis fails | Clear bit 0 |
 | Modifying the quarantined dispatch frame | Destroys evidence | Recover it, do not patch it |

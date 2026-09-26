@@ -58,12 +58,33 @@ Students must have a working understanding of the following items:
 
 <br>
 
-# Hardware [View Full Parts List](PARTS.md)
+# Hardware
 
+### Reference Diagrams & Schematics
 - [Fritzing Project](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/hardware/EHP2.fzz)
 - [Breadboard Diagram](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/hardware/EHP2_bb.png)
 - [Pico 2 Pinout](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/hardware/pico-2-r4-pinout.svg)
 - [Debug Probe Wiring](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/hardware/dp.png)
+
+### Required Components & Sensors
+The following hardware parts and sensors are used throughout the course experiments, projects, and live CTFs:
+- [1x Full-size Breadboard (Long)](https://www.amazon.com/s?k=full+size+breadboard)
+- [1x Assorted Jumper Wires (Male-to-Male, Male-to-Female, Female-to-Female)](https://www.amazon.com/s?k=breadboard+jumper+wires+assortment)
+- [1x Raspberry Pi Pico 2 w/ Header](https://www.amazon.com/s?k=raspberry+pi+pico+2+with+pre-soldered+header)
+- [1x Raspberry Pi Pico Debug Probe](https://www.amazon.com/s?k=raspberry+pi+debug+probe)
+- [2x USB A-Male to USB Micro-B Cables (1 for Pico 2, 1 for Debug Probe)](https://www.amazon.com/s?k=micro+usb+cable+2+pack)
+- [3x 5mm LEDs (1 Red, 1 Green, 1 Yellow)](https://www.amazon.com/s?k=5mm+led+kit)
+- [3x 100, 220 or 330 Ohm Resistors (for LEDs)](https://www.amazon.com/s?k=resistor+assortment+kit)
+- [1x Push Button (Tactile switch)](https://www.amazon.com/s?k=tactile+push+button+assortment)
+- [1x 1602 LCD (with PCF8574 I2C backpack)](https://www.amazon.com/s?k=1602+lcd+i2c+module)
+- [1x DHT11 Temperature & Humidity Sensor](https://www.amazon.com/s?k=dht11+temperature+and+humidity+sensor)
+- [1x SG90 Servo Motor](https://www.amazon.com/s?k=sg90+micro+servo+motor)
+- [1x 1000uF 25V Capacitor (for Servo power stabilization)](https://www.amazon.com/Cionyce-Capacitor-Electrolytic-CapacitorsMicrowave/dp/B0B63CCQ2N)
+- [1x Infrared (IR) Receiver (VS1838B)](https://www.amazon.com/s?k=vs1838b+ir+receiver+module)
+- [1x Infrared (IR) Remote Controller (NEC-compatible)](https://www.amazon.com/s?k=arduino+ir+remote+control)
+- [1x u-blox NEO-6M GPS Receiver Module (with Active Antenna)](https://www.amazon.com/Navigation-Positioning-Microcontroller-Compatible-Sensitivity/dp/B084MK8BS2)
+- [2x REYAX RYLR998 868/915MHz LoRa Transceiver Modules (1x Pico 2, 1x Computer)](https://www.amazon.com/dp/B099RM1XMG)
+- [1x FT232RL USB to TTL Serial Adapter Module](https://www.amazon.com/FT232RL-Serial-Adapter-Module-Arduino/dp/B0FHP71BCQ)
 
 <br><br>
 
@@ -179,11 +200,17 @@ Embedded System Analysis: Understanding the RP2350 Architecture w/ Comprehensive
 
 ### Week 3 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/WEEK03.md)
 
+### Ghidra Patching Tutorial [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/GHIDRA_PATCHING_TUTORIAL.pdf)
+
 ### CTF-01 Instructions [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-01-I.md)
 
 ### CTF-01 Rubric [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-01-R.md)
 
 ### CTF-01 Solution [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-01-S.md)
+
+### CTF-01 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-01.bin)
+
+### CTF-01 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-01.uf2)
 
 ### Chapter 4: Embedded System Analysis
 This chapter covers a comprehensive embedded system analysis reviewing parts of the RP2350 datasheet and helpful firmware analysis tools.
@@ -241,6 +268,8 @@ Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floa
 
 ### Week 5 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05.md)
 
+### Float/Hex Converter Tool [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/float_hex_converter.py)
+
 ### Chapter 11: Integer Data Type
 This chapter covers the integer data type in addition to a deeper assembler dive into GPIO outputs as it relates to embedded development on the Pico 2.
 
@@ -293,6 +322,16 @@ Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ 
 
 ### Week 6 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06.md)
 
+### Classified Brief 0x01 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/CLASSIFIED-BRIEF-0x01.md)
+
+### Classified Brief 0x01 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/0x0011a_cb.bin)
+
+### Classified Brief 0x01 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/0x0011a_cb.uf2)
+
+### Float/Hex Converter Tool [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/scripts/float_hex_converter.py)
+
+### Telemetry Monitor Tool [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/scripts/telemetry_monitor.py)
+
 ### Chapter 20: Static Variables
 This chapter covers static variables as well as an intro to GPIO inputs as we work with push buttons as it relates to embedded development on the Pico 2.
 
@@ -338,6 +377,10 @@ This chapter covers hacking constants as well as an intro to I2C as we work a 16
 ### CTF-02 Rubric [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0017a_ctf/CTF-02-R.md)
 
 ### CTF-02 Solution [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0017a_ctf/CTF-02-S.md)
+
+### CTF-02 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0017a_ctf/CTF-02.bin)
+
+### CTF-02 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0017a_ctf/CTF-02.uf2)
 
 ## Week 9
 Operators in Embedded Systems: Debugging and Hacking Operators w/ DHT11 Temperature & Humidity Sensor Single-Wire Protocol Basics

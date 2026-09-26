@@ -344,6 +344,13 @@ SIGNAL KEY: 0x915DCFF8 MISMATCH
 RESPONSE>
 ```
 
+> **Terminal Timing Note:** The first four lines (`DEEPLINE METRO...` through
+> `TRACK: NORMAL`) represent the **initial boot banner**, emitted once during
+> startup. If your serial terminal (PuTTY) connects after the board has
+> booted, you will observe the continuous 2-second status stream (`BLOCK
+> STATE...` through `SIGNAL KEY...`). To view the boot banner in your terminal,
+> reset the Pico (pulse `RUN` to `GND`) while PuTTY is actively connected.
+
 The status block repeats every 2 seconds with `FAULT POLLS` incrementing.
 This is exactly what the field crews are seeing. It is wrong, and it is
 wrong in **four independent ways** inside the compiled binary. Do not assume
@@ -444,7 +451,16 @@ in a single file named `CTF-02-Answers.md`.
    comparison against an unsigned value is often optimized into a
    "less-or-equal" comparison against one less than the threshold. Show
    your reasoning.
-4. Patch **both** locations in Ghidra.
+4. Patch **both** locations in Ghidra using the **Bytes Window** workflow:
+   > **Critical ARM Thumb-2 Patching Note:** In ARM Cortex-M, compare instructions that directly precede conditional execution blocks (`ite ge`) must **not** be patched using the right-click *Patch Instruction* dialog. Ghidra's automatic re-disassembler encounters an internal context conflict with the subsequent `ite ge` instruction, which collapses Thumb decoding and swallows Compare Site B (`0x10000312`).
+   >
+   > To patch cleanly without breaking downstream disassembly, use the **Bytes Window**:
+   > 1. Ensure the Bytes window is open (**Window** -> **Bytes: CTF-02.bin**).
+   > 2. In the Bytes window toolbar, click the **pencil icon** (**Toggle Edit Mode**).
+   > 3. In the Listing window, click on address `0x10000302` (Compare Site A) and press **`C`** (**Clear Code Bytes**). The instruction temporarily clears into raw bytes (`5E 2B`).
+   > 4. In the Bytes window, locate offset `10000302`, click on `5E`, and change it to **`3B`**.
+   > 5. Click back in the Listing window on address `0x10000302` and press **`D`** (**Disassemble**). The instruction immediately disassembles cleanly as `cmp r3, #0x3b`.
+   > 6. Notice that Compare Site B at `0x10000312` remains completely intact and visible! Repeat the exact same steps at `0x10000312`: click `0x10000312` in the Listing, press **`C`**, change `5E` to **`3B`** in the Bytes window, click back in the Listing, and press **`D`**.
 
 **Questions to answer:**
 - Why must both locations be patched? What happens if you only patch one?

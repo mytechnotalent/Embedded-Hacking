@@ -965,8 +965,14 @@ By combining SVD in both GDB and Ghidra, you achieve a seamless reverse engineer
    - Trace the pointer loaded at address $0\text{x}100001E8$ to address $0\text{x}100037A0$.
    - Inspecting that memory reveals the token: `"WORLDGRID:BLACKSTART:GRID-7:WATER-3"`.
 3. **Patch and Export in Ghidra**:
-   - In the Listing view, highlight byte `0x5E` at file offsets `0x1FC` and `0x20A`, and patch them to `0x3B`.
-   - Export the patched binary as `CTF-01_fixed.bin`.
+   - Use the **Bytes Window** workflow to prevent ARM Thumb IT-block context conflicts:
+     1. Open the Bytes window (**Window** -> **Bytes: CTF-01.bin**).
+     2. In the Bytes window toolbar, click the **pencil icon** (**Toggle Edit Mode**).
+     3. In the Listing window, click `0x100001FC` and press **`C`** (**Clear Code Bytes**).
+     4. In the Bytes window at offset `100001fc`, click on byte `5E` and change it to **`3B`**.
+     5. In the Listing window, click back on `0x100001FC` and press **`D`** (**Disassemble**).
+     6. Repeat at `0x1000020A`: click `0x1000020A` in the Listing, press **`C`**, change `5E` to **`3B`** in the Bytes window, click back in the Listing, and press **`D`**.
+   - Export the patched binary as `CTF-01_fixed.bin` via **File** -> **Export Program** -> **Format**: **Raw Bytes**.
 4. **Verify on Live Hardware via OpenOCD & GDB**:
    - Flash the patched binary to the Pico 2.
    - Attach your USB-UART adapter to GPIO 0 (TX) and GPIO 1 (RX) at 115200 baud.

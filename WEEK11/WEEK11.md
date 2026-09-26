@@ -950,22 +950,27 @@ Create a mental (or written) map:
 
 ## Part 14: Hacking Structures
 
-### Step 31: Enable Instruction Patching
+### Step 31: Patching Instructions
 
-We will use Ghidra's **Patch Instruction** feature to modify the assembly directly instead of editing raw bytes.
+To modify assembly instructions in Ghidra, you can use either the direct **Bytes Window** workflow or the GUI **Patch Instruction** dialog. Direct byte editing via the Bytes Window is the standard, bulletproof workflow across all embedded reverse engineering tasks because it avoids assembler context conflicts.
 
 ### Step 32: Swap LED Pin Assignments
 
 We'll swap the red and green LED pins to reverse their behavior! Because the compiler fully flattened the struct, modifying the `gpio_init` pins won't actually change the main loop's behavior (since all three pins are initialized anyway). We must patch the hardcoded pins inside the **main loop** itself!
 
-**Find and patch the `movs` calls in the loop:**
+**Method A: Bytes Window Workflow (Recommended)**
+1. Ensure the Bytes window is open (**Window** -> **Bytes: 0x0023_structures.bin**).
+2. Click the **pencil icon** (**Toggle Edit Mode**) in the Bytes window toolbar.
+3. In the **Listing** window, navigate to `10000296` where the red LED pin is loaded (`movs r2,#0x10`) and press **`C`** (**Clear Code Bytes**).
+4. In the **Bytes** window at offset `10000296`, change byte `10` to **`11`** (swap red to green's pin).
+5. In the **Listing** window, click back on `10000296` and press **`D`** (**Disassemble**).
+6. In the **Listing** window, navigate to `1000029c` where the green LED pin is loaded (`movs r2,#0x11`) and press **`C`** (**Clear Code Bytes**).
+7. In the **Bytes** window at offset `1000029c`, change byte `11` to **`10`** (swap green to red's pin).
+8. In the **Listing** window, click back on `1000029c` and press **`D`** (**Disassemble**).
 
-1. Navigate to `10000296` where the red LED pin is loaded: `movs r2,#0x10`
-2. Right-click the instruction -> **Patch Instruction** (or press Ctrl+Shift+G)
-3. Change `#0x10` to `#0x11` (swap red to green's pin) and press **Enter**
-4. Navigate to `1000029c` where the green LED pin is loaded: `movs r2,#0x11`
-5. Right-click the instruction -> **Patch Instruction**
-6. Change `#0x11` to `#0x10` (swap green to red's pin) and press **Enter**
+**Method B: Patch Instruction**
+1. Navigate to `10000296`: right-click `movs r2,#0x10` -> **Patch Instruction** (or press `Ctrl+Shift+G`), change `#0x10` to `#0x11`, and press **Enter**.
+2. Navigate to `1000029c`: right-click `movs r2,#0x11` -> **Patch Instruction**, change `#0x11` to `#0x10`, and press **Enter**.
 
 **Before:**
 ```
@@ -1358,6 +1363,7 @@ We'll swap the red (GPIO 16) and yellow (GPIO 18) LEDs:
 
 **Find and patch in the .bin file:**
 
+Using the Bytes window in Ghidra (enable the pencil icon, press **`C`** in the Listing, change the byte in the Bytes window, and press **`D`** in the Listing) or a hex editor:
 1. Change `0x10` (16) to `0x12` (18)
 2. Change `0x12` (18) to `0x10` (16)
 
@@ -1378,7 +1384,7 @@ Button 3 -> LED 3 -> GPIO 16 -> Red (SWAPPED!)
 **Important:** Even though we analyzed the .elf, we patch the .bin!
 
 1. Open the original `.bin` file in Ghidra (or a hex editor)
-2. Apply the patches
+2. Apply the patches using the Bytes window workflow
 3. Export as `0x0026_functions-h.bin`
 
 ### Step 56: Convert and Flash

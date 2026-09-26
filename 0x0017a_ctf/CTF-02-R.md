@@ -176,7 +176,7 @@ CTF-02.uf2  F3CD4840260DB820D792758CECACC5297BEF1971B9EACF7601279256D8AF1EAB
 |-----------|--------|-------------|----------------|-----------|
 | Criterion 8.1: Export CTF-02_fixed.bin | 1 | Valid patched binary | Corrupted | Not submitted |
 | Criterion 8.2: Convert to CTF-02_fixed.uf2 | 1 | Correct base and family flags | Wrong flags | Not submitted |
-| Criterion 8.3: Hardware Verification | 4 | Corrected console output confirmed on hardware | Some lines corrected | No verification |
+| Criterion 8.3: Hardware Verification | 4 | Corrected console output confirmed (CRITICAL/HELD in 2s stream; DANGER at boot/Ghidra) | Some lines corrected | No verification |
 | Criterion 8.4: Summary Table of All Patches | 2 | Complete address and before/after table | Missing entries | No table |
 
 ### Task 9: Written Reflection (5 points)
@@ -194,6 +194,8 @@ CTF-02.uf2  F3CD4840260DB820D792758CECACC5297BEF1971B9EACF7601279256D8AF1EAB
 |---------|-------------|-----------|
 | Patching only one threshold site | One status line still lies | Patch both `0x10000302` and `0x10000312` |
 | Assuming the immediate equals the limit | Off-by-one, wrong boundary | Use `0x3B` (59), not `0x3C` (60) |
+| Using Patch Instruction before IT block | Re-disassembler context conflict swallows Site B | In Listing press `C` -> edit byte in Bytes window (pencil) -> press `D` |
+| Missing boot banner in serial terminal | PuTTY misses one-time 5ms boot banner | Pulse RUN to GND while connected to capture |
 | Replacing a string with a different length | Corrupts adjacent flash | `NORMAL` and `DANGER` are both 6 bytes |
 | Treating the block length as an integer | Misses the 8-byte double | Follow the value into `.data`, decode IEEE-754 |
 | Using the wrong 0.32 bytes | Prints 316 M instead of 320 M | Use `7B 14 AE 47 E1 7A D4 3F` |

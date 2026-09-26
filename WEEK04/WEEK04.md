@@ -440,10 +440,15 @@ This instruction loads the value `0x2b` (43) into register `r1` before calling `
 
 We're going to change `0x2b` (43) to `0x46` (70)!
 
-1. At address `1000023a`, click the instruction `movs r1,#0x2b`
-2. Right-click and select **Patch Instruction**
-3. Replace immediate `0x2b` with `0x46`
-4. Press Enter and verify the instruction bytes change from `2b 21` to `46 21`
+To patch instructions cleanly in Ghidra without assembler context conflicts, use the **Bytes Window** workflow:
+
+1. Ensure the Bytes window is open (**Window** -> **Bytes: 0x0005_intro-to-variables.bin**).
+2. In the Bytes window toolbar, click the **pencil icon** (**Toggle Edit Mode**) to enable editing.
+3. In the **Listing** window, click on address `1000023a` (`movs r1,#0x2b`) and press **`C`** (**Clear Code Bytes**).
+4. In the **Bytes** window at offset `1000023a`, click on byte `2B` and change it to **`46`**.
+5. In the **Listing** window, click back on address `1000023a` and press **`D`** (**Disassemble**).
+
+*(Alternatively, you can right-click the instruction at `1000023a` in the Listing, select **Patch Instruction**, replace immediate `0x2b` with `0x46`, and press Enter)*.
 
 The instruction now reads:
 ```assembly
@@ -634,10 +639,11 @@ This is where `gpio_init(LED_PIN)` is called with GPIO 16.
 
 We'll change the red LED (GPIO 16) to the green LED (GPIO 17)!
 
-1. At address `1000023a`, select `movs r0,#0x10`
-2. Right-click -> **Patch Instruction**
-3. Replace immediate `0x10` with `0x11` (17 decimal)
-4. Click **OK** and verify bytes change from `10 20` to `11 20`
+1. In the **Listing** window, click address `1000023a` (`movs r0,#0x10`) and press **`C`** (**Clear Code Bytes**).
+2. In the **Bytes** window (with the pencil icon enabled), locate offset `1000023a`, click byte `10`, and change it to **`11`**.
+3. In the **Listing** window, click back on address `1000023a` and press **`D`** (**Disassemble**).
+
+*(Alternatively, right-click `movs r0,#0x10` -> **Patch Instruction** -> change `0x10` to `0x11` and press Enter)*.
 
 ### Step 28: Find All GPIO 16 References
 
@@ -647,14 +653,14 @@ There are more places that use GPIO 16. Look for:
 10000244    10 23    movs r3,#0x10
 ```
 
-This is used in `gpio_set_dir`. Patch this to `0x11` as well.
+This is used in `gpio_set_dir`. In Listing press **`C`** at `10000244`, change byte `10` to **`11`** in the Bytes window, and press **`D`** in Listing.
 
 ```assembly
 10000252    10 24    movs r4,#0x10
 ```
 
-This is inside the loop for `gpio_put`. Patch this to `0x11` as well.
-Patch each one with **Patch Instruction**, then verify:
+This is inside the loop for `gpio_put`. In Listing press **`C`** at `10000252`, change byte `10` to **`11`** in the Bytes window, and press **`D`** in Listing.
+Verify the patched bytes:
 
 - `10000244`: `10 23` -> `11 23`
 - `10000252`: `10 24` -> `11 24`
@@ -667,9 +673,10 @@ Let's also change the printed value from `0` to `0x42` (66 in decimal):
 1000024a    00 21    movs r1,#0x0
 ```
 
-1. Right-click -> **Patch Instruction**
-2. Replace immediate `0x0` with `0x42`
-3. Click **OK** and verify bytes change from `00 21` to `42 21`
+1. In Listing, click `1000024a` and press **`C`** (**Clear Code Bytes**).
+2. In the Bytes window, change byte `00` to **`42`**.
+3. In Listing, click back on `1000024a` and press **`D`** (**Disassemble**).
+4. Verify the instruction bytes change from `00 21` to `42 21`.
 
 ---
 
@@ -833,7 +840,7 @@ delay2:
 +-----------------------------------------------------------------+
 |  3. Find the values/instructions to patch                       |
 |     - Look in the assembly listing                              |
-|     - Patch Instruction, then verify old bytes -> new bytes     |
+|     - Bytes window (pencil, C, edit byte, D) or Patch Inst.     |
 +-----------------------------------------------------------------+
 |  4. Export the patched binary                                   |
 |     - File -> Export Program                                    |
@@ -863,7 +870,7 @@ delay2:
 | Action            | How To Do It                          |
 | ----------------- | ------------------------------------- |
 | Rename function   | Right-click -> Edit Function Signature |
-| Patch instruction | Right-click -> Patch Instruction, then verify old bytes -> new bytes |
+| Patch instruction | Bytes window (pencil, C, edit, D) or Patch Instruction |
 | Export binary     | File -> Export Program -> Raw Bytes     |
 | Go to address     | Press 'G' and enter address           |
 
