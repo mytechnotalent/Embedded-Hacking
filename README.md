@@ -1045,9 +1045,105 @@ This lesson will teach the full build, flash, wire and test integration within t
 
 ## Pico 2 Developer Projects
 
-### Authenticated LoRa Climate Control Node [HERE](https://github.com/mytechnotalent/iot-00001-greenhouse-climate-node)
+### LED Chase and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-01-blink)
 
-### IN DEVELOPMENT
+### Traffic Light Phases and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-02-traffic-light)
+
+### Hardware PWM Breathing and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-03-led-pwm-breathing)
+
+### 1602 I2C LCD Text and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-04-lcd-hello)
+
+### Live LCD Counter and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-05-lcd-live)
+
+### SG90 Servo Sweep and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-06-servo-sweep)
+
+### SG90 Servo Position and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-07-servo-position)
+
+### SG90 Gauge Needle and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-08-servo-gauge)
+
+### Tactile Button Poll and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-09-button-poll)
+
+### Debounced Button Edges and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-10-button-debounce)
+
+### Short, Long, and Double Press Events and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-11-button-events)
+
+### DHT11 Temperature and Humidity Read and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-12-dht11-read)
+
+### DHT11 Reading on the 1602 I2C LCD and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-13-dht11-lcd)
+
+### DHT11 Comfort LEDs and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-14-dht11-leds)
+
+### VS1838B NEC Decode and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-15-ir-decode)
+
+### Remote Key Actions on the LEDs and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-16-ir-keys)
+
+### Remote Keypad Digits on the LEDs and 1602 I2C LCD and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-17-ir-keypad)
+
+### Remote Key Lamp Selection and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-18-ir-control-led)
+
+### Remote Key Preset Angles on the SG90 Servo and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-19-ir-control-servo)
+
+### Remote Key Status Pages on the 1602 I2C LCD and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-20-ir-lcd-status)
+
+### Two Way Token Echo and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-21-lora-echo)
+
+### DHT11 Telemetry and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-22-lora-telemetry)
+
+### Remote Command LEDs and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-23-lora-command)
+
+### ACK Timeout and Retry and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-24-lora-ack)
+
+### Address Filter and Sender Attribution and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-25-lora-addressing)
+
+### Signal Quality on the LCD and LEDs and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-26-lora-rssi)
+
+### Buffered Readings and Flush on Link Recovery and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-27-lora-store-forward)
+
+### Menu Navigation with the GP15 Button and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-28-lcd-menu-button)
+
+### Menu Navigation with the IR Remote and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-29-lcd-menu-remote)
+
+### Button and Remote Status Pages on the 1602 I2C LCD and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-30-status-pages)
+
+### Hysteresis Vent Control with an IR Setpoint and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-31-thermostat)
+
+### Latched Band Breach, Door Latch Servo, and an Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-32-cold-chain-alarm)
+
+### Buffered Readings, Batched Flush, and an Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-33-data-logger)
+
+### Gateway Command, Servo Position, and an Authenticated ACK [HERE](https://github.com/mytechnotalent/picokit-34-remote-actuator)
+
+### Latching Alarm LED, Local Acknowledge, and an Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-35-annunciator-ack)
+
+### Timed Vent and LED Actions with an Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-36-scheduler)
+
+### Random-Light Reaction Game, Button Time, and an Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-37-reaction-timer)
+
+### Timed Intersection Phases, a Pedestrian Request, and an Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-38-traffic-controller)
+
+### Sealed Telemetry, Loopback Verify, and a Forged-Frame Reject [HERE](https://github.com/mytechnotalent/picokit-39-authenticated-telemetry)
+
+### Per-Node Monotonic Sequence, Replay Window, and a Rejected Replay [HERE](https://github.com/mytechnotalent/picokit-40-anti-replay)
+
+### Per-Device Key from a Device ID and Salt, Two Keys Proven Different [HERE](https://github.com/mytechnotalent/picokit-41-provisioning)
+
+### BLAKE2b Hash-Chained Event Log and Recompute on Read [HERE](https://github.com/mytechnotalent/picokit-42-tamper-log)
+
+### Debug Probe Breakpoints and SWD Variable Reads [HERE](https://github.com/mytechnotalent/picokit-43-swd-breakpoints)
+
+### Debug Probe Data Watchpoint on a Status Variable [HERE](https://github.com/mytechnotalent/picokit-44-swd-watchpoints)
+
+### Controlled Fault and Cortex-M33 Fault Status Registers [HERE](https://github.com/mytechnotalent/picokit-45-fault-analysis)
+
+### ELF and UF2 Inspection of a Known Constant [HERE](https://github.com/mytechnotalent/picokit-46-binary-recon)
+
+### Two-Node Mesh Relay and Authenticated Heartbeat [HERE](https://github.com/mytechnotalent/picokit-47-two-node-mesh)
+
+### Sensor Node and Charted Gateway [HERE](https://github.com/mytechnotalent/picokit-48-gateway-dashboard)
+
+### Fleet and Config Table with Multi-Node Gateway [HERE](https://github.com/mytechnotalent/picokit-49-fleet)
+
+### Full Peripheral Capstone and Authenticated Telemetry [HERE](https://github.com/mytechnotalent/picokit-50-finale)
 
 <br>
 
