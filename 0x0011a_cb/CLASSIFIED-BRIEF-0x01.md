@@ -327,7 +327,7 @@ bitloop:
 ```
 
 Clock divider calculation for 9,600 baud with 150 MHz system clock:
-$$f_{\text{state\_machine}} = 9600 \times 8 = 76,800\text{ Hz}$$
+$$f_{\text{state machine}} = 9600 \times 8 = 76,800\text{ Hz}$$
 $$\text{Clock Divider} = \frac{150,000,000}{76,800} \approx 1953.125$$
 
 ---
