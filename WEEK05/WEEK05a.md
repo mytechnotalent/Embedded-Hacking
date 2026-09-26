@@ -372,14 +372,14 @@ When compiled with `arm-none-eabi-gcc -O2 -mcpu=cortex-m33 -mfloat-abi=hard -mfp
 ```assembly
 10000260 <evaluate_geofence>:
 10000260:  b508        push    {r3, lr}
-10000262:  4a03        ldr     r2, [pc, #12]  @ Load lower word: 0x20C49BA6
-10000264:  4b04        ldr     r3, [pc, #16]  @ Load upper word: 0x4042E330
-10000266:  f000 f810   bl      __aeabi_cdcmple @ Call DCP compare accelerator
+10000262:  4a03        ldr     r2, [pc, #12]     @ Load lower word: 0x20C49BA6
+10000264:  4b04        ldr     r3, [pc, #16]     @ Load upper word: 0x4042E330
+10000266:  f000 f810   bl      __aeabi_cdcmple   @ Call DCP compare accelerator
 1000026a:  bf38        it      cc
-1000026c:  2000        movcc   r0, #0         @ 0 if out of bounds
+1000026c:  2000        movcc   r0, #0            @ 0 if out of bounds
 1000026e:  bd08        pop     {r3, pc}
-10000270:  20c49ba6    .word   0x20c49ba6     @ Lower 32 bits of MAX_LATITUDE
-10000274:  4042e330    .word   0x4042e330     @ Upper 32 bits of MAX_LATITUDE
+10000270:  20c49ba6    .word   0x20c49ba6        @ Lower 32 bits of MAX_LATITUDE
+10000274:  4042e330    .word   0x4042e330        @ Upper 32 bits of MAX_LATITUDE
 ```
 - The double arrives in `R0` (lower 32 bits) and `R1` (upper 32 bits).
 - The threshold is loaded from Flash literal pool into `R2` and `R3`.
