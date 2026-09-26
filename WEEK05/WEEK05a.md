@@ -153,17 +153,17 @@ A 32-bit float conforms to the IEEE 754 single-precision format:
 +-----------------------------------------------------------------+
 |  IEEE 754 SINGLE-PRECISION FORMAT (32-BIT FLOAT)                |
 |                                                                 |
-|   31 30        23 22                                           0|
-|  +--+------------+---------------------------------------------+|
-|  |S |  Exponent  |                  Fraction                   ||
-|  |  |  (8 bits)  |                  (23 bits)                  ||
-|  +--+------------+---------------------------------------------+|
+|  31   30        23 22                                        0  |
+|  +----+------------+-----------------------------------------+  |
+|  | S  |  Exponent  |                Fraction                 |  |
+|  |    |  (8 bits)  |                (23 bits)                |  |
+|  +----+------------+-----------------------------------------+  |
 |                                                                 |
 |  Sign (S):      Bit 31 (0 = Positive, 1 = Negative)             |
 |  Exponent (E):  Bits 30:23 (Biased by +127)                     |
 |  Mantissa (M):  Bits 22:0 (Normalized with implicit leading 1)  |
 |                                                                 |
-|  Formula:  Value = (-1)^S * 2^(E - 127) * (1.Fraction)         |
+|  Formula:  Value = (-1)^S * 2^(E - 127) * (1.Fraction)          |
 +-----------------------------------------------------------------+
 ```
 
@@ -195,17 +195,17 @@ A 64-bit double expands both range and precision dramatically:
 +-----------------------------------------------------------------+
 |  IEEE 754 DOUBLE-PRECISION FORMAT (64-BIT DOUBLE)               |
 |                                                                 |
-|   63 62          52 51                                         0|
-|  +--+--------------+-------------------------------------------+|
-|  |S |   Exponent   |                 Fraction                  ||
-|  |  |  (11 bits)   |                 (52 bits)                 ||
-|  +--+--------------+-------------------------------------------+|
+|  63   62          52 51                                      0  |
+|  +----+-------------+----------------------------------------+  |
+|  | S  |  Exponent   |                Fraction                |  |
+|  |    |  (11 bits)  |               (52 bits)                |  |
+|  +----+-------------+----------------------------------------+  |
 |                                                                 |
 |  Sign (S):      Bit 63 (0 = Positive, 1 = Negative)             |
 |  Exponent (E):  Bits 62:52 (Biased by +1023)                    |
 |  Mantissa (M):  Bits 51:0 (Normalized with implicit leading 1)  |
 |                                                                 |
-|  Formula:  Value = (-1)^S * 2^(E - 1023) * (1.Fraction)        |
+|  Formula:  Value = (-1)^S * 2^(E - 1023) * (1.Fraction)         |
 +-----------------------------------------------------------------+
 ```
 
