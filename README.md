@@ -270,12 +270,19 @@ Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floa
 
 ### Week 5a Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05a.md)
 
+### Week 5b Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05b.md)
+
 ### Float/Hex Converter Tool [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/float_hex_converter.py)
 
 ### Chapter 19a: Hardware-Accelerated Numerics: ARM Cortex-M33 FPU vs. RP2350 Double-Precision Coprocessor
 This chapter covers hardware-accelerated numerics on the RP2350, contrasting ARM Cortex-M33 single-precision FPU hardware with the custom RP2350 Double-Precision Coprocessor (DCP), with live GDB dynamic inspection, IEEE 754 reversing, and Ghidra binary patching.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05a.pdf) to read the FREE pdf lesson.
+
+### Chapter 19b: Deep-Dive Hardware Architecture: RP2350 PADS_BANK0, IO_BANK0, SIO, and the GPIO Coprocessor (GPIOC)
+This chapter covers the complete silicon architecture of RP2350 GPIO: the physical/analog pad ring (PADS_BANK0), the digital crossbar switchboard (IO_BANK0), fast single-cycle processor I/O (SIO), and the single-cycle GPIO Coprocessor (GPIOC) on ARM Cortex-M33 Coprocessor Port p0, with register-level reverse engineering, GDB hardware debugging, and Ghidra decompilation.
+
+-> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05b.pdf) to read the FREE pdf lesson.
 
 ### Chapter 11: Integer Data Type
 This chapter covers the integer data type in addition to a deeper assembler dive into GPIO outputs as it relates to embedded development on the Pico 2.
