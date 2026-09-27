@@ -90,8 +90,8 @@ UART settings: **115200 baud, 8 data bits, no parity, 1 stop bit**.
 The instructor-issued artifact hashes are:
 
 ```text
-CTF-01.bin  6FD296F7A85F243FB26BF6BFFCBEAB26815FD8915101A81F72069063A5635E5A
-CTF-01.uf2  980F04369C23AD32A063DFE18DE5AF08DF3830138FC7E7898B1F011B4F5E1D9D
+CTF-01.bin  425591AC17FF4C22206286EE6F40B06A89523483804850A41854A9B6F89D7B70
+CTF-01.uf2  B1552EE3BB5763D96C65D8DF1C86984EE842EF1A823FDF5D94132B1E10FF9D16
 ```
 
 ---
@@ -102,7 +102,7 @@ CTF-01.uf2  980F04369C23AD32A063DFE18DE5AF08DF3830138FC7E7898B1F011B4F5E1D9D
 
 | Criterion | Points | Full credit | Partial credit | No credit |
 |-----------|--------|-------------|----------------|-----------|
-| Criterion 1.1: Ghidra Project Setup | 3 | Correct project name, `ARM Cortex 32-bit little endian`, base `0x10000000` | One item off | Not set up |
+| Criterion 1.1: Ghidra Project Setup | 3 | Correct project name, `ARM:LE:32:Cortex` (ARM Cortex 32-bit little endian), base `0x10000000` | One item off | Not set up |
 | Criterion 1.2: main() and Status-Loop Addresses | 4 | Both addresses correct | One correct | Neither found |
 | Criterion 1.3: Vector Table Decoding | 4 | Correct base, initial SP, reset pointer | One missing | Not found |
 | Criterion 1.4: Thumb Addressing | 4 | Correctly clears bit 0 and identifies `main()` | General explanation | Incorrect |

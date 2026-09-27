@@ -31,6 +31,9 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
+#include "grid.h"
+#include <stdio.h>
+
 /**
  * @brief Print the response controller's boot identity and unconditional signal line.
  *
@@ -40,7 +43,14 @@
  * @param None.
  * @return None.
  */
-void print_boot_banner(void);
+static inline void print_boot_banner(void)
+{
+    printf("GLOBAL EMBEDDED RESPONSE NETWORK\r\n");
+    printf("BLACK START WINDOW: 27 MINUTES\r\n");
+    printf("UART0 115200 8N1 | AUTHORIZED LAB CONSOLE\r\n");
+    printf("SIGNAL: NORMAL\r\n");
+    printf("RESPONSE> ");
+}
 
 /**
  * @brief Print the recurring grid classification and dispatch authorization report.
@@ -51,6 +61,12 @@ void print_boot_banner(void);
  * @param None.
  * @return None.
  */
-void print_status(void);
+static inline void print_status(void)
+{
+    printf("GRID STATUS: %s\r\n", operator_state ? "STABLE" : "CRITICAL");
+    printf("DISPATCH PATH: %s\r\n", dispatch_state ? "AUTHORIZED" : "HELD");
+    printf("LAST FRAME: QUARANTINED\r\n");
+    printf("RESPONSE> ");
+}
 
 #endif // CONSOLE_H

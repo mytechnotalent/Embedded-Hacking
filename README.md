@@ -491,7 +491,7 @@ Forty-two stories beneath frozen tundra, a shadow intelligence alliance called D
 
 # Supplemental Material (Beyond the Scope of the Course)
 
-## Pico 2 IoT Projects & CTFs & Pi 4B/5 Embedded Linux C IoT Project & CTF
+## Pico 2 IoT Projects & CTFs
 
 ### Act I of OPERATION COLD IRON [HERE](https://github.com/mytechnotalent/cold-chain-monitor)
 
@@ -532,6 +532,10 @@ Forty-two stories beneath frozen tundra, a shadow intelligence alliance called D
 ### Act X of OPERATION COLD IRON [HERE](https://github.com/mytechnotalent/chemical-warning-terminal)
 
 ### Act X of OPERATION COLD IRON CTF [HERE](https://github.com/mytechnotalent/CTF_chemical-warning-terminal)
+
+<br>
+
+## Pi 4B/5 Embedded Linux C IoT Project & CTF
 
 ### OPERATION TELESCREEN [HERE](https://github.com/mytechnotalent/telescreen)
 

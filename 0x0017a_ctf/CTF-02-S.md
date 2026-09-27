@@ -98,7 +98,7 @@ Clearing bit 0 gives `0x1000015A`. A representative literal pool entry is
 
 | Criterion | Points | Full Credit (Answer Key) | Partial Credit | No Credit |
 |-----------|--------|--------------------------|----------------|-----------|
-| Criterion 1.1: Ghidra Project Setup | 3 | Correct project name, `ARM Cortex 32-bit little endian`, base `0x10000000` | One item off | Not set up |
+| Criterion 1.1: Ghidra Project Setup | 3 | Correct project name, `ARM:LE:32:Cortex` (ARM Cortex 32-bit little endian), base `0x10000000` | One item off | Not set up |
 | Criterion 1.2: Vector Table Decoding | 3 | Correct base, initial SP, reset pointer | One missing | Not found |
 | Criterion 1.3: main() and Status-Loop Addresses | 4 | Both addresses correct | One correct | Neither found |
 | Criterion 1.4: Thumb Addressing and Literal Pool | 2 | Bit 0 cleared and one pool entry traced to its string | Partial | Incorrect |

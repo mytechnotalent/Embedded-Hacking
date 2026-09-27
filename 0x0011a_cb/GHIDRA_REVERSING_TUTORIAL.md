@@ -358,6 +358,12 @@ python3 scripts/float_hex_converter.py 0xC0535CD1633482BF  # -77.450280
 
 `struct.unpack("<d", ...)` already performs that byte swap for you.
 
+> **Crypto boundary (design note).** The target is a single 16-byte AES-128-ECB block
+> under a hardcoded ASCII key. That is intentionally minimal and weak: ECB mode, one
+> block, and the key sitting in the image, so anyone holding the `.bin` can decrypt
+> it. It is chosen to make the offline decrypt fit a lesson, not as a model of sound
+> cryptography. Treat it as a puzzle, not a recipe.
+
 And the plaintext pair at `0x1000A090` / `0x1000A098` (`+38.840280` /
 `-77.428890`)? That is the **decoy**, the beacon's broadcast, and it is a lie.
 The real target only exists after the AES.

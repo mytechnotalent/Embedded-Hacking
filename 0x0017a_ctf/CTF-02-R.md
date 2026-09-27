@@ -112,7 +112,7 @@ CTF-02.uf2  F3CD4840260DB820D792758CECACC5297BEF1971B9EACF7601279256D8AF1EAB
 
 | Criterion | Points | Full credit | Partial credit | No credit |
 |-----------|--------|-------------|----------------|-----------|
-| Criterion 1.1: Ghidra Project Setup | 3 | Correct project name, `ARM Cortex 32-bit little endian`, base `0x10000000` | One item off | Not set up |
+| Criterion 1.1: Ghidra Project Setup | 3 | Correct project name, `ARM:LE:32:Cortex` (ARM Cortex 32-bit little endian), base `0x10000000` | One item off | Not set up |
 | Criterion 1.2: Vector Table Decoding | 3 | Correct base, initial SP, reset pointer | One missing | Not found |
 | Criterion 1.3: main() and Status-Loop Addresses | 4 | Both addresses correct | One correct | Neither found |
 | Criterion 1.4: Thumb Addressing and Literal Pool | 2 | Bit 0 cleared and one pool entry traced to its string | Partial | Incorrect |

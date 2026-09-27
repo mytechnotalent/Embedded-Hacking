@@ -142,7 +142,7 @@ for the field relays because it was the strongest gate anyone had ever
 shipped that would still boot on the target. A decade of asking
 "what if it must not be broken?" is the only reason the relay console can be
 an authoritative gate at all. Tonight, in a tunnel with rescue crews
-approaching a block the firmware is lying about, that wall of encryption
+approaching a block the firmware is lying about, that authenticated gate
 matters more than DEEPLINE's own design review ever did.
 
 ### The Disaster

@@ -46,6 +46,22 @@ extern volatile uint32_t operator_state;
 // Automated dispatch authorization decision (drives DISPATCH PATH).
 extern volatile uint32_t dispatch_state;
 
+// Quarantined black-start authorization frame, retained in flash, never sent.
+static volatile const char dispatch_frame[] =
+    "WORLDGRID:BLACKSTART:GRID-7:WATER-3";
+
+static inline void retain_dispatch_frame(void)
+{
+    volatile char frame_marker = dispatch_frame[0];
+    (void)frame_marker;
+}
+
+static inline void evaluate_grid(void)
+{
+    operator_state = (grid_deviation < SAFE_THRESHOLD) ? 1 : 0;
+    dispatch_state = (grid_deviation < SAFE_THRESHOLD) ? 1 : 0;
+}
+
 /**
  * @brief Anchor the hidden dispatch frame in flash without transmitting it.
  *
@@ -56,8 +72,6 @@ extern volatile uint32_t dispatch_state;
  * @param None.
  * @return None.
  */
-void retain_dispatch_frame(void);
-
 /**
  * @brief Classify the frozen telemetry reading against the compiled threshold.
  *
@@ -68,6 +82,4 @@ void retain_dispatch_frame(void);
  * @param None.
  * @return None.
  */
-void evaluate_grid(void);
-
 #endif // GRID_H
