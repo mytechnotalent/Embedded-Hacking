@@ -62,3 +62,13 @@ node_modules/
 package-lock.json
 package.json
 svg-to-pdf.ps1
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+

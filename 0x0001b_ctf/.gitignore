@@ -1,0 +1,4 @@
+build
+!.vscode/*
+!build-ctf/0x0001b_ctf.bin
+!CTF-01.bin
