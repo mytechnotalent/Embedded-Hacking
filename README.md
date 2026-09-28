@@ -308,10 +308,6 @@ This chapter covers hacking the double floating-point data type as it relates to
 ## Week 6
 Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ GPIO Input Basics
 
-### Week 6 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-SLIDES.pdf)
-
-### Week 6 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06.md)
-
 ### Classified Brief 0x01 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/CLASSIFIED-BRIEF-0x01.md)
 
 ### GDB Hardware Debugging Tutorial [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/GDB_DEBUG_TUTORIAL.md)
@@ -325,6 +321,10 @@ Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ 
 ### Float/Hex Converter Tool [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/scripts/float_hex_converter.py)
 
 ### Telemetry Monitor Tool [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/scripts/telemetry_monitor.py)
+
+### Week 6 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-SLIDES.pdf)
+
+### Week 6 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06.md)
 
 ### Chapter 20: Static Variables
 This chapter covers static variables as well as an intro to GPIO inputs as we work with push buttons as it relates to embedded development on the Pico 2.
