@@ -222,6 +222,8 @@ Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Ba
 
 ### Week 4a Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04a.md)
 
+### RP2350 SVD [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/rp2350.svd)
+
 ### Chapter 5: Intro To Variables
 This chapter covers an introduction to variables as it relates to embedded development on the Pico 2.
 
