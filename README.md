@@ -263,6 +263,8 @@ Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floa
 
 ### Week 5a Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05a.md)
 
+### Float/Hex Converter Tool [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/float_hex_converter.py)
+
 ### Chapter 11: Integer Data Type
 This chapter covers the integer data type in addition to a deeper assembler dive into GPIO outputs as it relates to embedded development on the Pico 2.
 
@@ -320,10 +322,6 @@ Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ 
 ### Classified Brief 0x01 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/0x0011a_cb.bin)
 
 ### Classified Brief 0x01 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/0x0011a_cb.uf2)
-
-### Float/Hex Converter Tool [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/scripts/float_hex_converter.py)
-
-### Telemetry Monitor Tool [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/scripts/telemetry_monitor.py)
 
 ### Week 6 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-SLIDES.pdf)
 
