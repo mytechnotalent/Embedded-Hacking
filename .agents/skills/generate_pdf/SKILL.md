@@ -69,6 +69,9 @@ The strict course format rendering script is located in `Documents/data-science/
 - Working Directory: `Documents/data-science/EH`
 - Command: `node render-lesson-pdf.mjs [ABSOLUTE_PATH_TO_SOURCE_MD] [ABSOLUTE_PATH_TO_OUTPUT_PDF]`
 
+The renderer emits an **accessible/tagged PDF** (Chrome `tagged: true`). The cover page and the lesson body are rendered as a **single** tagged document; do **not** merge with `pdf-lib` afterward, as that strips the structure tree. Markdown tables produce real `<TH>` header cells, which is what Canvas requires.
+
 ## 5. Verification & Git Hygiene
 - Inspect the generated PDF to confirm proper page layout, fonts, and headers/footers (`Course Notes`).
+- Confirm the PDF is **tagged**: `/StructTreeRoot` and `/MarkInfo` are present, and table header cells are `/TH`. The `/TH`, `/TD`, and `/TR` counts must equal the source Markdown's `<th>`, `<td>`, and `<tr>` counts. This is the accessibility check Canvas enforces.
 - Ensure `.DS_Store` or other OS metadata files are never staged or committed to the repository (verify `.gitignore`).
