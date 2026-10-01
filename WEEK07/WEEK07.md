@@ -62,7 +62,7 @@ Think of it like a "find and replace" in a text editor. The compiler never sees 
 |  Source Code          Preprocessor         Compiler             |
 |  +----------+        +----------+        +----------+           |
 |  | #define  |        | Replace  |        | Compile  |           |
-|  | FAV_NUM  | -----? | FAV_NUM  | -----? | binary   |           |
+|  | FAV_NUM  | -----> | FAV_NUM  | -----> | binary   |           |
 |  | 42       |        | with 42  |        | code     |           |
 |  +----------+        +----------+        +----------+           |
 |                                                                 |
@@ -175,7 +175,7 @@ Every I2C device has a unique **7-bit address**. Common addresses:
 |  5. Receiver sends ACK after each byte                          |
 |  6. Master sends STOP condition                                 |
 |                                                                 |
-|  START --? Address --? ACK --? Data --? ACK --? STOP            |
+|  START --> Address --> ACK --> Data --> ACK --> STOP            |
 |                                                                 |
 +-----------------------------------------------------------------+
 ```
@@ -269,16 +269,16 @@ When you write `I2C_PORT` in your code, here's what happens:
 |                                                                 |
 |  In your code:     #define I2C_PORT i2c1                        |
 |                           |                                     |
-|                           ?                                     |
+|                           ↓                                     |
 |  In i2c.h:         #define i2c1 (&i2c1_inst)                    |
 |                           |                                     |
-|                           ?                                     |
+|                           ↓                                     |
 |  In i2c.c:         i2c_inst_t i2c1_inst = {i2c1_hw, false};     |
 |                           |                                     |
-|                           ?                                     |
+|                           ↓                                     |
 |  In i2c.h:         #define i2c1_hw ((i2c_hw_t *)I2C1_BASE)      |
 |                           |                                     |
-|                           ?                                     |
+|                           ↓                                     |
 |  In addressmap.h:  #define I2C1_BASE 0x40098000                 |
 |                                                                 |
 +-----------------------------------------------------------------+
@@ -373,15 +373,15 @@ Connect your LCD like this:
 |  Pico 2                        1602 LCD + I2C Backpack          |
 |  +----------+                  +----------------------+         |
 |  |          |                  |                      |         |
-|  | GPIO 2   |------- SDA -----?| SDA                  |         |
+|  | GPIO 2   |------- SDA ----->| SDA                  |         |
 |  | (SDA)    |                  |                      |         |
 |  |          |                  |    +------------+    |         |
-|  | GPIO 3   |------- SCL -----?| SCL|  Reverse   |    |         |
+|  | GPIO 3   |------- SCL ----->| SCL|  Reverse   |    |         |
 |  | (SCL)    |                  |    |Engineering |    |         |
 |  |          |                  |    +------------+    |         |
-|  | 3.3V     |------- VCC -----?| VCC                  |         |
+|  | 3.3V     |------- VCC ----->| VCC                  |         |
 |  |          |                  |                      |         |
-|  | GND      |------- GND -----?| GND                  |         |
+|  | GND      |------- GND ----->| GND                  |         |
 |  |          |                  |                      |         |
 |  +----------+                  +----------------------+         |
 |                                                                 |
@@ -484,7 +484,7 @@ OTHER_FAV_NUM: 1337
 
 ## Part 8: Debugging with GDB (Dynamic Analysis)
 
-> ? **REVIEW:** This setup is identical to previous weeks. If you need a refresher on OpenOCD and GDB connection, refer back to Week 3 Part 6.
+> **REVIEW:** This setup is identical to previous weeks. If you need a refresher on OpenOCD and GDB connection, refer back to Week 3 Part 6.
 
 ### Starting the Debug Session
 
@@ -819,7 +819,7 @@ movs r1, #0x2a    ->    bytes: 2a 21
 
 In HxD, use **Ctrl+G** to navigate to file offset `28E` and verify you see the byte `2A` followed by `21`.
 
-> ?? **How Thumb encoding works:** In `movs r1, #imm8`, the immediate value is the first byte, and the opcode `21` is the second byte. So the bytes `2a 21` encode `movs r1, #0x2a` (42). If you wanted to change this to 43, you'd change `2A` to `2B`.
+> **How Thumb encoding works:** In `movs r1, #imm8`, the immediate value is the first byte, and the opcode `21` is the second byte. So the bytes `2a 21` encode `movs r1, #0x2a` (42). If you wanted to change this to 43, you'd change `2A` to `2B`.
 
 ### Step 18: Understand OTHER_FAV_NUM Encoding (movw - 32-bit Thumb-2)
 
@@ -836,9 +836,9 @@ This is the 32-bit Thumb-2 encoding of `movw r1, #0x539` (1337). The bytes break
 +-----------------------------------------------------------------+
 |  movw r1, #0x539  ->  bytes: 40 F2 39 51                        |
 |                                                                 |
-|  Byte 0: 0x40  -??                                              |
+|  Byte 0: 0x40  -+                                               |
 |  Byte 1: 0xF2  -+   First halfword (opcode + upper imm bits)    |
-|  Byte 2: 0x39  ---- Lower 8 bits of immediate (imm8) ?? CHANGE  |
+|  Byte 2: 0x39  ---- Lower 8 bits of immediate (imm8) <- CHANGE  |
 |  Byte 3: 0x51  ---- Destination register (r1) + upper imm bits  |
 |                                                                 |
 |  imm16 = 0x0539 = 1337 decimal                                  |
@@ -856,7 +856,7 @@ To change `movw r1, #1337` to `movw r1, #1344`:
 3. You should see the byte `39` at this position
 4. Change `39` to `40`
 
-> ?? **Why offset `0x298` and not `0x296`?** The lower 8 bits of the immediate (`imm8`) are in the **third byte** of the 4-byte `movw` instruction. The instruction starts at file offset `0x296`, so imm8 is at `0x296 + 2 = 0x298`. Changing `0x39` to `0x40` changes the value from `0x539` (1337) to `0x540` (1344).
+> **Why offset `0x298` and not `0x296`?** The lower 8 bits of the immediate (`imm8`) are in the **third byte** of the 4-byte `movw` instruction. The instruction starts at file offset `0x296`, so imm8 is at `0x296 + 2 = 0x298`. Changing `0x39` to `0x40` changes the value from `0x539` (1337) to `0x540` (1344).
 
 ### Step 19: Hack - Change LCD Text from "Reverse" to "Exploit"
 
@@ -1094,4 +1094,4 @@ The numbers are unchanged - we only patched the LCD string!
 
 **Remember:** When you see complex nested structures in a binary, take your time to understand the hierarchy. Use GDB to examine struct layouts in memory and trace pointer chains. And always remember - even "constants" can be hacked!
 
-Happy hacking! ?
+Happy hacking!
