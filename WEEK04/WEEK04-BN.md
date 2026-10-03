@@ -1102,6 +1102,35 @@ Confirm the Pico prints `age: 0` and blinks the red LED.
    # Windows
    $env:BP_ADDR="0x10000234"; .\debug-server.ps1
    ```
+
+   **Or restart it from the Binary Ninja console** — kill any running server, then start it parked at `main`:
+
+   **macOS / Linux:**
+
+   ```python
+   import os, subprocess
+   root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()
+   log = os.path.join(root, "openocd.log")
+   subprocess.run(["pkill", "-TERM", "-f", "openocd"])          # kill any running server first
+   subprocess.Popen([os.path.join(root, "debug-server.sh")], cwd=root,
+                    env=dict(os.environ, BP_ADDR="0x10000234"),
+                    stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
+   print("OpenOCD restarted parked at main; log:", log)
+   ```
+
+   **Windows:**
+
+   ```python
+   import os, subprocess
+   root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()
+   log = os.path.join(root, "openocd.log")
+   subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])     # kill any running server first
+   subprocess.Popen(["powershell", "-ExecutionPolicy", "Bypass", "-File",
+                     os.path.join(root, "debug-server.ps1")], cwd=root,
+                    env=dict(os.environ, BP_ADDR="0x10000234"),
+                    stdout=open(log, "w"), stderr=subprocess.STDOUT)
+   print("OpenOCD restarted parked at main; log:", log)
+   ```
 2. Connect Binary Ninja (Step 11): adapter **GDB MI**, IP `127.0.0.1`, port `3333`.
 
 The target is already halted at `main` when Binary Ninja connects, and the sidebar reads `Stopped at 0x10000234`.
