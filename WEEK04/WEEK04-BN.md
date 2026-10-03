@@ -840,25 +840,33 @@ age: 70
 
 **43 became 70, permanently, with one byte changed and no source code.**
 
-> **Faster: flash over the Debug Probe (no BOOTSEL).** The repo's `flash.sh` writes the raw `.bin` straight into XIP flash over SWD (`program <bin> 0x10000000 verify reset exit`), so you never touch BOOTSEL or a UF2. Run it from the Binary Ninja console:
+> **Faster: flash over the Debug Probe (no BOOTSEL).** The repo's `flash.sh` writes the raw `.bin` straight into XIP flash over SWD (`program <bin> 0x10000000 verify reset exit`), so you never touch BOOTSEL or a UF2. Run it from a terminal (`./flash.sh <bin>`), or from the Binary Ninja console **without freezing it** — use `subprocess.Popen`, which returns immediately, and send OpenOCD's output to a log file. (`subprocess.run` blocks the console until the flash finishes; do not use it here.)
 >
 > ```python
 > import os, subprocess
 > root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))
 > bin_path = os.path.join(os.path.dirname(bv.file.original_filename), "0x0005_intro-to-variables-h.bin")
-> subprocess.run([os.path.join(root, "flash.sh"), bin_path])
+> log = os.path.join(os.path.dirname(bv.file.original_filename), "flash.log")
+> p = subprocess.Popen([os.path.join(root, "flash.sh"), bin_path],
+>                      stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
+> print("flashing in the background; log:", log)
 > ```
 >
-> Or the OpenOCD call directly, if you would rather not depend on the script:
+> The console is free the moment this returns. Check it with `print(p.poll())` (`None` = still running, `0` = done) or read `flash.log` — success ends with `** Verified OK **`. (Verified: `Popen` returns in ~1 ms; the flash itself takes ~2 s.)
+>
+> The same non-blocking form without the script:
 >
 > ```python
 > import os, subprocess
 > ocd = os.path.expanduser("~/.pico-sdk/openocd/0.12.0+dev")
 > bin_path = os.path.join(os.path.dirname(bv.file.original_filename), "0x0005_intro-to-variables-h.bin")
-> subprocess.run([f"{ocd}/openocd", "-s", f"{ocd}/scripts",
+> log = os.path.join(os.path.dirname(bv.file.original_filename), "flash.log")
+> p = subprocess.Popen([f"{ocd}/openocd", "-s", f"{ocd}/scripts",
 >     "-f", "interface/cmsis-dap.cfg", "-f", "target/rp2350.cfg",
 >     "-c", "adapter speed 5000",
->     "-c", f"program {bin_path} 0x10000000 verify reset exit"])
+>     "-c", f"program {bin_path} 0x10000000 verify reset exit"],
+>     stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
+> print("flashing in the background; log:", log)
 > ```
 >
 > **The Debug Probe is single-owner.** If Binary Ninja is still attached (the `debug-server.sh` OpenOCD is running), the flash cannot grab the probe. Detach in Binary Ninja and stop that OpenOCD first:
@@ -1226,13 +1234,16 @@ python ..\uf2conv.py 0x0008_uninitialized-variables-h.bin ^
 
 Or run the conversion from the Binary Ninja console, exactly as in Step 20 (`os.chdir` to the build dir, then `runpy.run_path("../../uf2conv.py", run_name="__main__")` with `sys.argv` set to the arguments above).
 
-Hold **BOOTSEL**, plug in the Pico 2, drag `hacked.uf2` onto the **`RP2350`** drive. Or flash the `.bin` over the Debug Probe with SWD — no BOOTSEL — from the console, exactly as in Step 21 (stop any running OpenOCD first):
+Hold **BOOTSEL**, plug in the Pico 2, drag `hacked.uf2` onto the **`RP2350`** drive. Or flash the `.bin` over the Debug Probe with SWD — no BOOTSEL — from the console, exactly as in Step 21 (stop any running OpenOCD first, and use `Popen`, not `run`, so the console is not blocked):
 
 ```python
 import os, subprocess
 root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))
 bin_path = os.path.join(os.path.dirname(bv.file.original_filename), "0x0008_uninitialized-variables-h.bin")
-subprocess.run([os.path.join(root, "flash.sh"), bin_path])
+log = os.path.join(os.path.dirname(bv.file.original_filename), "flash.log")
+p = subprocess.Popen([os.path.join(root, "flash.sh"), bin_path],
+                     stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
+print("flashing in the background; log:", log)
 ```
 
 ### Step 30: Verify
