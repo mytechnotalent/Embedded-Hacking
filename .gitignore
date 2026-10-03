@@ -72,3 +72,9 @@ svg-to-pdf.ps1
 ehthumbs.db
 Thumbs.db
 
+# Logs written by the Binary Ninja console helpers (build / flash / OpenOCD)
+openocd.log
+flash.log
+build.log
+build-flash.log
+

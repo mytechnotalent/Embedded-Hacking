@@ -403,6 +403,37 @@ BP_ADDR=0x10000234 ./debug-server.sh
 $env:BP_ADDR="0x10000234"; .\debug-server.ps1
 ```
 
+**Or start it from the Binary Ninja console**, freeing the probe first and launching the server in the background so the console returns immediately:
+
+**macOS Apple Silicon / Linux x64:**
+
+```python
+import os, subprocess
+root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+subprocess.run(["pkill", "-TERM", "-f", "openocd"])          # stop any running server first
+log = os.path.join(root, "openocd.log")
+p = subprocess.Popen([os.path.join(root, "debug-server.sh")], cwd=root,
+                     env=dict(os.environ, BP_ADDR="0x10000234"),
+                     stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
+print("OpenOCD started (pid", p.pid, "); log:", log)
+```
+
+**Windows x64:**
+
+```python
+import os, subprocess
+root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])     # stop any running server first
+log = os.path.join(root, "openocd.log")
+p = subprocess.Popen(["powershell", "-ExecutionPolicy", "Bypass", "-File",
+                      os.path.join(root, "debug-server.ps1")], cwd=root,
+                     env=dict(os.environ, BP_ADDR="0x10000234"),
+                     stdout=open(log, "w"), stderr=subprocess.STDOUT)
+print("OpenOCD started (pid", p.pid, "); log:", log)
+```
+
+`Popen` returns in a few milliseconds; the server keeps running in the background. Check `openocd.log` for `Listening on port 3333`, then connect in Step 11.
+
 Wait for:
 
 ```
