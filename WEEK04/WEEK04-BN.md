@@ -764,16 +764,23 @@ Keep the replacement exactly three bytes. If you use a shorter string you must p
 
 ```python
 import os
-data = bv.read(0x10000000, 0x3bbc)
+seg = next(s for s in bv.segments if s.data_length)   # the loadable image segment
+data = bv.read(seg.start, seg.data_length)            # base + size come from the view itself
 out = os.path.join(os.path.dirname(bv.file.original_filename), "0x0005_intro-to-variables-h.bin")
 open(out, "wb").write(data)
 print(len(data), out)   # -> 15292 /.../build/0x0005_intro-to-variables-h.bin
 ```
 
-Two things this gets right:
+Where the two numbers come from — nothing is hardcoded:
+
+- **`seg.start`** is the image base Binary Ninja loaded the `.bin` at (`0x10000000`), the same value you pass to `uf2conv --base`.
+- **`seg.data_length`** is the segment's size in the file (`0x3bbc` = 15292). Exactly one segment carries data (the image); every peripheral and synthetic segment has `data_length == 0`, so `next(...)` picks the image.
+- Reading `seg.start` for `seg.data_length` bytes therefore grabs exactly the image.
+
+Two gotchas this avoids:
 
 - **No relative path.** Binary Ninja's Python console runs with a read-only working directory (inside the app bundle), so `open("0x0005_intro-to-variables-h.bin", "wb")` fails with `OSError: [Errno 30] Read-only file system`. `bv.file.original_filename` is the `.bin` this view was loaded from, so the file is written next to it — no machine-specific path.
-- **Read the image, not the whole view.** `bv.read(bv.start, bv.length)` spans the entire mapped range (`0x10000000`..`0xe008000c`). The image is `0x10000000` + `0x3bbc` (15292) bytes, so read that range explicitly.
+- **Read the image, not the whole view.** `bv.read(bv.start, bv.length)` spans the entire mapped range (`0x10000000`..`0xe008000c`), which is not the image. The segment's `data_length` is the image size.
 
 A different size means you exported a partial view.
 
@@ -794,6 +801,18 @@ python3 ../uf2conv.py 0x0005_intro-to-variables-h.bin \
 python ..\uf2conv.py 0x0005_intro-to-variables-h.bin ^
   --base 0x10000000 --family 0xe48bff59 --output hacked.uf2
 ```
+
+> **Or convert from the Binary Ninja console** — it is a normal Python interpreter, so you never have to leave the app. `chdir` to a writable directory first (the default one is read-only), then run the script:
+>
+> ```python
+> import os, sys, runpy
+> os.chdir(os.path.dirname(bv.file.original_filename))   # the project build dir (writable)
+> sys.argv = ["uf2conv.py", "0x0005_intro-to-variables-h.bin",
+>             "--base", "0x10000000", "--family", "0xe48bff59", "--output", "hacked.uf2"]
+> runpy.run_path("../../uf2conv.py", run_name="__main__")   # path to your uf2conv.py
+> ```
+>
+> This writes `hacked.uf2` next to the `.bin`, ready to drag onto the Pico.
 
 ### Step 21: Flash and verify `age: 70`
 
@@ -1120,18 +1139,21 @@ Exactly three bytes, same rule as Project 1: a shorter string must be padded, a 
 
 ```python
 import os
-data = bv.read(0x10000000, 0x3d34)
+seg = next(s for s in bv.segments if s.data_length)   # the loadable image segment
+data = bv.read(seg.start, seg.data_length)            # base + size from the view itself
 out = os.path.join(os.path.dirname(bv.file.original_filename), "0x0008_uninitialized-variables-h.bin")
 open(out, "wb").write(data)
 print(len(data), out)   # -> 15668 /.../build/0x0008_uninitialized-variables-h.bin
 ```
 
-Same two gotchas as Project 1: no relative path (the console's CWD is read-only) and read the image range (`0x10000000` + `0x3d34`), not `bv.start`/`bv.length`.
+Same as Project 1: `seg.start` is the load base and `seg.data_length` is the image size (here `0x3d34` = 15668) — both read from the view, and no relative path (the console's CWD is read-only).
 
 ```bash
 python3 ../uf2conv.py 0x0008_uninitialized-variables-h.bin \
   --base 0x10000000 --family 0xe48bff59 --output hacked.uf2
 ```
+
+Or run the conversion from the Binary Ninja console, exactly as in Step 20 (`os.chdir` to the build dir, then `runpy.run_path("../../uf2conv.py", run_name="__main__")` with `sys.argv` set to the arguments above).
 
 Hold **BOOTSEL**, plug in the Pico 2, drag `hacked.uf2` onto the **`RP2350`** drive.
 
