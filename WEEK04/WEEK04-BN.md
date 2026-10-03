@@ -763,11 +763,17 @@ Keep the replacement exactly three bytes. If you use a shorter string you must p
 ### Step 19: Export the patched `.bin`
 
 ```python
-data = bv.read(bv.start, bv.length)
-with open("0x0005_intro-to-variables-h.bin", "wb") as f:
-    f.write(data)
-print(len(data))   # -> 15292
+import os
+data = bv.read(0x10000000, 0x3bbc)
+out = os.path.join(os.path.dirname(bv.file.original_filename), "0x0005_intro-to-variables-h.bin")
+open(out, "wb").write(data)
+print(len(data), out)   # -> 15292 /.../build/0x0005_intro-to-variables-h.bin
 ```
+
+Two things this gets right:
+
+- **No relative path.** Binary Ninja's Python console runs with a read-only working directory (inside the app bundle), so `open("0x0005_intro-to-variables-h.bin", "wb")` fails with `OSError: [Errno 30] Read-only file system`. `bv.file.original_filename` is the `.bin` this view was loaded from, so the file is written next to it — no machine-specific path.
+- **Read the image, not the whole view.** `bv.read(bv.start, bv.length)` spans the entire mapped range (`0x10000000`..`0xe008000c`). The image is `0x10000000` + `0x3bbc` (15292) bytes, so read that range explicitly.
 
 A different size means you exported a partial view.
 
@@ -1113,11 +1119,14 @@ Exactly three bytes, same rule as Project 1: a shorter string must be padded, a 
 ### Step 29: Export, convert, and flash
 
 ```python
-data = bv.read(bv.start, bv.length)
-with open("0x0008_uninitialized-variables-h.bin", "wb") as f:
-    f.write(data)
-print(len(data))   # -> 15668
+import os
+data = bv.read(0x10000000, 0x3d34)
+out = os.path.join(os.path.dirname(bv.file.original_filename), "0x0008_uninitialized-variables-h.bin")
+open(out, "wb").write(data)
+print(len(data), out)   # -> 15668 /.../build/0x0008_uninitialized-variables-h.bin
 ```
+
+Same two gotchas as Project 1: no relative path (the console's CWD is read-only) and read the image range (`0x10000000` + `0x3d34`), not `bv.start`/`bv.length`.
 
 ```bash
 python3 ../uf2conv.py 0x0008_uninitialized-variables-h.bin \
