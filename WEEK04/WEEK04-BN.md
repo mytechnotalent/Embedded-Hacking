@@ -619,6 +619,8 @@ main
 | `0x10000da0` | `time_us_64` | `uint64_t time_us_64(void)` |
 | `0x100033e0` | `strlen` | `size_t strlen(const char*)` |
 
+> **A `void` return type may not stick.** Binary Ninja treats `void` as low-confidence, and its analysis can override it with an inferred type — most often `int32_t` on this 32-bit target. It is most visible on `_reset_handler` (a hand-written assembly entry that never returns normally), but it can happen to **any** function whose return type Binary Ninja thinks it can infer. If a header shows a different return type right after you set `void`, that is the analysis winning, not a mistake in what you typed — leave it. It does not affect the rest of the lesson.
+
 > **`__wrap_printf` is the real symbol.** `printf` in our source compiles to the SDK's `__wrap_printf` (which forwards to `__wrap_vprintf`). Rename it `printf` if you prefer the lesson's shorthand, but `__wrap_printf` is what the ELF says.
 >
 > **`stdio_init_all` returns `bool`, not `void`** — `_Bool stdio_init_all(void)` in the ELF. The `main` source ignores the return value, so the decompiler still reads fine.
