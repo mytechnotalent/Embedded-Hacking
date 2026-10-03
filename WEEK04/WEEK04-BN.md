@@ -171,37 +171,39 @@ Each line is `address type name`. The `T`/`t` type is a function. Here are the f
 
 **Project 1 — `0x0005_intro-to-variables`:**
 
-| Address | ELF symbol | Role |
-| ------- | ---------- | ---- |
-| `0x1000015c` | `_reset_handler` | reset entry |
-| `0x10000186` | `platform_entry` | calls `runtime_init`, `main`, `exit` |
-| `0x1000019a` | `data_cpy` | copies `.data` from flash to SRAM |
-| `0x100001e4` | `_init` | runs `.init_array` |
-| `0x10000210` | `frame_dummy` | C runtime boilerplate |
-| `0x10000234` | `main` | the lesson function |
-| `0x10000248` | `gpio_set_function` | SDK GPIO helper |
-| `0x10002cfc` | `exit` | C runtime exit |
-| `0x10002d04` | `runtime_init` | SDK runtime init |
-| `0x10002f54` | `stdio_init_all` | SDK serial init |
-| `0x100030e4` | `__wrap_printf` | the `printf` wrapper |
+| Address | ELF symbol | Signature | Role |
+| ------- | ---------- | --------- | ---- |
+| `0x1000015c` | `_reset_handler` | — | reset entry |
+| `0x10000186` | `platform_entry` | `void platform_entry(void)` | calls `runtime_init`, `main`, `exit` |
+| `0x1000019a` | `data_cpy` | `void data_cpy(void*, void*, void*)` | copies `.data` from flash to SRAM |
+| `0x100001e4` | `_init` | `void _init(void)` | runs `.init_array` |
+| `0x10000210` | `frame_dummy` | `void frame_dummy(void)` | C runtime boilerplate |
+| `0x10000234` | `main` | `int main(void)` | the lesson function |
+| `0x10000248` | `gpio_set_function` | `void gpio_set_function(uint, gpio_function_t)` | SDK GPIO helper |
+| `0x10002cfc` | `exit` | `void exit(int)` | C runtime exit |
+| `0x10002d04` | `runtime_init` | `void runtime_init(void)` | SDK runtime init |
+| `0x10002f54` | `stdio_init_all` | `bool stdio_init_all(void)` | SDK serial init |
+| `0x100030e4` | `__wrap_printf` | `int __wrap_printf(const char*, ...)` | the `printf` wrapper |
+
+These signatures come from the ELF's DWARF debug info, so they are exact. You apply them in Binary Ninja in Step 16 (`G` -> address, then `Y` -> Change Type).
 
 **Project 2 — `0x0008_uninitialized-variables`:**
 
-| Address | ELF symbol | Role |
-| ------- | ---------- | ---- |
-| `0x1000015c` | `_reset_handler` | reset entry |
-| `0x10000186` | `platform_entry` | calls `runtime_init`, `main`, `exit` |
-| `0x1000019a` | `data_cpy` | copies `.data` from flash to SRAM |
-| `0x100001e4` | `_init` | runs `.init_array` |
-| `0x10000210` | `frame_dummy` | C runtime boilerplate |
-| `0x10000234` | `main` | the lesson function (`blink_and_print` inlined) |
-| `0x10000278` | `gpio_set_function` | SDK GPIO helper |
-| `0x100002b4` | `gpio_init` | SDK GPIO init |
-| `0x10000d10` | `sleep_ms` | SDK delay |
-| `0x10002e74` | `exit` | C runtime exit |
-| `0x10002e7c` | `runtime_init` | SDK runtime init |
-| `0x100030cc` | `stdio_init_all` | SDK serial init |
-| `0x1000325c` | `__wrap_printf` | the `printf` wrapper |
+| Address | ELF symbol | Signature | Role |
+| ------- | ---------- | --------- | ---- |
+| `0x1000015c` | `_reset_handler` | — | reset entry |
+| `0x10000186` | `platform_entry` | `void platform_entry(void)` | calls `runtime_init`, `main`, `exit` |
+| `0x1000019a` | `data_cpy` | `void data_cpy(void*, void*, void*)` | copies `.data` from flash to SRAM |
+| `0x100001e4` | `_init` | `void _init(void)` | runs `.init_array` |
+| `0x10000210` | `frame_dummy` | `void frame_dummy(void)` | C runtime boilerplate |
+| `0x10000234` | `main` | `int main(void)` | the lesson function (`blink_and_print` inlined) |
+| `0x10000278` | `gpio_set_function` | `void gpio_set_function(uint, gpio_function_t)` | SDK GPIO helper |
+| `0x100002b4` | `gpio_init` | `void gpio_init(uint)` | SDK GPIO init |
+| `0x10000d10` | `sleep_ms` | `void sleep_ms(uint32_t)` | SDK delay |
+| `0x10002e74` | `exit` | `void exit(int)` | C runtime exit |
+| `0x10002e7c` | `runtime_init` | `void runtime_init(void)` | SDK runtime init |
+| `0x100030cc` | `stdio_init_all` | `bool stdio_init_all(void)` | SDK serial init |
+| `0x1000325c` | `__wrap_printf` | `int __wrap_printf(const char*, ...)` | the `printf` wrapper |
 
 > **`main` is `0x10000234` in both projects.** In Project 2 the `static void blink_and_print` helper is inlined into `main` by the `Release` optimizer, so it does not appear as a separate symbol. That is why both projects put `main` at the same address. In a `Debug` build it stays separate and `main` moves — another reason to build `Release`.
 
@@ -536,42 +538,49 @@ Three keys do all the work:
 | Key | Binary Ninja action | Use it for |
 | --- | --- | --- |
 | `G` | Go to address | Jump to a function's address |
-| `N` | Rename symbol | Give the function its real name |
-| `Y` | Set type | Give the function its signature |
+| `Y` | **Change Type** | Set the function's signature. The dialog shows the full prototype, so this sets the name *and* the type in one step. |
+| `N` | Rename | Rename only, when you just want the name and not the type |
 
-For each function below, the loop is the same: `G` to its address, `N` to rename it, `Y` to set its signature.
+For each function below: `G` to its address, then **`Y` (Change Type)** and type the prototype from the table.
+
+#### How to resolve a function in Binary Ninja (`Y`)
+
+`Y` is the **Change Type** key, and it is what actually resolves the function — it turns `void sub_10002f54()` into `bool stdio_init_all(void)`. The Change Type dialog shows the full declaration (name and type), so typing the prototype sets both:
+
+1. `G` to the function's address. The cursor lands on the function.
+2. Press **`Y`**. In the Change Type dialog, type the prototype from the table exactly — for example `bool stdio_init_all(void)` — and press Enter.
+
+The decompiler header then shows the real prototype, and calls to the function read cleanly instead of `sub_<addr>()`. `N` is only for renaming without touching the type; `Y` alone sets both the name and the type.
+
+If `Y` seems to do nothing, confirm the cursor is on the function, or right-click it and pick **Change Type...**. Binary Ninja parses what you type and silently keeps the old type if it does not parse, so glance at the header after each `Y`.
 
 #### Worked example: `main`
 
 1. Press `G`, type `0x10000234`, press Enter. The view jumps there; the cursor lands on `sub_10000234`.
-2. Press `N`, type `main`, press Enter.
-3. Press `Y`, type `int main(void)`, press Enter.
+2. Press **`Y`** (Change Type), type `int main(void)`, press Enter. That sets the name to `main` and the type to `int(void)`.
 
 > **Binary Ninja shows `int32_t` where Ghidra shows `int`.** After you set `int main(void)`, the decompiler header may read `int32_t main(void)`. That is the same type — on this platform `int` is 32 bits and Binary Ninja's parser normalises it to `int32_t`. Do not fight it; it is not an error.
 
 #### Worked example: `stdio_init_all`
 
 1. `G` -> `0x10002f54`.
-2. `N` -> `stdio_init_all`.
-3. `Y` -> `bool stdio_init_all(void)`.
+2. `Y` -> `bool stdio_init_all(void)`.
 
 It returns **`bool`**, not `void` — the ELF says `_Bool stdio_init_all(void)`. Our `main` ignores the return value, so the decompiler still reads cleanly.
 
 #### Worked example: `uart_init`
 
 1. `G` -> `0x10000e10`.
-2. `N` -> `uart_init`.
-3. `Y` -> `uint uart_init(uart_inst_t *uart, uint baudrate)`.
+2. `Y` -> `uint uart_init(uart_inst_t *uart, uint baudrate)`.
 
 #### Worked example: `__wrap_printf`
 
 1. `G` -> `0x100030e4`.
-2. `N` -> `__wrap_printf`.
-3. `Y` -> `int __wrap_printf(const char *fmt, ...)`. Keep the `...` — `printf` is variadic.
+2. `Y` -> `int __wrap_printf(const char *fmt, ...)`. Keep the `...` — `printf` is variadic.
 
-> **`printf` in our source is `__wrap_printf` in the binary.** The SDK links our `printf` calls to its `__wrap_printf` wrapper. Rename it `printf` if you prefer the lesson's shorthand, but `__wrap_printf` is the real symbol.
+> **`printf` in our source is `__wrap_printf` in the binary.** The SDK links our `printf` calls to its `__wrap_printf` wrapper.
 
-The rest of the chain is the same three keystrokes per function. This is **our code plus the library functions it actually calls** — not the whole SDK. `main` only calls `stdio_init_all` and `printf`, so we follow that chain down: `stdio_init_all` pulls in the stdio/UART setup, and `printf` lands in the SDK's `__wrap_printf`.
+The rest of the chain is the same two keystrokes per function (`G`, then `Y`). This is **our code plus the library functions it actually calls** — not the whole SDK. `main` only calls `stdio_init_all` and `printf`, so we follow that chain down: `stdio_init_all` pulls in the stdio/UART setup, and `printf` lands in the SDK's `__wrap_printf`.
 
 The call chain for this project:
 
@@ -614,25 +623,41 @@ main
 >
 > **`stdio_init_all` returns `bool`, not `void`** — `_Bool stdio_init_all(void)` in the ELF. The `main` source ignores the return value, so the decompiler still reads fine.
 
-> **Shortcut:** instead of renaming by hand, paste this into Binary Ninja's Python console (`Plugins -> Python Console`). It applies the same symbol map programmatically:
+> **Shortcut — resolves name *and* type for every function.** Instead of doing `N` + `Y` by hand, paste this into Binary Ninja's Python console (`Plugins -> Python Console`). It sets each function's name and signature programmatically:
 >
 > ```python
 > from binaryninja import Symbol, SymbolType
-> symbols = {
->     0x1000015c: "_reset_handler",        0x10000186: "platform_entry",
->     0x1000019a: "data_cpy",              0x100001e4: "_init",
->     0x10000210: "frame_dummy",           0x10000234: "main",
->     0x10002cfc: "exit",                  0x10002d04: "runtime_init",
->     0x10002f54: "stdio_init_all",        0x100032a0: "stdio_uart_init",
->     0x10002f2c: "stdio_set_driver_enabled",
->     0x10002d30: "stdio_out_chars_crlf",  0x10002e40: "stdio_put_string",
->     0x100030e4: "__wrap_printf",         0x10003020: "__wrap_vprintf",
->     0x10000248: "gpio_set_function",     0x10000e10: "uart_init",
->     0x10000da0: "time_us_64",            0x100033e0: "strlen",
+> # address: (name, signature);  None means "leave the type alone"
+> funcs = {
+>     0x1000015c: ("_reset_handler",            None),
+>     0x10000186: ("platform_entry",            "void platform_entry(void)"),
+>     0x1000019a: ("data_cpy",                  "void data_cpy(void*, void*, void*)"),
+>     0x100001e4: ("_init",                     "void _init(void)"),
+>     0x10000210: ("frame_dummy",               "void frame_dummy(void)"),
+>     0x10000234: ("main",                      "int main(void)"),
+>     0x10002cfc: ("exit",                      "void exit(int)"),
+>     0x10002d04: ("runtime_init",              "void runtime_init(void)"),
+>     0x10002f54: ("stdio_init_all",            "bool stdio_init_all(void)"),
+>     0x100032a0: ("stdio_uart_init",           "void stdio_uart_init(void)"),
+>     0x10002f2c: ("stdio_set_driver_enabled",  "void stdio_set_driver_enabled(stdio_driver_t*, bool)"),
+>     0x10002d30: ("stdio_out_chars_crlf",      "void stdio_out_chars_crlf(stdio_driver_t*, const char*, int)"),
+>     0x10002e40: ("stdio_put_string",          "int stdio_put_string(const char*, int, bool, bool)"),
+>     0x100030e4: ("__wrap_printf",             "int __wrap_printf(const char*, ...)"),
+>     0x10003020: ("__wrap_vprintf",            "int __wrap_vprintf(const char*, va_list)"),
+>     0x10000248: ("gpio_set_function",         "void gpio_set_function(uint, gpio_function_t)"),
+>     0x10000e10: ("uart_init",                 "uint uart_init(uart_inst_t*, uint)"),
+>     0x10000da0: ("time_us_64",                "uint64_t time_us_64(void)"),
+>     0x100033e0: ("strlen",                    "size_t strlen(const char*)"),
 > }
-> for addr, name in symbols.items():
+> for addr, (name, sig) in funcs.items():
 >     bv.define_user_symbol(Symbol(SymbolType.FunctionSymbol, addr, name))
+>     if sig:
+>         f = bv.get_function_at(addr)
+>         if f is not None:
+>             f.set_user_type(sig)
 > ```
+>
+> SDK type names (`stdio_driver_t`, `gpio_function_t`, `uart_inst_t`) are not in the raw `.bin`, so Binary Ninja creates them as **undefined named types** — that is fine, they still read correctly in the decompiler. If any one signature fails to parse, set that row by hand with `Y`.
 
 ### Step 17: Read `main` in the decompiler
 
@@ -859,27 +884,24 @@ Same idea as Project 1, different addresses. Here the format string is at `0x100
 
 ### Step 26: Resolve the functions in the Binary Ninja GUI
 
-Same three keys as Step 16 — `G` to the address, `N` to rename, `Y` to set the signature — using the Project 2 ELF symbol map from Step 4.
+Same two keys as Step 16 — `G` to the address, then `Y` (Change Type) to set the prototype — using the Project 2 ELF symbol map from Step 4.
 
 The mechanics are identical to Step 16, so here are the worked examples for the functions that are specific to this project.
 
 #### `main`
 
 1. `G` -> `0x10000234`.
-2. `N` -> `main`.
-3. `Y` -> `int main(void)` (Binary Ninja shows `int32_t main(void)` — the same 32-bit `int`).
+2. `Y` -> `int main(void)` (Binary Ninja shows `int32_t main(void)` — the same 32-bit `int`).
 
 #### `gpio_init`
 
 1. `G` -> `0x100002b4`.
-2. `N` -> `gpio_init`.
-3. `Y` -> `void gpio_init(uint gpio)`.
+2. `Y` -> `void gpio_init(uint gpio)`.
 
 #### `sleep_ms`
 
 1. `G` -> `0x10000d10`.
-2. `N` -> `sleep_ms`.
-3. `Y` -> `void sleep_ms(uint32_t ms)`.
+2. `Y` -> `void sleep_ms(uint32_t ms)`.
 
 #### `stdio_init_all` and `__wrap_printf`
 
@@ -933,25 +955,40 @@ Two things in this project have **no symbol of their own**, because the compiler
 | `0x10000ef4` | `time_us_64` | `uint64_t time_us_64(void)` |
 | `0x10003558` | `strlen` | `size_t strlen(const char*)` |
 
-Python console shortcut:
+Python console shortcut (resolves name **and** type):
 
 ```python
 from binaryninja import Symbol, SymbolType
-symbols = {
-    0x1000015c: "_reset_handler",        0x10000186: "platform_entry",
-    0x1000019a: "data_cpy",              0x100001e4: "_init",
-    0x10000210: "frame_dummy",           0x10000234: "main",
-    0x100002b4: "gpio_init",             0x10000278: "gpio_set_function",
-    0x10000d10: "sleep_ms",              0x10002e74: "exit",
-    0x10002e7c: "runtime_init",          0x100030cc: "stdio_init_all",
-    0x10003418: "stdio_uart_init",       0x100030a4: "stdio_set_driver_enabled",
-    0x10002ea8: "stdio_out_chars_crlf",  0x10002fb8: "stdio_put_string",
-    0x1000325c: "__wrap_printf",         0x10003198: "__wrap_vprintf",
-    0x10000f88: "uart_init",             0x10000ef4: "time_us_64",
-    0x10003558: "strlen",
+# address: (name, signature);  None means "leave the type alone"
+funcs = {
+    0x1000015c: ("_reset_handler",            None),
+    0x10000186: ("platform_entry",            "void platform_entry(void)"),
+    0x1000019a: ("data_cpy",                  "void data_cpy(void*, void*, void*)"),
+    0x100001e4: ("_init",                     "void _init(void)"),
+    0x10000210: ("frame_dummy",               "void frame_dummy(void)"),
+    0x10000234: ("main",                      "int main(void)"),
+    0x100002b4: ("gpio_init",                 "void gpio_init(uint)"),
+    0x10000278: ("gpio_set_function",         "void gpio_set_function(uint, gpio_function_t)"),
+    0x10000d10: ("sleep_ms",                  "void sleep_ms(uint32_t)"),
+    0x10002e74: ("exit",                      "void exit(int)"),
+    0x10002e7c: ("runtime_init",              "void runtime_init(void)"),
+    0x100030cc: ("stdio_init_all",            "bool stdio_init_all(void)"),
+    0x10003418: ("stdio_uart_init",           "void stdio_uart_init(void)"),
+    0x100030a4: ("stdio_set_driver_enabled",  "void stdio_set_driver_enabled(stdio_driver_t*, bool)"),
+    0x10002ea8: ("stdio_out_chars_crlf",      "void stdio_out_chars_crlf(stdio_driver_t*, const char*, int)"),
+    0x10002fb8: ("stdio_put_string",          "int stdio_put_string(const char*, int, bool, bool)"),
+    0x1000325c: ("__wrap_printf",             "int __wrap_printf(const char*, ...)"),
+    0x10003198: ("__wrap_vprintf",            "int __wrap_vprintf(const char*, va_list)"),
+    0x10000f88: ("uart_init",                 "uint uart_init(uart_inst_t*, uint)"),
+    0x10000ef4: ("time_us_64",                "uint64_t time_us_64(void)"),
+    0x10003558: ("strlen",                    "size_t strlen(const char*)"),
 }
-for addr, name in symbols.items():
+for addr, (name, sig) in funcs.items():
     bv.define_user_symbol(Symbol(SymbolType.FunctionSymbol, addr, name))
+    if sig:
+        f = bv.get_function_at(addr)
+        if f is not None:
+            f.set_user_type(sig)
 ```
 
 The decompiler now shows `main` initializing GPIO 16 and looping. We make two changes:
