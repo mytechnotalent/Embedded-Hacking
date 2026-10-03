@@ -403,7 +403,7 @@ Info : Listening on port 3333 for gdb connections
    ```
 6. Click **Accept**.
 
-> **Use the GDB MI adapter.** It launches a real `arm-none-eabi-gdb --interpreter=mi2` and lets Binary Ninja drive it, so breakpoints and stepping go through real GDB — which sends the correct 2-byte breakpoint length and handles step-over itself. Verified working end to end: connect, GUI breakpoints (`F2` / **Add Hardware Breakpoint...**), **Step Into** / **Step Over**, and register edits. Stops are reported as `Breakpoint` (not `SingleStep`).
+> **Use the GDB MI adapter.** It launches a real `arm-none-eabi-gdb --interpreter=mi2` and lets Binary Ninja drive it, so breakpoints and stepping go through real GDB — which sends the correct 2-byte breakpoint length and handles step-over itself. Verified working end to end: connect, GUI breakpoints (**Add Hardware Breakpoint...**, hardware execute), **Step Into** / **Step Over**, and register edits. Stops are reported as `Breakpoint` (not `SingleStep`).
 >
 > **Do NOT have any breakpoints set in Binary Ninja before you connect.** With the GDB MI adapter, attaching while Binary Ninja already has a breakpoint **hangs the session**. Start the server parked with `BP_ADDR` (Step 10), connect, and only add hardware breakpoints *after* the connection is up. This is a Binary Ninja bug; it is the single most common GDB MI failure.
 >
@@ -460,8 +460,8 @@ With the **GDB MI** adapter, Binary Ninja sets breakpoints through real GDB, whi
 
 1. Press `G`, type the loop address (`0x1000023e` for Project 1, `0x1000024e` for Project 2), and press Enter.
 2. Set a **hardware execution** breakpoint at that address, either way:
-   - `Debugger -> Add Hardware Breakpoint...`, or
-   - click the line and press `F2` (`Debugger -> Toggle Breakpoint`).
+   - `Debugger -> Add Hardware Breakpoint...` — a **hardware execute** (`HE`) breakpoint. **Use this one.**
+   - click the line and press `F2` (`Debugger -> Toggle Breakpoint`) — a **software** breakpoint. It will **not** work here: the code is in read-only flash, so GDB cannot install it and the core just keeps running.
 3. Click **Resume**. The core is already running the loop, so the breakpoint fires on the next iteration. Binary Ninja stops with the PC at the loop address and reports it as a **Breakpoint** — verified: `Stopped (Breakpoint) at 0x1000023e`.
 
 > **No breakpoints before you connect.** With GDB MI, a breakpoint set before the connection hangs the session (Step 11). Start parked with `BP_ADDR`, connect, *then* add breakpoints.
@@ -481,7 +481,7 @@ With the target halted at the breakpoint, **Step Into** (`F7`) and **Step Over**
 `main` loads the constant `0x2b` (43) into `r1` and calls `printf` on every iteration. We break on that call in the GUI and change it live.
 
 1. Press `G`, go to `0x1000023e` (the `bl __wrap_printf`).
-2. Set a hardware execution breakpoint there: `Debugger -> Add Hardware Breakpoint...`, or click the line and press `F2`.
+2. Set a **hardware execute** breakpoint there: `Debugger -> Add Hardware Breakpoint...`. (Do not use `F2` — that is a software breakpoint and will not work on read-only flash.)
 3. Click **Resume** in Binary Ninja. The target is already running the loop, so the breakpoint fires on the next iteration. Binary Ninja stops with the program counter at `0x1000023e` and `r1 = 0x2b`.
 4. Open the **Registers** widget (bug icon -> **Registers**).
 5. Find `r1`. Its value is `0x2b`.
@@ -786,7 +786,7 @@ Step Over through `0x10000254` (`mcrr 0, 4, r4, r5, cr0`) and watch the SIO outp
 ### Step 25: HACK IT LIVE — change the printed value
 
 1. Press `G`, go to `0x1000024e` (the `bl __wrap_printf`).
-2. Set a hardware execution breakpoint at `0x1000024e` in the GUI (`Debugger -> Add Hardware Breakpoint...`, or click the line and press `F2`). Note `0x1000024e` — Project 2's loop sits at a different address than Project 1's.
+2. Set a **hardware execute** breakpoint at `0x1000024e` in the GUI (`Debugger -> Add Hardware Breakpoint...`; not `F2`). Note `0x1000024e` — Project 2's loop sits at a different address than Project 1's.
 3. Click **Resume** in Binary Ninja. The target is already looping, so the breakpoint fires on the next pass. Binary Ninja stops with `r1 = 0`.
 4. In the **Registers** widget, double-click `r1`, type `42`, and press Enter (`0x42` = 66). The value turns orange.
 5. **Move the breakpoint past the call.** `0x10000252` is the instruction right after the `bl __wrap_printf`. Remove the breakpoint at `0x1000024e` and set a hardware breakpoint at `0x10000252`, then click **Resume**. The core runs `printf` with `r1 = 0x42` and stops at `0x10000252`. (Not **Step Over** — it steps into the call on this symbol-less `.bin`, and a breakpoint left on the current PC re-traps the step; Step 13 explains both.)
@@ -993,7 +993,7 @@ The **green LED on GPIO 17** now blinks instead of the red one.
 | Enable hex editing | Toggle the lock in the status bar |
 | Reanalyze after a patch | Right-click function -> `Reanalyze` |
 | Edit a register live | Double-click the value in the **Registers** widget, type hex, Enter |
-| Set a breakpoint | Click the line and press `F2`, or `Debugger -> Add Hardware Breakpoint...` (GDB MI adapter) |
+| Set a breakpoint | `Debugger -> Add Hardware Breakpoint...` (hardware execute). Do **not** use `F2` — software breakpoints cannot be written to read-only flash. |
 | Move a breakpoint | Remove it and set it at the new address in the GUI (command-port fallback: `rbp <old addr>` then `bp <new addr> 2 hw`) |
 | Confirm what is armed | The **Breakpoints** widget lists it (command-port fallback: `mdw 0xE0002000 8`, each armed breakpoint shows as `<addr \| 1>`) |
 | Apply the ELF symbol map | Paste the Python snippet from Step 16 / 26 into the Python Console |
@@ -1007,7 +1007,7 @@ The server runs with `gdb_breakpoint_override hard` so that flash-writes are nev
 | Connect to the OpenOCD prompt (fallback) | `nc 127.0.0.1 4444` (or `telnet 127.0.0.1 4444`) |
 | Reset and run (command port) | `reset run` |
 | Check core state (command port) | `targets` |
-| Set a breakpoint in the GUI | `Debugger -> Add Hardware Breakpoint...`, or click the line and press `F2` |
+| Set a breakpoint in the GUI | `Debugger -> Add Hardware Breakpoint...` (hardware execute; `F2` software breakpoints do not work on flash) |
 | (fallback) Add a breakpoint without the GUI | `bp <addr> 2 hw` |
 | Remove one breakpoint | `rbp <addr>` — **address only, no length, no `hw`** |
 | Remove every breakpoint | `rbp all` |
@@ -1095,7 +1095,7 @@ You probably built `Debug`. This lesson is a `Release` build. Re-run Step 3 with
 
 ### A breakpoint never fires
 
-First, confirm you actually set one. With the **GDB MI** adapter the GUI sets breakpoints normally (Step 13), so `Debugger -> Toggle Breakpoint` (`F2`) or `Debugger -> Add Hardware Breakpoint...` should land in the **Breakpoints** widget. If it does not, check that you are on **GDB MI**, not **GDB RSP** — the GDB RSP adapter cannot set breakpoints on this target.
+First, confirm you actually set one, and that it is a **hardware** breakpoint. With the **GDB MI** adapter, `Debugger -> Add Hardware Breakpoint...` (hardware execute) should land in the **Breakpoints** widget. If nothing lands, or the core keeps running, you probably used `F2` (`Toggle Breakpoint`) — that is a software breakpoint and cannot be written to read-only flash, so it never installs. Also check you are on **GDB MI**, not **GDB RSP** (the GDB RSP adapter cannot set breakpoints on this target at all).
 
 Then check the order and the state:
 
@@ -1104,6 +1104,14 @@ Then check the order and the state:
 - **Is the core running?** `poll` on the command port should not report a halt. If it is stopped, click **Resume**.
 - **Does the address get reached again?** `main` runs once per reset, so use `BP_ADDR` at startup (Step 10) rather than `reset run` while attached. Loop addresses such as `0x1000023e` fire on the next pass with no reset — arm them and click **Resume** in Binary Ninja.
 - **With GDB MI the stop is reported as `Breakpoint`** and appears in the **Breakpoints** widget, because GDB really did set it. (On the old **GDB RSP** workaround the stop showed as `SingleStep` with an empty widget, because the breakpoint was armed behind Binary Ninja's back.)
+
+### I edit `r1` (or another register) and it reverts
+
+`main` reloads the value at the top of every loop iteration — `movs r1, #43` at `0x1000023a` runs right before the `printf` at `0x1000023e`. So `r1` is only `0x46` for the instant between your edit and the next pass; then it is `0x2b` again. The edit sticks only if the core is **genuinely stopped** at the breakpoint and stays stopped.
+
+If it keeps reverting, the core is running, which almost always means the breakpoint is not installed — usually because it is a **software** breakpoint (`F2`) that cannot be written to read-only flash. Use `Debugger -> Add Hardware Breakpoint...` (hardware execute). Confirm with `mdw 0xE0002000 4` on the command port: a hardware breakpoint shows as `0x1000023f`; all zeros means nothing is armed.
+
+> **The Registers widget is a snapshot, not a live view.** Binary Ninja reads the registers at each stop and shows that snapshot; it does not poll the target, and there is no "refresh registers" command (only "Force Update Memory Cache", which is for memory). So a value changed outside Binary Ninja will not appear until the next stop.
 
 ### It worked for a second, then stopped (Binary Ninja's view desyncs)
 
