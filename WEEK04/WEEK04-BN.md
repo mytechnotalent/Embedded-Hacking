@@ -503,13 +503,11 @@ You changed a running program's output without touching the binary.
 The text `"age: %d\r\n"` lives in flash (`.rodata`) at `0x100034a0`, and flash is **read-only at runtime** — a debugger write there does not stick (verified: writing `0x66` to `0x100034a0` read back unchanged). So you cannot overwrite the text in place. Instead you redirect the pointer: at the `printf` call, `r0` holds the string address, so you point `r0` at a replacement string you place in RAM.
 
 1. Arm the breakpoint at the `printf` call and hit it, exactly as in Step 14 steps 1-3. At the stop, `r0 = 0x100034a0` and `r1 = 0x2b`.
-2. Put the replacement string into free RAM at `0x20080000`. Binary Ninja has no memory editor, so this one step uses the command port. At the `OpenOCD>` prompt:
+2. Put the replacement string into free RAM at `0x20080000` from Binary Ninja's **Python console** (`Plugins -> Python Console`) — no command port needed:
+   ```python
+   dbg.write_memory(0x20080000, b"foo: %d\r\n\x00")
    ```
-   mww 0x20080000 0x3a6f6f66
-   mww 0x20080004 0x0d642520
-   mww 0x20080008 0x0000000a
-   ```
-   That writes the bytes `66 6f 6f 3a 20 25 64 0d 0a 00` = `"foo: %d\r\n\0"` (three little-endian words).
+   `dbg.write_memory(address, bytes)` is Binary Ninja's debugger memory-write API; it returns `True` on success. That writes the bytes `66 6f 6f 3a 20 25 64 0d 0a 00` = `"foo: %d\r\n\0"`.
 3. In the **Registers** widget, double-click `r0` and set it to `0x20080000`. It turns orange.
 4. Move the breakpoint past the call in the GUI (remove it at `0x1000023e`, set one at `0x10000242`) and click **Resume**. The core runs `printf` with `r0` pointing at your RAM string and `r1 = 0x2b`, so this iteration prints:
    ```
@@ -877,11 +875,9 @@ Press **Resume** and the next iteration prints `age: 0` again, because the loop 
 Same idea as Project 1, different addresses. Here the format string is at `0x10003618` and the `printf` call is at `0x1000024e`.
 
 1. Hit the breakpoint at `0x1000024e` as in Step 25. At the stop, `r0 = 0x10003618` and `r1 = 0`.
-2. Write the replacement string to free RAM at `0x20080000` from the command port:
-   ```
-   mww 0x20080000 0x3a6f6f66
-   mww 0x20080004 0x0d642520
-   mww 0x20080008 0x0000000a
+2. Write the replacement string to free RAM at `0x20080000` from the **Python console** (`dbg.write_memory` — no command port needed):
+   ```python
+   dbg.write_memory(0x20080000, b"foo: %d\r\n\x00")
    ```
    Bytes `66 6f 6f 3a 20 25 64 0d 0a 00` = `"foo: %d\r\n\0"`.
 3. In the **Registers** widget, set `r0` to `0x20080000`.
