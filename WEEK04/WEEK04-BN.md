@@ -487,7 +487,11 @@ With the target halted at the breakpoint, **Step Into** (`F7`) and **Step Over**
 3. Click **Resume** in Binary Ninja. The target is already running the loop, so the breakpoint fires on the next iteration. Binary Ninja stops with the program counter at `0x1000023e` and `r1 = 0x2b`.
 4. Open the **Registers** widget (bug icon -> **Registers**).
 5. Find `r1`. Its value is `0x2b`.
-6. **Double-click the value, type `46`, and press Enter.** Binary Ninja parses the new value as hex, so `46` means `0x46` (70). **The widget does not visibly change** — Binary Ninja writes the value to the target but does not repaint the register in the widget. The edit is real; you confirm it by the printed output in the next steps, not by the widget.
+6. **Set `r1` to `0x46`.** From Binary Ninja's Python console (`Plugins -> Python Console`):
+   ```python
+   dbg.set_reg_value("r1", 0x46)
+   ```
+   `dbg.set_reg_value(name, value)` writes one register (returns `True` on success). You can also right-click `r1` in the **Registers** widget, press `E` (edit), type `46`, and press Enter. The widget may not repaint the value, but the write reaches the target — you confirm it by the printed output in the next steps.
 7. **Move the breakpoint past the call.** You want `printf` to run once and then stop, so move the breakpoint from `0x1000023e` to the instruction *after* the call, `0x10000242` (the `b.n` that closes the loop): remove the breakpoint at `0x1000023e` and set a hardware breakpoint at `0x10000242`. Two reasons not to just click **Step Over** here: a breakpoint left on the current PC re-traps the step, and Binary Ninja's **Step Over** steps *into* `__wrap_printf` on this raw `.bin` because the image carries no symbol for the call. Moving the breakpoint to the return site is deterministic.
 8. Click **Resume** in Binary Ninja. The core executes `bl __wrap_printf` with `r1 = 0x46`, so this iteration prints `age: 70`, then stops at `0x10000242`.
 9. Look at your serial monitor — the `screen` session on the Pico's USB serial port — and at the **Target** tab in Binary Ninja:
@@ -508,7 +512,11 @@ The text `"age: %d\r\n"` lives in flash (`.rodata`) at `0x100034a0`, and flash i
    dbg.write_memory(0x20080000, b"foo: %d\r\n\x00")
    ```
    `dbg.write_memory(address, bytes)` is Binary Ninja's debugger memory-write API; it returns `True` on success. That writes the bytes `66 6f 6f 3a 20 25 64 0d 0a 00` = `"foo: %d\r\n\0"`.
-3. In the **Registers** widget, double-click `r0` and set it to `0x20080000`. It turns orange.
+3. Point `r0` at that string:
+   ```python
+   dbg.set_reg_value("r0", 0x20080000)
+   ```
+   (Or right-click `r0` in the **Registers** widget, press `E`, type `0x20080000`, and press Enter.)
 4. Move the breakpoint past the call in the GUI (remove it at `0x1000023e`, set one at `0x10000242`) and click **Resume**. The core runs `printf` with `r0` pointing at your RAM string and `r1 = 0x2b`, so this iteration prints:
    ```
    foo: 43
@@ -860,7 +868,11 @@ Step Over through `0x10000254` (`mcrr 0, 4, r4, r5, cr0`) and watch the SIO outp
 1. Press `G`, go to `0x1000024e` (the `bl __wrap_printf`).
 2. Set a **hardware execute** breakpoint at `0x1000024e` in the GUI (`Debugger -> Add Hardware Breakpoint...`; not `F2`). Note `0x1000024e` — Project 2's loop sits at a different address than Project 1's.
 3. Click **Resume** in Binary Ninja. The target is already looping, so the breakpoint fires on the next pass. Binary Ninja stops with `r1 = 0`.
-4. In the **Registers** widget, double-click `r1`, type `42`, and press Enter (`0x42` = 66). The value turns orange.
+4. Set `r1` to `0x42` (66):
+   ```python
+   dbg.set_reg_value("r1", 0x42)
+   ```
+   (Or right-click `r1` in the **Registers** widget, press `E`, type `42`, and press Enter.)
 5. **Move the breakpoint past the call.** `0x10000252` is the instruction right after the `bl __wrap_printf`. Remove the breakpoint at `0x1000024e` and set a hardware breakpoint at `0x10000252`, then click **Resume**. The core runs `printf` with `r1 = 0x42` and stops at `0x10000252`. (Not **Step Over** — it steps into the call on this symbol-less `.bin`, and a breakpoint left on the current PC re-traps the step; Step 13 explains both.)
 6. Look at your serial monitor and the **Target** tab:
 
@@ -880,7 +892,11 @@ Same idea as Project 1, different addresses. Here the format string is at `0x100
    dbg.write_memory(0x20080000, b"foo: %d\r\n\x00")
    ```
    Bytes `66 6f 6f 3a 20 25 64 0d 0a 00` = `"foo: %d\r\n\0"`.
-3. In the **Registers** widget, set `r0` to `0x20080000`.
+3. Point `r0` at that string:
+   ```python
+   dbg.set_reg_value("r0", 0x20080000)
+   ```
+   (Or right-click `r0` in the **Registers** widget, press `E`, type `0x20080000`, and press Enter.)
 4. Move the breakpoint past the call in the GUI (remove it at `0x1000024e`, set one at `0x10000252`) and click **Resume**. This iteration prints:
    ```
    foo: 0
@@ -1100,7 +1116,7 @@ The **green LED on GPIO 17** now blinks instead of the red one.
 | Open Hex view | `View -> Hex` |
 | Enable hex editing | Toggle the lock in the status bar |
 | Reanalyze after a patch | Right-click function -> `Reanalyze` |
-| Edit a register live | Double-click the value in the **Registers** widget, type hex, Enter |
+| Edit a register live | `dbg.set_reg_value("r1", 0x46)` in the Python console (or right-click the register, press `E`, type hex, Enter) |
 | Set a breakpoint | `Debugger -> Add Hardware Breakpoint...` (hardware execute). Do **not** use `F2` — software breakpoints cannot be written to read-only flash. |
 | Move a breakpoint | Remove it and set it at the new address in the GUI (command-port fallback: `rbp <old addr>` then `bp <new addr> 2 hw`) |
 | Confirm what is armed | The **Breakpoints** widget lists it (command-port fallback: `mdw 0xE0002000 8`, each armed breakpoint shows as `<addr \| 1>`) |
