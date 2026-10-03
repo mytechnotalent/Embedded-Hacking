@@ -158,7 +158,7 @@ pwd > ~/.embedded-hacking-repo
 ```python
 import os, subprocess
 root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()
-os.environ["PATH"] = "/opt/homebrew/bin:" + os.environ["PATH"]   # the console's PATH omits Homebrew
+os.environ["PATH"] = "/opt/homebrew/bin:" + os.environ["PATH"]  # the console's PATH omits Homebrew
 for name in ("0x0005_intro-to-variables", "0x0008_uninitialized-variables"):
     proj = os.path.join(root, name)
     subprocess.run(["cmake", "-B", "build", "-G", "Ninja", "-DPICO_BOARD=pico2",
@@ -282,10 +282,10 @@ A `.bin` has no headers, so OpenOCD must be told the base address `0x10000000`. 
 
 ```python
 import os, subprocess
-root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()  # set once (Step 3)
 bin_path = os.path.join(root, "0x0005_intro-to-variables", "build", "0x0005_intro-to-variables.bin")
 log = os.path.join(os.path.dirname(bin_path), "flash.log")
-subprocess.run(["pkill", "-TERM", "-f", "openocd"])          # free the probe first
+subprocess.run(["pkill", "-TERM", "-f", "openocd"])  # free the probe first
 subprocess.Popen([os.path.join(root, "flash.sh"), bin_path],
                  stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
 print("flashing in the background; log:", log)
@@ -295,10 +295,10 @@ print("flashing in the background; log:", log)
 
 ```python
 import os, subprocess
-root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()  # set once (Step 3)
 bin_path = os.path.join(root, "0x0005_intro-to-variables", "build", "0x0005_intro-to-variables.bin")
 log = os.path.join(os.path.dirname(bin_path), "flash.log")
-subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])     # free the probe first
+subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])  # free the probe first
 subprocess.Popen(["powershell", "-ExecutionPolicy", "Bypass", "-File",
                   os.path.join(root, "flash.ps1"), "-Bin", bin_path],
                  stdout=open(log, "w"), stderr=subprocess.STDOUT)
@@ -335,7 +335,7 @@ age: 43
 
 ```python
 import os, subprocess
-root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()  # set once (Step 3)
 bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
 log = os.path.join(os.path.dirname(bin_path), "flash.log")
 subprocess.run(["pkill", "-TERM", "-f", "openocd"])
@@ -348,7 +348,7 @@ print("flashing in the background; log:", log)
 
 ```python
 import os, subprocess
-root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()  # set once (Step 3)
 bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
 log = os.path.join(os.path.dirname(bin_path), "flash.log")
 subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])
@@ -487,8 +487,8 @@ $env:BP_ADDR="0x10000234"; .\debug-server.ps1
 
 ```python
 import os, subprocess
-root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
-subprocess.run(["pkill", "-TERM", "-f", "openocd"])          # stop any running server first
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()  # set once (Step 3)
+subprocess.run(["pkill", "-TERM", "-f", "openocd"])  # stop any running server first
 log = os.path.join(root, "openocd.log")
 p = subprocess.Popen([os.path.join(root, "debug-server.sh")], cwd=root,
                      env=dict(os.environ, BP_ADDR="0x10000234"),
@@ -500,8 +500,8 @@ print("OpenOCD started (pid", p.pid, "); log:", log)
 
 ```python
 import os, subprocess
-root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
-subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])     # stop any running server first
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()  # set once (Step 3)
+subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])  # stop any running server first
 log = os.path.join(root, "openocd.log")
 p = subprocess.Popen(["powershell", "-ExecutionPolicy", "Bypass", "-File",
                       os.path.join(root, "debug-server.ps1")], cwd=root,
@@ -891,7 +891,7 @@ The halfword is `0x212b`, stored little-endian as `2b 21`. The immediate is the 
 
 ```python
 bv.write(0x1000023a, b"\x46")
-print(hex(bv.read(0x1000023a, 1)[0]))   # -> 0x46
+print(hex(bv.read(0x1000023a, 1)[0]))  # -> 0x46
 ```
 
 After reanalysis the instruction reads `movs r1, #70`.
@@ -910,7 +910,7 @@ The format string `"age: %d\r\n"` starts at `0x100034a0`. Its first three bytes 
 
 ```python
 bv.write(0x100034a0, b"foo")
-print(bv.read(0x100034a0, 10))   # -> b'foo: %d\r\n\x00'
+print(bv.read(0x100034a0, 10))  # -> b'foo: %d\r\n\x00'
 ```
 
 Keep the replacement exactly three bytes. If you use a shorter string you must pad it, or `%d` shifts and `printf` reads the wrong argument. A longer string would overwrite the `: %d` tail.
@@ -919,11 +919,11 @@ Keep the replacement exactly three bytes. If you use a shorter string you must p
 
 ```python
 import os
-seg = next(s for s in bv.segments if s.data_length)   # the loadable image segment
-data = bv.read(seg.start, seg.data_length)            # base + size come from the view itself
+seg = next(s for s in bv.segments if s.data_length)  # the loadable image segment
+data = bv.read(seg.start, seg.data_length)  # base + size come from the view itself
 out = os.path.join(os.path.join(root, "0x0005_intro-to-variables", "build"), "0x0005_intro-to-variables-h.bin")
 open(out, "wb").write(data)
-print(len(data), out)   # -> 15292 /.../build/0x0005_intro-to-variables-h.bin
+print(len(data), out)  # -> 15292 /.../build/0x0005_intro-to-variables-h.bin
 ```
 
 Where the two numbers come from — nothing is hardcoded:
@@ -1060,10 +1060,10 @@ Part 4 left the Pico running the patched Project 1 image. Put the original Proje
 
    ```python
    import os, subprocess
-   root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
+   root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()  # set once (Step 3)
    bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
    log = os.path.join(os.path.dirname(bin_path), "flash.log")
-   subprocess.run(["pkill", "-TERM", "-f", "openocd"])          # free the probe first
+   subprocess.run(["pkill", "-TERM", "-f", "openocd"])  # free the probe first
    subprocess.Popen([os.path.join(root, "flash.sh"), bin_path],
                     stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
    print("flashing Project 2 in the background; log:", log)
@@ -1073,10 +1073,10 @@ Part 4 left the Pico running the patched Project 1 image. Put the original Proje
 
    ```python
    import os, subprocess
-   root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
+   root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()  # set once (Step 3)
    bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
    log = os.path.join(os.path.dirname(bin_path), "flash.log")
-   subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])     # free the probe first
+   subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])  # free the probe first
    subprocess.Popen(["powershell", "-ExecutionPolicy", "Bypass", "-File",
                      os.path.join(root, "flash.ps1"), "-Bin", bin_path],
                     stdout=open(log, "w"), stderr=subprocess.STDOUT)
@@ -1111,7 +1111,7 @@ Confirm the Pico prints `age: 0` and blinks the red LED.
    import os, subprocess
    root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()
    log = os.path.join(root, "openocd.log")
-   subprocess.run(["pkill", "-TERM", "-f", "openocd"])          # kill any running server first
+   subprocess.run(["pkill", "-TERM", "-f", "openocd"])  # kill any running server first
    subprocess.Popen([os.path.join(root, "debug-server.sh")], cwd=root,
                     env=dict(os.environ, BP_ADDR="0x10000234"),
                     stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
@@ -1124,7 +1124,7 @@ Confirm the Pico prints `age: 0` and blinks the red LED.
    import os, subprocess
    root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()
    log = os.path.join(root, "openocd.log")
-   subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])     # kill any running server first
+   subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])  # kill any running server first
    subprocess.Popen(["powershell", "-ExecutionPolicy", "Bypass", "-File",
                      os.path.join(root, "debug-server.ps1")], cwd=root,
                     env=dict(os.environ, BP_ADDR="0x10000234"),
@@ -1400,7 +1400,7 @@ The format string starts at `0x10003618`; change its first three bytes `61 67 65
 
 ```python
 bv.write(0x10003618, b"foo")
-print(bv.read(0x10003618, 10))   # -> b'foo: %d\r\n\x00'
+print(bv.read(0x10003618, 10))  # -> b'foo: %d\r\n\x00'
 ```
 
 Exactly three bytes, same rule as Project 1: a shorter string must be padded, a longer one overwrites the `: %d` tail.
@@ -1409,11 +1409,11 @@ Exactly three bytes, same rule as Project 1: a shorter string must be padded, a 
 
 ```python
 import os
-seg = next(s for s in bv.segments if s.data_length)   # the loadable image segment
-data = bv.read(seg.start, seg.data_length)            # base + size from the view itself
+seg = next(s for s in bv.segments if s.data_length)  # the loadable image segment
+data = bv.read(seg.start, seg.data_length)  # base + size from the view itself
 out = os.path.join(os.path.join(root, "0x0008_uninitialized-variables", "build"), "0x0008_uninitialized-variables-h.bin")
 open(out, "wb").write(data)
-print(len(data), out)   # -> 15668 /.../build/0x0008_uninitialized-variables-h.bin
+print(len(data), out)  # -> 15668 /.../build/0x0008_uninitialized-variables-h.bin
 ```
 
 Same as Project 1: `seg.start` is the load base and `seg.data_length` is the image size (here `0x3d34` = 15668) — both read from the view, and no relative path (the console's CWD is read-only).
@@ -1687,7 +1687,7 @@ Do **not** run `monitor reset run` before `hbreak`. `0x1000023e` is inside `main
 GDB stops at the `printf` call. Confirm the value, change it, and let it run:
 
 ```
-info registers pc r1        # pc = 0x1000023e, r1 = 0x2b
+info registers pc r1  # pc = 0x1000023e, r1 = 0x2b
 set $r1 = 0x46
 stepi
 continue
@@ -1710,7 +1710,7 @@ Project 2 is the same with the other call site and value:
 ```
 hbreak *0x1000024e
 continue
-info registers pc r1        # pc = 0x1000024e, r1 = 0
+info registers pc r1  # pc = 0x1000024e, r1 = 0
 set $r1 = 0x42
 stepi
 ```
