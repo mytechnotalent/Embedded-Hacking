@@ -485,7 +485,7 @@ With the target halted at the breakpoint, **Step Into** (`F7`) and **Step Over**
 3. Click **Resume** in Binary Ninja. The target is already running the loop, so the breakpoint fires on the next iteration. Binary Ninja stops with the program counter at `0x1000023e` and `r1 = 0x2b`.
 4. Open the **Registers** widget (bug icon -> **Registers**).
 5. Find `r1`. Its value is `0x2b`.
-6. **Double-click the value, type `46`, and press Enter.** Binary Ninja parses the new value as hex, so `46` means `0x46` (70). The edited value turns **orange**.
+6. **Double-click the value, type `46`, and press Enter.** Binary Ninja parses the new value as hex, so `46` means `0x46` (70). **The widget does not visibly change** — Binary Ninja writes the value to the target but does not repaint the register in the widget. The edit is real; you confirm it by the printed output in the next steps, not by the widget.
 7. **Move the breakpoint past the call.** You want `printf` to run once and then stop, so move the breakpoint from `0x1000023e` to the instruction *after* the call, `0x10000242` (the `b.n` that closes the loop): remove the breakpoint at `0x1000023e` and set a hardware breakpoint at `0x10000242`. Two reasons not to just click **Step Over** here: a breakpoint left on the current PC re-traps the step, and Binary Ninja's **Step Over** steps *into* `__wrap_printf` on this raw `.bin` because the image carries no symbol for the call. Moving the breakpoint to the return site is deterministic.
 8. Click **Resume** in Binary Ninja. The core executes `bl __wrap_printf` with `r1 = 0x46`, so this iteration prints `age: 70`, then stops at `0x10000242`.
 9. Look at your serial monitor — the `screen` session on the Pico's USB serial port — and at the **Target** tab in Binary Ninja:
@@ -529,13 +529,49 @@ Press **Pause** to stop the output flood.
 
 ### Step 16: Resolve the functions in the Binary Ninja GUI
 
-Now we use the ELF symbol map from Step 4 to name the functions in Binary Ninja. For each row below:
+We now name the functions in Binary Ninja using the ELF symbol map from Step 4. Binary Ninja loaded the raw `.bin` with **no symbols**, so every function shows as `sub_<addr>` — resolving means giving each one its real name and signature.
 
-1. Press `G` and type the address.
-2. Press `N` and type the ELF symbol name.
-3. For functions with arguments, press `Y` and set the signature shown.
+Three keys do all the work:
 
-This is **our code plus the library functions it actually calls** — not the whole SDK. `main` only calls `stdio_init_all` and `printf`, so we follow that chain down: `stdio_init_all` pulls in the stdio/UART setup, and `printf` lands in the SDK's `__wrap_printf`.
+| Key | Binary Ninja action | Use it for |
+| --- | --- | --- |
+| `G` | Go to address | Jump to a function's address |
+| `N` | Rename symbol | Give the function its real name |
+| `Y` | Set type | Give the function its signature |
+
+For each function below, the loop is the same: `G` to its address, `N` to rename it, `Y` to set its signature.
+
+#### Worked example: `main`
+
+1. Press `G`, type `0x10000234`, press Enter. The view jumps there; the cursor lands on `sub_10000234`.
+2. Press `N`, type `main`, press Enter.
+3. Press `Y`, type `int main(void)`, press Enter.
+
+> **Binary Ninja shows `int32_t` where Ghidra shows `int`.** After you set `int main(void)`, the decompiler header may read `int32_t main(void)`. That is the same type — on this platform `int` is 32 bits and Binary Ninja's parser normalises it to `int32_t`. Do not fight it; it is not an error.
+
+#### Worked example: `stdio_init_all`
+
+1. `G` -> `0x10002f54`.
+2. `N` -> `stdio_init_all`.
+3. `Y` -> `bool stdio_init_all(void)`.
+
+It returns **`bool`**, not `void` — the ELF says `_Bool stdio_init_all(void)`. Our `main` ignores the return value, so the decompiler still reads cleanly.
+
+#### Worked example: `uart_init`
+
+1. `G` -> `0x10000e10`.
+2. `N` -> `uart_init`.
+3. `Y` -> `uint uart_init(uart_inst_t *uart, uint baudrate)`.
+
+#### Worked example: `__wrap_printf`
+
+1. `G` -> `0x100030e4`.
+2. `N` -> `__wrap_printf`.
+3. `Y` -> `int __wrap_printf(const char *fmt, ...)`. Keep the `...` — `printf` is variadic.
+
+> **`printf` in our source is `__wrap_printf` in the binary.** The SDK links our `printf` calls to its `__wrap_printf` wrapper. Rename it `printf` if you prefer the lesson's shorthand, but `__wrap_printf` is the real symbol.
+
+The rest of the chain is the same three keystrokes per function. This is **our code plus the library functions it actually calls** — not the whole SDK. `main` only calls `stdio_init_all` and `printf`, so we follow that chain down: `stdio_init_all` pulls in the stdio/UART setup, and `printf` lands in the SDK's `__wrap_printf`.
 
 The call chain for this project:
 
@@ -823,7 +859,9 @@ Same idea as Project 1, different addresses. Here the format string is at `0x100
 
 ### Step 26: Resolve the functions in the Binary Ninja GUI
 
-Use the Project 2 ELF symbol map from Step 4. For each row, press `G` (address), `N` (name), and `Y` (signature):
+Same three keys as Step 16 — `G` to the address, `N` to rename, `Y` to set the signature — using the Project 2 ELF symbol map from Step 4.
+
+Quick worked check: `G` -> `0x10000234`, `N` -> `main`, `Y` -> `int main(void)` (Binary Ninja shows `int32_t main(void)`; that is the same 32-bit `int` — see the note in Step 16). Then work down the table the same way.
 
 Same idea as Project 1: **our code plus what it calls**, not the whole SDK. The call chain here is one function longer because `main` also drives the GPIO and sleeps:
 
@@ -1112,6 +1150,10 @@ Then check the order and the state:
 If it keeps reverting, the core is running, which almost always means the breakpoint is not installed — usually because it is a **software** breakpoint (`F2`) that cannot be written to read-only flash. Use `Debugger -> Add Hardware Breakpoint...` (hardware execute). Confirm with `mdw 0xE0002000 4` on the command port: a hardware breakpoint shows as `0x1000023f`; all zeros means nothing is armed.
 
 > **The Registers widget is a snapshot, not a live view.** Binary Ninja reads the registers at each stop and shows that snapshot; it does not poll the target, and there is no "refresh registers" command (only "Force Update Memory Cache", which is for memory). So a value changed outside Binary Ninja will not appear until the next stop.
+
+### The serial capture is garbage on macOS
+
+Reading `/dev/cu.usbmodem*` with a bare `read()` returns garbage. Set **raw termios at 115200** first: clear canonical/echo flags, set `CLOCAL|CREAD`, and `B115200` on input and output. `screen /dev/cu.usbmodem* 115200` does all of this for you; a script must call `tcsetattr` itself. Once set, the capture reads clean `age: 43` lines.
 
 ### It worked for a second, then stopped (Binary Ninja's view desyncs)
 
