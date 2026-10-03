@@ -861,7 +861,31 @@ Same idea as Project 1, different addresses. Here the format string is at `0x100
 
 Same three keys as Step 16 — `G` to the address, `N` to rename, `Y` to set the signature — using the Project 2 ELF symbol map from Step 4.
 
-Quick worked check: `G` -> `0x10000234`, `N` -> `main`, `Y` -> `int main(void)` (Binary Ninja shows `int32_t main(void)`; that is the same 32-bit `int` — see the note in Step 16). Then work down the table the same way.
+The mechanics are identical to Step 16, so here are the worked examples for the functions that are specific to this project.
+
+#### `main`
+
+1. `G` -> `0x10000234`.
+2. `N` -> `main`.
+3. `Y` -> `int main(void)` (Binary Ninja shows `int32_t main(void)` — the same 32-bit `int`).
+
+#### `gpio_init`
+
+1. `G` -> `0x100002b4`.
+2. `N` -> `gpio_init`.
+3. `Y` -> `void gpio_init(uint gpio)`.
+
+#### `sleep_ms`
+
+1. `G` -> `0x10000d10`.
+2. `N` -> `sleep_ms`.
+3. `Y` -> `void sleep_ms(uint32_t ms)`.
+
+#### `stdio_init_all` and `__wrap_printf`
+
+Same as Project 1, different addresses: `stdio_init_all` at `0x100030cc` (`bool stdio_init_all(void)`), and `__wrap_printf` at `0x1000325c` (`int __wrap_printf(const char *fmt, ...)`).
+
+Then work down the table the same way.
 
 Same idea as Project 1: **our code plus what it calls**, not the whole SDK. The call chain here is one function longer because `main` also drives the GPIO and sleeps:
 
