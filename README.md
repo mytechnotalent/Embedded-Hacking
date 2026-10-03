@@ -477,6 +477,8 @@ Operators in Embedded Systems: Debugging and Hacking Operators w/ DHT11 Temperat
 
 ### Week 9 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09.md)
 
+### Week 9-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-BN.md)
+
 ### Chapter 26: Operators
 This chapter covers operators as well as an intro to single-wire protocol as we work a DHT11 temperature and humidity sensor as it relates to embedded development on the Pico 2.
 
