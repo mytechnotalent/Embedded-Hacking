@@ -646,6 +646,26 @@ main
 >
 > ```python
 > from binaryninja import Symbol, SymbolType
+> # The raw .bin has no headers, so these SDK types don't exist. set_user_type()
+> # re-parses each signature as C, so an undefined name raises
+> # "SyntaxError: unknown type name '...'". Define them first.
+> sdk = bv.parse_types_from_string("""
+> typedef unsigned int uint;
+> typedef char* va_list;
+> struct stdio_driver;
+> typedef struct stdio_driver stdio_driver_t;
+> struct uart_inst;
+> typedef struct uart_inst uart_inst_t;
+> enum gpio_function {
+>     GPIO_FUNC_XIP = 0, GPIO_FUNC_SPI = 1, GPIO_FUNC_UART = 2, GPIO_FUNC_I2C = 3,
+>     GPIO_FUNC_PWM = 4, GPIO_FUNC_SIO = 5, GPIO_FUNC_PIO0 = 6, GPIO_FUNC_PIO1 = 7,
+>     GPIO_FUNC_GPCK = 8, GPIO_FUNC_USB = 9, GPIO_FUNC_NULL = 0x1f,
+> };
+> typedef enum gpio_function gpio_function_t;
+> """)
+> for name, ty in sdk.types.items():
+>     bv.define_user_type(name, ty)
+>
 > # address: (name, signature);  None means "leave the type alone"
 > funcs = {
 >     0x1000015c: ("_reset_handler",            "void _reset_handler(void)"),
@@ -676,7 +696,7 @@ main
 >             f.set_user_type(sig)
 > ```
 >
-> SDK type names (`stdio_driver_t`, `gpio_function_t`, `uart_inst_t`) are not in the raw `.bin`, so Binary Ninja creates them as **undefined named types** — that is fine, they still read correctly in the decompiler. If any one signature fails to parse, set that row by hand with `Y`.
+> SDK type names (`stdio_driver_t`, `gpio_function_t`, `uart_inst_t`, plus `uint` and `va_list`) are **not** in the raw `.bin`. `set_user_type` re-parses each signature as C, so an undefined name raises `SyntaxError: unknown type name '...'` and stops the loop — it is not harmless. The `sdk` block above defines them first (an opaque `struct`/`enum`/`typedef` is enough to parse). If you add a function that uses another SDK type, add a definition for it to that block too.
 
 ### Step 17: Read `main` in the decompiler
 
@@ -984,6 +1004,26 @@ Python console shortcut (resolves name **and** type):
 
 ```python
 from binaryninja import Symbol, SymbolType
+# The raw .bin has no headers, so these SDK types don't exist. set_user_type()
+# re-parses each signature as C, so an undefined name raises
+# "SyntaxError: unknown type name '...'". Define them first.
+sdk = bv.parse_types_from_string("""
+typedef unsigned int uint;
+typedef char* va_list;
+struct stdio_driver;
+typedef struct stdio_driver stdio_driver_t;
+struct uart_inst;
+typedef struct uart_inst uart_inst_t;
+enum gpio_function {
+    GPIO_FUNC_XIP = 0, GPIO_FUNC_SPI = 1, GPIO_FUNC_UART = 2, GPIO_FUNC_I2C = 3,
+    GPIO_FUNC_PWM = 4, GPIO_FUNC_SIO = 5, GPIO_FUNC_PIO0 = 6, GPIO_FUNC_PIO1 = 7,
+    GPIO_FUNC_GPCK = 8, GPIO_FUNC_USB = 9, GPIO_FUNC_NULL = 0x1f,
+};
+typedef enum gpio_function gpio_function_t;
+""")
+for name, ty in sdk.types.items():
+    bv.define_user_type(name, ty)
+
 # address: (name, signature);  None means "leave the type alone"
 funcs = {
     0x1000015c: ("_reset_handler",            "void _reset_handler(void)"),
