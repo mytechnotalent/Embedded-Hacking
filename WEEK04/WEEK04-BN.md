@@ -143,6 +143,7 @@ cmake --build build
 
 ```python
 import os, subprocess
+assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
 os.environ["PATH"] = "/opt/homebrew/bin:" + os.environ["PATH"]   # the console's PATH omits Homebrew
 proj = os.path.dirname(os.path.dirname(bv.file.original_filename))   # <repo>/<project>
 subprocess.run(["cmake", "-B", "build", "-G", "Ninja", "-DPICO_BOARD=pico2",
@@ -154,6 +155,7 @@ subprocess.run(["cmake", "--build", "build"], cwd=proj)
 
 ```python
 import os, subprocess
+assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
 proj = os.path.dirname(os.path.dirname(bv.file.original_filename))   # <repo>/<project>
 subprocess.run(["cmake", "-B", "build", "-G", "Ninja", "-DPICO_BOARD=pico2",
                 "-DPICO_PLATFORM=rp2350", "-DCMAKE_BUILD_TYPE=Release"], cwd=proj)
@@ -164,6 +166,7 @@ subprocess.run(["cmake", "--build", "build"], cwd=proj)
 
 ```python
 import os, subprocess
+assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
 proj = os.path.dirname(os.path.dirname(bv.file.original_filename))   # <repo>\<project>
 subprocess.run(["cmake", "-B", "build", "-G", "Ninja", "-DPICO_BOARD=pico2",
                 "-DPICO_PLATFORM=rp2350", "-DCMAKE_BUILD_TYPE=Release"], cwd=proj)
@@ -262,6 +265,7 @@ A `.bin` has no headers, so OpenOCD must be told the base address `0x10000000`. 
 
 ```python
 import os, subprocess
+assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
 root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
 bin_path = os.path.join(root, "0x0005_intro-to-variables", "build", "0x0005_intro-to-variables.bin")
 log = os.path.join(os.path.dirname(bin_path), "flash.log")
@@ -275,6 +279,7 @@ print("flashing in the background; log:", log)
 
 ```python
 import os, subprocess
+assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
 root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
 bin_path = os.path.join(root, "0x0005_intro-to-variables", "build", "0x0005_intro-to-variables.bin")
 log = os.path.join(os.path.dirname(bin_path), "flash.log")
@@ -315,6 +320,7 @@ age: 43
 
 ```python
 import os, subprocess
+assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
 root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
 bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
 log = os.path.join(os.path.dirname(bin_path), "flash.log")
@@ -328,6 +334,7 @@ print("flashing in the background; log:", log)
 
 ```python
 import os, subprocess
+assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
 root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
 bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
 log = os.path.join(os.path.dirname(bin_path), "flash.log")
@@ -467,6 +474,7 @@ $env:BP_ADDR="0x10000234"; .\debug-server.ps1
 
 ```python
 import os, subprocess
+assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
 root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
 subprocess.run(["pkill", "-TERM", "-f", "openocd"])          # stop any running server first
 log = os.path.join(root, "openocd.log")
@@ -480,6 +488,7 @@ print("OpenOCD started (pid", p.pid, "); log:", log)
 
 ```python
 import os, subprocess
+assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
 root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
 subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])     # stop any running server first
 log = os.path.join(root, "openocd.log")
@@ -1040,6 +1049,7 @@ Part 4 left the Pico running the patched Project 1 image. Put the original Proje
 
    ```python
    import os, subprocess
+   assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
    root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
    bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
    log = os.path.join(os.path.dirname(bin_path), "flash.log")
@@ -1053,6 +1063,7 @@ Part 4 left the Pico running the patched Project 1 image. Put the original Proje
 
    ```python
    import os, subprocess
+   assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
    root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
    bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
    log = os.path.join(os.path.dirname(bin_path), "flash.log")
@@ -1389,6 +1400,7 @@ Hold **BOOTSEL**, plug in the Pico 2, drag `hacked.uf2` onto the **`RP2350`** dr
 
 ```python
 import os, subprocess
+assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
 root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))
 bin_path = os.path.join(os.path.dirname(bv.file.original_filename), "0x0008_uninitialized-variables-h.bin")
 log = os.path.join(os.path.dirname(bv.file.original_filename), "flash.log")
