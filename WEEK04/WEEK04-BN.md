@@ -686,32 +686,30 @@ Press **Resume**. The loop branches back to `0x1000023a`, which reloads `movs r1
 
 Press **Pause** to stop the output flood.
 
-### Step 15b: Stop the debugger (X) and stop OpenOCD
+### Step 15b: Kill the debugger and OpenOCD
 
-The live hack is done. Before the static pass, end the debug session in Binary Ninja: in the **Debugger** sidebar, click the **X** (**Kill**) (or **`Debugger -> Kill`**). That disconnects the GUI.
+The live hack is done. Do this **before** the static pass.
 
-**Kill does not stop the OpenOCD process.** `debug-server.sh` started OpenOCD as a separate process, and it keeps running and holding the debug probe. Stop it too:
+1. In the **Debugger** sidebar, click the **X** (**Kill**) (or **`Debugger -> Kill`**) to disconnect Binary Ninja.
+2. **Kill does not stop the OpenOCD process** — `debug-server.sh` started it separately, and it keeps running and holding the probe. Stop it from the Binary Ninja console:
 
-**macOS / Linux:**
+   **macOS / Linux:**
 
-```bash
-pkill -TERM -f openocd
-```
+   ```python
+   import subprocess
+   subprocess.run(["pkill", "-TERM", "-f", "openocd"])  # stop the debug server, free the probe
+   ```
 
-**Windows (PowerShell):**
+   **Windows:**
 
-```powershell
-Get-Process openocd -ErrorAction SilentlyContinue | Stop-Process
-```
+   ```python
+   import subprocess
+   subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])  # stop the debug server, free the probe
+   ```
 
-Or from the Binary Ninja console:
+3. Confirm nothing is left: `pgrep -fl openocd` (macOS/Linux) prints nothing.
 
-```python
-import subprocess
-subprocess.run(["pkill", "-TERM", "-f", "openocd"])  # Windows: subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])
-```
-
-Confirm nothing is left: `pgrep -fl openocd` (macOS/Linux) prints nothing.
+From a terminal it is the same: `pkill -TERM -f openocd`, or `Get-Process openocd | Stop-Process` on Windows.
 
 ---
 
@@ -1276,11 +1274,23 @@ Same idea as Project 1, different addresses. Here the format string is at `0x100
    ```
    then stops at `0x10000252`. One iteration only — the loop reloads `r0` each pass. The permanent version is the static patch in Step 28b.
 
-### Step 25c: Stop the debugger (X) and stop OpenOCD
+### Step 25c: Kill the debugger and OpenOCD
 
-Same as Step 15b: click the **X** (**Kill**) in the **Debugger** sidebar (or **`Debugger -> Kill`**) to disconnect Binary Ninja, **then stop the OpenOCD process** — Kill does not stop it, and it keeps the probe busy:
+Same as Step 15b: click the **X** (**Kill**) in the **Debugger** sidebar (or **`Debugger -> Kill`**), then stop OpenOCD from the Binary Ninja console:
 
-**macOS / Linux:** `pkill -TERM -f openocd` — **Windows:** `Get-Process openocd | Stop-Process`.
+**macOS / Linux:**
+
+```python
+import subprocess
+subprocess.run(["pkill", "-TERM", "-f", "openocd"])  # stop the debug server, free the probe
+```
+
+**Windows:**
+
+```python
+import subprocess
+subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])  # stop the debug server, free the probe
+```
 
 ---
 
