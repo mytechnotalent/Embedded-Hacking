@@ -137,40 +137,57 @@ cmake -B build -G Ninja -DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350 -DCMAKE_BUILD_
 cmake --build build
 ```
 
-**Or build from the Binary Ninja console**, so the whole build -> patch -> flash loop stays inside Binary Ninja. The console inherits a minimal `PATH` — on macOS just `/usr/bin:/bin:/usr/sbin:/sbin` — so it does not see Homebrew; add your package manager's `bin` first, then run plain `cmake`. Pick your OS:
+**Point Binary Ninja at this repository (once).** Every console snippet below reads the repo root from `~/.embedded-hacking-repo`, so Binary Ninja never needs a database open and nothing is hardcoded. From the repo root, run once:
+
+**macOS / Linux:**
+
+```bash
+pwd > ~/.embedded-hacking-repo
+```
+
+**Windows (PowerShell):**
+
+```powershell
+(Get-Location).Path | Set-Content "$env:USERPROFILE\.embedded-hacking-repo"
+```
+
+**Then build from the Binary Ninja console**, so the whole build -> patch -> flash loop stays inside Binary Ninja. The console inherits a minimal `PATH` — on macOS just `/usr/bin:/bin:/usr/sbin:/sbin` — so it does not see Homebrew; add your package manager's `bin` first, then run plain `cmake`.
 
 **macOS Apple Silicon:**
 
 ```python
 import os, subprocess
-assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()
 os.environ["PATH"] = "/opt/homebrew/bin:" + os.environ["PATH"]   # the console's PATH omits Homebrew
-proj = os.path.dirname(os.path.dirname(bv.file.original_filename))   # <repo>/<project>
-subprocess.run(["cmake", "-B", "build", "-G", "Ninja", "-DPICO_BOARD=pico2",
-                "-DPICO_PLATFORM=rp2350", "-DCMAKE_BUILD_TYPE=Release"], cwd=proj)
-subprocess.run(["cmake", "--build", "build"], cwd=proj)
+for name in ("0x0005_intro-to-variables", "0x0008_uninitialized-variables"):
+    proj = os.path.join(root, name)
+    subprocess.run(["cmake", "-B", "build", "-G", "Ninja", "-DPICO_BOARD=pico2",
+                    "-DPICO_PLATFORM=rp2350", "-DCMAKE_BUILD_TYPE=Release"], cwd=proj)
+    subprocess.run(["cmake", "--build", "build"], cwd=proj)
 ```
 
 **Linux x64:**
 
 ```python
 import os, subprocess
-assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
-proj = os.path.dirname(os.path.dirname(bv.file.original_filename))   # <repo>/<project>
-subprocess.run(["cmake", "-B", "build", "-G", "Ninja", "-DPICO_BOARD=pico2",
-                "-DPICO_PLATFORM=rp2350", "-DCMAKE_BUILD_TYPE=Release"], cwd=proj)
-subprocess.run(["cmake", "--build", "build"], cwd=proj)
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()
+for name in ("0x0005_intro-to-variables", "0x0008_uninitialized-variables"):
+    proj = os.path.join(root, name)
+    subprocess.run(["cmake", "-B", "build", "-G", "Ninja", "-DPICO_BOARD=pico2",
+                    "-DPICO_PLATFORM=rp2350", "-DCMAKE_BUILD_TYPE=Release"], cwd=proj)
+    subprocess.run(["cmake", "--build", "build"], cwd=proj)
 ```
 
 **Windows x64:**
 
 ```python
 import os, subprocess
-assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
-proj = os.path.dirname(os.path.dirname(bv.file.original_filename))   # <repo>\<project>
-subprocess.run(["cmake", "-B", "build", "-G", "Ninja", "-DPICO_BOARD=pico2",
-                "-DPICO_PLATFORM=rp2350", "-DCMAKE_BUILD_TYPE=Release"], cwd=proj)
-subprocess.run(["cmake", "--build", "build"], cwd=proj)
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()
+for name in ("0x0005_intro-to-variables", "0x0008_uninitialized-variables"):
+    proj = os.path.join(root, name)
+    subprocess.run(["cmake", "-B", "build", "-G", "Ninja", "-DPICO_BOARD=pico2",
+                    "-DPICO_PLATFORM=rp2350", "-DCMAKE_BUILD_TYPE=Release"], cwd=proj)
+    subprocess.run(["cmake", "--build", "build"], cwd=proj)
 ```
 
 Each build directory now contains the pair we need:
@@ -265,8 +282,7 @@ A `.bin` has no headers, so OpenOCD must be told the base address `0x10000000`. 
 
 ```python
 import os, subprocess
-assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
-root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
 bin_path = os.path.join(root, "0x0005_intro-to-variables", "build", "0x0005_intro-to-variables.bin")
 log = os.path.join(os.path.dirname(bin_path), "flash.log")
 subprocess.run(["pkill", "-TERM", "-f", "openocd"])          # free the probe first
@@ -279,8 +295,7 @@ print("flashing in the background; log:", log)
 
 ```python
 import os, subprocess
-assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
-root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
 bin_path = os.path.join(root, "0x0005_intro-to-variables", "build", "0x0005_intro-to-variables.bin")
 log = os.path.join(os.path.dirname(bin_path), "flash.log")
 subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])     # free the probe first
@@ -320,8 +335,7 @@ age: 43
 
 ```python
 import os, subprocess
-assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
-root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
 bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
 log = os.path.join(os.path.dirname(bin_path), "flash.log")
 subprocess.run(["pkill", "-TERM", "-f", "openocd"])
@@ -334,8 +348,7 @@ print("flashing in the background; log:", log)
 
 ```python
 import os, subprocess
-assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
-root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
 bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
 log = os.path.join(os.path.dirname(bin_path), "flash.log")
 subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])
@@ -474,8 +487,7 @@ $env:BP_ADDR="0x10000234"; .\debug-server.ps1
 
 ```python
 import os, subprocess
-assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
-root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
 subprocess.run(["pkill", "-TERM", "-f", "openocd"])          # stop any running server first
 log = os.path.join(root, "openocd.log")
 p = subprocess.Popen([os.path.join(root, "debug-server.sh")], cwd=root,
@@ -488,8 +500,7 @@ print("OpenOCD started (pid", p.pid, "); log:", log)
 
 ```python
 import os, subprocess
-assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
-root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
 subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])     # stop any running server first
 log = os.path.join(root, "openocd.log")
 p = subprocess.Popen(["powershell", "-ExecutionPolicy", "Bypass", "-File",
@@ -910,7 +921,7 @@ Keep the replacement exactly three bytes. If you use a shorter string you must p
 import os
 seg = next(s for s in bv.segments if s.data_length)   # the loadable image segment
 data = bv.read(seg.start, seg.data_length)            # base + size come from the view itself
-out = os.path.join(os.path.dirname(bv.file.original_filename), "0x0005_intro-to-variables-h.bin")
+out = os.path.join(os.path.join(root, "0x0005_intro-to-variables", "build"), "0x0005_intro-to-variables-h.bin")
 open(out, "wb").write(data)
 print(len(data), out)   # -> 15292 /.../build/0x0005_intro-to-variables-h.bin
 ```
@@ -923,7 +934,7 @@ Where the two numbers come from — nothing is hardcoded:
 
 Two gotchas this avoids:
 
-- **No relative path.** Binary Ninja's Python console runs with a read-only working directory (inside the app bundle), so `open("0x0005_intro-to-variables-h.bin", "wb")` fails with `OSError: [Errno 30] Read-only file system`. `bv.file.original_filename` is the `.bin` this view was loaded from, so the file is written next to it — no machine-specific path.
+- **No relative path.** Binary Ninja's Python console runs with a read-only working directory (inside the app bundle), so `open("0x0005_intro-to-variables-h.bin", "wb")` fails with `OSError: [Errno 30] Read-only file system`. `root` (from `~/.embedded-hacking-repo`, Step 3) is the repo, so the file is written into the project's `build/` — no machine-specific path and no database needed.
 - **Read the image, not the whole view.** `bv.read(bv.start, bv.length)` spans the entire mapped range (`0x10000000`..`0xe008000c`), which is not the image. The segment's `data_length` is the image size.
 
 A different size means you exported a partial view.
@@ -950,7 +961,7 @@ python ..\uf2conv.py 0x0005_intro-to-variables-h.bin ^
 >
 > ```python
 > import os, sys, runpy
-> os.chdir(os.path.dirname(bv.file.original_filename))   # the project build dir (writable)
+> os.chdir(os.path.join(root, "0x0005_intro-to-variables", "build"))   # the project build dir (writable)
 > sys.argv = ["uf2conv.py", "0x0005_intro-to-variables-h.bin",
 >             "--base", "0x10000000", "--family", "0xe48bff59", "--output", "hacked.uf2"]
 > runpy.run_path("../../uf2conv.py", run_name="__main__")   # path to your uf2conv.py
@@ -975,9 +986,9 @@ age: 70
 >
 > ```python
 > import os, subprocess
-> root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))
-> bin_path = os.path.join(os.path.dirname(bv.file.original_filename), "0x0005_intro-to-variables-h.bin")
-> log = os.path.join(os.path.dirname(bv.file.original_filename), "flash.log")
+> root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()
+> bin_path = os.path.join(os.path.join(root, "0x0005_intro-to-variables", "build"), "0x0005_intro-to-variables-h.bin")
+> log = os.path.join(os.path.join(root, "0x0005_intro-to-variables", "build"), "flash.log")
 > p = subprocess.Popen([os.path.join(root, "flash.sh"), bin_path],
 >                      stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
 > print("flashing in the background; log:", log)
@@ -990,8 +1001,8 @@ age: 70
 > ```python
 > import os, subprocess
 > ocd = os.path.expanduser("~/.pico-sdk/openocd/0.12.0+dev")
-> bin_path = os.path.join(os.path.dirname(bv.file.original_filename), "0x0005_intro-to-variables-h.bin")
-> log = os.path.join(os.path.dirname(bv.file.original_filename), "flash.log")
+> bin_path = os.path.join(os.path.join(root, "0x0005_intro-to-variables", "build"), "0x0005_intro-to-variables-h.bin")
+> log = os.path.join(os.path.join(root, "0x0005_intro-to-variables", "build"), "flash.log")
 > p = subprocess.Popen([f"{ocd}/openocd", "-s", f"{ocd}/scripts",
 >     "-f", "interface/cmsis-dap.cfg", "-f", "target/rp2350.cfg",
 >     "-c", "adapter speed 5000",
@@ -1049,8 +1060,7 @@ Part 4 left the Pico running the patched Project 1 image. Put the original Proje
 
    ```python
    import os, subprocess
-   assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
-   root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+   root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
    bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
    log = os.path.join(os.path.dirname(bin_path), "flash.log")
    subprocess.run(["pkill", "-TERM", "-f", "openocd"])          # free the probe first
@@ -1063,8 +1073,7 @@ Part 4 left the Pico running the patched Project 1 image. Put the original Proje
 
    ```python
    import os, subprocess
-   assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
-   root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+   root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()   # set once (Step 3)
    bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
    log = os.path.join(os.path.dirname(bin_path), "flash.log")
    subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])     # free the probe first
@@ -1373,7 +1382,7 @@ Exactly three bytes, same rule as Project 1: a shorter string must be padded, a 
 import os
 seg = next(s for s in bv.segments if s.data_length)   # the loadable image segment
 data = bv.read(seg.start, seg.data_length)            # base + size from the view itself
-out = os.path.join(os.path.dirname(bv.file.original_filename), "0x0008_uninitialized-variables-h.bin")
+out = os.path.join(os.path.join(root, "0x0008_uninitialized-variables", "build"), "0x0008_uninitialized-variables-h.bin")
 open(out, "wb").write(data)
 print(len(data), out)   # -> 15668 /.../build/0x0008_uninitialized-variables-h.bin
 ```
@@ -1400,10 +1409,9 @@ Hold **BOOTSEL**, plug in the Pico 2, drag `hacked.uf2` onto the **`RP2350`** dr
 
 ```python
 import os, subprocess
-assert bv is not None, "Open the .bndb in Binary Ninja first, or use the terminal command above."
-root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))
-bin_path = os.path.join(os.path.dirname(bv.file.original_filename), "0x0008_uninitialized-variables-h.bin")
-log = os.path.join(os.path.dirname(bv.file.original_filename), "flash.log")
+root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()
+bin_path = os.path.join(os.path.join(root, "0x0008_uninitialized-variables", "build"), "0x0008_uninitialized-variables-h.bin")
+log = os.path.join(os.path.join(root, "0x0008_uninitialized-variables", "build"), "flash.log")
 p = subprocess.Popen([os.path.join(root, "flash.sh"), bin_path],
                      stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
 print("flashing in the background; log:", log)
