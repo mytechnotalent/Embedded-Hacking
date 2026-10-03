@@ -1084,10 +1084,37 @@ Part 4 left the Pico running the patched Project 1 image. Put the original Proje
    ```
 
 3. Start the debug server again (Step 10) and wait for `Listening on port 3333`.
-4. Open `0x0008_uninitialized-variables/build/0x0008_uninitialized-variables.bin` with options (`thumb2`, `thumb2`, `0x10000000`) and save a `.bndb`.
+4. Load Project 2 and save its database — see Step 22b.
 5. Connect Binary Ninja again (Step 11): adapter **GDB MI**, IP `127.0.0.1`, port `3333`.
 
 Confirm the Pico prints `age: 0` and blinks the red LED.
+
+### Step 22b: Load Project 2 into Binary Ninja and save the database
+
+Exactly like Steps 7–8, but for Project 2. **Use `File -> Open with Options...`** (not plain `File -> Open`), select `0x0008_uninitialized-variables/build/0x0008_uninitialized-variables.bin`, and set:
+
+- **Architecture:** `thumb2`
+- **Platform:** `thumb2`
+- **Base Address:** `0x10000000`
+
+Click **Open**. Then press `G`, type `0x10000000`, and confirm the first two words:
+
+```
+0x10000000   0x20082000   initial stack pointer
+0x10000004   0x1000015d   reset vector (bit 0 = Thumb)
+```
+
+If you see data at `0x00000000`, close the tab and redo it with `Open with Options`.
+
+Save it with `File -> Save As...` as `0x0008_uninitialized-variables.bndb` (next to the `.bin`). From now on open the `.bndb`, not the `.bin`; save with `Cmd+S` / `Ctrl+S` after every rename or patch.
+
+> **Console equivalent:**
+> ```python
+> load("0x0008_uninitialized-variables/build/0x0008_uninitialized-variables.bin",
+>      options={"loader.imageBase": 0x10000000, "loader.platform": "thumb2"})
+> ```
+
+Then resolve the functions for Project 2 the same way as Project 1 — Step 26.
 
 ### Step 23: Break at `main`
 
