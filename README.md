@@ -94,6 +94,78 @@ The following hardware parts and sensors are used throughout the course experime
 
 <br>
 
+# Development Environment Setup
+
+Everything installs natively on Windows, macOS (Apple Silicon), and Linux x64 — **no VM required**. The core toolchain (Pico SDK, Arm GNU Toolchain, `picotool`, OpenOCD) comes from the **Raspberry Pi Pico VS Code extension**, which installs it all under `~/.pico-sdk` on every platform. You then add two reverse-engineering tools and a serial monitor.
+
+## Windows x64
+
+1. Install [VS Code](https://code.visualstudio.com/), [Git for Windows](https://git-scm.com/download/win), and [Python 3](https://www.python.org/downloads/) (check **Add python.exe to PATH**).
+2. In VS Code open **Extensions**, search **Raspberry Pi Pico**, install it, and choose **Pico 2** as the board when prompted. This pulls the Pico SDK, Arm GNU Toolchain, `picotool`, and OpenOCD.
+3. Install [Binary Ninja Personal](https://binary.ninja/) and activate the license.
+4. Install [Ghidra](https://github.com/NationalSecurityAgency/ghidra/releases) and [Eclipse Temurin JDK 21](https://adoptium.net/temurin/releases/?version=21).
+5. Serial monitor: [PuTTY](https://www.putty.org/).
+
+## macOS Apple Silicon
+
+```bash
+brew install cmake ninja
+```
+
+1. Install [VS Code](https://code.visualstudio.com/), then the **Raspberry Pi Pico** extension (choose **Pico 2**). This installs the Pico SDK, Arm GNU Toolchain, `picotool`, and OpenOCD.
+2. Install [Binary Ninja Personal](https://binary.ninja/) and activate the license.
+3. Install Ghidra and JDK 21: `brew install --cask temurin@21`, then the [Ghidra release](https://github.com/NationalSecurityAgency/ghidra/releases).
+4. Serial monitor: `screen` (built in).
+
+> Use the Apple Silicon Homebrew at `/opt/homebrew`. If `file "$(which cmake)"` reports `x86_64`, an Intel Homebrew at `/usr/local` is shadowing it — put `/opt/homebrew/bin` first on your `PATH`. Do **not** fix this with Rosetta; it produces debugger failures that look like bugs.
+
+## Linux x64
+
+```bash
+sudo apt update
+sudo apt install git python3 cmake ninja-build build-essential screen
+```
+
+1. Install [VS Code](https://code.visualstudio.com/), then the **Raspberry Pi Pico** extension (choose **Pico 2**). This installs the Pico SDK, Arm GNU Toolchain, `picotool`, and OpenOCD.
+2. Install [Binary Ninja Personal](https://binary.ninja/) and activate the license.
+3. Install Ghidra and JDK 21 (`sudo apt install openjdk-21-jdk`, then the [Ghidra release](https://github.com/NationalSecurityAgency/ghidra/releases)).
+4. Serial monitor: `screen` or `minicom`.
+
+## Example: Compile and Flash `0x0001 hello, world`
+
+Build the firmware:
+
+```bash
+cd 0x0001_hello-world
+cmake -B build -G Ninja -DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350 -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+```
+
+Flash the raw `.bin` over the Debug Probe with OpenOCD — no BOOTSEL, no UF2:
+
+```bash
+# macOS / Linux
+../flash.sh build/0x0001_hello-world.bin
+```
+
+```powershell
+# Windows
+..\flash.ps1 build\0x0001_hello-world.bin
+```
+
+Then open the serial monitor at **115200** on the Debug Probe's UART bridge and you should see `hello, world` repeat:
+
+```bash
+# macOS
+screen /dev/cu.usbmodem* 115200
+# Linux
+screen /dev/ttyACM0 115200
+```
+
+Debug Probe wiring is [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/hardware/dp.png).
+
+<br>
+
 # Datasheets & References
 
 This repository includes the complete set of authoritative technical reference manuals and datasheets required for professional embedded engineering and reverse engineering on the Raspberry Pi Pico 2:
