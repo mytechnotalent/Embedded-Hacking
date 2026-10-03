@@ -239,7 +239,12 @@ age: 43
 ### Step 6: Flash Project 2 and confirm `age: 0` + red LED
 
 ```bash
+# macOS / Linux
 ./flash.sh 0x0008_uninitialized-variables/build/0x0008_uninitialized-variables.bin
+```
+```powershell
+# Windows
+.\flash.ps1 -Bin 0x0008_uninitialized-variables\build\0x0008_uninitialized-variables.bin
 ```
 
 Wait for `wrote 15668 bytes ...`. The serial monitor shows:
@@ -339,8 +344,16 @@ Get-Process | Where-Object { $_.ProcessName -like '*openocd*' }
 
 Stop any leftover server gracefully:
 
+**macOS / Linux:**
+
 ```bash
 pkill -TERM -f openocd
+```
+
+**Windows (PowerShell):**
+
+```powershell
+Get-Process openocd -ErrorAction SilentlyContinue | Stop-Process
 ```
 
 Start the server **parked at `main`**:
@@ -851,10 +864,15 @@ age: 70
 > **The Debug Probe is single-owner.** If Binary Ninja is still attached (the `debug-server.sh` OpenOCD is running), the flash cannot grab the probe. Detach in Binary Ninja and stop that OpenOCD first:
 >
 > ```bash
+> # macOS / Linux
 > pkill -TERM -f openocd
 > ```
+> ```powershell
+> # Windows
+> Get-Process openocd -ErrorAction SilentlyContinue | Stop-Process
+> ```
 >
-> Success looks like `Programming Finished` -> `Verified OK` -> `Resetting Target`. On Windows, `flash.ps1` works the same way.
+> Success looks like `Programming Finished` -> `Verified OK` -> `Resetting Target`. On Windows use `flash.ps1` (`.\flash.ps1 -Bin <path>`) the same way.
 
 ---
 
@@ -867,13 +885,23 @@ Part 4 left the Pico running the patched Project 1 image. Put the original Proje
 1. Stop any running debug server so the flash script can use the probe:
 
    ```bash
+   # macOS / Linux
    pkill -TERM -f openocd
+   ```
+   ```powershell
+   # Windows
+   Get-Process openocd -ErrorAction SilentlyContinue | Stop-Process
    ```
 
 2. Flash the original Project 2 image:
 
    ```bash
+   # macOS / Linux
    ./flash.sh 0x0008_uninitialized-variables/build/0x0008_uninitialized-variables.bin
+   ```
+   ```powershell
+   # Windows
+   .\flash.ps1 -Bin 0x0008_uninitialized-variables\build\0x0008_uninitialized-variables.bin
    ```
 
 3. Start the debug server again (Step 10) and wait for `Listening on port 3333`.
@@ -887,8 +915,13 @@ Confirm the Pico prints `age: 0` and blinks the red LED.
 `main` is at `0x10000234` in this project too. The GUI sets breakpoints fine (Step 13); the only caution is not to drive `reset run` from the port while Binary Ninja is attached (it desyncs Binary Ninja's view). Use `BP_ADDR`, which arms `main` before Binary Ninja connects:
 
 1. Stop the server (Ctrl-C), then start it parked at `main`:
-   ```
+   ```bash
+   # macOS / Linux
    BP_ADDR=0x10000234 ./debug-server.sh
+   ```
+   ```powershell
+   # Windows
+   $env:BP_ADDR="0x10000234"; .\debug-server.ps1
    ```
 2. Connect Binary Ninja (Step 11): adapter **GDB MI**, IP `127.0.0.1`, port `3333`.
 
@@ -1177,8 +1210,17 @@ print(len(data), out)   # -> 15668 /.../build/0x0008_uninitialized-variables-h.b
 
 Same as Project 1: `seg.start` is the load base and `seg.data_length` is the image size (here `0x3d34` = 15668) — both read from the view, and no relative path (the console's CWD is read-only).
 
+**macOS Apple Silicon / Linux x64:**
+
 ```bash
 python3 ../uf2conv.py 0x0008_uninitialized-variables-h.bin \
+  --base 0x10000000 --family 0xe48bff59 --output hacked.uf2
+```
+
+**Windows x64:**
+
+```cmd
+python ..\uf2conv.py 0x0008_uninitialized-variables-h.bin ^
   --base 0x10000000 --family 0xe48bff59 --output hacked.uf2
 ```
 
@@ -1242,8 +1284,8 @@ The server runs with `gdb_breakpoint_override hard` so that flash-writes are nev
 | (fallback) Add a breakpoint without the GUI | `bp <addr> 2 hw` |
 | Remove one breakpoint | `rbp <addr>` — **address only, no length, no `hw`** |
 | Remove every breakpoint | `rbp all` |
-| Start the server parked at `main` | `BP_ADDR=0x10000234 ./debug-server.sh` (one-shot; `$env:BP_ADDR` on Windows) |
-| Start the server parked in the loop | `BP_ADDR=0x1000023e ./debug-server.sh` — `0x1000024e` for Project 2 |
+| Start the server parked at `main` | macOS/Linux: `BP_ADDR=0x10000234 ./debug-server.sh` — Windows: `$env:BP_ADDR="0x10000234"; .\debug-server.ps1` (one-shot) |
+| Start the server parked in the loop | macOS/Linux: `BP_ADDR=0x1000023e ./debug-server.sh` — Windows: `$env:BP_ADDR="0x1000023e"; .\debug-server.ps1` (`0x1000024e` for Project 2) |
 | Break on the loop in a running target | set a hardware breakpoint in the GUI at the loop address, then **Resume** — repeatable |
 | Make Binary Ninja stepping work | `rp2350.dap.core0 configure -rtos none` (already in the scripts) |
 | Step without re-trapping | move the breakpoint off the current PC first, then **Step Into**/**Step Over** |
@@ -1301,7 +1343,7 @@ If you are on the **GDB RSP** adapter, the GUI cannot set breakpoints on this ta
 
 With the **GDB MI** adapter, if Binary Ninja already has a breakpoint set when you connect, the session **hangs**. This is a Binary Ninja bug. The working order is:
 
-1. Start the server parked, e.g. `BP_ADDR=0x10000234 ./debug-server.sh`.
+1. Start the server parked, e.g. `BP_ADDR=0x10000234 ./debug-server.sh` (Windows: `$env:BP_ADDR="0x10000234"; .\debug-server.ps1`).
 2. Connect with the **GDB MI** adapter.
 3. Only *then* set hardware breakpoints in the UI.
 
