@@ -350,6 +350,8 @@ Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floa
 
 ### Week 5a Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05a.md)
 
+### Week 5-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-BN.md)
+
 ### Float/Hex Converter Tool [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/float_hex_converter.py)
 
 ### Chapter 11: Integer Data Type
