@@ -686,6 +686,12 @@ Press **Resume**. The loop branches back to `0x1000023a`, which reloads `movs r1
 
 Press **Pause** to stop the output flood.
 
+### Step 15b: Stop the debugger (press the X)
+
+The live hack is done. Before the static pass, **end the debug session**: in the **Debugger** sidebar, click the **X** (**Kill**) button. That disconnects Binary Ninja and shuts down the OpenOCD session, freeing the debug probe for the export and flash steps.
+
+> If the X is not visible, use the menu: **`Debugger -> Kill`**. Note the difference: **Detach** only disconnects the GUI and leaves the OpenOCD server running (still holding the probe); **Kill** ends the session outright.
+
 ---
 
 ## Part 4: Static — Resolve the Functions in Binary Ninja and Patch (Project 1)
@@ -1244,6 +1250,10 @@ Same idea as Project 1, different addresses. Here the format string is at `0x100
    foo: 0
    ```
    then stops at `0x10000252`. One iteration only — the loop reloads `r0` each pass. The permanent version is the static patch in Step 28b.
+
+### Step 25c: Stop the debugger (press the X)
+
+Same as Step 15b: end the debug session before the static pass — click the **X** (**Kill**) in the **Debugger** sidebar (or **`Debugger -> Kill`**). This shuts down the OpenOCD session and frees the probe.
 
 ---
 
