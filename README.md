@@ -440,6 +440,8 @@ Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C B
 
 ### Week 7 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07.md)
 
+### Week 7-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-BN.md)
+
 ### Chapter 23: Constants
 This chapter covers constants as well as an intro to I2C as we work a 1602 LCD as it relates to embedded development on the Pico 2.
 
