@@ -256,6 +256,35 @@ A `.bin` has no headers, so OpenOCD must be told the base address `0x10000000`. 
 .\flash.ps1 -Bin 0x0005_intro-to-variables\build\0x0005_intro-to-variables.bin
 ```
 
+**Or flash from the Binary Ninja console** (with a database open, so the repo root is taken from it — otherwise use the terminal form above):
+
+**macOS Apple Silicon / Linux x64:**
+
+```python
+import os, subprocess
+root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+bin_path = os.path.join(root, "0x0005_intro-to-variables", "build", "0x0005_intro-to-variables.bin")
+log = os.path.join(os.path.dirname(bin_path), "flash.log")
+subprocess.run(["pkill", "-TERM", "-f", "openocd"])          # free the probe first
+subprocess.Popen([os.path.join(root, "flash.sh"), bin_path],
+                 stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
+print("flashing in the background; log:", log)
+```
+
+**Windows x64:**
+
+```python
+import os, subprocess
+root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+bin_path = os.path.join(root, "0x0005_intro-to-variables", "build", "0x0005_intro-to-variables.bin")
+log = os.path.join(os.path.dirname(bin_path), "flash.log")
+subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])     # free the probe first
+subprocess.Popen(["powershell", "-ExecutionPolicy", "Bypass", "-File",
+                  os.path.join(root, "flash.ps1"), "-Bin", bin_path],
+                 stdout=open(log, "w"), stderr=subprocess.STDOUT)
+print("flashing in the background; log:", log)
+```
+
 Wait for `wrote 15292 bytes ...` and `** Verified OK **`. Open a serial monitor at **115200** baud:
 
 - **Windows x64:** PuTTY -> Connection type **Serial**, the Pico's COM port, speed `115200`.
@@ -278,6 +307,35 @@ age: 43
 ```powershell
 # Windows
 .\flash.ps1 -Bin 0x0008_uninitialized-variables\build\0x0008_uninitialized-variables.bin
+```
+
+**Or flash from the Binary Ninja console** (same form as Step 5, pointing at the Project 2 `.bin`):
+
+**macOS / Linux:**
+
+```python
+import os, subprocess
+root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
+log = os.path.join(os.path.dirname(bin_path), "flash.log")
+subprocess.run(["pkill", "-TERM", "-f", "openocd"])
+subprocess.Popen([os.path.join(root, "flash.sh"), bin_path],
+                 stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
+print("flashing in the background; log:", log)
+```
+
+**Windows:**
+
+```python
+import os, subprocess
+root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
+log = os.path.join(os.path.dirname(bin_path), "flash.log")
+subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])
+subprocess.Popen(["powershell", "-ExecutionPolicy", "Bypass", "-File",
+                  os.path.join(root, "flash.ps1"), "-Bin", bin_path],
+                 stdout=open(log, "w"), stderr=subprocess.STDOUT)
+print("flashing in the background; log:", log)
 ```
 
 Wait for `wrote 15668 bytes ...`. The serial monitor shows:
@@ -974,6 +1032,35 @@ Part 4 left the Pico running the patched Project 1 image. Put the original Proje
    ```powershell
    # Windows
    .\flash.ps1 -Bin 0x0008_uninitialized-variables\build\0x0008_uninitialized-variables.bin
+   ```
+
+   **Or do steps 1–2 from the Binary Ninja console** (the active view is still Project 1, so take the repo root from it and point at the Project 2 `.bin`):
+
+   **macOS / Linux:**
+
+   ```python
+   import os, subprocess
+   root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+   bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
+   log = os.path.join(os.path.dirname(bin_path), "flash.log")
+   subprocess.run(["pkill", "-TERM", "-f", "openocd"])          # free the probe first
+   subprocess.Popen([os.path.join(root, "flash.sh"), bin_path],
+                    stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
+   print("flashing Project 2 in the background; log:", log)
+   ```
+
+   **Windows:**
+
+   ```python
+   import os, subprocess
+   root = os.path.dirname(os.path.dirname(os.path.dirname(bv.file.original_filename)))   # <repo>
+   bin_path = os.path.join(root, "0x0008_uninitialized-variables", "build", "0x0008_uninitialized-variables.bin")
+   log = os.path.join(os.path.dirname(bin_path), "flash.log")
+   subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])     # free the probe first
+   subprocess.Popen(["powershell", "-ExecutionPolicy", "Bypass", "-File",
+                     os.path.join(root, "flash.ps1"), "-Bin", bin_path],
+                    stdout=open(log, "w"), stderr=subprocess.STDOUT)
+   print("flashing Project 2 in the background; log:", log)
    ```
 
 3. Start the debug server again (Step 10) and wait for `Listening on port 3333`.
