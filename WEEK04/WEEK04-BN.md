@@ -995,10 +995,13 @@ age: 70
 > root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()
 > bin_path = os.path.join(os.path.join(root, "0x0005_intro-to-variables", "build"), "0x0005_intro-to-variables-h.bin")
 > log = os.path.join(os.path.join(root, "0x0005_intro-to-variables", "build"), "flash.log")
+> subprocess.run(["pkill", "-TERM", "-f", "openocd"])  # free the probe first
 > p = subprocess.Popen([os.path.join(root, "flash.sh"), bin_path],
 >                      stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
 > print("flashing in the background; log:", log)
 > ```
+>
+> The `pkill` frees the probe first; on Windows use `subprocess.run(["taskkill", "/F", "/IM", "openocd.exe"])`.
 >
 > The console is free the moment this returns. Check it with `print(p.poll())` (`None` = still running, `0` = done) or read `flash.log` — success ends with `** Verified OK **`. (Verified: `Popen` returns in ~1 ms; the flash itself takes ~2 s.)
 >
@@ -1009,6 +1012,7 @@ age: 70
 > ocd = os.path.expanduser("~/.pico-sdk/openocd/0.12.0+dev")
 > bin_path = os.path.join(os.path.join(root, "0x0005_intro-to-variables", "build"), "0x0005_intro-to-variables-h.bin")
 > log = os.path.join(os.path.join(root, "0x0005_intro-to-variables", "build"), "flash.log")
+> subprocess.run(["pkill", "-TERM", "-f", "openocd"])  # free the probe first
 > p = subprocess.Popen([f"{ocd}/openocd", "-s", f"{ocd}/scripts",
 >     "-f", "interface/cmsis-dap.cfg", "-f", "target/rp2350.cfg",
 >     "-c", "adapter speed 5000",
@@ -1478,6 +1482,7 @@ import os, subprocess
 root = open(os.path.expanduser("~/.embedded-hacking-repo")).read().strip()
 bin_path = os.path.join(os.path.join(root, "0x0008_uninitialized-variables", "build"), "0x0008_uninitialized-variables-h.bin")
 log = os.path.join(os.path.join(root, "0x0008_uninitialized-variables", "build"), "flash.log")
+subprocess.run(["pkill", "-TERM", "-f", "openocd"])  # free the probe first
 p = subprocess.Popen([os.path.join(root, "flash.sh"), bin_path],
                      stdout=open(log, "w"), stderr=subprocess.STDOUT, start_new_session=True)
 print("flashing in the background; log:", log)
