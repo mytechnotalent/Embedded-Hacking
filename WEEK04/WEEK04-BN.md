@@ -137,6 +137,39 @@ cmake -B build -G Ninja -DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350 -DCMAKE_BUILD_
 cmake --build build
 ```
 
+**Or build from the Binary Ninja console**, so the whole build -> patch -> flash loop stays inside Binary Ninja. The console inherits a minimal `PATH` — on macOS just `/usr/bin:/bin:/usr/sbin:/sbin` — so it does not see Homebrew; add your package manager's `bin` first, then run plain `cmake`. Pick your OS:
+
+**macOS Apple Silicon:**
+
+```python
+import os, subprocess
+os.environ["PATH"] = "/opt/homebrew/bin:" + os.environ["PATH"]   # the console's PATH omits Homebrew
+proj = os.path.dirname(os.path.dirname(bv.file.original_filename))   # <repo>/<project>
+subprocess.run(["cmake", "-B", "build", "-G", "Ninja", "-DPICO_BOARD=pico2",
+                "-DPICO_PLATFORM=rp2350", "-DCMAKE_BUILD_TYPE=Release"], cwd=proj)
+subprocess.run(["cmake", "--build", "build"], cwd=proj)
+```
+
+**Linux x64:**
+
+```python
+import os, subprocess
+proj = os.path.dirname(os.path.dirname(bv.file.original_filename))   # <repo>/<project>
+subprocess.run(["cmake", "-B", "build", "-G", "Ninja", "-DPICO_BOARD=pico2",
+                "-DPICO_PLATFORM=rp2350", "-DCMAKE_BUILD_TYPE=Release"], cwd=proj)
+subprocess.run(["cmake", "--build", "build"], cwd=proj)
+```
+
+**Windows x64:**
+
+```python
+import os, subprocess
+proj = os.path.dirname(os.path.dirname(bv.file.original_filename))   # <repo>\<project>
+subprocess.run(["cmake", "-B", "build", "-G", "Ninja", "-DPICO_BOARD=pico2",
+                "-DPICO_PLATFORM=rp2350", "-DCMAKE_BUILD_TYPE=Release"], cwd=proj)
+subprocess.run(["cmake", "--build", "build"], cwd=proj)
+```
+
 Each build directory now contains the pair we need:
 
 - `0x0005_intro-to-variables/build/0x0005_intro-to-variables.elf` and `.bin` — `.bin` is **15292** bytes
