@@ -173,7 +173,7 @@ Each line is `address type name`. The `T`/`t` type is a function. Here are the f
 
 | Address | ELF symbol | Signature | Role |
 | ------- | ---------- | --------- | ---- |
-| `0x1000015c` | `_reset_handler` | — | reset entry |
+| `0x1000015c` | `_reset_handler` | `void _reset_handler(void)` | reset entry |
 | `0x10000186` | `platform_entry` | `void platform_entry(void)` | calls `runtime_init`, `main`, `exit` |
 | `0x1000019a` | `data_cpy` | `void data_cpy(void*, void*, void*)` | copies `.data` from flash to SRAM |
 | `0x100001e4` | `_init` | `void _init(void)` | runs `.init_array` |
@@ -191,7 +191,7 @@ These signatures come from the ELF's DWARF debug info, so they are exact. You ap
 
 | Address | ELF symbol | Signature | Role |
 | ------- | ---------- | --------- | ---- |
-| `0x1000015c` | `_reset_handler` | — | reset entry |
+| `0x1000015c` | `_reset_handler` | `void _reset_handler(void)` | reset entry |
 | `0x10000186` | `platform_entry` | `void platform_entry(void)` | calls `runtime_init`, `main`, `exit` |
 | `0x1000019a` | `data_cpy` | `void data_cpy(void*, void*, void*)` | copies `.data` from flash to SRAM |
 | `0x100001e4` | `_init` | `void _init(void)` | runs `.init_array` |
@@ -599,7 +599,7 @@ main
 
 | Address | Rename to (`N`) | Signature (`Y`) |
 | ------- | --------------- | --------------- |
-| `0x1000015c` | `_reset_handler` | — |
+| `0x1000015c` | `_reset_handler` | `void _reset_handler(void)` |
 | `0x10000186` | `platform_entry` | `void platform_entry(void)` |
 | `0x1000019a` | `data_cpy` | `void data_cpy(void*, void*, void*)` |
 | `0x100001e4` | `_init` | `void _init(void)` |
@@ -629,7 +629,7 @@ main
 > from binaryninja import Symbol, SymbolType
 > # address: (name, signature);  None means "leave the type alone"
 > funcs = {
->     0x1000015c: ("_reset_handler",            None),
+>     0x1000015c: ("_reset_handler",            "void _reset_handler(void)"),
 >     0x10000186: ("platform_entry",            "void platform_entry(void)"),
 >     0x1000019a: ("data_cpy",                  "void data_cpy(void*, void*, void*)"),
 >     0x100001e4: ("_init",                     "void _init(void)"),
@@ -933,7 +933,7 @@ Two things in this project have **no symbol of their own**, because the compiler
 
 | Address | Rename to (`N`) | Signature (`Y`) |
 | ------- | --------------- | --------------- |
-| `0x1000015c` | `_reset_handler` | — |
+| `0x1000015c` | `_reset_handler` | `void _reset_handler(void)` |
 | `0x10000186` | `platform_entry` | `void platform_entry(void)` |
 | `0x1000019a` | `data_cpy` | `void data_cpy(void*, void*, void*)` |
 | `0x100001e4` | `_init` | `void _init(void)` |
@@ -961,7 +961,7 @@ Python console shortcut (resolves name **and** type):
 from binaryninja import Symbol, SymbolType
 # address: (name, signature);  None means "leave the type alone"
 funcs = {
-    0x1000015c: ("_reset_handler",            None),
+    0x1000015c: ("_reset_handler",            "void _reset_handler(void)"),
     0x10000186: ("platform_entry",            "void platform_entry(void)"),
     0x1000019a: ("data_cpy",                  "void data_cpy(void*, void*, void*)"),
     0x100001e4: ("_init",                     "void _init(void)"),
