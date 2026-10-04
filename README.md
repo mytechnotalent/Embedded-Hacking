@@ -540,6 +540,8 @@ Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote
 
 ### Week 11 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11.md)
 
+### Week 11-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-BN.md)
+
 ### Chapter 35: Structures
 This chapter covers structures as well as an intro to infrared basics as we work a infrared receiver and infrared remote controller as it relates to embedded development on the Pico 2.
 
