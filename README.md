@@ -501,6 +501,8 @@ Conditionals in Embedded Systems: Debugging and Hacking Static & Dynamic Conditi
 
 ### Week 10 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10.md)
 
+### Week 10-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-BN.md)
+
 ### Chapter 29: Static Conditionals
 This chapter covers static conditionals as well as an intro to PWM as we work a SG90 servo motor as it relates to embedded development on the Pico 2.
 
