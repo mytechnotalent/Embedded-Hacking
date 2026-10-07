@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">PWM Timing Chain</text>
+<text class="dim" x="600" y="88" text-anchor="middle">150MHz System Clock to 50Hz Servo Signal</text>
+
+<!-- Clock Division Chain -->
+<rect class="pnl" x="30" y="110" width="1140" height="230" rx="8"/>
+<text class="sub" x="50" y="150">Clock Division</text>
+
+<rect x="50" y="175" width="250" height="50" rx="6" fill="#0a0a0f" stroke="#00d4ff"/>
+<text class="cyn" x="95" y="207">150 MHz Clock</text>
+
+<text class="amb" x="320" y="207">/ 150</text>
+<line x1="300" y1="200" x2="315" y2="200" stroke="#ffaa00" stroke-width="2"/>
+<line x1="395" y1="200" x2="415" y2="200" stroke="#ffaa00" stroke-width="2"/>
+
+<rect x="420" y="175" width="250" height="50" rx="6" fill="#0a0a0f" stroke="#00ff41"/>
+<text class="grn" x="475" y="207">1 MHz PWM</text>
+
+<text class="dim" x="690" y="207">1 tick = 1us</text>
+
+<line x1="670" y1="200" x2="685" y2="200" stroke="#ffaa00" stroke-width="2"/>
+
+<text class="txt" x="50" y="260">Step 1: 150,000,000 / 150 = 1,000,000 Hz</text>
+<text class="dim" x="50" y="290">Each PWM tick = exactly 1 microsecond</text>
+
+<text class="txt" x="50" y="320">Step 2: Wrap at 20,000 ticks = 20ms = 50Hz</text>
+<text class="dim" x="680" y="320">Wrap value = 19,999</text>
+
+<!-- SG90 Specs -->
+<rect class="pnl" x="30" y="360" width="555" height="220" rx="8"/>
+<text class="sub" x="50" y="400">SG90 Servo Motor</text>
+
+<text class="amb" x="50" y="435">Parameter</text>
+<text class="amb" x="300" y="435">Value</text>
+<line x1="50" y1="445" x2="565" y2="445" stroke="#1a1a2e" stroke-width="1"/>
+<text class="txt" x="50" y="475">Voltage</text>
+<text class="dim" x="300" y="475">4.8V - 6V (use 5V)</text>
+<text class="txt" x="50" y="505">Rotation</text>
+<text class="dim" x="300" y="505">0deg to 180deg</text>
+<text class="txt" x="50" y="535">Pulse Width</text>
+<text class="dim" x="300" y="535">1000us - 2000us</text>
+<text class="txt" x="50" y="565">Frequency</text>
+<text class="dim" x="300" y="565">50Hz (20ms period)</text>
+
+<!-- Wiring -->
+<rect class="pnl" x="615" y="360" width="555" height="220" rx="8"/>
+<text class="sub" x="635" y="400">Wiring to Pico 2</text>
+
+<rect x="635" y="425" width="100" height="45" rx="4" fill="#0a0a0f" stroke="#00d4ff" stroke-width="1"/>
+<text class="cyn" x="655" y="454">Pico</text>
+
+<rect x="1040" y="425" width="100" height="45" rx="4" fill="#0a0a0f" stroke="#ffaa00" stroke-width="1"/>
+<text class="amb" x="1060" y="454">SG90</text>
+
+<line x1="735" y1="438" x2="1040" y2="438" stroke="#ffaa00" stroke-width="2"/>
+<line x1="735" y1="458" x2="1040" y2="458" stroke="#ff0040" stroke-width="2"/>
+
+<text class="dim" x="635" y="495">GPIO 6 = Signal (Orange)</text>
+<text class="dim" x="635" y="520">VBUS 5V = VCC (Red)</text>
+<text class="dim" x="635" y="545">GND = GND (Brown)</text>
+<text class="red" x="635" y="570">Add 1000uF capacitor on power!</text>
+
+<!-- Power Warning -->
+<rect class="pnl" x="30" y="600" width="1140" height="160" rx="8"/>
+<text class="sub" x="50" y="640">Power Safety</text>
+<text class="red" x="50" y="675">NEVER use 3.3V pin for servo!</text>
+<text class="txt" x="50" y="710">Servos draw 650mA+ (spikes to 1A)</text>
+<text class="dim" x="50" y="740">Use VBUS (5V from USB) with 1000uF 25V capacitor</text>
+</svg>

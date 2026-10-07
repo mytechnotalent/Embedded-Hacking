@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Thumb Mode Addressing</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Why Addresses End in Odd Numbers</text>
+
+<!-- Top Panel: The Rule -->
+<rect x="40" y="110" width="1120" height="200" rx="8" class="pnl"/>
+<text x="60" y="148" class="sub">The LSB Rule</text>
+<text x="60" y="185" class="txt">ARM Cortex-M uses the Least Significant</text>
+<text x="60" y="215" class="txt">Bit (LSB) to indicate instruction mode:</text>
+
+<!-- LSB = 1 -->
+<rect x="60" y="240" width="520" height="50" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="2"/>
+<text x="80" y="272" class="grn">LSB = 1 (odd)</text>
+<text x="370" y="272" class="txt">Thumb mode</text>
+
+<!-- LSB = 0 -->
+<rect x="620" y="240" width="520" height="50" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="640" y="272" class="red">LSB = 0 (even)</text>
+<text x="940" y="272" class="dim">ARM mode</text>
+
+<!-- Middle Panel: Example -->
+<rect x="40" y="335" width="1120" height="210" rx="8" class="pnl"/>
+<text x="60" y="373" class="sub">Reset Handler Example</text>
+
+<text x="60" y="415" class="txt">Vector table stores:</text>
+<text x="460" y="415" class="cyn">0x1000015D</text>
+
+<text x="60" y="460" class="txt">Actual code address:</text>
+<text x="460" y="460" class="grn">0x1000015C</text>
+
+<text x="60" y="505" class="txt">The +1 means:</text>
+<text x="460" y="505" class="amb">"Use Thumb mode"</text>
+
+<!-- Bottom: GDB vs Ghidra -->
+<rect x="40" y="570" width="540" height="200" rx="8" class="pnl"/>
+<text x="60" y="608" class="sub">GDB Shows</text>
+<rect x="60" y="625" width="500" height="50" rx="4" fill="#0a0a0f" stroke="#00d4ff" stroke-width="1"/>
+<text x="80" y="657" class="cyn">0x1000015D</text>
+<text x="320" y="657" class="dim">with Thumb bit</text>
+
+<rect x="60" y="685" width="500" height="50" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text x="80" y="717" class="txt">Vector table raw value</text>
+
+<!-- Ghidra -->
+<rect x="620" y="570" width="540" height="200" rx="8" class="pnl"/>
+<text x="640" y="608" class="sub">Ghidra Shows</text>
+<rect x="640" y="625" width="500" height="50" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="660" y="657" class="grn">0x1000015C</text>
+<text x="900" y="657" class="dim">actual address</text>
+
+<rect x="640" y="685" width="500" height="50" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text x="660" y="717" class="txt">Real instruction location</text>
+
+<text x="600" y="757" text-anchor="middle" class="amb">Both are correct — just displayed differently!</text>
+</svg>

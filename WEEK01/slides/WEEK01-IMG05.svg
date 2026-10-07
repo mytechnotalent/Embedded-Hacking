@@ -1,0 +1,86 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Link Register &amp; Return</text>
+<text x="600" y="88" text-anchor="middle" class="dim">ARM Function Calls</text>
+
+  <!-- Left Panel: Call Flow - full width boxes, no floating text -->
+  <rect x="30" y="105" width="540" height="675" class="pnl" rx="8"/>
+  <text x="300" y="148" text-anchor="middle" class="sub">BL Call Flow</text>
+  <line x1="50" y1="163" x2="550" y2="163" stroke="#1a1a2e"/>
+
+  <!-- Step 1: main calls BL add -->
+  <text x="55" y="200" class="dim">Step 1: caller</text>
+  <rect x="55" y="215" width="490" height="55" rx="6" fill="#0f1a0f" stroke="#00ff41" stroke-width="2"/>
+  <text x="300" y="250" text-anchor="middle" class="grn">main: BL add</text>
+
+  <!-- Arrow down -->
+  <line x1="300" y1="270" x2="300" y2="310" stroke="#00d4ff" stroke-width="3"/>
+  <polygon points="288,310 300,335 312,310" fill="#00d4ff"/>
+
+  <!-- Step 2: LR gets saved -->
+  <text x="55" y="355" class="dim">Step 2: hardware saves LR</text>
+  <rect x="55" y="370" width="490" height="55" rx="6" fill="#0f0f1a" stroke="#00d4ff" stroke-width="2"/>
+  <text x="300" y="405" text-anchor="middle" class="cyn">LR = return addr</text>
+
+  <!-- Arrow down -->
+  <line x1="300" y1="425" x2="300" y2="460" stroke="#ffaa00" stroke-width="3"/>
+  <polygon points="288,460 300,485 312,460" fill="#ffaa00"/>
+
+  <!-- Step 3: execute function -->
+  <text x="55" y="505" class="dim">Step 3: run function</text>
+  <rect x="55" y="520" width="490" height="55" rx="6" fill="#1a1a0f" stroke="#ffaa00" stroke-width="2"/>
+  <text x="300" y="555" text-anchor="middle" class="amb">add: ADD r0, r1</text>
+
+  <!-- Arrow down -->
+  <line x1="300" y1="575" x2="300" y2="610" stroke="#ff0040" stroke-width="3"/>
+  <polygon points="288,610 300,635 312,610" fill="#ff0040"/>
+
+  <!-- Step 4: return -->
+  <text x="55" y="655" class="dim">Step 4: return to caller</text>
+  <rect x="55" y="670" width="490" height="55" rx="6" fill="#1a0f0f" stroke="#ff0040" stroke-width="2"/>
+  <text x="300" y="705" text-anchor="middle" class="red">BX LR (jump back)</text>
+
+  <!-- Right Panel: Key Concepts -->
+  <rect x="600" y="105" width="570" height="675" class="pnl" rx="8"/>
+  <text x="885" y="148" text-anchor="middle" class="sub">Key Concepts</text>
+  <line x1="620" y1="163" x2="1150" y2="163" stroke="#1a1a2e"/>
+
+  <text x="625" y="205" class="cyn">BL instruction</text>
+  <text x="625" y="240" class="txt">Branch with Link</text>
+  <text x="625" y="272" class="txt">Saves return addr</text>
+  <text x="625" y="304" class="txt">in LR (r14)</text>
+
+  <line x1="620" y1="332" x2="1150" y2="332" stroke="#1a1a2e"/>
+
+  <text x="625" y="372" class="red">BX LR</text>
+  <text x="625" y="407" class="txt">Branch to addr</text>
+  <text x="625" y="439" class="txt">stored in LR</text>
+  <text x="625" y="471" class="txt">Returns to caller</text>
+
+  <line x1="620" y1="499" x2="1150" y2="499" stroke="#1a1a2e"/>
+
+  <text x="625" y="539" class="amb">Nested Calls</text>
+  <text x="625" y="574" class="txt">Must PUSH LR first</text>
+  <text x="625" y="606" class="txt">PUSH {r3, lr}</text>
+  <text x="625" y="638" class="txt">POP  {r3, pc}</text>
+  <text x="625" y="670" class="dim">POP into PC = return</text>
+
+  <line x1="620" y1="698" x2="1150" y2="698" stroke="#1a1a2e"/>
+
+  <text x="625" y="738" class="grn">r14 = LR</text>
+  <text x="625" y="773" class="dim">Always check LR in GDB</text>
+</svg>

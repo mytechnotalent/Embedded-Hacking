@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">Relational &amp; Logical</text>
+<text class="dim" x="600" y="88" text-anchor="middle">Comparing Values and Combining Conditions</text>
+
+<!-- Relational Panel -->
+<rect class="pnl" x="30" y="110" width="555" height="340" rx="8"/>
+<text class="sub" x="50" y="145">Relational Operators</text>
+<text class="dim" x="50" y="175">Compare two values --> true (1) or false (0)</text>
+<rect x="50" y="190" width="515" height="240" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="amb" x="70" y="220">&gt;</text>
+<text class="dim" x="130" y="220">6 &gt; 10</text>
+<text class="red" x="310" y="220">false</text>
+<text class="dim" x="400" y="220">Greater than</text>
+<text class="amb" x="70" y="255">&lt;</text>
+<text class="dim" x="130" y="255">6 &lt; 10</text>
+<text class="grn" x="310" y="255">true</text>
+<text class="dim" x="400" y="255">Less than</text>
+<text class="amb" x="70" y="290">&gt;=</text>
+<text class="dim" x="130" y="290">6 &gt;= 6</text>
+<text class="grn" x="310" y="290">true</text>
+<text class="dim" x="400" y="290">Greater/equal</text>
+<text class="amb" x="70" y="325">&lt;=</text>
+<text class="dim" x="130" y="325">6 &lt;= 10</text>
+<text class="grn" x="310" y="325">true</text>
+<text class="dim" x="400" y="325">Less or equal</text>
+<text class="amb" x="70" y="360">==</text>
+<text class="dim" x="130" y="360">6 == 10</text>
+<text class="red" x="310" y="360">false</text>
+<text class="dim" x="400" y="360">Equal to</text>
+<text class="amb" x="70" y="395">!=</text>
+<text class="dim" x="130" y="395">6 != 10</text>
+<text class="grn" x="310" y="395">true</text>
+<text class="dim" x="400" y="395">Not equal</text>
+
+<!-- Logical Panel -->
+<rect class="pnl" x="615" y="110" width="555" height="340" rx="8"/>
+<text class="sub" x="635" y="145">Logical Operators</text>
+<text class="dim" x="635" y="175">Combine conditions into one result</text>
+<rect x="635" y="190" width="515" height="105" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="amb" x="655" y="220">&amp;&amp;</text>
+<text class="dim" x="720" y="220">AND -- both must be true</text>
+<text class="amb" x="655" y="255">||</text>
+<text class="dim" x="720" y="255">OR -- at least one true</text>
+<text class="amb" x="655" y="290">!</text>
+<text class="dim" x="720" y="290">NOT -- inverts result</text>
+
+<!-- Truth table for AND -->
+<text class="dim" x="635" y="320">AND Truth Table</text>
+<rect x="635" y="330" width="515" height="165" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="dim" x="655" y="355">A</text>
+<text class="dim" x="755" y="355">B</text>
+<text class="dim" x="855" y="355">A &amp;&amp; B</text>
+<text class="red" x="655" y="385">false</text>
+<text class="red" x="755" y="385">false</text>
+<text class="red" x="855" y="385">false</text>
+<text class="red" x="655" y="415">false</text>
+<text class="grn" x="755" y="415">true</text>
+<text class="red" x="855" y="415">false</text>
+<text class="grn" x="655" y="445">true</text>
+<text class="red" x="755" y="445">false</text>
+<text class="red" x="855" y="445">false</text>
+<text class="grn" x="655" y="475">true</text>
+<text class="grn" x="755" y="475">true</text>
+<text class="grn" x="855" y="475">true</text>
+
+<!-- Bottom: Code Example -->
+<rect class="pnl" x="30" y="465" width="1140" height="155" rx="8"/>
+<text class="sub" x="50" y="500">In Our Code (x=6, y=10)</text>
+<rect x="50" y="515" width="1100" height="85" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="cyn" x="70" y="545">bool relational = (x &gt; y);</text>
+<text class="dim" x="560" y="545">(6 &gt; 10) = false = 0</text>
+<text class="cyn" x="70" y="580">bool logical = (x&gt;y) &amp;&amp; (y&gt;x);</text>
+<text class="dim" x="560" y="580">false &amp;&amp; true = false = 0</text>
+
+<!-- Key -->
+<rect class="pnl" x="30" y="635" width="1140" height="100" rx="8"/>
+<text class="red" x="50" y="670">In the binary:</text>
+<text class="txt" x="290" y="670">Both compile to immediate #0</text>
+<text class="dim" x="50" y="700">Compiler pre-computes: constants are known at compile time</text>
+<text class="dim" x="50" y="720">Result 0 = false, Result 1 = true</text>
+</svg>

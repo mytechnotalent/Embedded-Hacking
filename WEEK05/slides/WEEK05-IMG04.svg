@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">IEEE 754 Float</text>
+<text x="600" y="88" text-anchor="middle" class="dim">32-bit Single Precision Encoding</text>
+
+<!-- Field Layout -->
+<rect x="40" y="110" width="1120" height="170" rx="8" class="pnl"/>
+<text x="600" y="147" text-anchor="middle" class="sub">Float Bit Layout (32 bits)</text>
+
+<rect x="60" y="172" width="80" height="30" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="2"/>
+<text x="100" y="192" text-anchor="middle" class="red">S</text>
+
+<rect x="150" y="172" width="350" height="30" rx="4" fill="#0a0a0f" stroke="#ffaa00" stroke-width="2"/>
+<text x="325" y="192" text-anchor="middle" class="amb">Exponent (8)</text>
+
+<rect x="510" y="172" width="630" height="30" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="2"/>
+<text x="825" y="192" text-anchor="middle" class="grn">Mantissa (23)</text>
+
+<text x="100" y="227" text-anchor="middle" class="dim">1 bit</text>
+<text x="100" y="243" text-anchor="middle" class="dim">sign</text>
+
+<text x="325" y="227" text-anchor="middle" class="dim">8 bits</text>
+<text x="325" y="243" text-anchor="middle" class="dim">bias=127</text>
+
+<text x="825" y="227" text-anchor="middle" class="dim">23 bits</text>
+<text x="825" y="243" text-anchor="middle" class="dim">+implicit 1</text>
+
+<!-- Formula -->
+<rect x="40" y="300" width="1120" height="110" rx="8" class="pnl"/>
+<text x="600" y="325" text-anchor="middle" class="sub">Decode Formula</text>
+<text x="60" y="350" class="txt">Value = (-1)^sign  ×  2^(exp-127)  ×  (1 + mantissa)</text>
+<text x="60" y="370" class="dim">Sign determines +/-  Exponent scales with bias 127  Mantissa adds precision</text>
+<text x="60" y="385" class="dim">Special cases: exp=0 or 255 (denorm, inf, NaN)</text>
+
+<!-- Example: 42.5 -->
+<rect x="40" y="430" width="1120" height="255" rx="8" class="pnl"/>
+<text x="600" y="455" text-anchor="middle" class="sub">Decode Example: 42.5</text>
+
+<text x="80" y="485" class="red">Sign Bit: 0</text>
+<text x="400" y="485" class="dim">Positive number</text>
+
+<text x="80" y="515" class="amb">Exponent: 10000100</text>
+<text x="450" y="515" class="dim">= 132 decimal</text>
+
+<text x="80" y="545" class="txt">Bias subtraction: 132 - 127 = 5</text>
+
+<text x="80" y="575" class="grn">Mantissa: 01010100...0</text>
+<text x="450" y="575" class="dim">= 1.010101</text>
+
+<text x="80" y="605" class="txt">Combine: 1.010101 × 2^5 = 42.5</text>
+
+<text x="80" y="635" class="cyn">Hex: 0x422A0000</text>
+
+<text x="80" y="661" class="dim">Binary: 01000010001010100000000000000000</text>
+
+<!-- Float vs Integer -->
+<rect x="40" y="705" width="1120" height="100" rx="8" class="pnl"/>
+<text x="600" y="729" text-anchor="middle" class="sub">32-bit Storage Comparison</text>
+
+<text x="60" y="759" class="cyn">Integer:</text>
+<text x="200" y="759" class="txt">Exact values</text>
+<text x="430" y="759" class="dim">Range: -2.1B to +2.1B</text>
+<text x="860" y="759" class="red">No decimals</text>
+
+<text x="60" y="781" class="amb">Float:</text>
+<text x="200" y="781" class="txt">Approximate values</text>
+<text x="470" y="781" class="dim">Range: ±10^38</text>
+<text x="810" y="781" class="grn">~7 sig digits</text>
+</svg>

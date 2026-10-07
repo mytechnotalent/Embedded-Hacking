@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">Static Source Code</text>
+<text class="dim" x="600" y="88" text-anchor="middle">0x001d_static-conditionals.c</text>
+
+<!-- Source Code -->
+<rect class="pnl" x="30" y="110" width="1140" height="490" rx="8"/>
+<text class="sub" x="50" y="150">Full Source</text>
+<rect x="50" y="170" width="1100" height="410" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+
+<text class="dim" x="70" y="200">#include &lt;stdio.h&gt;</text>
+<text class="dim" x="70" y="225">#include "pico/stdlib.h"</text>
+<text class="dim" x="70" y="250">#include "servo.h"</text>
+<text class="cyn" x="70" y="280">#define SERVO_GPIO 6</text>
+
+<text class="cyn" x="70" y="315">int main(void) {</text>
+<text class="txt" x="100" y="345">stdio_init_all();</text>
+<text class="amb" x="100" y="375">int choice = 1;</text>
+<text class="dim" x="430" y="375">// STATIC!</text>
+<text class="txt" x="100" y="405">servo_init(SERVO_GPIO);</text>
+
+<text class="txt" x="100" y="440">while (true) {</text>
+<text class="txt" x="130" y="470">if (choice == 1)</text>
+<text class="grn" x="160" y="500">printf("1\r\n");</text>
+<text class="txt" x="130" y="530">else if (choice == 2)</text>
+<text class="dim" x="160" y="560">printf("2\r\n");</text>
+<text class="dim" x="430" y="560">// dead code</text>
+
+<!-- Bottom section: switch + servo -->
+<rect class="pnl" x="30" y="610" width="555" height="150" rx="8"/>
+<text class="sub" x="50" y="650">switch Block</text>
+<rect x="50" y="665" width="515" height="75" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="txt" x="70" y="693">switch(choice) {</text>
+<text class="txt" x="100" y="718">case 1: puts("one"); break;</text>
+
+<rect class="pnl" x="615" y="610" width="555" height="150" rx="8"/>
+<text class="sub" x="635" y="650">Servo Loop</text>
+<rect x="635" y="665" width="515" height="75" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="txt" x="655" y="693">servo_set_angle(0.0f);</text>
+<text class="txt" x="655" y="718">sleep_ms(500);</text>
+<text class="dim" x="900" y="718">// then 180</text>
+</svg>

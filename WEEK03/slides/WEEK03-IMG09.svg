@@ -1,0 +1,82 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Platform Entry -> main()</text>
+<text x="600" y="88" text-anchor="middle" class="dim">The Final Step — 3 Function Calls at 0x10000186</text>
+
+<!-- Top Panel: Assembly -->
+<rect x="40" y="110" width="1120" height="250" rx="8" class="pnl"/>
+<text x="60" y="148" class="sub">platform_entry Assembly</text>
+
+<rect x="60" y="168" width="1080" height="42" rx="4" fill="#0a0a0f" stroke="#ffaa00" stroke-width="1"/>
+<text x="80" y="196" class="amb">0x10000186</text>
+<text x="310" y="196" class="txt">ldr r1, [DAT]</text>
+<text x="640" y="196" class="dim">-> load runtime_init addr</text>
+
+<rect x="60" y="218" width="1080" height="42" rx="4" fill="#0a0a0f" stroke="#ffaa00" stroke-width="1"/>
+<text x="80" y="246" class="amb">0x10000188</text>
+<text x="310" y="246" class="txt">blx r1</text>
+<text x="640" y="246" class="cyn">-> call runtime_init()</text>
+
+<rect x="60" y="268" width="1080" height="42" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="2"/>
+<text x="80" y="296" class="grn">0x1000018C</text>
+<text x="310" y="296" class="txt">blx r1</text>
+<text x="640" y="296" class="grn">-> call main()</text>
+
+<rect x="60" y="318" width="1080" height="42" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="80" y="346" class="red">0x10000190</text>
+<text x="310" y="346" class="txt">blx r1</text>
+<text x="640" y="346" class="red">-> call exit()</text>
+
+<!-- Middle: Flow boxes -->
+<rect x="40" y="385" width="1120" height="160" rx="8" class="pnl"/>
+<text x="60" y="423" class="sub">Call Sequence</text>
+
+<rect x="60" y="443" width="300" height="80" rx="6" fill="#0a0a0f" stroke="#ffaa00" stroke-width="2"/>
+<text x="210" y="478" text-anchor="middle" class="amb">runtime_init()</text>
+<text x="210" y="508" text-anchor="middle" class="dim">SDK setup</text>
+
+<text x="390" y="488" text-anchor="middle" class="grn">-></text>
+
+<rect x="420" y="443" width="300" height="80" rx="6" fill="#0a0a0f" stroke="#00ff41" stroke-width="2"/>
+<text x="570" y="478" text-anchor="middle" class="grn">main()</text>
+<text x="570" y="508" text-anchor="middle" class="dim">YOUR CODE</text>
+
+<text x="750" y="488" text-anchor="middle" class="grn">-></text>
+
+<rect x="780" y="443" width="300" height="80" rx="6" fill="#0a0a0f" stroke="#ff0040" stroke-width="2"/>
+<text x="930" y="478" text-anchor="middle" class="red">exit()</text>
+<text x="930" y="508" text-anchor="middle" class="dim">cleanup</text>
+
+<!-- Bottom Panel: Details -->
+<rect x="40" y="570" width="540" height="200" rx="8" class="pnl"/>
+<text x="60" y="608" class="sub">runtime_init()</text>
+<text x="60" y="645" class="txt">Initializes SDK systems:</text>
+<text x="60" y="677" class="dim">• Clock configuration</text>
+<text x="60" y="705" class="dim">• GPIO setup</text>
+<text x="60" y="733" class="dim">• C++ constructor calls</text>
+<text x="60" y="761" class="dim">• Peripheral initialization</text>
+
+<rect x="620" y="570" width="540" height="200" rx="8" class="pnl"/>
+<text x="640" y="608" class="sub">After main() Returns</text>
+<text x="640" y="645" class="txt">exit() handles cleanup.</text>
+<text x="640" y="677" class="txt">Then:</text>
+<rect x="660" y="700" width="480" height="42" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="680" y="728" class="red">bkpt 0x0000</text>
+<text x="900" y="728" class="dim">&lt;- infinite halt</text>
+
+<text x="640" y="760" class="dim">Should never be reached!</text>
+</svg>
