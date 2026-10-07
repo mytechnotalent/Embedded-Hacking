@@ -123,7 +123,6 @@ def _format_hud_rows(
         c_s = _format_pos(cur_lat, cur_lon)
         g_s = "ACTIVE 3D LOCK" if has_lock else "SEARCHING SATELLITES"
         m_s = "ACTIVE PROPULSION [SERVO SPINNING]" if has_lock else "MOTOR STOPPED [WAITING FOR 3D LOCK]"
-
     return [
         f"| CURRENT POSITION : {c_s:<44} |",
         f"| GNSS SUBSYSTEM   : {g_s:<44} |",
