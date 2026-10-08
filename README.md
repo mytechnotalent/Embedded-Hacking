@@ -432,6 +432,12 @@ This chapter covers hacking static variables as well as an intro to GPIO inputs 
 ## Week 7
 Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C Basics
 
+### Classified Brief 0x02 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0014a_cb/CLASSIFIED-BRIEF-0x02.md)
+
+### Classified Brief 0x02 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0014a_cb/0x0014a_cb.bin)
+
+### Classified Brief 0x02 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0014a_cb/0x0014a_cb.uf2)
+
 ### Week 7 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-SLIDES.pdf)
 
 ### Week 7 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07.md)
