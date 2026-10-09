@@ -1,25 +1,28 @@
+/**
+ * @file main.c
+ * @brief Operation Iron Net Firmware
+ * @author Kevin Thomas
+ * @date 2026
+ *
+ * MIT License
+ * Copyright (c) 2026 Kevin Thomas
+ */
+
 #include <stdio.h>
 #include "pico/stdlib.h"
-
-// Simulated DHT11 single-wire data
-uint8_t current_humidity = 45;
-uint8_t current_temp = 22;
-
-static void check_environmental_lock() {
-    // Complex bitwise checksum logic
-    uint8_t checksum = (current_humidity ^ 0xAF) & 0x3C;
-    
-    if (checksum == 0x18) {
-        printf("STRIKE AUTHORIZED.\r\n");
-    } else {
-        printf("ENVIRONMENT SUB-OPTIMAL. HOLDING.\r\n");
-    }
-}
+#include "dht11.h"
+#include "logic.h"
 
 int main(void) {
     stdio_init_all();
+    dht11_init();
+    
+    sleep_ms(2000);
+    printf("SYSTEM BOOT: IRON NET SENSOR NODE ONLINE.\r\n");
+    
     while (true) {
-        check_environmental_lock();
-        sleep_ms(1000);
+        evaluate_environment();
+        sleep_ms(1500);
     }
+    return 0;
 }

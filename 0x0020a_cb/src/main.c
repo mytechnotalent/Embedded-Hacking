@@ -1,25 +1,27 @@
+/**
+ * @file main.c
+ * @brief Operation Ghost Light Firmware
+ * @author Kevin Thomas
+ * @date 2026
+ *
+ * MIT License
+ * Copyright (c) 2026 Kevin Thomas
+ */
+
 #include <stdio.h>
 #include "pico/stdlib.h"
-
-uint32_t simulated_ir_rx_code = 0x00FF00FF;
-
-static void parse_nec_code(uint32_t code) {
-    if (code == 0xFF0055AA) {
-        printf("DAZZLER POWER LEVEL: MAX\r\n");
-    } else if (code == 0xFF00AA55) {
-        printf("DAZZLER TRACKING: ENGAGED\r\n");
-    } else if (code == 0xDEADBEEF) {
-        printf("FRIENDLY FIRE LOCKOUT TRIGGERED. DAZZLER DISABLED.\r\n");
-        while(1); // Permanent lockout
-    } else {
-        printf("UNKNOWN IR COMMAND.\r\n");
-    }
-}
+#include "dazzler.h"
 
 int main(void) {
     stdio_init_all();
+    dazzler_init();
+    
+    sleep_ms(2000);
+    printf("SYSTEM BOOT: GHOST LIGHT DAZZLER ONLINE.\r\n");
+    
     while (true) {
-        parse_nec_code(simulated_ir_rx_code);
-        sleep_ms(1000);
+        parse_nec_code();
+        sleep_ms(1500);
     }
+    return 0;
 }
