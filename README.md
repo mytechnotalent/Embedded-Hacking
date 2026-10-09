@@ -475,6 +475,13 @@ This chapter covers hacking constants as well as an intro to I2C as we work a 16
 ## Week 9
 Operators in Embedded Systems: Debugging and Hacking Operators w/ DHT11 Temperature & Humidity Sensor Single-Wire Protocol Basics
 
+
+### Classified Brief 0x03 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/CLASSIFIED-BRIEF-0x03.md)
+
+### Classified Brief 0x03 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/0x001aa_cb.bin)
+
+### Classified Brief 0x03 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/0x001aa_cb.uf2)
+
 ### Week 9 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-SLIDES.pdf)
 
 ### Week 9 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09.md)
@@ -496,40 +503,19 @@ This chapter covers hacking operators as well as an intro to single-wire protoco
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/textbook/Embedded-Hacking.pdf) to read the FREE pdf book.
 
-
-### Classified Brief 0x03 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/CLASSIFIED-BRIEF-0x03.md)
-
-### Classified Brief 0x03 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/build/0x001aa_cb.bin)
-
-### Classified Brief 0x03 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/build/0x001aa_cb.uf2)
-
 ## Week 10
 Conditionals in Embedded Systems: Debugging and Hacking Static & Dynamic Conditionals w/ SG90 Servo Motor PWM Basics
 
-#
-### Classified Brief 0x03 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/CLASSIFIED-BRIEF-0x03.md)
 
-### Classified Brief 0x03 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/build/0x001aa_cb.bin)
+### Classified Brief 0x04 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/CLASSIFIED-BRIEF-0x04.md)
 
-### Classified Brief 0x03 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/build/0x001aa_cb.uf2)
+### Classified Brief 0x04 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/0x001da_cb.bin)
+
+### Classified Brief 0x04 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/0x001da_cb.uf2)
 
 ## Week 10 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-SLIDES.pdf)
 
-#
-### Classified Brief 0x03 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/CLASSIFIED-BRIEF-0x03.md)
-
-### Classified Brief 0x03 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/build/0x001aa_cb.bin)
-
-### Classified Brief 0x03 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/build/0x001aa_cb.uf2)
-
 ## Week 10 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10.md)
-
-#
-### Classified Brief 0x03 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/CLASSIFIED-BRIEF-0x03.md)
-
-### Classified Brief 0x03 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/build/0x001aa_cb.bin)
-
-### Classified Brief 0x03 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/build/0x001aa_cb.uf2)
 
 ## Week 10-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-BN.md)
 
@@ -563,40 +549,19 @@ This chapter covers hacking dynamic conditionals as well as additional PWM examp
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/textbook/Embedded-Hacking.pdf) to read the FREE pdf book.
 
-
-### Classified Brief 0x04 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/CLASSIFIED-BRIEF-0x04.md)
-
-### Classified Brief 0x04 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/build/0x001da_cb.bin)
-
-### Classified Brief 0x04 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/build/0x001da_cb.uf2)
-
 ## Week 11
 Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote Control and NEC Protocol Basics
 
-#
-### Classified Brief 0x04 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/CLASSIFIED-BRIEF-0x04.md)
 
-### Classified Brief 0x04 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/build/0x001da_cb.bin)
+### Classified Brief 0x05 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0020a_cb/CLASSIFIED-BRIEF-0x05.md)
 
-### Classified Brief 0x04 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/build/0x001da_cb.uf2)
+### Classified Brief 0x05 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0020a_cb/0x0020a_cb.bin)
+
+### Classified Brief 0x05 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0020a_cb/0x0020a_cb.uf2)
 
 ## Week 11 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-SLIDES.pdf)
 
-#
-### Classified Brief 0x04 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/CLASSIFIED-BRIEF-0x04.md)
-
-### Classified Brief 0x04 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/build/0x001da_cb.bin)
-
-### Classified Brief 0x04 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/build/0x001da_cb.uf2)
-
 ## Week 11 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11.md)
-
-#
-### Classified Brief 0x04 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/CLASSIFIED-BRIEF-0x04.md)
-
-### Classified Brief 0x04 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/build/0x001da_cb.bin)
-
-### Classified Brief 0x04 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/build/0x001da_cb.uf2)
 
 ## Week 11-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-BN.md)
 
@@ -629,13 +594,6 @@ This chapter covers debugging functions, w/ params and w/ a return value as well
 This chapter covers hacking functions, w/ params and w/ a return value as it relates to embedded development on the Pico 2.
 
 -> Click [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/textbook/Embedded-Hacking.pdf) to read the FREE pdf book.
-
-
-### Classified Brief 0x05 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0020a_cb/CLASSIFIED-BRIEF-0x05.md)
-
-### Classified Brief 0x05 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0020a_cb/build/0x0020a_cb.bin)
-
-### Classified Brief 0x05 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0020a_cb/build/0x0020a_cb.uf2)
 
 ## Week 12
 Unknown Firmware Debugging and Hacking
