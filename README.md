@@ -309,6 +309,8 @@ Variables in Embedded Systems: Debugging and Hacking Variables w/ GPIO Output Ba
 
 ### Week 4-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-BN.md)
 
+### Week 4-IDA Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/WEEK04-IDA.md)
+
 ### RP2350 SVD [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/rp2350.svd)
 
 ### Chapter 5: Intro To Variables
@@ -351,6 +353,8 @@ Integers and Floats in Embedded Systems: Debugging and Hacking Integers and Floa
 ### Week 5a Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05a.md)
 
 ### Week 5-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-BN.md)
+
+### Week 5-IDA Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/WEEK05-IDA.md)
 
 ### Float/Hex Converter Tool [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/float_hex_converter.py)
 
@@ -414,6 +418,8 @@ Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ 
 
 ### Week 6-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-BN.md)
 
+### Week 6-IDA Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-IDA.md)
+
 ### Chapter 20: Static Variables
 This chapter covers static variables as well as an intro to GPIO inputs as we work with push buttons as it relates to embedded development on the Pico 2.
 
@@ -443,6 +449,8 @@ Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C B
 ### Week 7 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07.md)
 
 ### Week 7-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-BN.md)
+
+### Week 7-IDA Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-IDA.md)
 
 ### Chapter 23: Constants
 This chapter covers constants as well as an intro to I2C as we work a 1602 LCD as it relates to embedded development on the Pico 2.
@@ -488,6 +496,8 @@ Operators in Embedded Systems: Debugging and Hacking Operators w/ DHT11 Temperat
 
 ### Week 9-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-BN.md)
 
+### Week 9-IDA Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-IDA.md)
+
 ### Chapter 26: Operators
 This chapter covers operators as well as an intro to single-wire protocol as we work a DHT11 temperature and humidity sensor as it relates to embedded development on the Pico 2.
 
@@ -518,6 +528,8 @@ Conditionals in Embedded Systems: Debugging and Hacking Static & Dynamic Conditi
 ## Week 10 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10.md)
 
 ## Week 10-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-BN.md)
+
+## Week 10-IDA Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-IDA.md)
 
 ### Chapter 29: Static Conditionals
 This chapter covers static conditionals as well as an intro to PWM as we work a SG90 servo motor as it relates to embedded development on the Pico 2.
@@ -564,6 +576,8 @@ Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote
 ## Week 11 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11.md)
 
 ## Week 11-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-BN.md)
+
+## Week 11-IDA Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-IDA.md)
 
 ### Chapter 35: Structures
 This chapter covers structures as well as an intro to infrared basics as we work a infrared receiver and infrared remote controller as it relates to embedded development on the Pico 2.
