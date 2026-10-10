@@ -1,4 +1,4 @@
-![image](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded%20Hacking.png?raw=true)
+![image](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/Embedded-Hacking.png?raw=true)
 
 <br>
 
