@@ -11,6 +11,11 @@
 #include "gpio_ctrl.h"
 #include "pico/stdlib.h"
 
+/**
+ * @brief Initialize the red and green LED pins as outputs.
+ * @param void No parameters.
+ * @return void No return value.
+ */
 static void init_led_pins(void) {
     gpio_init(LED_RED_PIN);
     gpio_set_dir(LED_RED_PIN, GPIO_OUT);
@@ -18,6 +23,11 @@ static void init_led_pins(void) {
     gpio_set_dir(LED_GREEN_PIN, GPIO_OUT);
 }
 
+/**
+ * @brief Initialize the tamper wire pin as a pulled-down input.
+ * @param void No parameters.
+ * @return void No return value.
+ */
 static void init_tamper_pin(void) {
     gpio_init(TAMPER_WIRE_PIN);
     gpio_set_dir(TAMPER_WIRE_PIN, GPIO_IN);

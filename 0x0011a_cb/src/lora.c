@@ -33,6 +33,12 @@
 #include <stdio.h>
 #include <string.h>
 
+/**
+ * @brief Drain readable LoRa UART bytes and echo printable ones.
+ *
+ * @param void No parameters.
+ * @return None.
+ */
 static void drain_lora_rx(void)
 {
     while (uart_is_readable(LORA_UART)) {
@@ -42,6 +48,12 @@ static void drain_lora_rx(void)
     }
 }
 
+/**
+ * @brief Send one AT command and drain its reply.
+ *
+ * @param cmd NUL-terminated AT command string.
+ * @return None.
+ */
 static void send_at_cmd(const char *cmd)
 {
     uart_write_blocking(LORA_UART, (const uint8_t *)cmd, strlen(cmd));
@@ -49,6 +61,12 @@ static void send_at_cmd(const char *cmd)
     drain_lora_rx();
 }
 
+/**
+ * @brief Configure the RYLR998 radio parameters over AT commands.
+ *
+ * @param void No parameters.
+ * @return None.
+ */
 static void configure_lora_rf(void)
 {
     sleep_ms(1500);

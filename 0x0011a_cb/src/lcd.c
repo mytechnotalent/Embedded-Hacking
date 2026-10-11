@@ -40,12 +40,24 @@
 static uint8_t lcd_addr = 0x27;
 static bool lcd_ready = false;
 
+/**
+ * @brief Write one byte to the PCF8574 expander when the LCD is ready.
+ *
+ * @param d Byte to write to the expander.
+ * @return None.
+ */
 static void pcf_write(uint8_t d)
 {
     if (lcd_ready)
         i2c_write_blocking(LCD_I2C_INST, lcd_addr, &d, 1, false);
 }
 
+/**
+ * @brief Pulse the enable line to latch a byte into the HD44780.
+ *
+ * @param d Byte value carrying data and control bits.
+ * @return None.
+ */
 static void pcf_pulse(uint8_t d)
 {
     pcf_write(d | PIN_EN);
@@ -54,6 +66,13 @@ static void pcf_pulse(uint8_t d)
     sleep_us(50);
 }
 
+/**
+ * @brief Write one 4-bit nibble with register select and backlight.
+ *
+ * @param n Nibble value carried in the low four bits.
+ * @param mode Register select (0 command, 1 data).
+ * @return None.
+ */
 static void lcd_write4(uint8_t n, uint8_t mode)
 {
     uint8_t d = (n & 0x0F) << 4;
@@ -62,30 +81,62 @@ static void lcd_write4(uint8_t n, uint8_t mode)
     pcf_pulse(d);
 }
 
+/**
+ * @brief Send one byte to the HD44780 as two nibbles.
+ *
+ * @param v Byte value to send.
+ * @param mode Register select (0 command, 1 data).
+ * @return None.
+ */
 static void lcd_send(uint8_t v, uint8_t mode)
 {
     lcd_write4((v >> 4) & 0x0F, mode);
     lcd_write4(v & 0x0F, mode);
 }
 
+/**
+ * @brief Clear the display and return the cursor home.
+ *
+ * @param void No parameters.
+ * @return None.
+ */
 static void lcd_clear(void)
 {
     lcd_send(0x01, 0);
     sleep_ms(2);
 }
 
+/**
+ * @brief Position the display cursor at a row and column.
+ *
+ * @param row Display row (0 or 1).
+ * @param col Display column.
+ * @return None.
+ */
 static void lcd_set_cursor(int row, int col)
 {
     uint8_t offset = (row == 0) ? 0x00 : 0x40;
     lcd_send(0x80 | (col + offset), 0);
 }
 
+/**
+ * @brief Write a NUL-terminated string to the display.
+ *
+ * @param s String to write at the current cursor position.
+ * @return None.
+ */
 static void lcd_puts(const char *s)
 {
     while (*s)
         lcd_send((uint8_t)*s++, 1);
 }
 
+/**
+ * @brief Run the HD44780 4-bit interface reset sequence.
+ *
+ * @param void No parameters.
+ * @return None.
+ */
 static void lcd_reset_seq(void)
 {
     lcd_write4(0x03, 0); sleep_ms(5);
@@ -94,6 +145,12 @@ static void lcd_reset_seq(void)
     lcd_write4(0x02, 0); sleep_us(150);
 }
 
+/**
+ * @brief Run the HD44780 display configuration sequence.
+ *
+ * @param void No parameters.
+ * @return None.
+ */
 static void lcd_cfg_seq(void)
 {
     lcd_send(0x28, 0);
@@ -102,6 +159,12 @@ static void lcd_cfg_seq(void)
     lcd_send(0x06, 0);
 }
 
+/**
+ * @brief Probe the I2C bus for a known LCD expander address.
+ *
+ * @param void No parameters.
+ * @return bool True when a display answered, false otherwise.
+ */
 static bool detect_lcd(void)
 {
     uint8_t rx;

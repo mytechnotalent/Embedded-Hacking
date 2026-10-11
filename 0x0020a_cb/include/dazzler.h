@@ -17,6 +17,18 @@ typedef struct {
     bool is_locked_out;
 } dazzler_t;
 extern dazzler_t laser_sys;
+
+/**
+ * @brief Initialize the dazzler system state.
+ * @param void No parameters.
+ * @return void No return value.
+ */
 void dazzler_init(void);
+
+/**
+ * @brief Read and process the latest NEC infrared command code.
+ * @param void No parameters.
+ * @return void No return value.
+ */
 void parse_nec_code(void);
 #endif

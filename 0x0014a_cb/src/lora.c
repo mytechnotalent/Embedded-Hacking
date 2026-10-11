@@ -33,18 +33,33 @@
 #include <stdio.h>
 #include <string.h>
 
+/**
+ * @brief Discard all pending bytes from the LoRa UART receive FIFO.
+ * @param void No parameters.
+ * @return void No return value.
+ */
 static void drain_lora_rx(void) {
     while (uart_is_readable(LORA_UART)) {
         (void)uart_getc(LORA_UART);
     }
 }
 
+/**
+ * @brief Send an AT command to the radio and drain its response.
+ * @param cmd Null-terminated AT command string to transmit.
+ * @return void No return value.
+ */
 static void send_at_cmd(const char *cmd) {
     uart_write_blocking(LORA_UART, (const uint8_t *)cmd, strlen(cmd));
     sleep_ms(200);
     drain_lora_rx();
 }
 
+/**
+ * @brief Program the RYLR998 RF parameters via the AT command set.
+ * @param void No parameters.
+ * @return void No return value.
+ */
 static void configure_lora_rf(void) {
     sleep_ms(1500);
     send_at_cmd("AT\r\n");
@@ -69,6 +84,13 @@ void lora_send(const char *msg) {
     uart_write_blocking(LORA_UART, (const uint8_t *)cmd, strlen(cmd));
 }
 
+/**
+ * @brief Extract the payload field from a +RCV receive line.
+ * @param line Mutable receive line buffer to parse.
+ * @param out Buffer receiving the extracted payload string.
+ * @param max_len Capacity of out in bytes.
+ * @return true when the payload was extracted, false otherwise.
+ */
 static bool extract_rcv_data(char *line, char *out, size_t max_len) {
     char *c1 = strchr(line, ',');
     if (!c1) return false;
@@ -80,6 +102,13 @@ static bool extract_rcv_data(char *line, char *out, size_t max_len) {
     return true;
 }
 
+/**
+ * @brief Parse one complete UART line and capture payload data.
+ * @param line Mutable line buffer to parse.
+ * @param out Buffer receiving the extracted payload string.
+ * @param max_len Capacity of out in bytes.
+ * @return true when the line carried payload data, false otherwise.
+ */
 static bool parse_line(char *line, char *out, size_t max_len) {
     if (strstr(line, "+RCV="))
         return extract_rcv_data(line, out, max_len);
@@ -90,6 +119,15 @@ static bool parse_line(char *line, char *out, size_t max_len) {
     return false;
 }
 
+/**
+ * @brief Feed one received byte into the line assembly state machine.
+ * @param c Received byte to process.
+ * @param buf Line assembly buffer.
+ * @param idx Pointer to the current write index into buf.
+ * @param out Buffer receiving the extracted payload string.
+ * @param max_len Capacity of out in bytes.
+ * @return true when a complete payload was produced, false otherwise.
+ */
 static bool process_rx_byte(char c, char *buf, size_t *idx, char *out, size_t max_len) {
     if (c == '\r' || c == '\n') {
         buf[*idx] = '\0';

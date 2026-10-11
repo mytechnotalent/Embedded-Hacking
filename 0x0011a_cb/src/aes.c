@@ -2,6 +2,9 @@
 //
 // Copyright (c) 2026 Kevin Thomas
 //
+// Author:  Kevin Thomas
+// Email:   kevin@mytechnotalent.com
+// GitHub:  https://github.com/mytechnotalent
 // File:    aes.c
 // Desc:    Minimal AES-128-ECB block decryption for the CTF waypoint.
 // Created: 2026
@@ -50,9 +53,26 @@ static const uint8_t rsbox[256] = {
 
 static const uint8_t Rcon[11] = {0x00,0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80,0x1B,0x36};
 
-static uint8_t xtime(uint8_t x) { return (uint8_t)((x << 1) ^ (((x >> 7) & 1) * 0x1B)); }
+/**
+ * @brief Multiply a byte by two in GF(2^8) (AES xtime operation).
+ *
+ * @param x Byte to multiply by the polynomial x.
+ * @return uint8_t Doubled byte reduced modulo the AES polynomial.
+ */
+static uint8_t xtime(uint8_t x)
+{
+    return (uint8_t)((x << 1) ^ (((x >> 7) & 1) * 0x1B));
+}
 
-static uint8_t mul(uint8_t a, uint8_t b) {
+/**
+ * @brief Multiply two bytes in GF(2^8) with the AES polynomial.
+ *
+ * @param a Multiplicand byte.
+ * @param b Multiplier byte.
+ * @return uint8_t Product byte reduced modulo the AES polynomial.
+ */
+static uint8_t mul(uint8_t a, uint8_t b)
+{
     uint8_t p = 0;
     for (int i = 0; i < 8; i++) {
         if (b & 1) p ^= a;
@@ -63,36 +83,101 @@ static uint8_t mul(uint8_t a, uint8_t b) {
     return p;
 }
 
-static void key_expansion(const uint8_t *key, uint8_t *rk) {
+/**
+ * @brief Rotate and substitute a schedule word, then apply Rcon.
+ *
+ * @param t Four-byte schedule word to transform in place.
+ * @param i Round-key word index selecting the Rcon constant.
+ * @return None.
+ */
+static void rot_sub_word(uint8_t *t, int i)
+{
+    uint8_t tmp = t[0];
+    t[0] = (uint8_t)(sbox[t[1]] ^ Rcon[i / 4]);
+    t[1] = sbox[t[2]];
+    t[2] = sbox[t[3]];
+    t[3] = sbox[tmp];
+}
+
+/**
+ * @brief XOR a schedule word into the next round-key word.
+ *
+ * @param i Round-key word index being generated.
+ * @param t Transformed previous word bytes.
+ * @param rk Round-key buffer holding 44 words.
+ * @return None.
+ */
+static void xor_round_word(int i, const uint8_t *t, uint8_t *rk)
+{
+    for (int j = 0; j < 4; j++)
+        rk[i * 4 + j] = rk[(i - 4) * 4 + j] ^ t[j];
+}
+
+/**
+ * @brief Expand the 16-byte cipher key into the round-key schedule.
+ *
+ * @param key 16-byte AES-128 cipher key.
+ * @param rk Output buffer for 176 bytes of round keys.
+ * @return None.
+ */
+static void key_expansion(const uint8_t *key, uint8_t *rk)
+{
     memcpy(rk, key, 16);
     for (int i = 4; i < 44; i++) {
         uint8_t t[4];
         memcpy(t, &rk[(i - 1) * 4], 4);
-        if (i % 4 == 0) {
-            uint8_t tmp = t[0];
-            t[0] = (uint8_t)(sbox[t[1]] ^ Rcon[i / 4]);
-            t[1] = sbox[t[2]];
-            t[2] = sbox[t[3]];
-            t[3] = sbox[tmp];
-        }
-        for (int j = 0; j < 4; j++) rk[i * 4 + j] = rk[(i - 4) * 4 + j] ^ t[j];
+        if (i % 4 == 0)
+            rot_sub_word(t, i);
+        xor_round_word(i, t, rk);
     }
 }
 
-static void add_round_key(uint8_t r, uint8_t *s, const uint8_t *rk) {
+/**
+ * @brief XOR one 16-byte round key into the cipher state.
+ *
+ * @param r Round number selecting the round key.
+ * @param s Sixteen-byte cipher state, updated in place.
+ * @param rk Round-key schedule produced by key_expansion.
+ * @return None.
+ */
+static void add_round_key(uint8_t r, uint8_t *s, const uint8_t *rk)
+{
     for (int i = 0; i < 16; i++) s[i] ^= rk[r * 16 + i];
 }
 
-static void inv_sub_bytes(uint8_t *s) { for (int i = 0; i < 16; i++) s[i] = rsbox[s[i]]; }
+/**
+ * @brief Apply the inverse S-box to every state byte.
+ *
+ * @param s Sixteen-byte cipher state, updated in place.
+ * @return None.
+ */
+static void inv_sub_bytes(uint8_t *s)
+{
+    for (int i = 0; i < 16; i++) s[i] = rsbox[s[i]];
+}
 
-static void inv_shift_rows(uint8_t *s) {
+/**
+ * @brief Cyclically shift state rows for inverse ShiftRows.
+ *
+ * @param s Sixteen-byte cipher state, updated in place.
+ * @return None.
+ */
+static void inv_shift_rows(uint8_t *s)
+{
     uint8_t t;
     t = s[13]; s[13] = s[9]; s[9] = s[5]; s[5] = s[1]; s[1] = t;
     t = s[2]; s[2] = s[10]; s[10] = t; t = s[6]; s[6] = s[14]; s[14] = t;
     t = s[3]; s[3] = s[7]; s[7] = s[11]; s[11] = s[15]; s[15] = t;
 }
 
-static void inv_mix_columns(uint8_t *s) {
+/**
+ * @brief Mix each state column with the inverse MDS matrix.
+ *
+ * @param s Sixteen-byte cipher state, updated in place.
+ * @return None.
+ */
+static void inv_mix_columns(uint8_t *s)
+{
     for (int i = 0; i < 4; i++) {
         uint8_t a = s[i * 4], b = s[i * 4 + 1], c = s[i * 4 + 2], d = s[i * 4 + 3];
         s[i * 4]     = (uint8_t)(mul(a, 14) ^ mul(b, 11) ^ mul(c, 13) ^ mul(d, 9));
@@ -102,17 +187,29 @@ static void inv_mix_columns(uint8_t *s) {
     }
 }
 
+/**
+ * @brief Run AES decryption rounds nine through one on the state.
+ *
+ * @param s Sixteen-byte cipher state, updated in place.
+ * @param rk Round-key schedule produced by key_expansion.
+ * @return None.
+ */
+static void decrypt_rounds(uint8_t *s, const uint8_t *rk)
+{
+    for (int r = 9; r > 0; r--) {
+        inv_shift_rows(s);
+        inv_sub_bytes(s);
+        add_round_key(r, s, rk);
+        inv_mix_columns(s);
+    }
+}
+
 void aes128_ecb_decrypt_block(const uint8_t in[16], const uint8_t key[16], uint8_t out[16]) {
     uint8_t rk[176];
     key_expansion(key, rk);
     memcpy(out, in, 16);
     add_round_key(10, out, rk);
-    for (int r = 9; r > 0; r--) {
-        inv_shift_rows(out);
-        inv_sub_bytes(out);
-        add_round_key(r, out, rk);
-        inv_mix_columns(out);
-    }
+    decrypt_rounds(out, rk);
     inv_shift_rows(out);
     inv_sub_bytes(out);
     add_round_key(0, out, rk);

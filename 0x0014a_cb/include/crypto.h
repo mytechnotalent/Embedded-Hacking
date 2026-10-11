@@ -16,6 +16,11 @@
 
 #define TOKEN_LEN 8
 
+/**
+ * @brief Decrypt the rolling authorization token into a buffer.
+ * @param dest Pointer to buffer receiving the decrypted token bytes.
+ * @return void No return value.
+ */
 void decrypt_auth_token(uint8_t *dest);
 
 #endif /* CRYPTO_H */

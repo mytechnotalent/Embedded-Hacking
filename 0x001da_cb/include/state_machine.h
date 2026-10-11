@@ -17,5 +17,11 @@ typedef struct {
     int current_altitude;
 } drone_state_t;
 extern drone_state_t drone;
+/**
+ * @brief Process the payload state machine for one cycle.
+ *
+ * @param void No parameters.
+ * @return void
+ */
 void process_payload_state(void);
 #endif

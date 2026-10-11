@@ -55,7 +55,10 @@ pico_sdk_init()
 
 add_executable(0x001aa_cb
     src/main.c
+    src/gpio_ctrl.c
     src/dht11.c
+    src/crypto.c
+    src/lora.c
     src/logic.c
 )
 
@@ -73,7 +76,6 @@ target_link_libraries(0x001aa_cb
     pico_stdlib
     hardware_gpio
     hardware_uart
-    hardware_pwm
 )
 
 target_include_directories(0x001aa_cb PRIVATE

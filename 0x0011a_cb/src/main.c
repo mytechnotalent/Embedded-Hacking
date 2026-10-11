@@ -72,31 +72,67 @@ static bool update_position(double *cur_lat, double *cur_lon)
     return got_fix;
 }
 
-static void step_mission(double *cur_lat, double *cur_lon)
+/**
+ * @brief Update the fix-hold countdown from the latest poll result.
+ *
+ * @param fix True when an active 3D lock was parsed this tick.
+ * @return bool True when a fix is current or still held.
+ */
+static bool track_fix(bool fix)
 {
-    int siv = 0, cno = 0;
     static int hold = 0;
-    bool fix = update_position(cur_lat, cur_lon);
-    gps_get_stats(&siv, &cno);
     hold = fix ? 3 : ((hold > 0) ? (hold - 1) : 0);
-    bool have = fix || (hold > 0);
-    set_gnss_leds(have, siv);
-    if (have) {
-        lcd_show_coords(*cur_lat, *cur_lon);
-        navigate_to_target(*cur_lat, *cur_lon);
-    } else {
-        lcd_show_gnss(siv, cno);
-        propeller_stop();
-        send_telemetry(*cur_lat, *cur_lon);
-    }
+    return fix || (hold > 0);
 }
 
 /**
- * @brief Autonomous micro-UAV firmware execution loop.
+ * @brief Execute guidance actions while a position fix is held.
  *
- * @param None.
- * @return int Standard exit code (never reached in embedded firmware).
+ * @param cur_lat Pointer to current latitude.
+ * @param cur_lon Pointer to current longitude.
+ * @return None.
  */
+static void run_guided(double *cur_lat, double *cur_lon)
+{
+    lcd_show_coords(*cur_lat, *cur_lon);
+    navigate_to_target(*cur_lat, *cur_lon);
+}
+
+/**
+ * @brief Execute fallback actions while no position fix is held.
+ *
+ * @param siv Satellites in view.
+ * @param cno Best carrier-to-noise density.
+ * @param cur_lat Pointer to current latitude.
+ * @param cur_lon Pointer to current longitude.
+ * @return None.
+ */
+static void run_unguided(int siv, int cno, double *cur_lat, double *cur_lon)
+{
+    lcd_show_gnss(siv, cno);
+    propeller_stop();
+    send_telemetry(*cur_lat, *cur_lon);
+}
+
+/**
+ * @brief Advance the mission by one flight tick.
+ *
+ * @param cur_lat Pointer to current latitude.
+ * @param cur_lon Pointer to current longitude.
+ * @return None.
+ */
+static void step_mission(double *cur_lat, double *cur_lon)
+{
+    bool have = track_fix(update_position(cur_lat, cur_lon));
+    int siv = 0, cno = 0;
+    gps_get_stats(&siv, &cno);
+    set_gnss_leds(have, siv);
+    if (have)
+        run_guided(cur_lat, cur_lon);
+    else
+        run_unguided(siv, cno, cur_lat, cur_lon);
+}
+
 int main(void)
 {
     double cur_lat = ORIGIN_LAT, cur_lon = ORIGIN_LON;

@@ -39,8 +39,26 @@
 #define LORA_TX_PIN   8
 #define LORA_RX_PIN   9
 
+/**
+ * @brief Initialize UART1 and configure the RYLR998 radio parameters.
+ * @param void No parameters.
+ * @return void No return value.
+ */
 void init_lora(void);
+
+/**
+ * @brief Transmit a message over the LoRa link to the base station.
+ * @param msg Null-terminated message string to transmit.
+ * @return void No return value.
+ */
 void lora_send(const char *msg);
+
+/**
+ * @brief Poll the UART receive buffer for a complete LoRa packet.
+ * @param payload_out Buffer receiving the extracted payload string.
+ * @param max_len Capacity of payload_out in bytes.
+ * @return true when a payload was extracted, false otherwise.
+ */
 bool lora_poll_packet(char *payload_out, size_t max_len);
 
 #endif // LORA_H

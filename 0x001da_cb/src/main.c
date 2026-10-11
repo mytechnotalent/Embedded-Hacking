@@ -16,10 +16,10 @@
 int main(void) {
     stdio_init_all();
     init_servo();
-    
+    // Allow servo to settle before announcing boot.
     sleep_ms(2000);
     printf("SYSTEM BOOT: HEAVY LIFT UAS ONLINE.\r\n");
-    
+    // Run the payload state machine forever.
     while (true) {
         process_payload_state();
         sleep_ms(2000);

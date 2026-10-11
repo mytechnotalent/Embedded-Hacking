@@ -11,5 +11,11 @@
 #ifndef IR_RX_H
 #define IR_RX_H
 #include <stdint.h>
+
+/**
+ * @brief Get the most recently received infrared command code.
+ * @param void No parameters.
+ * @return The latest 32-bit infrared command code.
+ */
 uint32_t get_latest_ir_code(void);
 #endif

@@ -148,6 +148,13 @@ static bool process_gps_char(char ch, double *lat, double *lon)
     return false;
 }
 
+/**
+ * @brief Read one GPS byte from the PIO FIFO and process it.
+ *
+ * @param lat Pointer to current latitude.
+ * @param lon Pointer to current longitude.
+ * @return bool True if a valid active 3D fix was parsed, false otherwise.
+ */
 static bool handle_gps_byte(double *lat, double *lon)
 {
     char ch = (char)(pio_sm_get(GPS_PIO, GPS_SM) >> 24);
