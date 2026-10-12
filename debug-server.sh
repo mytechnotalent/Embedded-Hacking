@@ -77,6 +77,13 @@
 #   broken debugger or a broken firmware. It is neither: it is a configuration
 #   mismatch, and hiding core1 removes it completely.
 #
+#   Note on Core 0 register previews (pico-gdb-memory.gdb):
+#   Even with USE_CORE=0, whenever a Core 0 register holds an arbitrary integer
+#   or unmapped value (e.g. 0x69000000), Binary Ninja's UI probes that address
+#   for memory previews. In OpenOCD, failed SWD reads trigger the same SWD DPIDR
+#   reconnect behavior. Source "pico-gdb-memory.gdb" in Binary Ninja's Debugger
+#   Console to restrict GDB to valid Flash and SRAM, filtering invalid reads locally.
+#
 # Why reset run (the target must be released, not halted)
 #   On RP2350, halting during reset stops the core at the boot ROM stub BEFORE
 #   the stack pointer is loaded:

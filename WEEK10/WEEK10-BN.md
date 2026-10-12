@@ -574,6 +574,15 @@ Info : Listening on port 3333 for gdb connections
    | Windows x64 | `%USERPROFILE%\.pico-sdk\toolchain\14_2_Rel1\bin\arm-none-eabi-gdb.exe` (Pico extension), or `C:\Program Files (x86)\Arm GNU Toolchain arm-none-eabi\14.2 rel1\bin\arm-none-eabi-gdb.exe` |
    | Linux x64 | `~/.pico-sdk/toolchain/14_2_Rel1/bin/arm-none-eabi-gdb` (Pico extension), or the `bin/` directory of the extracted `arm-gnu-toolchain-14.2.rel1-x86_64-arm-none-eabi` tarball |
 6. Click **Accept**.
+7. Restrict the GDB memory map (prevents OpenOCD SWD faults and reconnect loops):
+   In the bottom console panel, click the **Debugger Console** tab (or `View -> Tabs -> Debugger Console`) and enter:
+   ```gdb
+   source pico-gdb-memory.gdb
+   ```
+   *(If not running from the repository root, enter the absolute path to `pico-gdb-memory.gdb`.)*
+   Confirm `info mem` displays the Flash (`0x10000000 0x10400000 ro`) and SRAM (`0x20000000 0x20082000 rw`) ranges.
+
+> **Why `source pico-gdb-memory.gdb` is required.** Binary Ninja's register widget automatically previews memory pointed to by registers. When a register contains an unmapped address (such as uninitialized data or constants like `0x69000000`), Binary Ninja probes it. Without a bounded memory map, OpenOCD attempts to read that invalid address over SWD, faults, and reconnects the debug port (`Info : SWD DPIDR 0x4c013477`). Sourcing `pico-gdb-memory.gdb` sets `inaccessible-by-default on` in GDB, causing GDB to intercept and reject invalid reads locally before any packet reaches OpenOCD, eliminating SWD reconnect storms.
 
 > **Use the GDB MI adapter.** It launches a real `arm-none-eabi-gdb --interpreter=mi2` and lets Binary Ninja drive it, so breakpoints and stepping go through real GDB — which sends the correct 2-byte breakpoint length. Verified working end to end: connect, GUI breakpoints (**Add Hardware Breakpoint...**, hardware execute), **Step Into** / **Step Over**, and register edits.
 
@@ -1791,9 +1800,11 @@ Reading `/dev/cu.usbmodem*` with a bare `read()` returns garbage. Set **raw term
 
 The main cause is **driving the core from the OpenOCD command port while Binary Ninja is connected**. If you must reset, **Detach first**, reset, then reconnect. Never leave a breakpoint on the PC you are about to step or resume from.
 
-### The console floods with `Failed to read memory at 0xf0000000`
+### The console floods with `Failed to read memory` or `SWD DPIDR` reconnects
 
-Core1 is exposed. The scripts must run with `USE_CORE=0`. Stop the server, confirm only `core0` is reported, restart, then restart Binary Ninja.
+Two causes:
+1. **Core 1 is exposed.** The scripts must run with `USE_CORE=0`. Stop the server, confirm only `core0` is reported, restart, then restart Binary Ninja.
+2. **Binary Ninja probed an unmapped address for a register preview.** When a register holds an arbitrary integer or uninitialized value (e.g. `0x69000000`), Binary Ninja tries to preview that memory address, triggering an OpenOCD SWD fault and debug-port reconnect (`SWD DPIDR 0x4c013477`). In the **Debugger Console**, run `source pico-gdb-memory.gdb`. This restricts GDB to valid Flash and SRAM, filtering invalid reads locally so OpenOCD's SWD connection stays completely stable.
 
 ### The decompiler still shows the old value after patching
 
