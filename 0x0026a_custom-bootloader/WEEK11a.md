@@ -62,29 +62,29 @@ In those products, **running modified or unauthorized firmware is a real-world s
 The modern defense is a **boot chain**. Each stage of the chain refuses to start the next stage until it has proven (cryptographically) that the next stage is authentic:
 
 ```
-+-----------------------------------------------------------------+
-|  BOOT CHAIN (each stage authenticates the next)                  |
-|                                                                 |
-|  +-------------------------------------------------------------------+
-|  | STAGE 0: ROM in the chip (frozen in silicon, cannot be changed)  |
-|  |          verifies...                                              |
-|  +-------------------------------------------------------------------+
-|                        | trusts
-|                        v
-|  +-------------------------------------------------------------------+
-|  | STAGE 1: bootloader in flash (this lab)                          |
-|  |          verifies the application with an AES-128-CMAC tag       |
-|  +-------------------------------------------------------------------+
-|                        | trusts (only if the tag matches)
-|                        v
-|  +-------------------------------------------------------------------+
-|  | STAGE 2: application firmware (the IR remote control app)        |
-|  +-------------------------------------------------------------------+
-|                                                                 |
-|  An attacker's modified app is REJECTED at stage 1 and never    |
-|  runs. The device is very hard to brick with bad firmware, and  |
-|  cheap modification attacks fail.                                |
-+-----------------------------------------------------------------+
++========================================================================+
+| BOOT CHAIN (each stage authenticates the next)                         |
+|                                                                        |
+|   +-----------------------------------------------------------------+  |
+|   | STAGE 0: ROM in the chip (frozen in silicon, cannot be changed) |  |
+|   |          verifies ...                                           |  |
+|   +-----------------------------------------------------------------+  |
+|                                    |  trusts                           |
+|                                    v                                   |
+|   +-----------------------------------------------------------------+  |
+|   | STAGE 1: bootloader in flash (this lab)                         |  |
+|   |          verifies the app with an AES-128-CMAC tag              |  |
+|   +-----------------------------------------------------------------+  |
+|                                    |  trusts (only if the tag matches) |
+|                                    v                                   |
+|   +-----------------------------------------------------------------+  |
+|   | STAGE 2: application firmware (the IR remote control app)       |  |
+|   +-----------------------------------------------------------------+  |
+|                                                                        |
+| An attacker's modified app is REJECTED at stage 1 and never runs.      |
+| The device is very hard to brick with bad firmware, and cheap          |
+| modification attacks fail.                                             |
++========================================================================+
 ```
 
 > **What this lab does, and what it does not.**
@@ -153,25 +153,25 @@ final block is XORed with one of two derived subkeys before the last AES
 encryption, which removes the classical CBC-MAC extension attack.
 
 ```
-+-----------------------------------------------------------------+
-|  Subkey derivation (once, at key setup)                         |
-|                                                                 |
-|  L = AES_K(0^128)                     AES-encrypt a zero block  |
-|  if MSB(L) == 0: K1 = L << 1                                    |
-|  else:          K1 = (L << 1) XOR 0x87    (0x87 = Rb for AES)   |
-|  same step on K1 yields K2                                      |
-|                                                                 |
-|  Tagging (per message M, split into 128-bit blocks M1..Mn)      |
-|                                                                 |
-|  M0 = 0^128                                                     |
-|  if M is an exact multiple of 128 bits:                         |
-|        Mn' = Mn  XOR K1                                         |
-|  else:  (pad M with 10...0 to a full block)                     |
-|        Mn' = padded(Mn) XOR K2                                  |
-|                                                                 |
-|  for each block:  C[i] = AES_K( C[i-1] XOR M[i] )              |
-|  Tag = C[n] (first Tlen bits)                                   |
-+-----------------------------------------------------------------+
++---------------------------------------------------------------+
+| Subkey derivation (once, at key setup)                        |
+|                                                               |
+| L = AES_K(0^128)                     AES-encrypt a zero block |
+| if MSB(L) == 0: K1 = L << 1                                   |
+| else:          K1 = (L << 1) XOR 0x87    (0x87 = Rb for AES)  |
+| same step on K1 yields K2                                     |
+|                                                               |
+| Tagging (per message M, split into 128-bit blocks M1..Mn)     |
+|                                                               |
+| M0 = 0^128                                                    |
+| if M is an exact multiple of 128 bits:                        |
+|       Mn' = Mn  XOR K1                                        |
+| else:  (pad M with 10...0 to a full block)                    |
+|       Mn' = padded(Mn) XOR K2                                 |
+|                                                               |
+| for each block:  C[i] = AES_K( C[i-1] XOR M[i] )              |
+| Tag = C[n] (first Tlen bits)                                  |
++---------------------------------------------------------------+
 ```
 
 The two subkeys exist precisely to encode "full last block" vs "short last
@@ -245,26 +245,25 @@ information; you must always supply the load address out of band (Part 12).
 ### The 0x0026a Flash Layout
 
 ```
-Physical XIP flash, as addressable memory
-+---------------------------------------------- 0x10000000
-| BOOTLOADER image  (0x0026a_bootloader.bin)    |
-|   ~28 KB of code + data                       |
-|   boot.c, verify.c, manifest.c, aes_cmac.c,   |
-|   image.c, main.c                             |
-+---------------------------------------------- ~0x10006D00
-|   (free padding)                              |
-+---------------------------------------------- 0x1001F000
-| MANIFEST sector (4 KB, exactly one flash      |
-|   sector): magic, version, app address,       |
-|   app size, 16-byte AES-128-CMAC tag          |
-+---------------------------------------------- 0x10020000
-| APPLICATION image (0x0026a_app.bin)           |
-|   the Week 11 IR remote control app,          |
-|   now with an AES-128-CBC secret banner,      |
-|   linked to run from 0x10020000               |
-+---------------------------------------------- 0x10020000 + 0x5498
-|   (free padding)                              |
-+---------------------------------------------- 0x10200000  (2 MiB)
++-------------------------------------------------+-------------+
+| BOOTLOADER image (0x0026a_bootloader.bin)       | 0x10000000  |
+|   boot.c verify.c manifest.c aes_cmac.c         |             |
+|   image.c main.c (~28 KB total)                 | ~0x10006D00 |
++-------------------------------------------------+-------------+
+| (free padding)                                  |             |
++-------------------------------------------------+-------------+
+| MANIFEST sector (4 KB, one flash sector)        | 0x1001F000  |
+|   magic, version, app base address, app size,   |             |
+|   and a 16-byte AES-128-CMAC tag                |             |
++-------------------------------------------------+-------------+
+| APPLICATION image (0x0026a_app.bin)             | 0x10020000  |
+|   the Week 11 IR remote app plus an AES-128-CBC |             |
+|   secret banner, linked to run from here        | size 0x5498 |
++-------------------------------------------------+-------------+
+| (free padding)                                  |             |
++-------------------------------------------------+-------------+
+| End of usable flash (2 MiB region)              | 0x10200000  |
++-------------------------------------------------+-------------+
 ```
 
 Three things to notice:
@@ -798,23 +797,24 @@ negative error instead of decrypting, and the module refuses to print garbage.
 CBC decryption undoes each block with the *previous* ciphertext block:
 
 ```
-+------+      +------+      +------+
-| C1   |      | C2   |      | C3   |      ciphertext blocks
-+------+      +------+      +------+
-   |              |              |
-   v              v              v
- AES-128        AES-128        AES-128    (key schedule from setkey_dec)
-   |              |              |
-   |              |              |
-   v              v              v
-   +--[ X XOR ]--+   +--[ X XOR ]--+
-   |   IV        |  |   C1        |  |   C2        |   XOR with IV/C[i-1]
-   +-------------+  +-------------+  +-------------+
-   |              |              |
-   v              v              v
-+------+      +------+      +------+
-| P1   |      | P2   |      | P3   |      plaintext
-+------+      +------+      +------+
++-------+   +-------+   +-------+
+|   C1  |   |   C2  |   |   C3  |
++-------+   +-------+   +-------+
+    |           |           |    
+    v           v           v    
++-------+   +-------+   +-------+
+| AES-d |   | AES-d |   | AES-d |
++-------+   +-------+   +-------+
+    |           |           |    
+    v           v           v    
++-------+   +-------+   +-------+
+|  XOR  |   |  XOR  |   |  XOR  |
++-------+   +-------+   +-------+
+    |           |           |    
+    v           v           v    
++-------+   +-------+   +-------+
+|   P1  |   |   P2  |   |   P3  |
++-------+   +-------+   +-------+
 ```
 
 That is why the IV is the "previous block" for block 1. In-place operation is
@@ -1475,16 +1475,10 @@ deterministic for the checked-in sources, so your numbers should match.
 ### What You Built
 
 ```
-+-----+         +-----+        +---------+
-| ROM | ------> | BL  | -----> | APP     |
-|     | boots   | 0x1 | verif. | 0x10020 |
-|     | bootl.  | 000 | aes128 | 000     |
-|     |         | 000 | cmac   |         |
-+-----+         +-----+        +---------+
-                  |
-                  +--reads-+ manifest @ 0x1001F000 (tag)
-                  |          |
-                  +--reads-+ app @ 0x10020000 (image bytes)
++---------------+     +---------------+     +---------------+
+|      ROM      |     |  BOOTLOADER   |     |  APPLICATION  |
+|   (silicon)   | --> |  @0x10000000  | --> |  @0x10020000  |
++---------------+     +---------------+     +---------------+
 ```
 
 Enforcement point: `verify_manifest` recomputes
