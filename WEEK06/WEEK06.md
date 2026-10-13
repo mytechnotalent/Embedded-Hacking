@@ -92,19 +92,19 @@ Different types of variables are stored in different memory locations:
 |  Memory Layout                                                  |
 |                                                                 |
 |  +-------------------+  High Address (0x20082000)               |
-|  |      STACK        |  ?? Automatic/local variables            |
+|  |      STACK        |  -> Automatic/local variables            |
 |  |   (grows down)    |     Created/destroyed per function       |
 |  +-------------------+                                          |
 |  |                   |                                          |
 |  |    (free space)   |                                          |
 |  |                   |                                          |
 |  +-------------------+                                          |
-|  |       HEAP        |  ?? Dynamic allocation (malloc/free)     |
+|  |       HEAP        |  -> Dynamic allocation (malloc/free)     |
 |  |    (grows up)     |                                          |
 |  +-------------------+                                          |
-|  |   .bss section    |  ?? Uninitialized static/global vars     |
+|  |   .bss section    |  -> Uninitialized static/global vars     |
 |  +-------------------+                                          |
-|  |   .data section   |  ?? Initialized static/global vars       |
+|  |   .data section   |  -> Initialized static/global vars       |
 |  +-------------------+  Low Address (0x20000000)                |
 |                                                                 |
 +-----------------------------------------------------------------+
@@ -138,13 +138,13 @@ So far, we've used GPIO pins as **outputs** to control LEDs. Now we'll learn to 
 |                                                                 |
 |  OUTPUT (what we've done before):                               |
 |  +---------+                                                    |
-|  |  Pico   | -------? LED                                       |
+|  |  Pico   | -------> LED                                       |
 |  | GPIO 16 |          (We control the LED)                      |
 |  +---------+                                                    |
 |                                                                 |
 |  INPUT (new this week):                                         |
 |  +---------+                                                    |
-|  |  Pico   | ?------- Button                                    |
+|  |  Pico   | <------- Button                                    |
 |  | GPIO 15 |          (We read the button state)                |
 |  +---------+                                                    |
 |                                                                 |
@@ -189,16 +189,16 @@ The Pico 2 has **internal** pull resistors that you can enable with software - n
 |       |                                                         |
 |       + (internal pull-up resistor)                             |
 |       |                                                         |
-|       +------? GPIO 15 (reads HIGH normally)                    |
+|       +------> GPIO 15 (reads HIGH normally)                    |
 |       |                                                         |
 |     +-+-+                                                       |
-|     |BTN| ?? Button connects GPIO to GND when pressed           |
+|     |BTN| -> Button connects GPIO to GND when pressed           |
 |     +-+-+                                                       |
 |       |                                                         |
 |      GND                                                        |
 |                                                                 |
-|  Button NOT pressed: GPIO reads 1 (HIGH)                        |
-|  Button PRESSED:     GPIO reads 0 (LOW)                         |
+|  Button NOT pressed: GPIO reads 1 (HIGH, pulled up)             |
+|  Button PRESSED:     GPIO reads 0 (LOW, active-low to GND)      |
 |                                                                 |
 +-----------------------------------------------------------------+
 ```
@@ -226,10 +226,10 @@ This is a compact if-else statement:
 - If `pressed` is **true (1)**: output `0` (LED OFF... wait, that seems backwards!)
 - If `pressed` is **false (0)**: output `1` (LED ON)
 
-**Why is it inverted?** Because of the pull-up resistor!
+**Why does pressed read 0 when pushed?** Because of our **active-low** button wiring with a pull-up resistor!
 
-- Button **released** -> GPIO reads `1` -> `pressed = 1` -> output `0` -> LED OFF
-- Button **pressed** -> GPIO reads `0` -> `pressed = 0` -> output `1` -> LED ON
+- Button **released** -> Pull-up holds GPIO at 3.3V (prevents floating) -> GPIO reads `1` -> `pressed = 1` -> output `0` -> LED OFF
+- Button **pressed** -> Switch connects GPIO directly to GND -> GPIO reads `0` -> `pressed = 0` -> output `1` -> LED ON
 
 A clearer way to write this:
 ```c
@@ -309,7 +309,7 @@ The internal pull-up resistor provides the 3.3V connection, so you only need to 
 |  |          |                                                   |
 |  | GPIO 15  |--------+                                          |
 |  |          |        |                                          |
-|  | GPIO 16  |--------+---? LED (with resistor to GND)           |
+|  | GPIO 16  |--------+---> LED (with resistor to GND)           |
 |  |          |        |                                          |
 |  |   GND    |--------+---+                                      |
 |  |          |        |   |                                      |
@@ -436,7 +436,7 @@ Keep the program running and watch `static_fav_num`. After 255, you'll see:
 ```
 static_fav_num: 254
 static_fav_num: 255
-static_fav_num: 0      ?? Wrapped around!
+static_fav_num: 0      <- Wrapped around!
 static_fav_num: 1
 static_fav_num: 2
 ...
@@ -448,7 +448,7 @@ This demonstrates unsigned integer overflow!
 
 ## Part 6: Debugging with GDB (Dynamic Analysis)
 
-> ? **REVIEW:** This setup is identical to previous weeks. If you need a refresher on OpenOCD and GDB connection, refer back to Week 3 Part 6.
+> Note: **REVIEW:** This setup is identical to previous weeks. If you need a refresher on OpenOCD and GDB connection, refer back to Week 3 Part 6.
 
 ### Starting the Debug Session
 
@@ -1018,7 +1018,7 @@ To change the value from 42 (`0x2a`) to 43 (`0x2b`):
 5. Change `2A` to `2B`
 6. The instruction is now `movs r1, #0x2b` (43 in decimal)
 
-> ?? **How Thumb encoding works:** In `movs r1, #imm8`, the immediate value is the first byte, and the opcode `21` is the second byte. So the bytes `2a 21` encode `movs r1, #0x2a`.
+> Note: **How Thumb encoding works:** In `movs r1, #imm8`, the immediate value is the first byte, and the opcode `21` is the second byte. So the bytes `2a 21` encode `movs r1, #0x2a`.
 
 ### Step 20: Hack #2 - Invert the Button Logic
 
@@ -1037,9 +1037,9 @@ This is the 32-bit Thumb-2 encoding of `eor.w r3, r3, #1`. The bytes break down 
 +-----------------------------------------------------------------+
 |  eor.w r3, r3, #1  ->  bytes: 83 F0 01 03                       |
 |                                                                 |
-|  Byte 0: 0x83  -??                                              |
-|  Byte 1: 0xF0  -+  First halfword (opcode + source register)    |
-|  Byte 2: 0x01  ---- Immediate value (#1) ?? CHANGE THIS         |
+|  Byte 0: 0x83  -+                                               |
+|  Byte 1: 0xF0  -+-- First halfword (opcode + source register)   |
+|  Byte 2: 0x01  ---- Immediate value (#1) <- CHANGE THIS         |
 |  Byte 3: 0x03  ---- Destination register (r3)                   |
 |                                                                 |
 +-----------------------------------------------------------------+
@@ -1056,7 +1056,7 @@ To change `eor.w r3, r3, #1` to `eor.w r3, r3, #0`:
 3. You should see the byte `01` at this position
 4. Change `01` to `00`
 
-> ?? **Why offset `0x288` and not `0x286`?** The immediate value `#1` is in the **third byte** of the 4-byte instruction. The instruction starts at file offset `0x286`, so the immediate byte is at `0x286 + 2 = 0x288`.
+> Note: **Why offset `0x288` and not `0x286`?** The immediate value `#1` is in the **third byte** of the 4-byte instruction. The instruction starts at file offset `0x286`, so the immediate byte is at `0x286 + 2 = 0x288`.
 
 Now the logic is permanently changed:
 
@@ -1106,7 +1106,7 @@ python ..\uf2conv.py build\0x0014_static-variables-h.bin --base 0x10000000 --fam
 
 **Check the serial output:**
 ```
-regular_fav_num: 43    ?? Changed from 42!
+regular_fav_num: 43    <- Changed from 42!
 static_fav_num: 42
 regular_fav_num: 43
 static_fav_num: 43
@@ -1209,13 +1209,13 @@ static_fav_num: 43
 
 1. **Static variables persist** - They keep their value between function calls and loop iterations.
 
-2. **Static storage ? heap** - Static variables are in a fixed location, not dynamically allocated.
+2. **Static storage != heap** - Static variables reside in fixed memory (.data/.bss), not dynamically allocated on the heap.
 
 3. **Compilers optimize aggressively** - Regular variables may be optimized away if the compiler sees no effect.
 
 4. **Function inlining is common** - `gpio_pull_up` becomes `gpio_set_pulls` in the binary.
 
-5. **Pull-up resistors invert logic** - Button pressed = LOW, button released = HIGH.
+5. **Pull-up resistors prevent floating inputs** - By holding the pin HIGH when released, they eliminate undefined states; pressing the active-low button pulls the pin to GND (LOW).
 
 6. **XOR is useful for inverting** - `eor r3,r3,#0x1` flips a bit between 0 and 1.
 
@@ -1294,7 +1294,7 @@ static_fav_num: 43
 
 **Remember:** Static variables are your friends when you need to remember values across function calls. But they also make your program's behavior more complex to analyze - which is exactly why we practice reverse engineering!
 
-Happy hacking! ?
+Happy hacking!
 
 
 
