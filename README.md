@@ -575,10 +575,6 @@ Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote
 
 ## Week 11 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11.md)
 
-## Week 11-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-BN.md)
-
-## Week 11-IDA Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-IDA.md)
-
 ## Week 11a Secure Boot + Custom Bootloader Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/WEEK11a.md)
 
 ### 0x0026a Custom Secure Bootloader [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/README.md)
@@ -590,6 +586,10 @@ Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote
 ### 0x0026a Signed Application BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/0x0026a_app.bin)
 
 ### 0x0026a Manifest BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/manifest.bin)
+
+## Week 11-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-BN.md)
+
+## Week 11-IDA Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-IDA.md)
 
 ### Chapter 35: Structures
 This chapter covers structures as well as an intro to infrared basics as we work a infrared receiver and infrared remote controller as it relates to embedded development on the Pico 2.
