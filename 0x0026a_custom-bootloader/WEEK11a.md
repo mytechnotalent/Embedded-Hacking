@@ -519,15 +519,31 @@ $ ~/.pico-sdk/toolchain/14_2_Rel1/bin/arm-none-eabi-nm -n build/0x0026a_app.elf
 ...
 ```
 
-### 6.9 Why the Application Has No .uf2
+### 6.9 One UF2 for the Whole Chain
 
-A UF2 file writes to the address encoded in each of its blocks, and the SDK's
-UF2 tooling always targets `0x10000000`. If a user holds BOOTSEL and drags in
-`0x0026a_app.uf2`, the app would be written at the wrong base and the
-bootloader would jump into garbage (or nothing). So the app is deliberately
-built **without** a UF2 and with explicit `.bin`/`.hex`/`.dis`/`.map` outputs
-instead. The **bootloader** still ships a UF2 (it belongs at `0x10000000`), and
-the manifest + app are written to their own addresses with OpenOCD.
+No single image is the whole story. The device needs the bootloader at
+`0x10000000`, the manifest at `0x1001F000`, and the app at `0x10020000`. A
+standalone `0x0026a_app.uf2` would flash only the app region, leaving the other
+two to be written separately, so the app is deliberately built with explicit
+`.bin`/`.hex`/`.dis`/`.map` outputs instead of its own UF2.
+
+To bring a bare board up in one move the lab ships a single combined UF2,
+`0x0026a_full.uf2`, that carries all three images. It is built by laying the
+images out flat - offset 0 mapped to `0x10000000`, the reserved gaps filled
+with `0xFF` - and handing the result to picotool as one image:
+
+```
+$ PICOTOOL=~/.pico-sdk/picotool/2.3.1/picotool/picotool \
+    python3 tools/make_full_uf2.py
+```
+
+picotool numbers the blocks, tags them with the `rp2350-arm-s` family, and
+injects the RP2350-E10 "absolute block" (family `0xE48BFF57` at `0x10FFFF00`)
+that tells the boot ROM to write every block to its **absolute** address rather
+than into a partition. A single BOOTSEL drag then restores the whole chain.
+Part 11 uses it. Note the contrast with the naive file layout: a UF2 is not
+restricted to `0x10000000`, but a multi-region UF2 is only correct once the
+blocks and the E10 absolute block are laid out the way picotool produces them.
 
 ---
 
@@ -974,11 +990,27 @@ the manifest, then the app. If you flash the app before the manifest, the
 bootloader happily boots it anyway (the manifest is already in flash from a
 previous lab run) - order only matters on a bare board.
 
+### The whole chain in one drag (recommended)
+
+On a bare board skip straight to one file: hold BOOTSEL, connect the Pico 2,
+and copy `0x0026a_full.uf2` to the `RP2350` drive. That single UF2 writes all
+three images at once - no OpenOCD, no second drag. Section 6.9 explains how it
+is built; the hardware-verified behavior is:
+
+- BOOTSEL accepts it and unmounts the drive;
+- the boot ROM writes bootloader, manifest, and app to their absolute
+  addresses;
+- on reset the bootloader verifies the manifest and jumps to the app.
+
+The steps below are the three-image equivalent, which is what you use while
+iterating on a single image or when you prefer OpenOCD over the button.
+
 ### A. The bootloader: two options
 
 **Option 1 - BOOTSEL (no extra tools):** hold the BOOTSEL button, connect the
-Pico 2, copy `0x0026a_bootloader.uf2` to the drive. BOOTSEL always writes at
-`0x10000000`, which is correct for the bootloader.
+Pico 2, copy `0x0026a_bootloader.uf2` to the drive, which lands the bootloader
+at `0x10000000` (or drag `0x0026a_full.uf2` to write the whole chain in one
+shot).
 
 **Option 2 - OpenOCD:**
 
@@ -1107,9 +1139,10 @@ the bootloader refuses.
 
 ### Step 13: Confirm it still boots after restoring the good image
 
-Re-flash `0x0026a_app.bin` (fresh, matching the manifest) and reset. The
-banner returns. The bootloader is doing real enforcement, not just complaining
-once.
+Re-flash `0x0026a_app.bin` (fresh, matching the manifest) and reset - or just
+drag `0x0026a_full.uf2` onto the BOOTSEL drive again to restore the whole
+chain in one move. The banner returns. The bootloader is doing real
+enforcement, not just complaining once.
 
 Stop and think about the security statement this demonstrated:
 

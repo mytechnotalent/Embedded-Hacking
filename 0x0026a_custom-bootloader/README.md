@@ -24,13 +24,14 @@ The CMSIS-RM9 flash-safe range starts at `0x10000000` on the RP2350, so adding 2
 
 ## Artifacts
 
-| File                         | Description                              |
-| ---------------------------- | ---------------------------------------- |
-| `0x0026a_bootloader.bin`     | Bootloader image (flash at `0x10000000`) |
-| `0x0026a_bootloader.uf2`     | Bootloader for the BOOTSEL drag-and-drop |
-| `0x0026a_app.bin`            | Signed app image (flash at `0x10020000`) |
-| `manifest.bin`               | Manifest (flash at `0x1001F000`)         |
-| `WEEK11a.md` / `WEEK11a.pdf` | Full lab notebook                        |
+| File                         | Description                                       |
+| ---------------------------- | ------------------------------------------------- |
+| `0x0026a_full.uf2`           | **All three images** in one BOOTSEL drag          |
+| `0x0026a_bootloader.bin`     | Bootloader image (flash at `0x10000000`)          |
+| `0x0026a_bootloader.uf2`     | Bootloader-only UF2 for the BOOTSEL drag-and-drop |
+| `0x0026a_app.bin`            | Signed app image (flash at `0x10020000`)          |
+| `manifest.bin`               | Manifest (flash at `0x1001F000`)                  |
+| `WEEK11a.md` / `WEEK11a.pdf` | Full lab notebook                                 |
 
 ## Build
 
@@ -38,11 +39,19 @@ The CMSIS-RM9 flash-safe range starts at `0x10000000` on the RP2350, so adding 2
 cmake -B build -DPICO_SDK_PATH=~/.pico-sdk/sdk/2.2.0
 cmake --build build
 python3 tools/sign_firmware.py build/0x0026a_app.bin --out manifest.bin --key "IronNetBootKey!!" --app-base 0x10020000
+PICOTOOL=~/.pico-sdk/picotool/2.3.1/picotool/picotool python3 tools/make_full_uf2.py
 ```
 
-This produces `0x0026a_bootloader.bin/.uf2` and `0x0026a_app.bin`; the signer writes `manifest.bin`.
+This produces `0x0026a_bootloader.bin/.uf2` and `0x0026a_app.bin`; the signer
+writes `manifest.bin`; `make_full_uf2.py` packs all three into
+`0x0026a_full.uf2`.
 
 ## Flash
+
+Easiest - copy `0x0026a_full.uf2` to the `RP2350` BOOTSEL drive; one drag writes
+the whole chain (bootloader + manifest + app).
+
+Or with OpenOCD:
 
 ```sh
 openocd -f interface/picoprobe.cfg -f target/rp2350.cfg -c \

@@ -81,8 +81,9 @@ pico_enable_stdio_usb(0x0026a_app 0)
 pico_set_linker_script(0x0026a_app
         ${CMAKE_CURRENT_LIST_DIR}/app/memmap_app.ld)
 
-# The application starts at 0x10020000, so a UF2 (which BOOTSEL always writes to
-# 0x10000000) would be wrong. Emit the raw artifacts we flash with OpenOCD.
+# The application starts at 0x10020000. A standalone app UF2 would flash only
+# this one region, so the lab ships a single combined UF2 instead (built by
+# tools/make_full_uf2.py). Emit the raw artifacts we sign and flash with OpenOCD.
 pico_add_dis_output(0x0026a_app)
 pico_add_hex_output(0x0026a_app)
 pico_add_bin_output(0x0026a_app)
