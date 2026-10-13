@@ -26,11 +26,11 @@ The CMSIS-RM9 flash-safe range starts at `0x10000000` on the RP2350, so adding 2
 
 | File                         | Description                                       |
 | ---------------------------- | ------------------------------------------------- |
-| `0x0026a_full.uf2`           | **All three images** in one BOOTSEL drag          |
 | `0x0026a_bootloader.bin`     | Bootloader image (flash at `0x10000000`)          |
 | `0x0026a_bootloader.uf2`     | Bootloader-only UF2 for the BOOTSEL drag-and-drop |
 | `0x0026a_app.bin`            | Signed app image (flash at `0x10020000`)          |
 | `manifest.bin`               | Manifest (flash at `0x1001F000`)                  |
+| `0x0026a_full.uf2`           | **All three images** in one BOOTSEL drag          |
 | `WEEK11a.md` / `WEEK11a.pdf` | Full lab notebook                                 |
 
 ## Build

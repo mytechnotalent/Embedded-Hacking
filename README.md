@@ -581,11 +581,11 @@ Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote
 
 ### 0x0026a Bootloader BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/0x0026a_bootloader.bin)
 
-### 0x0026a Full Secure Boot UF2 (bootloader + manifest + app) [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/0x0026a_full.uf2)
-
 ### 0x0026a Signed Application BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/0x0026a_app.bin)
 
 ### 0x0026a Manifest BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/manifest.bin)
+
+### 0x0026a Full Secure Boot UF2 (bootloader + manifest + app) [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/0x0026a_full.uf2)
 
 ## Week 11-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-BN.md)
 
