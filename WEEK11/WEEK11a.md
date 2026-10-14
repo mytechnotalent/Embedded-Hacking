@@ -1219,6 +1219,15 @@ You should see the miniature version of Part 7.1:
 Note `main` does almost nothing itself - it is a sequence of calls, exactly
 the design we built.
 
+Before accepting `0x10000234` as "the start", note that it is not the start of
+the image at all. The image begins at `0x10000000` with the Cortex-M vector
+table, and `main` sits `0x234` bytes in because the vector table, the default
+ISRs, the SDK binary-info header, the RP2350 IMAGE_DEF block, the reset handler,
+and crt0 all run before it. Appendix A.2 derives that layout from first
+principles and proves it on the board. It is also why you will see `0x10000234`
+for the bootloader and `0x10020234` for the app: the same `0x234` offset, with
+the base shifted by `0x20000`.
+
 ### Step 18: Stop inside the crypto (the payoff breakpoint)
 
 The interesting code is `verify_manifest` at `0x100003b0` and the mbedtls
@@ -1364,6 +1373,12 @@ our C - including the constant table it pulled from `.rodata`. Open the
 is the key. Rename it by selecting and pressing `L` (e.g. `fw_key`), then
 annotate `main`'s call graph with the whole boot sequence.
 
+Do not read the bare addresses in that table as arbitrary. `main` at
+`0x10000234` is `0x234` bytes into the image because the vector table and the
+SDK startup preamble occupy everything ahead of it, and the app's `main` is the
+same offset at `0x10020234`. Appendix A.2 derives this from first principles and
+proves it with a live GDB session against the board.
+
 ### Step 24: Recover the "spec" from the image
 
 - List exports/imports: the binary imports `cdns_usb_table`, stdio routines,
@@ -1394,6 +1409,12 @@ strings.
 
 Open `main`. Because everything was inlined and optimized, Ghidra shows a
 clean calling skeleton - the same one GDB showed in Part 14 Step 21.
+
+Compare the addresses with the bootloader's from Step 23 and you will see the
+relocation for yourself: `_reset_handler` moved from `0x1000015c` to
+`0x1002015c`, and `main` from `0x10000234` to `0x10020234`. Every symbol is the
+bootloader's plus `0x20000`; only the base changed. Appendix A.2 explains and
+proves why both images put `main` `0x234` bytes in.
 
 ### Step 26: The "struct is a lie" lesson, revisited
 
@@ -1467,10 +1488,18 @@ kind.
 Everything you should have collected so far, in one table. Builds are
 deterministic for the checked-in sources, so your numbers should match.
 
+Read every address as `base + offset`. The bootloader is based at `0x10000000`
+and the app at `0x10020000`, so `main` is `0x10000234` in one and `0x10020234`
+in the other - the same `0x234` offset, relocated. Appendix A.2 derives that
+offset from the vector table and the SDK startup code and proves it on the
+board.
+
 ### Bootloader (0x0026a_bootloader.elf)
 
 | Role                    | Symbol              | Address      |
 | ----------------------- | ------------------- | ------------ |
+| Reset vector (vector[1])| `_reset_handler`    | `0x1000015c` |
+| Initial SP (vector[0])  | (data)              | `0x20082000` |
 | Boot sequence           | `main`              | `0x10000234` |
 | Console + 2 s pause     | `boot_init`         | `0x10000278` |
 | Failure idle loop       | `boot_halt`         | `0x10000294` |
@@ -1724,7 +1753,178 @@ The trust boundary is a single comparison: a freshly computed AES-128-CMAC of
 the app bytes versus the 16-byte `tag` in the manifest. Everything below is
 about recovering the inputs to that comparison, then supplying your own.
 
-### A.2 Static reconnaissance (before any disassembler)
+### A.2 The image layout: from the vector table to main
+
+Read a Pico image at the byte level and know, with nothing assumed, why `main`
+is at `0x234` and why the relocated app's `main` is at `0x10020234`. Every
+number below is confirmed on the live board in A.2.5.
+
+#### A.2.1 The rule: an address is a base plus an offset
+
+An image is linked at a base address: `0x10000000` for the bootloader,
+`0x10020000` for the app. The linker places byte 0 of the program at the base,
+so every address is `base + offset`:
+
+```
+0x10000234  =  0x10000000  +  0x234
+```
+
+`0x234` is hexadecimal (564 decimal). It is not a whole address and it is not
+"the 234th byte"; it is the distance from the start of the image.
+
+#### A.2.2 The first bytes are a vector table, not main
+
+The Cortex-M33 does not reset into `main`. The hardware requires a vector table
+at the image base and reads two words from it to start: word 0 is the initial
+stack pointer, word 1 is the reset handler. The RP2350 has 16 system vectors
+plus 52 IRQs, so the table is 68 words = 272 bytes = `0x110`. Live dump from
+this board:
+
+```
+(gdb) x/16wx 0x10000000
+0x10000000 <__vectors>:    0x20082000 0x1000015d 0x1000011b 0x1000011d
+0x10000010 <__vectors+16>: 0x10000111 0x10000111 0x10000111 0x10000111
+```
+
+| Word | Value        | Meaning                                                     |
+| ---- | ------------ | ----------------------------------------------------------- |
+| 0    | `0x20082000` | initial stack pointer (top of RP2350 SRAM)                  |
+| 1    | `0x1000015d` | reset handler = `_reset_handler` (`0x1000015c`) + Thumb bit |
+| 2    | `0x1000011b` | NMI                                                         |
+| 3    | `0x1000011d` | HardFault                                                   |
+| 4    | `0x10000111` | MemManage                                                   |
+| ...  | ...          | remaining system vectors, then IRQ0..IRQ51                  |
+
+Word 1 ends in `...5d`, not `...5c`, because Cortex-M code is Thumb code: the
+hardware uses that low bit and branches to `0x1000015c`. GDB resolves it:
+
+```
+(gdb) info symbol 0x1000015d
+_reset_handler + 1 in section .text
+```
+
+Two entry numbers exist and are not the same:
+- the reset vector (table word 1) = `_reset_handler` at `0x1000015c`;
+- the ELF entry point (`readelf -h`) = `0x1000014d` = `_entry_point` at
+  `0x1000014c`, an SDK trampoline that reloads SP and branches to
+  `_reset_handler`.
+
+Both converge on `_reset_handler`. Neither is `main`.
+
+#### A.2.3 The rest of the preamble and the arithmetic
+
+After the table, this fixed preamble runs before `main`:
+
+| Address      | Symbol                       | Purpose                                     |
+| ------------ | ---------------------------- | ------------------------------------------- |
+| `0x10000110` | `__default_isrs_start`       | weak ISR defaults (`isr_irq0`..`isr_irq51`) |
+| `0x10000124` | `binary_info_header`         | name/build date shown by `picotool info`    |
+| `0x10000138` | `embedded_block` (IMAGE_DEF) | RP2350 metadata block the ROM reads         |
+| `0x1000014c` | `_entry_point`               | trampoline                                  |
+| `0x10000150` | `_enter_vtable_in_r0`        | `msr MSP` then `bx` to the reset handler    |
+| `0x1000015c` | `_reset_handler`             | reset entry                                 |
+| `0x10000164` | `hold_non_core0_in_bootrom`  | parks core 1                                |
+| `0x10000180` | `bss_fill_loop` / `data_cpy` | zero `.bss`, copy `.data`                   |
+| `0x100001e4` | `_init`                      | runtime / constructors                      |
+| `0x10000234` | `main`                       | your code                                   |
+
+The sizes add up exactly:
+
+```
+vector table          0x110   (68 words)
+default ISRs          0x014
+binary_info_header    0x014
+embedded IMAGE_DEF    0x014
+                      -----
+fixed preamble        0x14c   ends at 0x1000014c
+reset handler + crt0  0x0e8   fills 0x1000014c .. 0x10000234
+                      -----
+main                  0x234
+```
+
+So `main` is at `0x10000000 + 0x234`: 564 bytes in, because the hardware tables
+and the C runtime occupy the first 564 bytes. This is the SDK layout for every
+image; it is not specific to a bootloader.
+
+The live disassembly of the trampoline and reset handler shows the handoff:
+
+```
+(gdb) disassemble 0x1000014c,+56
+0x1000014c <_entry_point+0>:        mov.w r0, #0
+0x10000150 <_enter_vtable_in_r0+0>: ldr   r1, [pc, #120]
+...
+0x10000154 <_enter_vtable_in_r0+4>: ldmia r0!, {r1, r2}
+0x10000156 <_enter_vtable_in_r0+6>: msr   MSP, r1
+0x1000015a <_enter_vtable_in_r0+10>: bx   r2
+0x1000015c <_reset_handler+0>:      mov.w r0, #3489660928
+...
+0x10000172 <hold_non_core0_in_bootrom+14>: bl  0x1000019a <data_cpy>
+...
+0x10000180 <bss_fill_loop+0>:       stmia r1!, {r0}
+```
+
+`_enter_vtable_in_r0` loads the initial stack pointer into MSP (`msr MSP, r1`)
+and branches to the reset handler (`bx r2`); `_reset_handler` then parks core 1,
+copies `.data`, zeroes `.bss`, runs `_init`, and calls `main`.
+
+#### A.2.4 Relocation: the same layout, base shifted
+
+The app is the same image linked at `0x10020000`, so every startup symbol shifts
+by `0x20000`:
+
+| Symbol           | Bootloader   | App          |
+| ---------------- | ------------ | ------------ |
+| `__VECTOR_TABLE` | `0x10000000` | `0x10020000` |
+| `__vectors_end`  | `0x10000110` | `0x10020110` |
+| `_entry_point`   | `0x1000014c` | `0x1002014c` |
+| `_reset_handler` | `0x1000015c` | `0x1002015c` |
+| `main`           | `0x10000234` | `0x10020234` |
+
+`main` is at offset `0x234` in both. Relocation changed the base only, which is
+why the bootloader can jump to an app linked at a different address.
+
+#### A.2.5 Reproduce and verify
+
+With the probe attached and `./debug-server.sh` running, this command proves
+every claim above. The output is verbatim from this lab's board:
+
+```
+$ ~/.pico-sdk/toolchain/14_2_Rel1/bin/arm-none-eabi-gdb -batch \
+    -ex "file 0x0026a_custom-bootloader/build/0x0026a_bootloader.elf" \
+    -ex "target extended-remote :3333" \
+    -ex "source pico-gdb-memory.gdb" \
+    -ex "monitor halt" \
+    -ex "x/16wx 0x10000000" \
+    -ex "info symbol *(unsigned int*)0x10000004" \
+    -ex "info address main" \
+    -ex "x/4wx 0x10020000"
+
+0x10000000 <__vectors>:    0x20082000 0x1000015d 0x1000011b 0x1000011d
+0x10000010 <__vectors+16>: 0x10000111 0x10000111 0x10000111 0x10000111
+...
+_reset_handler + 1 in section .text
+Symbol "main" is a function at address 0x10000234.
+0x10020000: 0x20082000 0x1002015d 0x1002011b 0x1002011d
+```
+
+What each line proves:
+- `0x10000000` = `0x20082000` then `0x1000015d`: the image begins with
+  `[initial SP][reset handler]`.
+- `info symbol` resolves the reset word to `_reset_handler`.
+- `info address main` = `0x10000234`, 564 bytes in.
+- `0x10020000` repeats the same shape shifted by `0x20000`; the app's `main` is
+  `0x10020234`.
+- Attaching mid-run showed the PC at `0x100202cc`, inside the app region: the
+  bootloader had already handed off.
+
+#### A.2.6 Two gotchas
+
+- `0x234` is hex; `0x234` = 564 decimal.
+- No boot2 blob: `__boot2_start__ == __boot2_end__` in both images, so the image
+  begins at the vector table (the RP2350 boot ROM handles flash setup).
+
+
+### A.3 Static reconnaissance (before any disassembler)
 
 Never open Ghidra first. Two minutes of `file`/`strings`/`xxd` frames the whole
 investigation:
@@ -1770,7 +1970,7 @@ Decode it as five little-endian words plus a blob:
 You have the manifest spec before opening a decompiler. `binwalk -E` (if
 installed) confirms a low-entropy, uncompressed image - none of it is packed.
 
-### A.3 Ghidra on the bootloader (the easy path)
+### A.4 Ghidra on the bootloader (the easy path)
 
 1. **File > New Project** (non-shared), then **File > Import File** and pick
    `$W/build/0x0026a_bootloader.elf`.
@@ -1794,7 +1994,7 @@ Double-click `verify_manifest`. The decompiler will show a stack copy of the
 manifest and a call that hands `fw_key` to `aes128_cmac`, then a 16-byte
 compare with the tag. That is the entire security model on one screen.
 
-### A.4 Recovering the key from the image (static)
+### A.5 Recovering the key from the image (static)
 
 Inside `verify_manifest`, note the address pushed as the CMAC key. Follow it in
 the **Data** panel to `0x10006064`, or just ask the binary:
@@ -1824,9 +2024,9 @@ computed : ef041ec592f0c56727da2651d373947b
 result   : MATCH
 ```
 
-### A.5 Ghidra on the application (the AES gate)
+### A.6 Ghidra on the application (the AES gate)
 
-Repeat A.3 with `$W/build/0x0026a_app.elf`. The app is the richer target.
+Repeat A.4 with `$W/build/0x0026a_app.elf`. The app is the richer target.
 
 | Symbol                | Address      | Observations                                    |
 | --------------------- | ------------ | ----------------------------------------------- |
@@ -1857,7 +2057,7 @@ The red data references give you every constant you need:
 Note the last row: the AES key is identical to the CMAC key. One compromise, the
 whole chain falls - the classic "one key, two jobs" smell.
 
-### A.6 Decrypt on the host
+### A.7 Decrypt on the host
 
 Ciphertext, IV, and key are now just three hex strings. OpenSSL finishes the
 job; you never needed the source:
@@ -1874,7 +2074,7 @@ SECRET: IR LINK SECURED ONLINE
 Breaking the application took: import, click, copy three hex constants, run one
 command. AES was never attacked - the key schedule was simply lying in `.rodata`.
 
-### A.7 Forging an image the bootloader accepts
+### A.8 Forging an image the bootloader accepts
 
 The recovery is only interesting if you can act on it. Because you own the key,
 you can sign anything:
@@ -1897,7 +2097,7 @@ $ python3 $W/tools/sign_firmware.py $W/0x0026a_app.bin \
    the tag matches, and the rogue image runs. That is the whole "secure boot"
    defeated with a key you read out of the image it was protecting.
 
-### A.8 Live GDB: watching the boot gate
+### A.9 Live GDB: watching the boot gate
 
 Now do the same hunt at runtime. The repo ships `debug-server.sh` (owns the
 Probe, leaves the target running on `127.0.0.1:3333`) and `pico-gdb-memory.gdb`
@@ -1918,7 +2118,7 @@ $ $GDB $W/build/0x0026a_bootloader.elf
 (gdb) monitor halt
 ```
 
-Read the manifest straight out of flash and confirm the A.2 decode at runtime:
+Read the manifest straight out of flash and confirm the A.3 decode at runtime:
 
 ```
 (gdb) x/4wx 0x1001F000
@@ -1936,7 +2136,7 @@ Break on the gate, reset, and continue:
 ```
 
 When it stops, dump the key argument the CMAC call will receive - the live
-version of A.4:
+version of A.5:
 
 ```
 (gdb) x/16bx 0x10006064
@@ -1964,7 +2164,7 @@ the launch tail and single-step the handoff:
 `r3` equals `vectors[1]`, and after `stepi` the PC is in the app's
 `_reset_handler` with SP already set to `0x20082000`. The gate is behind you.
 
-### A.9 Live GDB: the application's AES
+### A.10 Live GDB: the application's AES
 
 Reattach to the app ELF (the core is already running it, so no reset is
 strictly needed, but a reset proves the chain end to end):
@@ -1987,12 +2187,12 @@ and read the three constants the same way Ghidra showed them:
 ```
 
 Single-step the four mbedtls calls and confirm the argument registers line up
-with A.5 (`r0 = ctx`, `r3 = iv`, and the ciphertext pointer on the stack). By
+with A.6 (`r0 = ctx`, `r3 = iv`, and the ciphertext pointer on the stack). By
 the time `secret_print_banner` returns, the plaintext `SECRET: IR LINK SECURED
 ONLINE` has been printed - the same bytes OpenSSL produced on the host, now
 observed live on the silicon.
 
-### A.10 The stripped binary (no symbols, the real case)
+### A.11 The stripped binary (no symbols, the real case)
 
 Everything above leaned on symbols. A shipped image usually has none. Delete the
 app from the Ghidra project and import `$W/0x0026a_app.bin` with **Language =
@@ -2015,7 +2215,7 @@ Renaming data (`L`), applying types, and setting a couple of function
 signatures rebuilds the module structure from the raw blob - no debugger, no
 source, no strings beyond a printf format.
 
-### A.11 Cheat sheet
+### A.12 Cheat sheet
 
 | Task                          | Command / address                                             |
 | ----------------------------- | ------------------------------------------------------------ |
