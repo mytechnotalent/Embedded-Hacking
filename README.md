@@ -575,7 +575,7 @@ Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote
 
 ## Week 11 Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11.md)
 
-## Week 11a Secure Boot + Custom Bootloader Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/WEEK11a.md)
+## Week 11a Secure Boot + Custom Bootloader Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11a.md)
 
 ### 0x0026a Custom Secure Bootloader [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/README.md)
 

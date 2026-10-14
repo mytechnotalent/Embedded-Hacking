@@ -10,7 +10,7 @@ This project builds a custom secure-boot chain for the Pico 2 (RP2350) that sits
 - Flashing three images (bootloader, manifest, app) with OpenOCD
 - Reverse engineering both images with GDB and Ghidra (find the key, IV, ciphertext, banner)
 
-See the full tutorial: [WEEK11a.md](WEEK11a.md) / [WEEK11a.pdf](WEEK11a.pdf)
+See the full tutorial: [WEEK11a.md](../WEEK11/WEEK11a.md) / [WEEK11a.pdf](../WEEK11/WEEK11a.pdf)
 
 ## Flash Map
 
@@ -31,7 +31,7 @@ The CMSIS-RM9 flash-safe range starts at `0x10000000` on the RP2350, so adding 2
 | `0x0026a_app.bin`            | Signed app image (flash at `0x10020000`)          |
 | `manifest.bin`               | Manifest (flash at `0x1001F000`)                  |
 | `0x0026a_full.uf2`           | **All three images** in one BOOTSEL drag          |
-| `WEEK11a.md` / `WEEK11a.pdf` | Full lab notebook                                 |
+| `WEEK11a.md` / `WEEK11a.pdf` | Full lab notebook (in `WEEK11/`)                   |
 
 ## Build
 
