@@ -198,7 +198,7 @@ development machine. It is validated against the four official test vectors
 from RFC 4493 using the well-known test key:
 
 ```
-Key  = 2b7e151628aed2a6abf7158809cf4f3c
+Key     = 2b7e151628aed2a6abf7158809cf4f3c
 
 Message = (empty)
 Tag     = bb1d6929e95937287fa37d129b756746
@@ -1687,3 +1687,351 @@ and what happens if it is not there?*
 
 **Now go flash your own CA.** You control the manifest, the key, and the
 gate that decides what runs on your hardware.
+
+---
+
+## Appendix A: End-to-End Reverse Engineering with GDB and Ghidra
+
+Parts 14-16 teach the two tools one at a time. This appendix is the
+consolidated, start-to-finish version: a single adversary workflow that starts
+with nothing but the shipped artifacts and a board, and ends with a forged
+image the bootloader accepts. Every command is meant to be run in order. It is
+the "give me the whole hunt" version - keep a terminal and a Ghidra window
+open side by side.
+
+For short paths throughout, set:
+
+```
+$ export W=0x0026a_custom-bootloader
+$ export GDB=~/.pico-sdk/toolchain/14_2_Rel1/bin/arm-none-eabi-gdb
+$ export PCT=~/.pico-sdk/picotool/2.3.1/picotool/picotool
+```
+
+### A.1 What the attacker starts with
+
+Assume you were handed the release folder and a Debug Probe, with no source
+and no README. Each artifact leaks a specific thing:
+
+| Artifact                  | What it gives you                                     |
+| ------------------------- | ----------------------------------------------------- |
+| `0x0026a_bootloader.elf`  | Full symbols for the gate: function names + addresses |
+| `0x0026a_bootloader.bin`  | The same code with no symbols (the real-world case)   |
+| `manifest.bin`            | The on-flash spec: magic, base, size, and the tag     |
+| `0x0026a_app.bin`         | The signed payload; its `.rodata` hides the AES key    |
+| `0x0026a_full.uf2`        | The one-drag installer (bootloader + manifest + app)  |
+
+The trust boundary is a single comparison: a freshly computed AES-128-CMAC of
+the app bytes versus the 16-byte `tag` in the manifest. Everything below is
+about recovering the inputs to that comparison, then supplying your own.
+
+### A.2 Static reconnaissance (before any disassembler)
+
+Never open Ghidra first. Two minutes of `file`/`strings`/`xxd` frames the whole
+investigation:
+
+```
+$ file $W/0x0026a_bootloader.elf $W/0x0026a_bootloader.bin $W/0x0026a_app.bin
+$ $PCT info -a $W/0x0026a_full.uf2
+$ arm-none-eabi-size $W/build/0x0026a_bootloader.elf $W/build/0x0026a_app.elf
+$ shasum -a 256 $W/0x0026a_app.bin
+$ strings -n 6 $W/0x0026a_app.bin | sort -u | head -40
+$ xxd -l 64 $W/manifest.bin
+```
+
+What each answers:
+
+- `file` says ARM little-endian, and `picotool info` names the family
+  (`rp2350-arm-s`) and the target - so you know the ISA and the load address.
+- `arm-none-eabi-size` prints the ELF `text`/`data`/`bss` totals, and
+  `wc -c` on `0x0026a_app.bin` reports 21656 bytes = `0x5498`, which is exactly
+  `app_size` in the manifest. Two artifacts agree, so the flash map is
+  confirmed without a single line of source.
+- `shasum` gives you a fingerprint to prove a re-signed image actually changed.
+- `strings` shows `app banner: %s`, `%s` printf formats, and NUL-split
+  fragments. Note them as search anchors for Ghidra.
+- `xxd manifest.bin` ends the "what is the format" question immediately:
+
+```
+00000000: 5746 4c42 0100 0000 0000 0210 9854 0000  WFLB.........T..
+00000010: ef04 1ec5 92f0 c567 27da 2651 d373 947b  .......g'.&Q.s.{
+```
+
+Decode it as five little-endian words plus a blob:
+
+| Offset | Bytes            | Meaning                                  |
+| ------ | ---------------- | ---------------------------------------- |
+| 0x00   | `57 46 4c 42`    | magic `WFLB` (`0x424C4657` little-endian)|
+| 0x04   | `01 00 00 00`    | version 1                                |
+| 0x08   | `00 00 02 10`    | app base `0x10020000`                    |
+| 0x0C   | `98 54 00 00`    | app size `0x5498` (21656)                |
+| 0x10   | 16 bytes         | `ef04...947b`, the AES-CMAC tag          |
+| 0x20   | `ff` x 4064      | erased sector padding                    |
+
+You have the manifest spec before opening a decompiler. `binwalk -E` (if
+installed) confirms a low-entropy, uncompressed image - none of it is packed.
+
+### A.3 Ghidra on the bootloader (the easy path)
+
+1. **File > New Project** (non-shared), then **File > Import File** and pick
+   `$W/build/0x0026a_bootloader.elf`.
+2. Accept the detected language `ARM:LE:32:v8` (Cortex-M33). Click **Analyze**
+   and take the defaults.
+3. In **Symbol Tree > Functions**, confirm the boot sequence by address:
+
+| Function           | Address      | Reads as                                        |
+| ------------------ | ------------ | ----------------------------------------------- |
+| `main`             | `0x10000234` | five `BL`s, no logic of its own                  |
+| `boot_init`        | `0x10000278` | `stdio_init_all`, a wait, one `puts`             |
+| `manifest_read`    | `0x100002c8` | `memcpy` of 32 bytes from `0x1001F000`           |
+| `manifest_is_valid`| `0x100002fc` | two compares: magic and version                  |
+| `verify_manifest`  | `0x100003b0` | the 16-byte key push + CMAC + tag compare         |
+| `aes128_cmac`      | `0x1000031c` | mbedtls `cipher_info_from_type` + `cipher_cmac`   |
+| `cmac_tags_equal`  | `0x10000348` | constant-time 16-byte compare                     |
+| `image_start`      | `0x10000394` | VTOR / MSP / `bx` launch block                    |
+| `boot_halt`        | `0x10000294` | the `BOOT FAILED` dead end                        |
+
+Double-click `verify_manifest`. The decompiler will show a stack copy of the
+manifest and a call that hands `fw_key` to `aes128_cmac`, then a 16-byte
+compare with the tag. That is the entire security model on one screen.
+
+### A.4 Recovering the key from the image (static)
+
+Inside `verify_manifest`, note the address pushed as the CMAC key. Follow it in
+the **Data** panel to `0x10006064`, or just ask the binary:
+
+```
+$ arm-none-eabi-nm -n $W/build/0x0026a_bootloader.elf | grep fw_key
+10006064 r fw_key
+```
+
+Rename the data (`L`) to `fw_key`, then read it as bytes in Ghidra - it is
+`49 72 6f 6e 4e 65 74 42 6f 6f 74 4b 65 79 21 21`, which is ASCII
+`IronNetBootKey!!`. That is the AES-128-CMAC key. There was no cryptography to
+break: the key was in `.rodata` the whole time.
+
+Cross-check the finding without the board. The signer implements AES and CMAC
+in pure Python, so the four official RFC 4493 vectors are a self-test you can
+read and reproduce (the `Key =`/`Tag =` block in Part 3 is your checklist).
+If your recovered key reproduces the shipped tag, you have proven both the key
+and the algorithm:
+
+```
+$ python3 $W/tools/sign_firmware.py $W/0x0026a_app.bin \
+    --verify $W/manifest.bin \
+    --key 49726f6e4e6574426f6f744b65792121
+stored   : ef041ec592f0c56727da2651d373947b
+computed : ef041ec592f0c56727da2651d373947b
+result   : MATCH
+```
+
+### A.5 Ghidra on the application (the AES gate)
+
+Repeat A.3 with `$W/build/0x0026a_app.elf`. The app is the richer target.
+
+| Symbol                | Address      | Observations                                    |
+| --------------------- | ------------ | ----------------------------------------------- |
+| `_reset_handler`      | `0x1002015c` | first code; trusts the SP/VTOR the bootloader set|
+| `main`                | `0x10020234` | thin orchestrator                               |
+| `ir_init` / `ir_getkey`| `0x1002027c` / `0x100202a4` | NEC receiver setup                |
+| `led_handle_ir`       | `0x100204d8` | flattened struct logic; compares `0xc`, `0x18`, `0x5e` |
+| `secret_print_banner` | `0x10020568` | four mbedtls calls; the banner decrypt           |
+
+Open `secret_print_banner`. The decompiler names the imported calls directly:
+
+```
+mbedtls_aes_init(ctx)
+mbedtls_aes_setkey_dec(ctx, key, 128)
+mbedtls_aes_crypt_cbc(ctx, MBEDTLS_AES_DECRYPT, 32, iv, ct, ct)
+mbedtls_aes_free(ctx)
+```
+
+The red data references give you every constant you need:
+
+| Data              | Address (VA) | Bytes                                             | ASCII             |
+| ----------------- | ------------ | ------------------------------------------------- | ----------------- |
+| banner format     | `0x10024d68` | `61 70 70 20 62 61 6e 6e 65 72 3a 20 25 73 0a 00` | `app banner: %s\n`|
+| banner ciphertext | `0x10024d78` | `ba ec 4a 19 ... 7b b2 e7 6e` (32 bytes)          | (binary)          |
+| banner IV         | `0x10024d9c` | `41 70 70 53...31 32 33 34 35`                     | `AppSecretIV12345`|
+| banner key        | `0x10024e6c` | `49 72 6f 6e...21 21`                              | `IronNetBootKey!!`|
+
+Note the last row: the AES key is identical to the CMAC key. One compromise, the
+whole chain falls - the classic "one key, two jobs" smell.
+
+### A.6 Decrypt on the host
+
+Ciphertext, IV, and key are now just three hex strings. OpenSSL finishes the
+job; you never needed the source:
+
+```
+$ printf 'baec4a1925861bb92dfd9f13f79b3e80cf12b698db9165be8fd7c3477bb2e76e' \
+  | xxd -r -p \
+  | openssl enc -d -aes-128-cbc \
+      -K 49726f6e4e6574426f6f744b65792121 \
+      -iv 41707053656372657449563132333435 -nopad
+SECRET: IR LINK SECURED ONLINE
+```
+
+Breaking the application took: import, click, copy three hex constants, run one
+command. AES was never attacked - the key schedule was simply lying in `.rodata`.
+
+### A.7 Forging an image the bootloader accepts
+
+The recovery is only interesting if you can act on it. Because you own the key,
+you can sign anything:
+
+1. Tamper the app (any byte, e.g. flip one in `0x0026a_app.bin`).
+2. Re-sign the tampered image, producing a new manifest, with the recovered
+   key:
+
+```
+$ python3 $W/tools/sign_firmware.py $W/0x0026a_app.bin \
+    --out $W/manifest.bin \
+    --key 49726f6e4e6574426f6f744b65792121 \
+    --app-base 0x10020000
+$ python3 $W/tools/sign_firmware.py $W/0x0026a_app.bin \
+    --verify $W/manifest.bin --key 49726f6e4e6574426f6f744b65792121
+```
+
+3. Flash the tampered app at `0x10020000` and the new manifest at `0x1001F000`
+   (Part 11). The bootloader computes the same CMAC over the tampered bytes,
+   the tag matches, and the rogue image runs. That is the whole "secure boot"
+   defeated with a key you read out of the image it was protecting.
+
+### A.8 Live GDB: watching the boot gate
+
+Now do the same hunt at runtime. The repo ships `debug-server.sh` (owns the
+Probe, leaves the target running on `127.0.0.1:3333`) and `pico-gdb-memory.gdb`
+(confines GDB reads to valid flash/RAM so register previews cannot fault SWD).
+
+Terminal 1:
+
+```
+$ ./debug-server.sh
+```
+
+Terminal 2:
+
+```
+$ $GDB $W/build/0x0026a_bootloader.elf
+(gdb) target extended-remote :3333
+(gdb) source pico-gdb-memory.gdb
+(gdb) monitor halt
+```
+
+Read the manifest straight out of flash and confirm the A.2 decode at runtime:
+
+```
+(gdb) x/4wx 0x1001F000
+0x1001f000: 0x424c4657  0x00000001  0x10020000  0x00005498
+(gdb) x/16bx 0x1001F010
+0x1001f010: 0xef 0x04 0x1e 0xc5 0x92 0xf0 0xc5 0x67 ...
+```
+
+Break on the gate, reset, and continue:
+
+```
+(gdb) hbreak *0x100003b0
+(gdb) monitor reset halt
+(gdb) continue
+```
+
+When it stops, dump the key argument the CMAC call will receive - the live
+version of A.4:
+
+```
+(gdb) x/16bx 0x10006064
+0x10060064: 0x49 0x72 0x6f 0x6e 0x4e 0x65 0x74 0x42 ...
+```
+
+`0x49 0x72 0x6f 0x6e ...` is `IronNetBootKey!!` again. Then watch the verdict:
+
+```
+(gdb) finish
+(gdb) info registers r0
+```
+
+`r0 == 1` means the tags matched and `boot_launch` is next. Set a breakpoint at
+the launch tail and single-step the handoff:
+
+```
+(gdb) break *0x100003ae
+(gdb) continue
+(gdb) info registers r3
+(gdb) x/2wx 0x10020000
+(gdb) stepi
+```
+
+`r3` equals `vectors[1]`, and after `stepi` the PC is in the app's
+`_reset_handler` with SP already set to `0x20082000`. The gate is behind you.
+
+### A.9 Live GDB: the application's AES
+
+Reattach to the app ELF (the core is already running it, so no reset is
+strictly needed, but a reset proves the chain end to end):
+
+```
+(gdb) file $W/build/0x0026a_app.elf
+(gdb) hbreak *0x10020568
+(gdb) monitor reset halt
+(gdb) continue
+```
+
+You are now at `secret_print_banner`, before the banner exists in RAM. Disassemble
+and read the three constants the same way Ghidra showed them:
+
+```
+(gdb) disassemble 0x10020568,+120
+(gdb) x/16bx 0x10024e6c      # banner key  -> IronNetBootKey!!
+(gdb) x/16bx 0x10024d9c      # banner IV   -> AppSecretIV12345
+(gdb) x/32bx 0x10024d78      # banner ciphertext
+```
+
+Single-step the four mbedtls calls and confirm the argument registers line up
+with A.5 (`r0 = ctx`, `r3 = iv`, and the ciphertext pointer on the stack). By
+the time `secret_print_banner` returns, the plaintext `SECRET: IR LINK SECURED
+ONLINE` has been printed - the same bytes OpenSSL produced on the host, now
+observed live on the silicon.
+
+### A.10 The stripped binary (no symbols, the real case)
+
+Everything above leaned on symbols. A shipped image usually has none. Delete the
+app from the Ghidra project and import `$W/0x0026a_app.bin` with **Language =
+ARM:LE:32:v8** and **Image base = 0x10020000**. Now reconstruct the anchors you
+already know from the easy pass:
+
+- **Strings first.** `Ctrl+Shift+S`, search `app banner: %s`. Its only xref is
+  the second half of `secret_print_banner` - you have found the function blind.
+- **Then its neighbours.** The IV `AppSecretIV12345` sits 0x24 bytes later in
+  `.rodata`; the key `IronNetBootKey!!` sits at `0x10024e6c`. Search the raw
+  bytes (`Search > For Bytes`, `41 70 70 53 ...`) to jump straight to them.
+- **Then the calls.** The `BL` targets into the mbedtls block
+  (`mbedtls_aes_setkey_dec` at `0x10024088`, `mbedtls_aes_crypt_cbc` at
+  `0x10024994`) confirm the four-call shape even without names.
+- **Then the manifest magic.** In the bootloader `.bin`, search for
+  `57 46 4c 42` (`WFLB`); its only compare is `manifest_is_valid`, which anchors
+  the whole boot sequence the same way `app banner: %s` anchored the app.
+
+Renaming data (`L`), applying types, and setting a couple of function
+signatures rebuilds the module structure from the raw blob - no debugger, no
+source, no strings beyond a printf format.
+
+### A.11 Cheat sheet
+
+| Task                          | Command / address                                             |
+| ----------------------------- | ------------------------------------------------------------ |
+| Start GDB server              | `./debug-server.sh` then `target extended-remote :3333`      |
+| Confine memory reads          | `source pico-gdb-memory.gdb`                                 |
+| Stop / reset target           | `monitor halt` / `monitor reset halt`                        |
+| Break on the gate             | `hbreak *0x100003b0` (`verify_manifest`)                     |
+| Manifest in flash             | `x/4wx 0x1001F000`                                           |
+| CMAC key in flash             | `x/16bx 0x10006064` -> `IronNetBootKey!!`                    |
+| App banner gate               | `hbreak *0x10020568` (`secret_print_banner`)                 |
+| Banner key / IV / ciphertext  | `0x10024e6c` / `0x10024d9c` / `0x10024d78`                   |
+| Re-sign an image              | `python3 tools/sign_firmware.py <bin> --out manifest.bin \`   |
+|                               | `  --key <hex> --app-base 0x10020000`                        |
+| Verify a manifest             | `python3 tools/sign_firmware.py <bin> --verify manifest.bin` |
+
+The lesson of the appendix is the lesson of the lab: the adversary never breaks
+AES. They read the manifest spec from a sector, lift the key from `.rodata`,
+and re-sign. Design your next boot chain so that the key is not in the image
+you are trusting it to protect.
