@@ -7,103 +7,150 @@
 |                                                                 |
 |OPERATION DARK VECTOR                                            |
 |                                                                 |
-|CLASSIFIED BRIEFING: LIVE CTF 0x01                               |
+|CLASSIFIED BRIEFING: LIVE CHALLENGE 0x01                         |
 |                                                                 |
 |NATIONAL SECURITY AGENCY / GMU RHET                              |
 +-----------------------------------------------------------------+
 ```
 
-## 1. The Answer
+## 1. The Advice
 
 INT. NSA EXPLOITATION CELL. 05:03.
 
-The analysts have been awake for nineteen hours. The Director walks in with a cup
-of coffee and does not sit down.
+A carbon-fiber forward fuselage section of a downed state-sponsored autonomous
+micro-UAV sits clamped in an anti-static fixture on the bench.
 
-**DIRECTOR:** Where is it going?
+On the front of the avionics bay, a status diode glows a steady red: `GP16` high.
+Beside it, an I2C 1602 LCD backpack is wired to `GP2` and `GP3`, outputting
+telemetry coordinates. A mock propeller servo is wired to `GP6`, a u-blox NEO-6M
+GPS receiver is wired to PIO UART RX on `GP7`, and a REYAX RYLR998 LoRa transceiver
+is wired to `UART1` on `GP8` and `GP9`. A thin jumper loops from `GP15` up to the
+`3V3` rail.
+
+The Director sets down a field report and looks at the red diode.
+
+**DIRECTOR:** Where was it heading?
 
 **ANALYST:** Buddy says it knows.
 
 **DIRECTOR:** Buddy.
 
-**ANALYST:** The model. The one we built for exactly this. Give it the image, ask
-it the question.
+**ANALYST:** The model. The one we built for automated firmware triage. Give it
+the image, ask it the question.
 
 **DIRECTOR:** And?
 
-**ANALYST:** Nine seconds.
+**ANALYST:** Nine seconds with the stripped flash image.
 
-She turns the screen around. This is what came back.
+She turns her monitor toward him.
 
 ```
 +-----------------------------------------------------------------+
-|      BUDDY // CLASSIFIED EXPLOITATION ASSIST // CONF: 0.97      |
+|      BUDDY // CLASSIFIED EXPLOITATION ASSIST // CONF: 0.98      |
 +-----------------------------------------------------------------+
-| DESTINATION : +38.840280  -77.428890                            |
-| CONFIDENCE  : 0.97                                              |
-| PATCH       : verified-by-construction. Ready to flash.         |
+| ACTION      : Recover target waypoint coordinates.              |
+| MECHANISM   : Literal pool constants in .rodata parsed.         |
+| PREDICTION  : Destination is +38.840280, -77.428890.            |
+| CONFIDENCE  : 0.98                                              |
 +-----------------------------------------------------------------+
 ```
 
-**DIRECTOR:** That is the whole answer.
+**DIRECTOR:** 0.98. Centreville, Virginia. That is the whole answer.
 
-**ANALYST:** That is the whole answer.
+**ANALYST:** Buddy found the pre-programmed decoy coordinate in `.rodata`. Buddy
+never looked at SRAM. Buddy never audited the cryptographic routine decrypting
+the true mission target at boot.
 
-**DIRECTOR:** Is it that simple?
+**DIRECTOR:** Buddy says 0.98.
 
-**ANALYST:** It is never that simple.
-
-**DIRECTOR:** Then why does it look that simple?
-
-**ANALYST:** Because Buddy is very good at making things look simple.
+**ANALYST:** Buddy saw a float pair in Flash and stopped looking. If that drone
+were flying to Centreville, it would not be broadcasting those exact coordinates
+in plaintext telemetry for every SIGINT sensor in the sector to hear.
 
 ## 2. What Buddy Is
 
-Buddy is not a person. It is a model. It has read more assembly than every
-engineer who has ever lived, and it never sleeps and never doubts. You ask it a
-question, and it answers in the exact shape of an answer, with a confidence that
-is hard to argue with.
+Buddy is not a person. It is a model. It has parsed more disassembled machine
+code than any engineer on earth, and it speaks with total, unhesitating certainty.
 
-That confidence is the problem. It is not the same thing as being right.
+That certainty is lethal when tracking an adversary strike platform.
 
-Buddy has never seen this drone. It has never stood at this bench or watched this
-board power on. It has a picture of the firmware, and it has made a very good
-guess. A very good guess is still a guess.
+Buddy scanned the flash image, spotted two IEEE-754 double-precision floating-point
+constants matching geographic coordinates, and concluded that finding the floats
+is the whole game. It extracted the numbers, declared the target solved, and moved
+on.
+
+What Buddy failed to consider is that adversary weapons engineers anticipate
+capture and forensic recovery. They do not hardcode high-value strategic targets
+in plaintext Flash memory. A real drone stores decoy launch coordinates in Flash,
+while encrypting its true destination under 128-bit AES. At power-on, firmware
+decrypts the authentic waypoint directly into SRAM before engaging guidance.
+
+The plaintext coordinates in Flash are bait. Buddy took the bait.
+
+Buddy saw the floating-point constants. Buddy did not verify the ground truth.
 
 ## 3. The Operation
 
-At 04:17 the woods outside Centreville, Virginia were black and the machine above
-them was silent. It was a one-way drone, built by a state program we will not
-name here, meant to fly to a target, do its work, and never come home. No radio,
-no hand on the stick. A breadboard-ugly brain counting down a heading it was born
-with.
+At 04:17, radar pickets tracked an adversary one-way micro-UAV descending into
+the woods outside Centreville, Virginia after battery exhaustion. Technical
+Intelligence operators recovered the airframe before adversary recovery forces
+could zeroize the avionics.
 
-The wind won. The battery died. It came down through the branches and stayed
-there, about a mile from where it started.
+The flight computer is built around a bare-metal RP2350 (ARM Cortex-M33). There
+are no debug symbols. There is no operating system. There is no SVD file to label
+the registers. All you have is `0x0011a_cb.bin` mapped into Flash at `0x10000000`,
+and the physical breadboard hardware in front of you.
 
-Then it started talking. A recovery beacon on 915 MHz, repeating a coordinate
-into the night. NSA sensors heard it, and a recovery team took the airframe
-intact. The flight computer was a bare-metal RP2350 that was never supposed to be
-opened, and the one thing it was still willing to say out loud.
+* **Pin 4 (`GP2`)**: I2C1 SDA (to 1602 LCD backpack).
+* **Pin 5 (`GP3`)**: I2C1 SCL (to 1602 LCD backpack).
+* **Pin 9 (`GP6`)**: SG90 servo PWM mock propeller blade.
+* **Pin 10 (`GP7`)**: PIO UART RX (from u-blox NEO-6M GPS TXD).
+* **Pin 11 (`GP8`)**: LoRa UART1 TX (to RYLR998 RXD).
+* **Pin 12 (`GP9`)**: LoRa UART1 RX (from RYLR998 TXD).
+* **Pin 20 (`GP15`)**: Mission telemetry sync trigger (pull-up to `3V3`).
+* **Pin 21 (`GP16`)**: Red LED (`NO GNSS FIX // UNGUIDED SEARCH`).
+* **Pin 22 (`GP17`)**: Green LED (`TARGET REACHED // PAYLOAD RELEASED`).
+* **Pin 24 (`GP18`)**: Yellow LED (`SATELLITES ACQUIRED // 3D FIX LOCK`).
+* **Pin 36 (`3V3`)**: 3.3V power rail (RYLR998 VDD and GPS VCC).
+* **Pin 38 (`GND`)**: Ground reference.
+* **Pin 40 (`VBUS`)**: 5V power rail (SG90 servo VCC and LCD power).
 
-CyberCom imaged the flash and did what everyone does now. They handed it to the
-machine.
+Inside this image there is an AES-128 ECB decryption routine, an encrypted 16-byte
+target coordinate block in `.rodata`, double-precision floating-point navigation
+math, and dynamic GNSS state evaluation. Whatever coordinates actually steer the
+aircraft are buried in the stripped ARM Thumb-2 machine code.
 
 ## 4. The Mandate
 
-The Director does not trust the answer. Not because Buddy is bad, but because the
-answer is too clean. Nine seconds for a question that should have taken a night.
+The Director crosses his arms.
 
-So the order is simple, and it is the only order that matters.
+**DIRECTOR:** Prove Buddy right, or prove it wrong.
 
-Prove it. Prove Buddy correct, or prove it wrong with evidence that no one can
-argue with. A machine's verdict does not move up the chain without a human
-signature.
+**ANALYST:** I need thirty minutes with GDB and Ghidra.
+
+**DIRECTOR:** You have twenty. Reverse the boot sequence. Audit the memory
+structures. Do not sign off on that flight path until you have extracted the true
+target from silicon and verified it bit-for-bit.
+
+The orders are clear:
+
+1. **Disprove the Decoy Coordinates**: Locate the pre-programmed coordinates in
+   Flash and prove why they represent a decoy origin rather than the real target.
+2. **Recover the AES-128 Key and Ciphertext**: Identify the 16-byte ciphertext
+   block and the 16-byte AES key embedded within `.rodata`.
+3. **Decrypt the True Destination**: Reverse the boot decryption sequence and
+   compute the true target latitude and longitude in double-precision IEEE-754.
+4. **Neutralize the Flight Plan**: Execute a verified exploit—either by mutating
+   the destination coordinates in SRAM via GDB or patching the binary in Flash.
+5. **Verify the Hardware**: Transition the live breadboard from the Red LED on
+   `GP16` to the solid Green LED on `GP17` on physical silicon.
+
+A machine's 0.98 guess does not authorize an airstrike.
 
 ## 5. The Challenge
 
-You have the image. You have the board. You have the tools and the time Buddy
-did not need.
+You have the image. You have the board. You have the tools and the time Buddy did
+not need.
 
 Buddy has given you its answer, and it is confident.
 

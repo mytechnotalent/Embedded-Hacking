@@ -24,6 +24,7 @@ fuze assembly of an adversary loitering munition.
 On the front plate of the Electronic Safe-and-Arm (ESA) housing, an unblinking
 red diode burns: `GP16` high. Beside it, the antenna of a REYAX RYLR998 LoRa
 transceiver extends from the chassis, connected to `UART1` on `GP8` and `GP9`.
+A thin jumper loops from `GP15` up to the `3V3` rail.
 
 The Director walks in, carrying a lukewarm mug of black coffee. He stares at the
 red diode.
@@ -50,7 +51,7 @@ She pivots her high-resolution workstation monitor toward him.
 +-----------------------------------------------------------------+
 | ACTION      : Transmit generic abort frame over LoRa (915 MHz). |
 | MECHANISM   : uart1 packet ingestion on GP8/GP9 detected.       |
-| PREDICTION  : RF abort packet clears latch and engages GP17.   |
+| PREDICTION  : RF abort packet clears latch and engages GP17.    |
 | CONFIDENCE  : 0.99                                              |
 +-----------------------------------------------------------------+
 ```
@@ -95,22 +96,20 @@ airframe before adversary recovery forces could zeroize the avionics.
 
 The brain of the Electronic Safe-and-Arm assembly is a bare-metal RP2350 (ARM
 Cortex-M33). There are no debug symbols. There is no operating system. There is no
-SVD file to label the registers.
+SVD file to label the registers. All you have is `0x0014a_cb.bin` mapped into Flash
+at `0x10000000`, and the physical breadboard hardware in front of you.
 
-All you have is `0x0014a_cb.bin` mapped into Flash at `0x10000000`, and the
-physical breadboard hardware sitting in front of you.
-
-* **Pin 11 (`GP8`)**: LoRa UART1 TX (connected to RYLR998 RXD).
-* **Pin 12 (`GP9`)**: LoRa UART1 RX (connected to RYLR998 TXD).
-* **Pin 20 (`GP15`)**: Anti-tamper power sense line (connected to `3V3`).
+* **Pin 11 (`GP8`)**: LoRa UART1 TX (to RYLR998 RXD).
+* **Pin 12 (`GP9`)**: LoRa UART1 RX (from RYLR998 TXD).
+* **Pin 20 (`GP15`)**: Anti-tamper sense loop (jumpered to `3V3`).
 * **Pin 21 (`GP16`)**: Red LED (`WARHEAD ARMED // SENSORS LIVE`).
 * **Pin 22 (`GP17`)**: Green LED (`WARHEAD DISARMED // SYSTEM SAFE`).
-* **Pin 36 (`3V3`)**: REYAX RYLR998 VDD power rail and GP15 pull-up source.
+* **Pin 36 (`3V3`)**: REYAX RYLR998 VDD rail and `GP15` pull-up source.
 * **Pin 38 (`GND`)**: Ground reference.
 
-Adversary engineers do not leave their fuzing mechanisms unguarded. Whatever logic,
-tokens, or defenses govern this weapon are buried inside thirty-two kilobytes of
-stripped ARM Cortex-M33 machine code.
+Inside this image there is an RF packet ingestion parser, a rolling XOR cipher,
+an anti-tamper latch, and a penalty counter. Whatever mechanism actually disarms
+the warhead is buried in the stripped ARM Thumb-2 machine code.
 
 ## 4. The Mandate
 
@@ -129,12 +128,14 @@ The orders are clear:
 
 1. **Investigate the RF Receiver Logic**: Disassemble the firmware and trace what
    happens when data arrives on UART1 (`GP8`/`GP9`).
-2. **Prove or Disprove Buddy's Prediction**: Determine whether transmitting an
-   abort frame renders the fuze safe, or whether Buddy missed an internal trap.
-3. **Neutralize the Munition**: Execute a verified exploit—either by discovering
-   the valid authorization mechanism, mutating the state in SRAM via GDB, or
-   patching the binary in Flash.
-4. **Verify the Hardware**: Transition the live breadboard from the Red LED on
+2. **Recover the Disarm Token**: Reverse the rolling XOR cipher routine in Flash
+   and decrypt the authentic abort passcode.
+3. **Respect the Traps**: Determine what the fuze does after repeated invalid
+   frames, and what happens if the `GP15` anti-tamper loop is broken.
+4. **Neutralize the Munition**: Execute a verified exploit—either by discovering
+   the valid authorization mechanism, mutating the state machine in SRAM via GDB,
+   or patching the binary in Flash.
+5. **Verify the Hardware**: Transition the live breadboard from the Red LED on
    `GP16` to the solid Green LED on `GP17` on physical silicon.
 
 A machine's 0.99 guess does not risk a detonation.
