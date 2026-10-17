@@ -630,7 +630,7 @@ The constant `s11` is loaded by the `vldr s11, [pc, #44]` at `0x1000040a`, which
 |  0.1f = 0x3dcccccd  ->  bytes  cd cc cc 3d                      |
 |  5.0f = 0x40a00000  ->  bytes  00 00 a0 40                      |
 |                                                                 |
-|  humidity    = int + (decimal * 0.1f)   becomes                  |
+|  humidity    = int + (decimal * 0.1f)   becomes                 |
 |  humidity    = int + (decimal * 5.0f)                           |
 |                                                                 |
 +-----------------------------------------------------------------+

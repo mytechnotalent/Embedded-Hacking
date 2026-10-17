@@ -55,17 +55,17 @@ typedef struct {
 |  Structure as a Container                                       |
 |                                                                 |
 |  simple_led_ctrl_t leds                                         |
-|  +-------------------------------------------------------------+|
-|  |  led1_pin: 16     led2_pin: 17     led3_pin: 18             ||
-|  |  +--------+       +--------+       +--------+               ||
-|  |  |   16   |       |   17   |       |   18   |               ||
-|  |  +--------+       +--------+       +--------+               ||
-|  |                                                             ||
-|  |  led1_state: false  led2_state: false  led3_state: false    ||
-|  |  +--------+       +--------+       +--------+               ||
-|  |  | false  |       | false  |       | false  |               ||
-|  |  +--------+       +--------+       +--------+               ||
-|  +-------------------------------------------------------------+|
+| +-------------------------------------------------------------+ |
+| |  led1_pin: 16     led2_pin: 17     led3_pin: 18             | |
+| |  +--------+       +--------+       +--------+               | |
+| |  |   16   |       |   17   |       |   18   |               | |
+| |  +--------+       +--------+       +--------+               | |
+| |                                                             | |
+| |  led1_state: false  led2_state: false  led3_state: false    | |
+| |  +--------+       +--------+       +--------+               | |
+| |  | false  |       | false  |       | false  |               | |
+| |  +--------+       +--------+       +--------+               | |
+| +-------------------------------------------------------------+ |
 |                                                                 |
 |  All 6 members live together as ONE variable called "leds"      |
 |                                                                 |
@@ -277,19 +277,19 @@ int result = add_numbers(5, 3); // result = 8
 |  }                                                              |
 |                                                                 |
 |  Example:                                                       |
-|  +-------------------------------------------------------------+|
-|  | int    ir_to_led_number ( int ir_command ) {                ||
-|  | ---    ---------------   ---------------                    ||
-|  |  |           |                  |                           ||
-|  |  |           |                  +-- Parameter (input)       ||
-|  |  |           +-- Function name                              ||
-|  |  +-- Return type (what it gives back)                       ||
-|  |                                                             ||
-|  |     if (ir_command == 0x0C) return 1;  <-- Body             ||
-|  |     if (ir_command == 0x18) return 2;                       ||
-|  |     return 0;                          <-- Return value     ||
-|  | }                                                           ||
-|  +-------------------------------------------------------------+|
+| +-------------------------------------------------------------+ |
+| | int    ir_to_led_number ( int ir_command ) {                | |
+| | ---    ---------------   ---------------                    | |
+| |  |           |                  |                           | |
+| |  |           |                  +-- Parameter (input)       | |
+| |  |           +-- Function name                              | |
+| |  +-- Return type (what it gives back)                       | |
+| |                                                             | |
+| |     if (ir_command == 0x0C) return 1;  <-- Body             | |
+| |     if (ir_command == 0x18) return 2;                       | |
+| |     return 0;                          <-- Return value     | |
+| | }                                                           | |
+| +-------------------------------------------------------------+ |
 |                                                                 |
 +-----------------------------------------------------------------+
 ```
@@ -380,23 +380,23 @@ bl   gpio_init      ; call gpio_init(18)
 |  Struct Flattening                                              |
 |                                                                 |
 |  C Level (High-level abstraction):                              |
-|  +-------------------------------------------------------------+|
-|  |  gpio_init(leds.led1_pin);                                  ||
-|  |  gpio_init(leds.led2_pin);                                  ||
-|  |  gpio_init(leds.led3_pin);                                  ||
-|  +-------------------------------------------------------------+|
+| +-------------------------------------------------------------+ |
+| |  gpio_init(leds.led1_pin);                                  | |
+| |  gpio_init(leds.led2_pin);                                  | |
+| |  gpio_init(leds.led3_pin);                                  | |
+| +-------------------------------------------------------------+ |
 |                      |                                          |
 |                      | Compiler transforms                      |
 |                      v                                          |
 |  Assembly Level (Flattened):                                    |
-|  +-------------------------------------------------------------+|
-|  |  movs r0, #16       ; Just the VALUE, no struct reference   ||
-|  |  bl   gpio_init                                             ||
-|  |  movs r0, #17       ; Next value directly                   ||
-|  |  bl   gpio_init                                             ||
-|  |  movs r0, #18       ; Next value directly                   ||
-|  |  bl   gpio_init                                             ||
-|  +-------------------------------------------------------------+|
+| +-------------------------------------------------------------+ |
+| |  movs r0, #16       ; Just the VALUE, no struct reference   | |
+| |  bl   gpio_init                                             | |
+| |  movs r0, #17       ; Next value directly                   | |
+| |  bl   gpio_init                                             | |
+| |  movs r0, #18       ; Next value directly                   | |
+| |  bl   gpio_init                                             | |
+| +-------------------------------------------------------------+ |
 |                                                                 |
 |  The struct abstraction DISAPPEARS at the assembly level!       |
 |  We just see individual values being loaded and used.           |

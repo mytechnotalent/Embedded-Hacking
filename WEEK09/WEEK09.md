@@ -457,11 +457,11 @@ Let's trace through what happens to `x`:
 |  ------------------+---------+--------------------------------- |
 |  int x = 5;        |    5    | x initialized to 5               |
 |  x * y             |    5    | arithmetic = 5 * 10 = 50         |
-|  x++               |  5->6    | increment = 5 (then x becomes 6)|
+|  x++               |  5->6   | increment = 5 (then x becomes 6) |
 |  x > y             |    6    | relational = (6 > 10) = false    |
 |  (x>y) && (y>x)    |    6    | logical = false && true = false  |
 |  x << 1            |    6    | bitwise = 6 << 1 = 12            |
-|  x += 5            |  6->11   | assignment = 6 + 5 = 11         |
+|  x += 5            |  6->11  | assignment = 6 + 5 = 11          |
 |                                                                 |
 +-----------------------------------------------------------------+
 ```
