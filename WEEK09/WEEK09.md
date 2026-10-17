@@ -205,7 +205,7 @@ int result = x << 1;  // Shift left by 1: 0b00001100 = 12
 |  x << 1 means "shift all bits LEFT by 1 position"               |
 |                                                                 |
 |  Before:  0 0 0 0 0 1 1 0  (6)                                  |
-|           ? ? ? ? ? ? ? ?                                       |
+|           < < < < < < < <                                       |
 |  After:   0 0 0 0 1 1 0 0  (12)                                 |
 |                                                                 |
 |  Each left shift DOUBLES the value!                             |
@@ -288,8 +288,8 @@ The **DHT11** is a low-cost digital temperature and humidity sensor. It uses a s
 
 | Parameter       | Range        | Accuracy |
 | --------------- | ------------ | -------- |
-| **Humidity**    | 20% - 90% RH | ?5% RH   |
-| **Temperature** | 0 deg C - 50 deg C   | ?2 deg C     |
+| **Humidity**    | 20% - 90% RH | +/- 5% RH |
+| **Temperature** | 0 deg C - 50 deg C   | +/- 2 deg C  |
 
 ### How DHT11 Communication Works
 
@@ -312,7 +312,7 @@ float hum, temp;
 
 // Pass ADDRESSES to the function so it can modify our variables
 if (dht11_read(&hum, &temp)) {
-    printf("Humidity: %.1f%%, Temperature: %.1f?C\n", hum, temp);
+    printf("Humidity: %.1f%%, Temperature: %.1f C\n", hum, temp);
 }
 ```
 
@@ -322,10 +322,10 @@ if (dht11_read(&hum, &temp)) {
 |                                                                 |
 |  Stack Memory                                                   |
 |  +----------------------------+                                 |
-|  | Address 0x20000008: hum    |?--- &hum (passed to function)   |
+|  | Address 0x20000008: hum    |<--- &hum (passed to function)   |
 |  | Value: 51.0                |                                 |
 |  +----------------------------+                                 |
-|  | Address 0x2000000C: temp   |?--- &temp (passed to function)  |
+|  | Address 0x2000000C: temp   |<--- &temp (passed to function)  |
 |  | Value: 23.8                |                                 |
 |  +----------------------------+                                 |
 |                                                                 |
@@ -368,11 +368,11 @@ Connect your DHT11 like this:
 |  Pico 2                             DHT11 Sensor                |
 |  +----------+                       +----------+                |
 |  |          |                       |          |                |
-|  | GPIO 4   |---------- DATA ------?| DATA     |                |
+|  | GPIO 4   |---------- DATA ------>| DATA     |                |
 |  |          |                       |          |                |
-|  | 3.3V     |---------- VCC -------?| VCC      |                |
+|  | 3.3V     |---------- VCC ------->| VCC      |                |
 |  |          |                       |          |                |
-|  | GND      |---------- GND -------?| GND      |                |
+|  | GND      |---------- GND ------->| GND      |                |
 |  |          |                       |          |                |
 |  +----------+                       +----------+                |
 |                                                                 |
@@ -435,7 +435,7 @@ int main(void) {
 
         float hum, temp;
         if (dht11_read(&hum, &temp)) {
-            printf("Humidity: %.1f%%, Temperature: %.1f?C\r\n", hum, temp);
+            printf("Humidity: %.1f%%, Temperature: %.1f C\r\n", hum, temp);
         } else {
             printf("DHT11 read failed\r\n");
         }
@@ -768,9 +768,9 @@ The Reset_Handler typically calls three functions:
 |  Reset_Handler Flow (crt0.S)                                    |
 |                                                                 |
 |  Reset_Handler:                                                 |
-|      1. Call some_init()     ?-- Initialize hardware            |
-|      2. Call main()          ?-- THIS IS WHAT WE WANT!          |
-|      3. Call exit()          ?-- Never returns                  |
+|      1. Call some_init()     <-- Initialize hardware            |
+|      2. Call main()          <-- THIS IS WHAT WE WANT!          |
+|      3. Call exit()          <-- Never returns                  |
 |                                                                 |
 |  The MIDDLE function is main!                                   |
 |                                                                 |
@@ -912,7 +912,7 @@ Let's decode the bytes `cc cc cc 3d`:
 4. **Calculate value:**
    - Actual exponent: 123 - 127 = -4
    - Mantissa value: 1.6 (approximately)
-   - Final value: 1.6 * 2^(-4) ? 0.1
+   - Final value: 1.6 * 2^(-4) ~= 0.1
 
 ### Example: Encoding -1.0f as 0xbf800000
 
