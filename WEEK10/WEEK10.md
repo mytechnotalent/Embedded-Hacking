@@ -67,7 +67,7 @@ while (true) {
 }
 ```
 
-```ext
+```text
 +-----------------------+
 |      choice = 1       |
 | set once, never       |
@@ -80,7 +80,7 @@ while (true) {
             | YES
             v
 +-----------------------+
-|     printf \'1\'      |
+|      printf '1'       |
 +-----------------------+
             .
             . NO (never taken)
@@ -90,13 +90,13 @@ while (true) {
             . YES (never reached)
             v
 +-----------------------+
-|     printf \'2\'      |
+|      printf '2'       |
 +-----------------------+
             .
             . NO
             v
 +-----------------------+
-|     printf \'?\'      |
+|      printf '?'       |
 +-----------------------+
 ```
 
@@ -263,7 +263,7 @@ Servo motors use PWM differently - they care about the **pulse width**, not the 
 
 The RP2350's system clock runs at **150 MHz** (150 million cycles per second). A servo needs a **50 Hz** signal (one pulse every 20 ms). How do we bridge this gap?
 
-```	ext
+```text
 +-----------------------+
 |     System Clock      |
 |        150 MHz        |
@@ -333,11 +333,11 @@ Let's calculate what happens when we command 90°:
 
 ## Part 6: Understanding the SG90 Servo Motor
 
-### What is the SG90°
+### What is the SG90?
 
 The **SG90** is a small, inexpensive hobby servo motor commonly used in robotics projects:
 
-```	ext
+```text
 [ SG90 Servo Motor ]
 +-----------------------------------+
 |  Motor ---> Gearbox ---> Arm      |
@@ -387,7 +387,7 @@ Servos can draw over 1000mA during movement spikes. The Pico's 3.3V regulator ca
 
 ### Correct Power Setup
 
-```	ext
+```text
 +-----------------+      +------------------------+
 |   USB Power     | ---> |       VBUS 5V          |
 +-----------------+      +------------------------+
@@ -446,7 +446,7 @@ Connect your servo like this:
 | Red (VCC)       | VBUS (5V)  |
 | Orange (Signal) | GPIO 6     |
 
-```	ext
+```text
 Hardware Setup:
 
   Pico 2                Servo SG90           Capacitor (1000uF 25V)
@@ -544,14 +544,14 @@ int main(void) {
 
 Since `choice = 1` and NEVER changes:
 
-```	ext
+```text
 +-------------------------+
 | Start Loop Iteration    | <-----------------------------------+
 +-------------------------+                                     |
              |                                                  |
              v                                                  |
      [ choice == 1 ] -- TRUE --> +-------------------------+    |
-                                 |       print \'1\'       |    |
+                                 |        print '1'        |    |
                                  +-------------------------+    |
                                               |                 |
                                               v                 |
@@ -559,7 +559,7 @@ Since `choice = 1` and NEVER changes:
                                               | MATCH           |
                                               v                 |
                                  +-------------------------+    |
-                                 |      print \'one\'      |    |
+                                 |       print 'one'       |    |
                                  +-------------------------+    |
                                               |                 |
                                               v                 |
@@ -1306,7 +1306,7 @@ bne  skip_printf    ; If NOT equal, skip the printf
 skip_printf:
 ```
 
-```	ext
+```text
 +---------------------------------+
 | cmp r4, #0x31                   |
 | Sets flags based on r4 - 0x31   |
@@ -1504,7 +1504,7 @@ python ..\uf2conv.py build\0x0020_dynamic-conditionals-h.bin --base 0x10000000 -
 
 ### PWM Calculation Summary
 
-```	ext
+```text
 +---------+         +-------------+         +-----------+         +--------------+
 |  Angle  | Formula | Pulse Width | 1us=    | PWM Ticks | Servo   | Servo Motion |
 | degrees | ------> |     µs      | 1 tick  |           | Motion  |              |
