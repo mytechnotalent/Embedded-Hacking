@@ -406,11 +406,11 @@ This chapter covers hacking the double floating-point data type as it relates to
 ## Week 6
 Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ GPIO Input Basics
 
-### Classified Brief 0x01 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/0x0011a_cb/CLASSIFIED-BRIEF-0x01.md)
+### Classified Brief 0x01 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/0x0011a_cb/CLASSIFIED-BRIEF-0x01.md)
 
-### Classified Brief 0x01 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/0x0011a_cb/0x0011a_cb.bin)
+### Classified Brief 0x01 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/0x0011a_cb/0x0011a_cb.bin)
 
-### Classified Brief 0x01 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/0x0011a_cb/0x0011a_cb.uf2)
+### Classified Brief 0x01 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/0x0011a_cb/0x0011a_cb.uf2)
 
 ### Week 6 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-SLIDES.pdf)
 
@@ -438,11 +438,11 @@ This chapter covers hacking static variables as well as an intro to GPIO inputs 
 ## Week 7
 Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C Basics
 
-### Classified Brief 0x02 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/0x0014a_cb/CLASSIFIED-BRIEF-0x02.md)
+### Classified Brief 0x02 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/0x0014a_cb/CLASSIFIED-BRIEF-0x02.md)
 
-### Classified Brief 0x02 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/0x0014a_cb/0x0014a_cb.bin)
+### Classified Brief 0x02 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/0x0014a_cb/0x0014a_cb.bin)
 
-### Classified Brief 0x02 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/0x0014a_cb/0x0014a_cb.uf2)
+### Classified Brief 0x02 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/0x0014a_cb/0x0014a_cb.uf2)
 
 ### Week 7 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-SLIDES.pdf)
 
@@ -565,11 +565,11 @@ This chapter covers hacking dynamic conditionals as well as additional PWM examp
 Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote Control and NEC Protocol Basics
 
 
-### Classified Brief 0x05 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/0x0020a_cb/CLASSIFIED-BRIEF-0x05.md)
+### Classified Brief 0x05 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/0x0020a_cb/CLASSIFIED-BRIEF-0x05.md)
 
-### Classified Brief 0x05 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/0x0020a_cb/0x0020a_cb.bin)
+### Classified Brief 0x05 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/0x0020a_cb/0x0020a_cb.bin)
 
-### Classified Brief 0x05 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/0x0020a_cb/0x0020a_cb.uf2)
+### Classified Brief 0x05 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/0x0020a_cb/0x0020a_cb.uf2)
 
 ## Week 11 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-SLIDES.pdf)
 
