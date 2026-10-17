@@ -81,3 +81,16 @@ build-flash.log
 # Nested repositories
 eCTF/
 
+# Whitelist course binaries in WEEK folders
+!WEEK*/**/build/
+!WEEK*/**/build/**
+!WEEK*/**/*.elf
+!WEEK*/**/*.hex
+!WEEK*/**/*.bin
+!WEEK*/**/*.uf2
+!WEEK*/**/*.map
+!WEEK*/**/*.dis
+!WEEK*/**/*.bndb
+!WEEK*/**/*.a
+!WEEK*/**/*.ld
+!WEEK*/**/*.h
