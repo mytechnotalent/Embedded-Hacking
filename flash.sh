@@ -40,7 +40,7 @@
 #                  lower it to 1000.
 #
 # Examples:
-#   ./flash.sh 0x0005_intro-to-variables/build/0x0005_intro-to-variables.bin
+#   ./flash.sh WEEK04/0x0005_intro-to-variables/build/0x0005_intro-to-variables.bin
 #   ADAPTER_SPEED=1000 ./flash.sh build/hacked.bin
 #   PICO_OPENOCD=/opt/homebrew/bin ./flash.sh build/hacked.bin
 #

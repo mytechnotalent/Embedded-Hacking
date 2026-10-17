@@ -37,7 +37,7 @@
                    lower it to 1000.
 
 .EXAMPLE
-    .\flash.ps1 -Bin 0x0005_intro-to-variables\build\0x0005_intro-to-variables.bin
+    .\flash.ps1 -Bin WEEK04\0x0005_intro-to-variables\build\0x0005_intro-to-variables.bin
 
 .EXAMPLE
     $env:ADAPTER_SPEED=1000; .\flash.ps1 -Bin build\hacked.bin

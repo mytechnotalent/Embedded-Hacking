@@ -138,30 +138,30 @@ The **build** step is identical on all three platforms — CMake and Ninja are c
 ### Windows x64
 
 ```powershell
-cd 0x0001_hello-world
+cd WEEK01\0x0001_hello-world
 cmake -B build -G Ninja -DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350 -DCMAKE_BUILD_TYPE=Release
 cmake --build build
-..\flash.ps1 build\0x0001_hello-world.bin
+..\..\flash.ps1 build\0x0001_hello-world.bin
 ```
 Serial monitor: **PuTTY** -> *Serial* -> the Debug Probe's COM port -> **115200**.
 
 ### macOS Apple Silicon
 
 ```bash
-cd 0x0001_hello-world
+cd WEEK01/0x0001_hello-world
 cmake -B build -G Ninja -DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350 -DCMAKE_BUILD_TYPE=Release
 cmake --build build
-../flash.sh build/0x0001_hello-world.bin
+../../flash.sh build/0x0001_hello-world.bin
 screen /dev/cu.usbmodem* 115200
 ```
 
 ### Linux x64
 
 ```bash
-cd 0x0001_hello-world
+cd WEEK01/0x0001_hello-world
 cmake -B build -G Ninja -DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350 -DCMAKE_BUILD_TYPE=Release
 cmake --build build
-../flash.sh build/0x0001_hello-world.bin
+../../flash.sh build/0x0001_hello-world.bin
 screen /dev/ttyACM0 115200
 ```
 
@@ -283,15 +283,15 @@ Embedded System Analysis: Understanding the RP2350 Architecture w/ Comprehensive
 
 ### Ghidra Patching Tutorial [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK03/GHIDRA_PATCHING_TUTORIAL.md)
 
-### CTF-01 Instructions [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-01-I.md)
+### CTF-01 Instructions [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/0x0001b_ctf/CTF-01-I.md)
 
-### CTF-01 Rubric [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-01-R.md)
+### CTF-01 Rubric [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/0x0001b_ctf/CTF-01-R.md)
 
-### CTF-01 Solution [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-01-S.md)
+### CTF-01 Solution [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/0x0001b_ctf/CTF-01-S.md)
 
-### CTF-01 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-01.bin)
+### CTF-01 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/0x0001b_ctf/CTF-01.bin)
 
-### CTF-01 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0001b_ctf/CTF-01.uf2)
+### CTF-01 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK04/0x0001b_ctf/CTF-01.uf2)
 
 ### Chapter 4: Embedded System Analysis
 This chapter covers a comprehensive embedded system analysis reviewing parts of the RP2350 datasheet and helpful firmware analysis tools.
@@ -406,11 +406,11 @@ This chapter covers hacking the double floating-point data type as it relates to
 ## Week 6
 Static Variables in Embedded Systems: Debugging and Hacking Static Variables w/ GPIO Input Basics
 
-### Classified Brief 0x01 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/CLASSIFIED-BRIEF-0x01.md)
+### Classified Brief 0x01 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/0x0011a_cb/CLASSIFIED-BRIEF-0x01.md)
 
-### Classified Brief 0x01 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/0x0011a_cb.bin)
+### Classified Brief 0x01 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/0x0011a_cb/0x0011a_cb.bin)
 
-### Classified Brief 0x01 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0011a_cb/0x0011a_cb.uf2)
+### Classified Brief 0x01 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK05/0x0011a_cb/0x0011a_cb.uf2)
 
 ### Week 6 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/WEEK06-SLIDES.pdf)
 
@@ -438,11 +438,11 @@ This chapter covers hacking static variables as well as an intro to GPIO inputs 
 ## Week 7
 Constants in Embedded Systems: Debugging and Hacking Constants w/ 1602 LCD I2C Basics
 
-### Classified Brief 0x02 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0014a_cb/CLASSIFIED-BRIEF-0x02.md)
+### Classified Brief 0x02 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/0x0014a_cb/CLASSIFIED-BRIEF-0x02.md)
 
-### Classified Brief 0x02 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0014a_cb/0x0014a_cb.bin)
+### Classified Brief 0x02 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/0x0014a_cb/0x0014a_cb.bin)
 
-### Classified Brief 0x02 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0014a_cb/0x0014a_cb.uf2)
+### Classified Brief 0x02 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK06/0x0014a_cb/0x0014a_cb.uf2)
 
 ### Week 7 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/WEEK07-SLIDES.pdf)
 
@@ -470,25 +470,25 @@ This chapter covers hacking constants as well as an intro to I2C as we work a 16
 ## Week 8
 ### Midterm Exam
 
-### CTF-02 Instructions [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0017a_ctf/CTF-02-I.md)
+### CTF-02 Instructions [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/0x0017a_ctf/CTF-02-I.md)
 
-### CTF-02 Rubric [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0017a_ctf/CTF-02-R.md)
+### CTF-02 Rubric [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/0x0017a_ctf/CTF-02-R.md)
 
-### CTF-02 Solution [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0017a_ctf/CTF-02-S.md)
+### CTF-02 Solution [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/0x0017a_ctf/CTF-02-S.md)
 
-### CTF-02 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0017a_ctf/CTF-02.bin)
+### CTF-02 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/0x0017a_ctf/CTF-02.bin)
 
-### CTF-02 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0017a_ctf/CTF-02.uf2)
+### CTF-02 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK07/0x0017a_ctf/CTF-02.uf2)
 
 ## Week 9
 Operators in Embedded Systems: Debugging and Hacking Operators w/ DHT11 Temperature & Humidity Sensor Single-Wire Protocol Basics
 
 
-### Classified Brief 0x03 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/CLASSIFIED-BRIEF-0x03.md)
+### Classified Brief 0x03 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/0x001aa_cb/CLASSIFIED-BRIEF-0x03.md)
 
-### Classified Brief 0x03 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/0x001aa_cb.bin)
+### Classified Brief 0x03 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/0x001aa_cb/0x001aa_cb.bin)
 
-### Classified Brief 0x03 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001aa_cb/0x001aa_cb.uf2)
+### Classified Brief 0x03 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/0x001aa_cb/0x001aa_cb.uf2)
 
 ### Week 9 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK09/WEEK09-SLIDES.pdf)
 
@@ -517,11 +517,11 @@ This chapter covers hacking operators as well as an intro to single-wire protoco
 Conditionals in Embedded Systems: Debugging and Hacking Static & Dynamic Conditionals w/ SG90 Servo Motor PWM Basics
 
 
-### Classified Brief 0x04 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/CLASSIFIED-BRIEF-0x04.md)
+### Classified Brief 0x04 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/0x001da_cb/CLASSIFIED-BRIEF-0x04.md)
 
-### Classified Brief 0x04 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/0x001da_cb.bin)
+### Classified Brief 0x04 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/0x001da_cb/0x001da_cb.bin)
 
-### Classified Brief 0x04 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x001da_cb/0x001da_cb.uf2)
+### Classified Brief 0x04 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/0x001da_cb/0x001da_cb.uf2)
 
 ## Week 10 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/WEEK10-SLIDES.pdf)
 
@@ -565,11 +565,11 @@ This chapter covers hacking dynamic conditionals as well as additional PWM examp
 Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote Control and NEC Protocol Basics
 
 
-### Classified Brief 0x05 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0020a_cb/CLASSIFIED-BRIEF-0x05.md)
+### Classified Brief 0x05 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/0x0020a_cb/CLASSIFIED-BRIEF-0x05.md)
 
-### Classified Brief 0x05 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0020a_cb/0x0020a_cb.bin)
+### Classified Brief 0x05 BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/0x0020a_cb/0x0020a_cb.bin)
 
-### Classified Brief 0x05 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0020a_cb/0x0020a_cb.uf2)
+### Classified Brief 0x05 UF2 [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK10/0x0020a_cb/0x0020a_cb.uf2)
 
 ## Week 11 Slides [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-SLIDES.pdf)
 
@@ -577,15 +577,15 @@ Structures and Functions in Embedded Systems: Debugging and Hacking w/ IR Remote
 
 ## Week 11a Secure Boot + Custom Bootloader Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11a.md)
 
-### 0x0026a Custom Secure Bootloader [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/README.md)
+### 0x0026a Custom Secure Bootloader [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/0x0026a_custom-bootloader/README.md)
 
-### 0x0026a Bootloader BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/0x0026a_bootloader.bin)
+### 0x0026a Bootloader BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/0x0026a_custom-bootloader/0x0026a_bootloader.bin)
 
-### 0x0026a Signed Application BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/0x0026a_app.bin)
+### 0x0026a Signed Application BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/0x0026a_custom-bootloader/0x0026a_app.bin)
 
-### 0x0026a Manifest BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/manifest.bin)
+### 0x0026a Manifest BIN [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/0x0026a_custom-bootloader/manifest.bin)
 
-### 0x0026a Full Secure Boot UF2 (bootloader + manifest + app) [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/0x0026a_custom-bootloader/0x0026a_full.uf2)
+### 0x0026a Full Secure Boot UF2 (bootloader + manifest + app) [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/0x0026a_custom-bootloader/0x0026a_full.uf2)
 
 ## Week 11-BN Notebook [HERE](https://github.com/mytechnotalent/Embedded-Hacking/blob/main/WEEK11/WEEK11-BN.md)
 
