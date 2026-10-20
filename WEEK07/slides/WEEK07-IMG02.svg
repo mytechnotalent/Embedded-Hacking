@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">I2C Protocol</text>
+<text class="dim" x="600" y="88" text-anchor="middle">Two-Wire Serial Communication</text>
+
+<!-- Top Left: What is I2C -->
+<rect class="pnl" x="30" y="110" width="555" height="190" rx="8"/>
+<text class="sub" x="50" y="145">What is I2C?</text>
+<text class="txt" x="50" y="180">Two-wire serial protocol</text>
+<text class="cyn" x="50" y="210">SDA</text>
+<text class="txt" x="120" y="210">= Serial Data</text>
+<text class="cyn" x="50" y="240">SCL</text>
+<text class="txt" x="120" y="240">= Serial Clock</text>
+<text class="dim" x="50" y="270">Open-drain with pull-up resistors</text>
+
+<!-- Top Right: Bus Diagram -->
+<rect class="pnl" x="615" y="110" width="555" height="190" rx="8"/>
+<text class="sub" x="635" y="145">I2C Bus</text>
+<rect x="655" y="165" width="100" height="40" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text class="grn" x="680" y="192">Pico</text>
+<line x1="755" y1="175" x2="850" y2="175" stroke="#00d4ff" stroke-width="2"/>
+<line x1="755" y1="195" x2="850" y2="195" stroke="#ffaa00" stroke-width="2"/>
+<text class="dim" x="770" y="170">SDA</text>
+<text class="dim" x="770" y="215">SCL</text>
+<rect x="850" y="165" width="100" height="40" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text class="red" x="878" y="192">LCD</text>
+<text class="dim" x="655" y="245">GPIO 2 = SDA, GPIO 3 = SCL</text>
+<text class="dim" x="655" y="270">Pull-ups hold lines HIGH</text>
+
+<!-- Middle: Device Addresses -->
+<rect class="pnl" x="30" y="315" width="1140" height="135" rx="8"/>
+<text class="sub" x="50" y="350">Common I2C Addresses (7-bit)</text>
+<rect x="50" y="365" width="250" height="60" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="amb" x="70" y="392">0x27</text>
+<text class="dim" x="160" y="392">LCD</text>
+<rect x="320" y="365" width="250" height="60" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="amb" x="340" y="392">0x3F</text>
+<text class="dim" x="430" y="392">LCD Alt</text>
+<rect x="590" y="365" width="265" height="60" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="amb" x="610" y="392">0x48</text>
+<text class="dim" x="700" y="392">Sensor</text>
+<rect x="875" y="365" width="275" height="60" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="amb" x="895" y="392">0x50</text>
+<text class="dim" x="985" y="392">EEPROM</text>
+
+<!-- Bottom: Transaction Flow -->
+<rect class="pnl" x="30" y="465" width="1140" height="185" rx="8"/>
+<text class="sub" x="50" y="500">I2C Transaction Flow</text>
+<rect x="50" y="520" width="95" height="40" rx="4" fill="#00ff41" fill-opacity="0.15" stroke="#00ff41"/>
+<text class="grn" x="65" y="546">START</text>
+<text class="txt" x="155" y="546">--></text>
+<rect x="200" y="520" width="140" height="40" rx="4" fill="#00d4ff" fill-opacity="0.15" stroke="#00d4ff"/>
+<text class="cyn" x="215" y="546">Address</text>
+<text class="txt" x="350" y="546">--></text>
+<rect x="395" y="520" width="80" height="40" rx="4" fill="#ffaa00" fill-opacity="0.15" stroke="#ffaa00"/>
+<text class="amb" x="413" y="546">ACK</text>
+<text class="txt" x="485" y="546">--></text>
+<rect x="530" y="520" width="95" height="40" rx="4" fill="#00d4ff" fill-opacity="0.15" stroke="#00d4ff"/>
+<text class="cyn" x="548" y="546">Data</text>
+<text class="txt" x="635" y="546">--></text>
+<rect x="680" y="520" width="80" height="40" rx="4" fill="#ffaa00" fill-opacity="0.15" stroke="#ffaa00"/>
+<text class="amb" x="698" y="546">ACK</text>
+<text class="txt" x="770" y="546">--></text>
+<rect x="815" y="520" width="90" height="40" rx="4" fill="#ff0040" fill-opacity="0.15" stroke="#ff0040"/>
+<text class="red" x="833" y="546">STOP</text>
+
+<text class="dim" x="50" y="595">Master sends START, then 7-bit address + R/W bit</text>
+<text class="dim" x="50" y="620">Slave responds with ACK, then data bytes follow</text>
+
+<!-- Footer -->
+
+</svg>

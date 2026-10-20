@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">.ELF vs .BIN Analysis</text>
+<text class="dim" x="600" y="88" text-anchor="middle">Ghidra Analysis of 0x0026_functions</text>
+
+<!-- Comparison Table -->
+<rect class="pnl" x="30" y="110" width="1140" height="220" rx="8"/>
+<text class="sub" x="50" y="150">.ELF vs .BIN Comparison</text>
+
+<text class="amb" x="50" y="190">Feature</text>
+<text class="amb" x="350" y="190">.BIN File</text>
+<text class="amb" x="700" y="190">.ELF File</text>
+<line x1="50" y1="200" x2="1140" y2="200" stroke="#1a1a2e" stroke-width="1"/>
+
+<text class="txt" x="50" y="230">Symbols</text>
+<text class="red" x="350" y="230">None</text>
+<text class="grn" x="700" y="230">Function names</text>
+
+<text class="txt" x="50" y="260">Sections</text>
+<text class="red" x="350" y="260">Raw bytes only</text>
+<text class="grn" x="700" y="260">.text .data .rodata</text>
+
+<text class="txt" x="50" y="290">Debug info</text>
+<text class="red" x="350" y="290">None</text>
+<text class="grn" x="700" y="290">May include debug</text>
+
+<text class="txt" x="50" y="320">Use case</text>
+<text class="txt" x="350" y="320">Flash to device</text>
+<text class="txt" x="700" y="320">Analysis + debug</text>
+
+<!-- Ghidra Import -->
+<rect class="pnl" x="30" y="350" width="555" height="200" rx="8"/>
+<text class="sub" x="50" y="390">Importing .BIN</text>
+<text class="txt" x="50" y="425">Manual setup required:</text>
+<text class="dim" x="50" y="450">ARM Cortex 32 little endian</text>
+<text class="dim" x="50" y="480">Block: .text</text>
+<text class="dim" x="50" y="505">Base: 10000000</text>
+<text class="dim" x="50" y="530">No function names</text>
+
+<rect class="pnl" x="615" y="350" width="555" height="200" rx="8"/>
+<text class="sub" x="635" y="390">Importing .ELF</text>
+<text class="txt" x="635" y="425">Auto-detected by Ghidra:</text>
+<text class="grn" x="635" y="450">ARM format recognized</text>
+<text class="grn" x="635" y="480">Sections auto-loaded</text>
+<text class="grn" x="635" y="505">Symbol tree populated</text>
+<text class="grn" x="635" y="530">Named functions visible</text>
+
+<!-- Important Note -->
+<rect class="pnl" x="30" y="570" width="1140" height="100" rx="8"/>
+<text class="sub" x="50" y="610">Important Rule</text>
+<text class="red" x="50" y="645">Analyze the .ELF</text>
+<text class="dim" x="350" y="645">for symbol information</text>
+<text class="grn" x="650" y="645">Patch the .BIN</text>
+<text class="dim" x="900" y="645">for flashing</text>
+
+<!-- Workflow -->
+<rect class="pnl" x="30" y="690" width="1140" height="70" rx="8"/>
+<text class="sub" x="50" y="722">Export Workflow</text>
+<text class="dim" x="50" y="742">Patch .bin in Ghidra --> uf2conv.py --> flash to Pico 2</text>
+</svg>

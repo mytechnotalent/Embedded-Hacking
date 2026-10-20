@@ -1,0 +1,9 @@
+build/CMakeFiles/
+build/pico_sdk/
+build/pico-sdk/
+build/generated/
+build/_deps/
+build/*.o
+build/*.d
+build/*.obj
+!.vscode/*

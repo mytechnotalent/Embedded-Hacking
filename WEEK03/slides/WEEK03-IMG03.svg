@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">XIP — Execute In Place</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Run Code Directly from Flash — No Copy Needed</text>
+
+<!-- Left Panel: Analogy -->
+<rect x="40" y="110" width="540" height="220" rx="8" class="pnl"/>
+<text x="60" y="148" class="sub">Book Analogy</text>
+
+<rect x="60" y="168" width="500" height="60" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="75" y="195" class="red">Without XIP</text>
+<text x="75" y="220" class="dim">Photocopy every page, read copy</text>
+
+<rect x="60" y="240" width="500" height="60" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="75" y="267" class="grn">With XIP</text>
+<text x="75" y="292" class="dim">Read directly from the book!</text>
+
+<!-- Right Panel: Advantages -->
+<rect x="620" y="110" width="540" height="220" rx="8" class="pnl"/>
+<text x="640" y="148" class="sub">Why Use XIP?</text>
+
+<rect x="640" y="168" width="500" height="42" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text x="655" y="196" class="grn">Saves RAM</text>
+<text x="900" y="196" class="dim">Code stays in flash</text>
+
+<rect x="640" y="220" width="500" height="42" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text x="655" y="248" class="grn">Faster Boot</text>
+<text x="900" y="248" class="dim">No bulk copy needed</text>
+
+<rect x="640" y="272" width="500" height="42" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text x="655" y="300" class="grn">Simpler</text>
+<text x="900" y="300" class="dim">Less memory mgmt</text>
+
+<!-- Bottom Panel: Flash Layout at 0x10000000 -->
+<rect x="40" y="355" width="1120" height="415" rx="8" class="pnl"/>
+<text x="60" y="393" class="sub">XIP Flash Region at 0x10000000</text>
+
+<!-- Vector Table block -->
+<rect x="60" y="415" width="1080" height="80" rx="4" fill="#0f1a0f" stroke="#00ff41" stroke-width="2"/>
+<text x="80" y="445" class="grn">Vector Table</text>
+<text x="80" y="475" class="dim">SP at offset 0x00   |   Reset Handler at offset 0x04   |   Exception handlers...</text>
+
+<!-- Your Code block -->
+<rect x="60" y="510" width="1080" height="80" rx="4" fill="#0a0a0f" stroke="#00d4ff" stroke-width="2"/>
+<text x="80" y="540" class="cyn">Your Code</text>
+<text x="80" y="570" class="dim">_reset_handler   |   main()   |   other functions</text>
+
+<!-- Read-Only Data block -->
+<rect x="60" y="605" width="1080" height="80" rx="4" fill="#0a0a0f" stroke="#ffaa00" stroke-width="2"/>
+<text x="80" y="635" class="amb">Read-Only Data</text>
+<text x="80" y="665" class="dim">Strings like "hello, world"   |   constant values</text>
+
+<!-- Address labels -->
+<text x="1040" y="445" class="dim" text-anchor="end">0x10000000</text>
+<text x="1040" y="540" class="dim" text-anchor="end">0x100001xx</text>
+<text x="1040" y="635" class="dim" text-anchor="end">0x10001xxx</text>
+
+<text x="60" y="730" class="txt">CPU fetches instructions directly</text>
+<text x="60" y="760" class="txt">from flash via XIP cache.</text>
+</svg>

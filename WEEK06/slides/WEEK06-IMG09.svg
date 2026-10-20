@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Hacking the Binary</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Two patches with a hex editor</text>
+
+<!-- Offset Formula -->
+<rect x="40" y="110" width="1120" height="100" rx="8" class="pnl"/>
+<text x="600" y="148" text-anchor="middle" class="sub">File Offset Formula</text>
+<text x="60" y="188" class="grn">offset = address - 0x10000000</text>
+<text x="600" y="188" class="dim">Example: 0x10000264 -> 0x264</text>
+
+<!-- Hack 1 -->
+<rect x="40" y="230" width="1120" height="240" rx="8" class="pnl"/>
+<text x="600" y="268" text-anchor="middle" class="sub">Hack 1: Change 42 to 43</text>
+
+<text x="60" y="308" class="txt">Target: movs r1, #0x2a</text>
+<text x="60" y="338" class="dim">at address 0x10000264 (offset 0x264)</text>
+
+<rect x="60" y="358" width="500" height="55" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="80" y="393" class="red">Before: 2A 21</text>
+<text x="310" y="393" class="dim">movs r1, #42</text>
+
+<rect x="620" y="358" width="520" height="55" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="640" y="393" class="grn">After:  2B 21</text>
+<text x="880" y="393" class="dim">movs r1, #43</text>
+
+<text x="60" y="443" class="dim">Thumb encoding: imm8 byte first, opcode 0x21 second</text>
+
+<!-- Hack 2 -->
+<rect x="40" y="490" width="1120" height="290" rx="8" class="pnl"/>
+<text x="600" y="528" text-anchor="middle" class="sub">Hack 2: Invert Button Logic</text>
+
+<text x="60" y="568" class="txt">Target: eor.w r3, r3, #1</text>
+<text x="60" y="598" class="dim">at address 0x10000286 (offset 0x286)</text>
+
+<rect x="60" y="618" width="500" height="55" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="80" y="653" class="red">Before: 83 F0 01 03</text>
+
+<rect x="620" y="618" width="520" height="55" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="640" y="653" class="grn">After:  83 F0 00 03</text>
+
+<text x="60" y="703" class="dim">Byte at offset 0x288:</text>
+<text x="380" y="703" class="red">01</text>
+<text x="430" y="703" class="txt">-></text>
+<text x="470" y="703" class="grn">00</text>
+
+<text x="60" y="738" class="txt">XOR with 0 = no invert</text>
+<text x="60" y="758" class="dim">LED now ON by default, OFF when pressed</text>
+</svg>

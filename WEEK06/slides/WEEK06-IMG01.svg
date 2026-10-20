@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Static vs Regular Vars</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Persistence across loop iterations</text>
+
+<!-- Regular Variable -->
+<rect x="40" y="110" width="540" height="310" rx="8" class="pnl"/>
+<text x="310" y="148" text-anchor="middle" class="sub">Regular (auto)</text>
+
+<rect x="60" y="168" width="500" height="55" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="80" y="202" class="red">Loop 1: 42 -> 43 -> destroy</text>
+
+<rect x="60" y="233" width="500" height="55" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="80" y="267" class="red">Loop 2: 42 -> 43 -> destroy</text>
+
+<rect x="60" y="298" width="500" height="55" rx="4" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="80" y="332" class="red">Loop 3: 42 -> 43 -> destroy</text>
+
+<text x="60" y="393" class="txt">Always prints:</text>
+<text x="340" y="393" class="red">42</text>
+
+<!-- Static Variable -->
+<rect x="620" y="110" width="540" height="310" rx="8" class="pnl"/>
+<text x="890" y="148" text-anchor="middle" class="sub">Static</text>
+
+<rect x="640" y="168" width="500" height="55" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="660" y="202" class="grn">Loop 1: 42 -> 43 (kept!)</text>
+
+<rect x="640" y="233" width="500" height="55" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="660" y="267" class="grn">Loop 2: 43 -> 44 (kept!)</text>
+
+<rect x="640" y="298" width="500" height="55" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="660" y="332" class="grn">Loop 3: 44 -> 45 (kept!)</text>
+
+<text x="640" y="393" class="txt">Keeps incrementing:</text>
+<text x="960" y="393" class="grn">42,43,44...</text>
+
+<!-- Code Example -->
+<rect x="40" y="440" width="1120" height="160" rx="8" class="pnl"/>
+<text x="600" y="478" text-anchor="middle" class="sub">Declaration Syntax</text>
+
+<rect x="60" y="498" width="500" height="80" rx="4" fill="#0a0a0f" stroke="#1a1a2e" stroke-width="1"/>
+<text x="80" y="530" class="txt">uint8_t reg = 42;</text>
+<text x="80" y="558" class="dim">Recreated each iteration</text>
+
+<rect x="620" y="498" width="520" height="80" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="640" y="530" class="grn">static uint8_t s = 42;</text>
+<text x="640" y="558" class="dim">Persists for program life</text>
+
+<!-- Overflow Note -->
+<rect x="40" y="620" width="1120" height="160" rx="8" class="pnl"/>
+<text x="600" y="658" text-anchor="middle" class="sub">uint8_t Overflow</text>
+
+<text x="60" y="698" class="txt">255 + 1 =</text>
+<text x="260" y="698" class="red">0</text>
+<text x="320" y="698" class="dim">(wraps around!)</text>
+
+<text x="60" y="733" class="dim">Binary: 11111111 + 1 = 100000000 (9 bits)</text>
+<text x="60" y="763" class="dim">Only 8 bits kept: 00000000 = 0</text>
+</svg>

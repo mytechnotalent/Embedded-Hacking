@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">Hacking Structures</text>
+<text class="dim" x="600" y="88" text-anchor="middle">Swapping GPIO Pin Assignments</text>
+
+<!-- The Hack -->
+<rect class="pnl" x="30" y="110" width="555" height="200" rx="8"/>
+<text class="sub" x="50" y="150">Swap LED 1 and LED 2</text>
+<text class="txt" x="50" y="185">Find gpio_init values:</text>
+<text class="red" x="50" y="220">0x10 (16)</text>
+<text class="amb" x="230" y="220">--></text>
+<text class="grn" x="290" y="220">0x11 (17)</text>
+<text class="red" x="50" y="255">0x11 (17)</text>
+<text class="amb" x="230" y="255">--></text>
+<text class="grn" x="290" y="255">0x10 (16)</text>
+<text class="dim" x="50" y="290">Swap the two byte values</text>
+
+<!-- Result -->
+<rect class="pnl" x="615" y="110" width="555" height="200" rx="8"/>
+<text class="sub" x="635" y="150">Result After Hack</text>
+
+<text class="amb" x="635" y="185">Before:</text>
+<text class="txt" x="635" y="215">Btn 1 --> GPIO 16 --> Red</text>
+<text class="txt" x="635" y="245">Btn 2 --> GPIO 17 --> Green</text>
+
+<text class="amb" x="635" y="275">After:</text>
+<text class="grn" x="790" y="275">SWAPPED!</text>
+
+<!-- Before/After Detail -->
+<rect class="pnl" x="30" y="330" width="555" height="150" rx="8"/>
+<text class="sub" x="50" y="370">Before (Normal)</text>
+<text class="txt" x="50" y="405">Btn 1 (0x0C) --> GPIO 16</text>
+<text class="red" x="450" y="405">Red</text>
+<text class="txt" x="50" y="435">Btn 2 (0x18) --> GPIO 17</text>
+<text class="grn" x="450" y="435">Green</text>
+<text class="dim" x="50" y="465">Log and LED match correctly</text>
+
+<rect class="pnl" x="615" y="330" width="555" height="150" rx="8"/>
+<text class="sub" x="635" y="370">After (Hacked)</text>
+<text class="txt" x="635" y="405">Btn 1 (0x0C) --> GPIO 17</text>
+<text class="grn" x="1035" y="405">Green!</text>
+<text class="txt" x="635" y="435">Btn 2 (0x18) --> GPIO 16</text>
+<text class="red" x="1035" y="435">Red!</text>
+<text class="dim" x="635" y="465">Log says RED but GREEN lights</text>
+
+<!-- Log Desynchronization -->
+<rect class="pnl" x="30" y="500" width="1140" height="180" rx="8"/>
+<text class="sub" x="50" y="540">Log Desynchronization</text>
+
+<text class="amb" x="50" y="575">Terminal Log:</text>
+<text class="txt" x="300" y="575">NEC command: 0x0C</text>
+<text class="dim" x="600" y="575">(expects Red)</text>
+
+<text class="amb" x="50" y="610">Physical LED:</text>
+<text class="grn" x="300" y="610">GREEN LED on</text>
+<text class="red" x="600" y="610">MISMATCH!</text>
+
+<text class="dim" x="50" y="645">Operator sees correct logs but WRONG behavior</text>
+
+<!-- Stuxnet Reference -->
+<rect class="pnl" x="30" y="700" width="1140" height="60" rx="8"/>
+<text class="sub" x="50" y="735">Stuxnet:</text>
+<text class="dim" x="250" y="735">False "normal" data to operators, equipment destroyed</text>
+</svg>

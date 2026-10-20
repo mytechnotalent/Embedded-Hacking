@@ -1,0 +1,93 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Data Copy &amp; BSS Clear</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Initializing RAM Before main() Can Run</text>
+
+<!-- Left Panel: Data Copy -->
+<rect x="40" y="110" width="555" height="420" rx="8" class="pnl" stroke="#00d4ff" stroke-width="2"/>
+<text x="60" y="148" class="cyn">Phase 2: Data Copy</text>
+<text x="60" y="178" class="dim">Copy initialized variables flash -> RAM</text>
+
+<text x="60" y="218" class="txt">C code:</text>
+<rect x="60" y="230" width="515" height="42" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text x="75" y="258" class="amb">int counter = 42;</text>
+
+<text x="60" y="300" class="txt">Value 42 stored in flash</text>
+<text x="60" y="330" class="txt">but variables live in RAM!</text>
+
+<!-- Flash -> RAM diagram -->
+<rect x="60" y="358" width="210" height="60" rx="4" fill="#0f1a0f" stroke="#00ff41" stroke-width="2"/>
+<text x="165" y="395" text-anchor="middle" class="grn">Flash</text>
+
+<text x="290" y="395" class="amb">-></text>
+
+<rect x="320" y="358" width="210" height="60" rx="4" fill="#0a0a1f" stroke="#00d4ff" stroke-width="2"/>
+<text x="425" y="395" text-anchor="middle" class="cyn">RAM</text>
+
+<!-- data_cpy_table -->
+<text x="60" y="448" class="dim">data_cpy_table has entries:</text>
+<rect x="60" y="458" width="515" height="55" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text x="75" y="482" class="dim">src: 0x10001B4C (flash)</text>
+<text x="75" y="507" class="dim">dst: 0x20000110 (RAM)</text>
+
+<!-- Right Panel: BSS Clear -->
+<rect x="625" y="110" width="535" height="420" rx="8" class="pnl" stroke="#00ff41" stroke-width="2"/>
+<text x="645" y="148" class="grn">Phase 3: BSS Clear</text>
+<text x="645" y="178" class="dim">Zero uninitialized global variables</text>
+
+<text x="645" y="218" class="txt">C code:</text>
+<rect x="645" y="230" width="495" height="42" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text x="660" y="258" class="amb">int my_counter;</text>
+
+<text x="645" y="300" class="txt">C standard requires</text>
+<text x="645" y="330" class="txt">this to start at zero.</text>
+
+<!-- BSS loop diagram -->
+<rect x="645" y="358" width="495" height="110" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="665" y="388" class="txt">r1 = BSS start</text>
+<text x="665" y="418" class="txt">r2 = BSS end</text>
+<text x="665" y="448" class="txt">r0 = 0</text>
+
+<text x="645" y="498" class="dim">Loop: store 0, advance r1</text>
+<text x="645" y="524" class="dim">Until r1 == r2 -> done!</text>
+
+<!-- Bottom Panel: Assembly -->
+<rect x="40" y="555" width="1120" height="215" rx="8" class="pnl"/>
+<text x="60" y="593" class="sub">Key Assembly Instructions</text>
+
+<!-- Data Copy ASM -->
+<rect x="60" y="610" width="530" height="42" rx="4" fill="#0a0a0f" stroke="#00d4ff" stroke-width="1"/>
+<text x="75" y="638" class="cyn">ldmia r4!, {r1,r2,r3}</text>
+
+<text x="60" y="672" class="dim">Load source, dest, end from table</text>
+
+<rect x="60" y="690" width="530" height="42" rx="4" fill="#0a0a0f" stroke="#00d4ff" stroke-width="1"/>
+<text x="75" y="718" class="cyn">bl data_cpy</text>
+
+<text x="60" y="750" class="dim">Copy word-by-word until done</text>
+
+<!-- BSS Clear ASM -->
+<rect x="630" y="610" width="510" height="42" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="645" y="638" class="grn">movs r0, #0</text>
+
+<text x="630" y="672" class="dim">Load zero into r0</text>
+
+<rect x="630" y="690" width="510" height="42" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="645" y="718" class="grn">stmia r1!, {r0}</text>
+
+<text x="630" y="750" class="dim">Store zero, advance pointer</text>
+</svg>

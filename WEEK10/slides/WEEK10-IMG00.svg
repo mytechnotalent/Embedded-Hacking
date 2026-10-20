@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Background grid decoration -->
+<g opacity="0.06">
+  <line x1="0" y1="100" x2="1200" y2="100" stroke="#00ff41" stroke-width="1"/>
+  <line x1="0" y1="200" x2="1200" y2="200" stroke="#00ff41" stroke-width="1"/>
+  <line x1="0" y1="300" x2="1200" y2="300" stroke="#00ff41" stroke-width="1"/>
+  <line x1="0" y1="400" x2="1200" y2="400" stroke="#00ff41" stroke-width="1"/>
+  <line x1="0" y1="500" x2="1200" y2="500" stroke="#00ff41" stroke-width="1"/>
+  <line x1="0" y1="600" x2="1200" y2="600" stroke="#00ff41" stroke-width="1"/>
+  <line x1="0" y1="700" x2="1200" y2="700" stroke="#00ff41" stroke-width="1"/>
+  <line x1="200" y1="0" x2="200" y2="800" stroke="#00ff41" stroke-width="1"/>
+  <line x1="400" y1="0" x2="400" y2="800" stroke="#00ff41" stroke-width="1"/>
+  <line x1="600" y1="0" x2="600" y2="800" stroke="#00ff41" stroke-width="1"/>
+  <line x1="800" y1="0" x2="800" y2="800" stroke="#00ff41" stroke-width="1"/>
+  <line x1="1000" y1="0" x2="1000" y2="800" stroke="#00ff41" stroke-width="1"/>
+</g>
+
+<!-- Hex rain decoration -->
+<g opacity="0.04" font-family="'Courier New',monospace" font-size="14" fill="#00ff41">
+  <text x="50" y="80">4F 70 65 6E 4F 43 44</text>
+  <text x="900" y="120">10 00 02 34 08 B5 01</text>
+  <text x="150" y="180">47 44 42 20 52 45 56</text>
+  <text x="800" y="240">20 08 20 00 FF AA 00</text>
+  <text x="80" y="350">52 50 32 33 35 30 00</text>
+  <text x="950" y="380">0A 0A 0F 12 12 1A 1A</text>
+  <text x="100" y="520">41 52 4D 76 38 2D 4D</text>
+  <text x="870" y="560">00 FF 41 00 D4 FF 88</text>
+  <text x="60" y="680">47 48 49 44 52 41 00</text>
+  <text x="920" y="720">FF 00 40 C0 C0 C0 00</text>
+</g>
+
+<!-- Corner accents -->
+<polyline points="30,30 30,80 80,80" fill="none" stroke="#00ff41" stroke-width="2" opacity="0.3"/>
+<polyline points="1170,30 1170,80 1120,80" fill="none" stroke="#00ff41" stroke-width="2" opacity="0.3"/>
+<polyline points="30,770 30,720 80,720" fill="none" stroke="#00ff41" stroke-width="2" opacity="0.3"/>
+<polyline points="1170,770 1170,720 1120,720" fill="none" stroke="#00ff41" stroke-width="2" opacity="0.3"/>
+
+<!-- Top accent line -->
+<rect x="100" y="140" width="1000" height="2" fill="#00ff41" opacity="0.4"/>
+
+<!-- Course Title -->
+<text x="600" y="210" text-anchor="middle" font-family="'Courier New',monospace" font-size="56" font-weight="bold" fill="#00ff41">Embedded Systems</text>
+<text x="600" y="278" text-anchor="middle" font-family="'Courier New',monospace" font-size="56" font-weight="bold" fill="#00ff41">Reverse Engineering</text>
+
+<!-- Divider -->
+<rect x="300" y="310" width="600" height="2" fill="#00d4ff" opacity="0.6"/>
+
+<!-- Week Number -->
+<text x="600" y="380" text-anchor="middle" font-family="'Courier New',monospace" font-size="42" font-weight="bold" fill="#00d4ff">// WEEK 10</text>
+
+<!-- Week Topic -->
+<text x="600" y="440" text-anchor="middle" font-family="'Courier New',monospace" font-size="28" fill="#c0c0c0">Conditionals in Embedded Systems:</text>
+<text x="600" y="478" text-anchor="middle" font-family="'Courier New',monospace" font-size="28" fill="#c0c0c0">Debugging and Hacking Static &amp; Dynamic</text>
+<text x="600" y="516" text-anchor="middle" font-family="'Courier New',monospace" font-size="28" fill="#c0c0c0">Conditionals w/ SG90 Servo Motor PWM</text>
+
+<!-- Bottom accent line -->
+<rect x="100" y="570" width="1000" height="2" fill="#00ff41" opacity="0.4"/>
+
+<!-- University -->
+<text x="600" y="635" text-anchor="middle" font-family="'Courier New',monospace" font-size="36" font-weight="bold" fill="#ffaa00">George Mason University</text>
+
+<!-- Bottom badge -->
+<rect x="400" y="670" width="400" height="40" rx="20" fill="none" stroke="#00ff41" stroke-width="1.5" opacity="0.5"/>
+<text x="600" y="697" text-anchor="middle" font-family="'Courier New',monospace" font-size="20" fill="#00ff41" opacity="0.7">RP2350 // ARM Cortex-M33</text>
+</svg>

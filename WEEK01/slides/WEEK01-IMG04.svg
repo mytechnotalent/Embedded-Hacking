@@ -1,0 +1,90 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Stack vs Heap in RAM</text>
+<text x="600" y="88" text-anchor="middle" class="dim">RP2350 SRAM: Data, BSS, Heap, Stack</text>
+
+  <!-- Left Panel: RAM Layout Diagram -->
+  <rect x="30" y="105" width="400" height="675" class="pnl" rx="8"/>
+  <text x="230" y="148" text-anchor="middle" class="sub">SRAM Layout</text>
+  <line x1="50" y1="163" x2="410" y2="163" stroke="#1a1a2e"/>
+
+  <!-- High address label -->
+  <text x="55" y="195" class="dim">0x2008_2000 (top)</text>
+
+  <!-- Stack region -->
+  <rect x="55" y="210" width="345" height="150" rx="4" fill="#1a0f0f" stroke="#ff0040" stroke-width="2"/>
+  <text x="227" y="255" text-anchor="middle" class="red">STACK</text>
+  <text x="227" y="290" text-anchor="middle" class="txt">Grows DOWN</text>
+  <text x="227" y="322" text-anchor="middle" class="dim">SP = top of stack</text>
+
+  <!-- Down arrow from stack -->
+  <polygon points="215,370 227,395 239,370" fill="#ff0040"/>
+  <line x1="227" y1="360" x2="227" y2="370" stroke="#ff0040" stroke-width="3"/>
+
+  <!-- Free space -->
+  <rect x="55" y="400" width="345" height="80" rx="4" fill="#0a0a0f" stroke="#888888" stroke-width="1" stroke-dasharray="6"/>
+  <text x="227" y="448" text-anchor="middle" class="dim">FREE SPACE</text>
+
+  <!-- Up arrow from heap -->
+  <line x1="227" y1="510" x2="227" y2="495" stroke="#00ff41" stroke-width="3"/>
+  <polygon points="215,510 227,485 239,510" fill="#00ff41"/>
+
+  <!-- Heap region -->
+  <rect x="55" y="515" width="345" height="120" rx="4" fill="#0f1a0f" stroke="#00ff41" stroke-width="2"/>
+  <text x="227" y="560" text-anchor="middle" class="grn">HEAP</text>
+  <text x="227" y="592" text-anchor="middle" class="txt">Grows UP</text>
+  <text x="227" y="620" text-anchor="middle" class="dim">heap_base = __end__</text>
+
+  <!-- Data + BSS -->
+  <rect x="55" y="650" width="345" height="50" rx="4" fill="#0f0f1a" stroke="#00d4ff" stroke-width="2"/>
+  <text x="227" y="683" text-anchor="middle" class="cyn">.data + .bss</text>
+
+  <!-- Low address label -->
+  <text x="55" y="725" class="dim">0x2000_0000 (base)</text>
+
+  <!-- Right Panel: Details -->
+  <rect x="460" y="105" width="710" height="675" class="pnl" rx="8"/>
+  <text x="815" y="148" text-anchor="middle" class="sub">How To Read Sizes Quickly</text>
+  <line x1="480" y1="163" x2="1150" y2="163" stroke="#1a1a2e"/>
+
+  <!-- Short formulas -->
+  <text x="485" y="220" class="cyn">1) .data size</text>
+  <text x="485" y="258" class="txt">__data_end__ - __data_start__</text>
+  <text x="780" y="220" class="dim">init non-zero globals/statics</text>
+
+  <line x1="480" y1="288" x2="1150" y2="288" stroke="#1a1a2e"/>
+
+  <text x="485" y="338" class="cyn">2) .bss size</text>
+  <text x="485" y="376" class="txt">__bss_end__ - __bss_start__</text>
+  <text x="780" y="338" class="dim">zero/uninit globals/statics</text>
+
+  <line x1="480" y1="406" x2="1150" y2="406" stroke="#1a1a2e"/>
+
+  <text x="485" y="456" class="grn">3) Heap starts at</text>
+  <text x="485" y="494" class="txt">__end__  (aka __HeapBase)</text>
+
+  <line x1="480" y1="524" x2="1150" y2="524" stroke="#1a1a2e"/>
+
+  <text x="485" y="574" class="red">4) Stack starts at</text>
+  <text x="485" y="612" class="txt">vector_table[0]  (initial SP)</text>
+  <text x="485" y="644" class="dim">typical: 0x20082000 on RP2350</text>
+
+  <line x1="480" y1="674" x2="1150" y2="674" stroke="#1a1a2e"/>
+
+  <text x="485" y="724" class="amb">5) Safety rule</text>
+  <text x="485" y="762" class="txt">Heap must never collide with stack</text>
+</svg>
