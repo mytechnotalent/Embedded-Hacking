@@ -77,7 +77,11 @@ ge.
 
 All must report `arm64`. If any is `x86_64`, put the Apple Silicon prefix first for the session and check again:
 
-bash
+```bash
+export PATH="/opt/homebrew/bin:$PATH"
+hash -r
+file "$(which cmake)"
+```
 
 ## Glossary
 
