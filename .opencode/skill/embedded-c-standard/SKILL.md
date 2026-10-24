@@ -1,6 +1,6 @@
 ---
 name: embedded-c-standard
-description: Use ONLY when writing, editing, or reviewing C firmware in a picokit project (firmware/src, firmware/include, firmware/tests). Enforces the strict C standard: no function over 8 executable lines, no blank lines inside a function body, a Doxygen block with @brief/@param/@return on every function, a fixed module layout and naming scheme, and a ban on em/en dashes. Run the bundled audit_c_standard.py before every commit.
+description: "Use ONLY when writing, editing, or reviewing C firmware in a picokit project (firmware/src, firmware/include, firmware/tests). Enforces the strict C standard: no function over 8 executable lines, no blank lines inside a function body, a Doxygen block with @brief/@param/@return on every function, a fixed module layout and naming scheme, and a ban on em/en dashes. Run the bundled audit_c_standard.py before every commit."
 ---
 
 # Embedded C standard (picokit)
