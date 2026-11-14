@@ -1,0 +1,80 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Failed vs Real Hack</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Attack Methodology</text>
+
+  <!-- Left Panel: Failed Attempt -->
+  <rect x="30" y="105" width="560" height="675" class="pnl" rx="8"/>
+  <text x="310" y="148" text-anchor="middle" class="sub">Failed Attempt</text>
+  <line x1="50" y1="163" x2="570" y2="163" stroke="#1a1a2e"/>
+
+  <text x="55" y="205" class="red">The Bad Idea</text>
+  <text x="55" y="240" class="txt">Set r0 to point</text>
+  <text x="55" y="272" class="txt">at a string literal</text>
+  <text x="55" y="304" class="txt">like "hacky"</text>
+
+  <line x1="50" y1="332" x2="570" y2="332" stroke="#1a1a2e"/>
+
+  <text x="55" y="372" class="amb">Why It Fails</text>
+  <text x="55" y="407" class="txt">r0 only holds a</text>
+  <text x="55" y="439" class="txt">32-bit number</text>
+  <text x="55" y="471" class="txt">Not a string itself!</text>
+
+  <line x1="50" y1="499" x2="570" y2="499" stroke="#1a1a2e"/>
+
+  <text x="55" y="539" class="red">set $r0 = "HACK"</text>
+  <text x="55" y="574" class="txt">GDB interprets this</text>
+  <text x="55" y="611" class="txt">as an address value</text>
+  <text x="55" y="643" class="txt">pointing to garbage</text>
+
+  <line x1="50" y1="671" x2="570" y2="671" stroke="#1a1a2e"/>
+
+  <text x="310" y="710" text-anchor="middle" class="red">Result: CRASH</text>
+  <text x="310" y="745" text-anchor="middle" class="dim">or prints garbage</text>
+
+  <!-- Right Panel: Real Hack -->
+  <rect x="620" y="105" width="550" height="675" class="pnl" rx="8"/>
+  <text x="895" y="148" text-anchor="middle" class="sub">Real Hack</text>
+  <line x1="640" y1="163" x2="1150" y2="163" stroke="#1a1a2e"/>
+
+  <text x="645" y="205" class="grn">The Right Way</text>
+  <text x="645" y="240" class="txt">1. Write string</text>
+  <text x="645" y="272" class="txt">   bytes to SRAM</text>
+  <text x="645" y="304" class="txt">2. Point r0 to</text>
+  <text x="645" y="336" class="txt">   that SRAM addr</text>
+
+  <line x1="640" y1="364" x2="1150" y2="364" stroke="#1a1a2e"/>
+
+  <text x="645" y="404" class="cyn">GDB Commands</text>
+
+  <rect x="645" y="425" width="480" height="42" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+  <text x="660" y="453" class="grn">set {char[13]}0x20040000</text>
+
+  <rect x="645" y="477" width="480" height="42" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+  <text x="660" y="505" class="grn">  = "hacky, world"</text>
+
+  <rect x="645" y="539" width="480" height="42" rx="4" fill="#0a0a0f" stroke="#1a1a2e"/>
+  <text x="660" y="567" class="amb">set $r0 = 0x20040000</text>
+
+  <line x1="640" y1="610" x2="1150" y2="610" stroke="#1a1a2e"/>
+
+  <text x="645" y="650" class="txt">String exists in</text>
+  <text x="645" y="682" class="txt">writable SRAM</text>
+  <text x="645" y="714" class="txt">r0 points to it</text>
+
+  <text x="895" y="760" text-anchor="middle" class="grn">"hacky, world" printed!</text>
+</svg>

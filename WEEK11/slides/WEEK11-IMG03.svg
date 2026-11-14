@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">NEC IR Protocol</text>
+<text class="dim" x="600" y="88" text-anchor="middle">Infrared Remote Control Communication</text>
+
+<!-- How IR Works -->
+<rect class="pnl" x="30" y="110" width="1140" height="140" rx="8"/>
+<text class="sub" x="50" y="150">How IR Works</text>
+<text class="txt" x="50" y="185">Remote sends invisible light pulses</text>
+<text class="txt" x="50" y="215">IR receiver on GPIO 5 reads signal</text>
+<text class="dim" x="600" y="185">IR LED flashes in specific patterns</text>
+<text class="dim" x="600" y="215">Each pattern = different button</text>
+
+<!-- NEC Frame -->
+<rect class="pnl" x="30" y="270" width="1140" height="200" rx="8"/>
+<text class="sub" x="50" y="310">NEC Protocol Frame (32 bits)</text>
+
+<rect x="50" y="330" width="180" height="50" rx="6" fill="#0a0a0f" stroke="#ffaa00"/>
+<text class="amb" x="80" y="362">Leader</text>
+<rect x="240" y="330" width="180" height="50" rx="6" fill="#0a0a0f" stroke="#00d4ff"/>
+<text class="cyn" x="268" y="362">Address</text>
+<rect x="430" y="330" width="180" height="50" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="txt" x="455" y="362">Addr Inv</text>
+<rect x="620" y="330" width="180" height="50" rx="6" fill="#0a0a0f" stroke="#00ff41"/>
+<text class="grn" x="648" y="362">Command</text>
+<rect x="810" y="330" width="180" height="50" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="txt" x="840" y="362">Cmd Inv</text>
+<rect x="1000" y="330" width="130" height="50" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="dim" x="1030" y="362">Stop</text>
+
+<text class="dim" x="80" y="410">9ms+4.5ms</text>
+<text class="dim" x="280" y="410">8-bit</text>
+<text class="dim" x="460" y="410">8-bit check</text>
+<text class="dim" x="660" y="410">8-bit</text>
+<text class="dim" x="850" y="410">8-bit check</text>
+
+<text class="dim" x="50" y="450">Leader says "attention!", address identifies device, command is the button pressed</text>
+
+<!-- Command Code Table -->
+<rect class="pnl" x="30" y="490" width="555" height="200" rx="8"/>
+<text class="sub" x="50" y="530">NEC Command Codes</text>
+
+<text class="amb" x="50" y="570">Button</text>
+<text class="amb" x="200" y="570">NEC Code</text>
+<text class="amb" x="380" y="570">LED</text>
+<line x1="50" y1="580" x2="565" y2="580" stroke="#1a1a2e" stroke-width="1"/>
+
+<text class="txt" x="50" y="610">1</text>
+<text class="grn" x="200" y="610">0x0C</text>
+<text class="red" x="380" y="610">Red (GP16)</text>
+
+<text class="txt" x="50" y="640">2</text>
+<text class="grn" x="200" y="640">0x18</text>
+<text class="grn" x="380" y="640">Green (GP17)</text>
+
+<text class="txt" x="50" y="670">3</text>
+<text class="grn" x="200" y="670">0x5E</text>
+<text class="amb" x="380" y="670">Yellow (GP18)</text>
+
+<!-- Wiring -->
+<rect class="pnl" x="615" y="490" width="555" height="200" rx="8"/>
+<text class="sub" x="635" y="530">Hardware Wiring</text>
+<text class="cyn" x="635" y="565">GPIO 5</text>
+<text class="txt" x="800" y="565">IR Receiver (VS1838B)</text>
+<text class="cyn" x="635" y="595">GPIO 16</text>
+<text class="txt" x="800" y="595">Red LED + 220 ohm</text>
+<text class="cyn" x="635" y="625">GPIO 17</text>
+<text class="txt" x="800" y="625">Green LED + 220 ohm</text>
+<text class="cyn" x="635" y="655">GPIO 18</text>
+<text class="txt" x="800" y="655">Yellow LED + 220 ohm</text>
+
+<!-- Bottom -->
+<rect class="pnl" x="30" y="710" width="1140" height="50" rx="8"/>
+<text class="dim" x="50" y="742">Projects: 0x0023_structures and 0x0026_functions</text>
+</svg>
