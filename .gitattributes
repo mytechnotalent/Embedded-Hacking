@@ -1,0 +1,12 @@
+*.c linguist-detectable=true
+*.cmake linguist-detectable=false
+*.py linguist-detectable=false
+*.txt linguist-detectable=false
+*.json linguist-detectable=false
+*.ps1 linguist-detectable=false
+
+# Line endings: store LF in the repository; check out LF everywhere except the
+# Windows PowerShell scripts, which stay CRLF. Prevents CRLF<->LF churn.
+* text=auto eol=lf
+*.ps1 text eol=crlf
+

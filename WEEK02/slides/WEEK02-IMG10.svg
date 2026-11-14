@@ -1,0 +1,75 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">GDB vs Ghidra</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Static vs Dynamic Analysis</text>
+
+  <!-- Left Panel: GDB -->
+  <rect x="30" y="105" width="560" height="675" class="pnl" rx="8"/>
+  <text x="310" y="148" text-anchor="middle" class="sub">GDB (Dynamic)</text>
+  <line x1="50" y1="163" x2="570" y2="163" stroke="#1a1a2e"/>
+
+  <text x="55" y="205" class="grn">Live analysis</text>
+  <text x="55" y="240" class="txt">Program is running</text>
+  <text x="55" y="272" class="txt">on real hardware</text>
+
+  <line x1="50" y1="300" x2="570" y2="300" stroke="#1a1a2e"/>
+
+  <text x="55" y="340" class="cyn">Capabilities</text>
+  <text x="55" y="375" class="txt">Set breakpoints</text>
+  <text x="55" y="407" class="txt">Read/write memory</text>
+  <text x="55" y="439" class="txt">Modify registers</text>
+  <text x="55" y="471" class="txt">Step instructions</text>
+  <text x="55" y="503" class="txt">Watch values change</text>
+
+  <line x1="50" y1="531" x2="570" y2="531" stroke="#1a1a2e"/>
+
+  <text x="55" y="571" class="amb">Best For</text>
+  <text x="55" y="606" class="txt">Live modification</text>
+  <text x="55" y="638" class="txt">Runtime behavior</text>
+  <text x="55" y="670" class="txt">Testing exploits</text>
+  <text x="55" y="702" class="txt">Verifying attacks</text>
+
+  <text x="310" y="755" text-anchor="middle" class="dim">Needs running target</text>
+
+  <!-- Right Panel: Ghidra -->
+  <rect x="620" y="105" width="550" height="675" class="pnl" rx="8"/>
+  <text x="895" y="148" text-anchor="middle" class="sub">Ghidra (Static)</text>
+  <line x1="640" y1="163" x2="1150" y2="163" stroke="#1a1a2e"/>
+
+  <text x="645" y="205" class="red">Offline analysis</text>
+  <text x="645" y="240" class="txt">Just the binary file</text>
+  <text x="645" y="272" class="txt">No hardware needed</text>
+
+  <line x1="640" y1="300" x2="1150" y2="300" stroke="#1a1a2e"/>
+
+  <text x="645" y="340" class="cyn">Capabilities</text>
+  <text x="645" y="375" class="txt">Disassembly view</text>
+  <text x="645" y="407" class="txt">Decompile to C</text>
+  <text x="645" y="439" class="txt">Find functions</text>
+  <text x="645" y="471" class="txt">Cross-references</text>
+  <text x="645" y="503" class="txt">String search</text>
+
+  <line x1="640" y1="531" x2="1150" y2="531" stroke="#1a1a2e"/>
+
+  <text x="645" y="571" class="amb">Best For</text>
+  <text x="645" y="606" class="txt">Planning attacks</text>
+  <text x="645" y="638" class="txt">Understanding code</text>
+  <text x="645" y="670" class="txt">Finding targets</text>
+  <text x="645" y="702" class="txt">Mapping functions</text>
+
+  <text x="895" y="755" text-anchor="middle" class="dim">Works with just ELF</text>
+</svg>

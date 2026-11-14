@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">Functions in C</text>
+<text class="dim" x="600" y="88" text-anchor="middle">Reusable Blocks of Code</text>
+
+<!-- Function Anatomy -->
+<rect class="pnl" x="30" y="110" width="1140" height="195" rx="8"/>
+<text class="sub" x="50" y="150">Anatomy of a Function</text>
+<rect x="50" y="168" width="1100" height="50" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="cyn" x="70" y="200">int ir_to_led_number(int ir_command) {</text>
+
+<text class="amb" x="70" y="235">^^^</text>
+<text class="amb" x="128" y="235">^^^^^^^^^^^^^^^^</text>
+<text class="amb" x="372" y="235">^^^^^^^^^^^^^^</text>
+<text class="dim" x="70" y="258">ret</text>
+<text class="dim" x="128" y="258">function name</text>
+<text class="dim" x="372" y="258">parameter</text>
+
+<rect x="50" y="270" width="1100" height="35" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="grn" x="70" y="295">if (ir_command == 0x0C) return 1;</text>
+<text class="dim" x="600" y="295">// body + return value</text>
+
+<!-- Function Types Table -->
+<rect class="pnl" x="30" y="325" width="555" height="245" rx="8"/>
+<text class="sub" x="50" y="365">Function Types</text>
+
+<text class="amb" x="50" y="400">Type</text>
+<text class="amb" x="330" y="400">Example</text>
+<line x1="50" y1="410" x2="565" y2="410" stroke="#1a1a2e" stroke-width="1"/>
+
+<text class="txt" x="50" y="440">No params, no ret</text>
+<text class="dim" x="330" y="440">leds_all_off()</text>
+
+<text class="txt" x="50" y="470">Params, no return</text>
+<text class="dim" x="330" y="470">blink_led(..)</text>
+
+<text class="txt" x="50" y="500">No params, return</text>
+<text class="dim" x="330" y="500">ir_getkey()</text>
+
+<text class="txt" x="50" y="530">Params + return</text>
+<text class="dim" x="330" y="530">ir_to_led_num()</text>
+
+<text class="txt" x="50" y="560">Struct pointer</text>
+<text class="dim" x="330" y="560">get_led_pin()</text>
+
+<!-- Key Functions -->
+<rect class="pnl" x="615" y="325" width="555" height="245" rx="8"/>
+<text class="sub" x="635" y="365">Key Functions</text>
+
+<text class="grn" x="635" y="400">ir_to_led_number(cmd)</text>
+<text class="dim" x="635" y="425">Maps NEC code to LED 1/2/3</text>
+
+<text class="grn" x="635" y="460">get_led_pin(leds, num)</text>
+<text class="dim" x="635" y="485">Returns GPIO pin for LED</text>
+
+<text class="grn" x="635" y="520">blink_led(pin, cnt, ms)</text>
+<text class="dim" x="635" y="545">Blinks LED cnt times</text>
+
+<!-- Call Chain - Vertical Flow -->
+<rect class="pnl" x="30" y="590" width="1140" height="170" rx="8"/>
+<text class="sub" x="50" y="630">Function Call Chain</text>
+
+<text class="cyn" x="50" y="665">main()</text>
+<text class="dim" x="200" y="665">--></text>
+<text class="amb" x="250" y="665">process_ir_led_command()</text>
+
+<text class="txt" x="100" y="695">1. leds_all_off()</text>
+<text class="dim" x="400" y="695">Turn all LEDs off</text>
+
+<text class="txt" x="100" y="725">2. ir_to_led_number()</text>
+<text class="dim" x="400" y="725">Map NEC to LED</text>
+
+<text class="txt" x="700" y="695">3. get_led_pin()</text>
+<text class="dim" x="950" y="695">Get GPIO pin</text>
+
+<text class="txt" x="700" y="725">4. blink_led()</text>
+<text class="dim" x="950" y="725">Blink + stay on</text>
+</svg>

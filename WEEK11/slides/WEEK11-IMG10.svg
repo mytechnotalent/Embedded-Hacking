@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">Structs &amp; IR Protocol</text>
+<text class="dim" x="600" y="88" text-anchor="middle">Structs, Functions, IR, and Hacking</text>
+
+<!-- Structs -->
+<rect class="pnl" x="30" y="110" width="555" height="180" rx="8"/>
+<text class="sub" x="50" y="150">C Structures</text>
+<text class="txt" x="50" y="185">Group related data together</text>
+<text class="dim" x="50" y="210">Dot (.) for variables</text>
+<text class="dim" x="50" y="235">Arrow (->) for pointers</text>
+<text class="dim" x="50" y="260">Designated init: .pin = 16</text>
+
+<!-- NEC Protocol -->
+<rect class="pnl" x="615" y="110" width="555" height="180" rx="8"/>
+<text class="sub" x="635" y="150">NEC IR Protocol</text>
+<text class="txt" x="635" y="185">32-bit frame: addr + cmd</text>
+<text class="cyn" x="635" y="215">0x0C</text>
+<text class="dim" x="750" y="215">Button 1</text>
+<text class="cyn" x="635" y="245">0x18</text>
+<text class="dim" x="750" y="245">Button 2</text>
+<text class="cyn" x="635" y="275">0x5E</text>
+<text class="dim" x="750" y="275">Button 3</text>
+
+<!-- Functions -->
+<rect class="pnl" x="30" y="310" width="555" height="160" rx="8"/>
+<text class="sub" x="50" y="350">Functions</text>
+<text class="txt" x="50" y="385">Reusable blocks, one job each</text>
+<text class="dim" x="50" y="410">ir_to_led_number()</text>
+<text class="dim" x="50" y="435">get_led_pin() / blink_led()</text>
+<text class="dim" x="50" y="460">process_ir_led_command()</text>
+
+<!-- Struct Flattening -->
+<rect class="pnl" x="615" y="310" width="555" height="160" rx="8"/>
+<text class="sub" x="635" y="350">Assembly Flattening</text>
+<text class="txt" x="635" y="385">Structs vanish in assembly</text>
+<text class="dim" x="635" y="410">Only see values: 0x10 0x11 0x12</text>
+<text class="dim" x="635" y="435">Pattern recognition is key</text>
+<text class="dim" x="635" y="460">.ELF has symbols, .BIN doesn't</text>
+
+<!-- Key Addresses -->
+<rect class="pnl" x="30" y="490" width="555" height="150" rx="8"/>
+<text class="sub" x="50" y="530">Key Values</text>
+<text class="cyn" x="50" y="565">0x10000234</text>
+<text class="dim" x="250" y="565">main()</text>
+<text class="cyn" x="50" y="595">GPIO 5</text>
+<text class="dim" x="250" y="595">IR receiver</text>
+<text class="cyn" x="50" y="625">GPIO 16/17/18</text>
+<text class="dim" x="250" y="625">Red/Green/Yellow</text>
+
+<!-- Hacking -->
+<rect class="pnl" x="615" y="490" width="555" height="150" rx="8"/>
+<text class="sub" x="635" y="530">Hacking Techniques</text>
+<text class="amb" x="635" y="565">GPIO swap</text>
+<text class="dim" x="850" y="565">0x10 &lt;--> 0x11</text>
+<text class="amb" x="635" y="595">Log desync</text>
+<text class="dim" x="850" y="595">Logs lie!</text>
+<text class="amb" x="635" y="625">Stuxnet</text>
+<text class="dim" x="850" y="625">Same concept</text>
+
+<!-- Projects -->
+<rect class="pnl" x="30" y="660" width="555" height="100" rx="8"/>
+<text class="sub" x="50" y="695">Projects</text>
+<text class="dim" x="50" y="722">0x0023_structures</text>
+<text class="dim" x="50" y="744">0x0026_functions</text>
+
+<!-- Takeaway -->
+<rect class="pnl" x="615" y="660" width="555" height="100" rx="8"/>
+<text class="sub" x="635" y="695">Key Takeaway</text>
+<text class="dim" x="635" y="722">Patch bytes, mislead logs</text>
+<text class="dim" x="635" y="744">hardware does what YOU say</text>
+</svg>

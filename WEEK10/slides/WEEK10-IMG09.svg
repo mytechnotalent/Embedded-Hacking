@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">Hacking Conditionals</text>
+<text class="dim" x="600" y="88" text-anchor="middle">Strings, Timing, Stealth Commands</text>
+
+<!-- Hack 1: String -->
+<rect class="pnl" x="30" y="110" width="555" height="150" rx="8"/>
+<text class="sub" x="50" y="150">Hack 1: Change Strings</text>
+<text class="txt" x="50" y="185">Change "1" to "2":</text>
+<text class="red" x="340" y="185">0x31</text>
+<text class="amb" x="420" y="185">--></text>
+<text class="grn" x="480" y="185">0x32</text>
+<text class="txt" x="50" y="220">"one" to "fun":</text>
+<text class="red" x="280" y="220">6f 6e 65</text>
+<text class="amb" x="410" y="220">--></text>
+<text class="grn" x="460" y="220">66 75 6e</text>
+
+<!-- Hack 2: Timing -->
+<rect class="pnl" x="615" y="110" width="555" height="150" rx="8"/>
+<text class="sub" x="635" y="150">Hack 2: Speed Up Servo</text>
+<text class="txt" x="635" y="185">Change sleep_ms delay:</text>
+<text class="red" x="635" y="220">0x1F4 (500ms)</text>
+<text class="amb" x="860" y="220">--></text>
+<text class="grn" x="920" y="220">0x064 (100ms)</text>
+
+<!-- Hack 3: Stealth -->
+<rect class="pnl" x="30" y="280" width="1140" height="240" rx="8"/>
+<text class="sub" x="50" y="320">Hack 3: Stealth Commands</text>
+<text class="dim" x="50" y="348">Hidden keys move servo with NO output</text>
+
+<text class="amb" x="50" y="383">Patch</text>
+<text class="amb" x="280" y="383">Original</text>
+<text class="amb" x="530" y="383">Hacked</text>
+<text class="amb" x="800" y="383">Purpose</text>
+<line x1="50" y1="393" x2="1140" y2="393" stroke="#1a1a2e" stroke-width="1"/>
+
+<text class="txt" x="50" y="423">Compare 1</text>
+<text class="red" x="280" y="423">#0x31 ('1')</text>
+<text class="grn" x="530" y="423">#0x78 ('x')</text>
+<text class="dim" x="800" y="423">New trigger key</text>
+
+<text class="txt" x="50" y="453">Compare 2</text>
+<text class="red" x="280" y="453">#0x32 ('2')</text>
+<text class="grn" x="530" y="453">#0x79 ('y')</text>
+<text class="dim" x="800" y="453">New trigger key</text>
+
+<text class="txt" x="50" y="483">puts calls</text>
+<text class="red" x="280" y="483">bl puts</text>
+<text class="grn" x="530" y="483">00 bf 00 bf</text>
+<text class="dim" x="800" y="483">NOP out prints</text>
+
+<!-- Hack 4: Angle -->
+<rect class="pnl" x="30" y="540" width="555" height="120" rx="8"/>
+<text class="sub" x="50" y="575">Hack 4: Change Angle</text>
+<text class="txt" x="50" y="610">180.0f --> 30.0f:</text>
+<text class="red" x="50" y="640">00 00 34 43</text>
+<text class="amb" x="260" y="640">--></text>
+<text class="grn" x="320" y="640">00 00 f0 41</text>
+
+<!-- Result -->
+<rect class="pnl" x="615" y="540" width="555" height="120" rx="8"/>
+<text class="sub" x="635" y="575">Stealth Result</text>
+<text class="txt" x="635" y="610">'1','2': normal output + servo</text>
+<text class="cyn" x="635" y="640">'x','y': NO output, servo moves</text>
+
+<!-- Bottom summary -->
+<rect class="pnl" x="30" y="680" width="1140" height="80" rx="8"/>
+<text class="sub" x="50" y="715">Workflow</text>
+<text class="dim" x="50" y="740">Patch bytes in Ghidra --> export .bin --> convert to UF2 --> flash to Pico</text>
+</svg>

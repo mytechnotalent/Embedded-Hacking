@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">PWM &amp; Servo Hacking</text>
+<text class="dim" x="600" y="88" text-anchor="middle">Conditionals, PWM, Servo, and Hacking</text>
+
+<!-- Static vs Dynamic -->
+<rect class="pnl" x="30" y="110" width="555" height="200" rx="8"/>
+<text class="sub" x="50" y="150">Static vs Dynamic</text>
+
+<text class="grn" x="50" y="185">Static</text>
+<text class="dim" x="200" y="185">choice = 1 (fixed)</text>
+<text class="dim" x="200" y="210">Same path every iteration</text>
+<text class="dim" x="200" y="235">Compiler may optimize</text>
+
+<text class="cyn" x="50" y="270">Dynamic</text>
+<text class="dim" x="200" y="270">choice = getchar()</text>
+<text class="dim" x="200" y="295">Different paths at runtime</text>
+
+<!-- PWM -->
+<rect class="pnl" x="615" y="110" width="555" height="200" rx="8"/>
+<text class="sub" x="635" y="150">PWM for Servos</text>
+<text class="txt" x="635" y="185">150MHz / 150 = 1MHz tick</text>
+<text class="txt" x="635" y="220">Wrap 20000 = 50Hz (20ms)</text>
+<text class="dim" x="635" y="255">0deg=1000us  90deg=1500us  180deg=2000us</text>
+<text class="cyn" x="635" y="290">pulse = 1000 + (angle/180) x 1000</text>
+
+<!-- Branch Instructions -->
+<rect class="pnl" x="30" y="330" width="555" height="180" rx="8"/>
+<text class="sub" x="50" y="370">Branch Instructions</text>
+<text class="grn" x="50" y="405">cmp r4, #0x31</text>
+<text class="dim" x="350" y="405">Compare</text>
+<text class="grn" x="50" y="435">beq target</text>
+<text class="dim" x="350" y="435">Jump if equal</text>
+<text class="grn" x="50" y="465">bne target</text>
+<text class="dim" x="350" y="465">Jump if not equal</text>
+<text class="dim" x="50" y="495">NOP = 00 bf (erase code)</text>
+
+<!-- Key Addresses -->
+<rect class="pnl" x="615" y="330" width="555" height="180" rx="8"/>
+<text class="sub" x="635" y="370">Key Values</text>
+<text class="cyn" x="635" y="405">0x10000234</text>
+<text class="dim" x="870" y="405">main()</text>
+<text class="cyn" x="635" y="435">0x40070000</text>
+<text class="dim" x="870" y="435">UART0</text>
+<text class="cyn" x="635" y="465">0x1F4</text>
+<text class="dim" x="870" y="465">500 (sleep_ms)</text>
+<text class="cyn" x="635" y="495">0x43340000</text>
+<text class="dim" x="870" y="495">180.0f IEEE-754</text>
+
+<!-- Hacking Techniques -->
+<rect class="pnl" x="30" y="530" width="1140" height="120" rx="8"/>
+<text class="sub" x="50" y="570">4 Hack Types Applied</text>
+<text class="amb" x="50" y="600">String</text>
+<text class="dim" x="180" y="600">"one"-->"fun"</text>
+<text class="amb" x="420" y="600">Timing</text>
+<text class="dim" x="550" y="600">500ms-->100ms</text>
+<text class="amb" x="50" y="625">Stealth</text>
+<text class="dim" x="180" y="625">NOP out prints</text>
+<text class="amb" x="420" y="625">Angle</text>
+<text class="dim" x="550" y="625">180.0f-->30.0f</text>
+
+<!-- Projects and IEEE -->
+<rect class="pnl" x="30" y="660" width="555" height="100" rx="8"/>
+<text class="sub" x="50" y="692">Projects</text>
+<text class="dim" x="50" y="718">0x001d_static-conditionals</text>
+<text class="dim" x="50" y="740">0x0020_dynamic-conditionals</text>
+
+<rect class="pnl" x="615" y="660" width="555" height="100" rx="8"/>
+<text class="sub" x="635" y="692">IEEE-754 Angles</text>
+<text class="dim" x="635" y="718">0.0f=00000000  90.0f=42b40000</text>
+<text class="dim" x="635" y="740">180.0f=43340000  30.0f=41f00000</text>
+</svg>

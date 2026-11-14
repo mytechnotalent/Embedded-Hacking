@@ -1,0 +1,63 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">Memory Sections</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Where Variables Live After Compilation</text>
+
+<!-- .data Section -->
+<rect x="40" y="110" width="1120" height="170" rx="8" class="pnl"/>
+<rect x="60" y="130" width="180" height="40" rx="6" fill="#0f1a0f" stroke="#00ff41" stroke-width="2"/>
+<text x="150" y="157" text-anchor="middle" class="grn">.data</text>
+<text x="260" y="157" class="txt">Flash -> copied to RAM at startup</text>
+<text x="60" y="200" class="dim">Contains: Initialized global/static variables</text>
+<text x="60" y="230" class="cyn">int counter = 42;</text>
+<text x="60" y="260" class="dim">Initial value stored in flash, copied to SRAM by data_cpy</text>
+
+<!-- .bss Section -->
+<rect x="40" y="295" width="1120" height="170" rx="8" class="pnl"/>
+<rect x="60" y="315" width="180" height="40" rx="6" fill="#1a0a0a" stroke="#ff0040" stroke-width="2"/>
+<text x="150" y="342" text-anchor="middle" class="red">.bss</text>
+<text x="260" y="342" class="txt">RAM — zeroed at startup</text>
+<text x="60" y="385" class="dim">Contains: Uninitialized global/static variables</text>
+<text x="60" y="415" class="cyn">int counter;</text>
+<text x="60" y="445" class="dim">NOT stored in binary (saves space!) — memset to 0 at boot</text>
+
+<!-- .rodata Section -->
+<rect x="40" y="480" width="1120" height="170" rx="8" class="pnl"/>
+<rect x="60" y="500" width="180" height="40" rx="6" fill="#0a0a1f" stroke="#00d4ff" stroke-width="2"/>
+<text x="150" y="527" text-anchor="middle" class="cyn">.rodata</text>
+<text x="260" y="527" class="txt">Flash — read only</text>
+<text x="60" y="570" class="dim">Contains: Constants and string literals</text>
+<text x="60" y="600" class="amb">const int MAX = 100;</text>
+<text x="60" y="630" class="dim">Lives in flash permanently — cannot be modified at runtime</text>
+
+<!-- Summary Table -->
+<rect x="40" y="665" width="1120" height="115" rx="8" class="pnl"/>
+<text x="80" y="700" class="grn">.data</text>
+<text x="260" y="700" class="txt">RAM</text>
+<text x="420" y="700" class="dim">Writable</text>
+<text x="600" y="700" class="dim">Initialized globals</text>
+
+<text x="80" y="730" class="red">.bss</text>
+<text x="260" y="730" class="txt">RAM</text>
+<text x="420" y="730" class="dim">Writable</text>
+<text x="600" y="730" class="dim">Uninitialized globals (zeroed)</text>
+
+<text x="80" y="760" class="cyn">.rodata</text>
+<text x="260" y="760" class="txt">Flash</text>
+<text x="420" y="760" class="dim">Read-only</text>
+<text x="600" y="760" class="dim">Constants &amp; strings</text>
+</svg>
