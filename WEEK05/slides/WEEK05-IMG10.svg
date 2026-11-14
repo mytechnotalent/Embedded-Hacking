@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">IEEE 754 &amp; Data Types</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Data Types and IEEE 754 Reference</text>
+
+<!-- Reference Table -->
+<rect x="40" y="110" width="1120" height="330" rx="8" class="pnl"/>
+<text x="600" y="148" text-anchor="middle" class="sub">IEEE 754 Hex Values</text>
+
+<!-- Table Header -->
+<text x="60" y="188" class="cyn">Value</text>
+<text x="260" y="188" class="cyn">Float (32b)</text>
+<text x="560" y="188" class="cyn">Double (64b)</text>
+
+<line x1="60" y1="198" x2="1140" y2="198" stroke="#1a1a2e" stroke-width="1"/>
+
+<!-- Row 1 -->
+<text x="60" y="228" class="txt">42.0</text>
+<text x="260" y="228" class="grn">0x42280000</text>
+<text x="560" y="228" class="grn">0x4045000000000000</text>
+
+<!-- Row 2 -->
+<text x="60" y="258" class="txt">42.5</text>
+<text x="260" y="258" class="grn">0x422A0000</text>
+<text x="560" y="258" class="grn">0x4045400000000000</text>
+
+<!-- Row 3 -->
+<text x="60" y="288" class="txt">99.0</text>
+<text x="260" y="288" class="amb">0x42C60000</text>
+<text x="560" y="288" class="amb">0x4058C00000000000</text>
+
+<!-- Row 4 -->
+<text x="60" y="318" class="txt">99.99</text>
+<text x="260" y="318" class="amb">0x42C7F5C3</text>
+<text x="560" y="318" class="amb">0x4058FF5C28F5C28F</text>
+
+<!-- Row 5 -->
+<text x="60" y="348" class="txt">3.14</text>
+<text x="260" y="348" class="red">0x4048F5C3</text>
+<text x="560" y="348" class="red">0x40091EB851EB851F</text>
+
+<!-- Row 6 -->
+<text x="60" y="378" class="txt">100.0</text>
+<text x="260" y="378" class="red">0x42C80000</text>
+<text x="560" y="378" class="red">0x4059000000000000</text>
+
+<text x="60" y="418" class="dim">Tip: float low word often 0x0; double low word usually non-zero</text>
+
+<!-- Patching Workflow -->
+<rect x="40" y="460" width="1120" height="155" rx="8" class="pnl"/>
+<text x="600" y="498" text-anchor="middle" class="sub">Patching Workflow</text>
+
+<rect x="60" y="518" width="200" height="70" rx="6" fill="#0a0a0f" stroke="#00d4ff" stroke-width="1"/>
+<text x="160" y="548" text-anchor="middle" class="cyn">1. Identify</text>
+<text x="160" y="570" text-anchor="middle" class="dim">float / double</text>
+
+<rect x="280" y="518" width="200" height="70" rx="6" fill="#0a0a0f" stroke="#ffaa00" stroke-width="1"/>
+<text x="380" y="548" text-anchor="middle" class="amb">2. Check r2</text>
+<text x="380" y="570" text-anchor="middle" class="dim">zero = float</text>
+
+<rect x="500" y="518" width="200" height="70" rx="6" fill="#0a0a0f" stroke="#ff0040" stroke-width="1"/>
+<text x="600" y="548" text-anchor="middle" class="red">3. Calculate</text>
+<text x="600" y="570" text-anchor="middle" class="dim">new hex value</text>
+
+<rect x="720" y="518" width="200" height="70" rx="6" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="820" y="548" text-anchor="middle" class="grn">4. Patch</text>
+<text x="820" y="570" text-anchor="middle" class="dim">in byte editor</text>
+
+<rect x="940" y="518" width="200" height="70" rx="6" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="1040" y="548" text-anchor="middle" class="grn">5. Export</text>
+<text x="1040" y="570" text-anchor="middle" class="dim">UF2 + test</text>
+
+<!-- Key Takeaways -->
+<rect x="40" y="635" width="540" height="145" rx="8" class="pnl"/>
+<text x="310" y="670" text-anchor="middle" class="sub">Integer Types</text>
+
+<text x="60" y="705" class="txt">uint8_t: 0-255</text>
+<text x="60" y="735" class="txt">int8_t: -128 to 127</text>
+<text x="60" y="765" class="dim">Two's complement for signed</text>
+
+<rect x="620" y="635" width="540" height="145" rx="8" class="pnl"/>
+<text x="890" y="670" text-anchor="middle" class="sub">Key Insight</text>
+
+<text x="640" y="705" class="txt">Float: patch 1 word</text>
+<text x="640" y="735" class="txt">Double: patch 2 words</text>
+<text x="640" y="765" class="dim">Check r2 to detect type</text>
+</svg>

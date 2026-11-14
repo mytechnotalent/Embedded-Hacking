@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">GPIO Coprocessor</text>
+<text x="600" y="88" text-anchor="middle" class="dim">RP2350 Single-Cycle I/O via mcrr</text>
+
+<!-- MCRR Instruction Anatomy -->
+<rect x="40" y="110" width="1120" height="195" rx="8" class="pnl"/>
+<text x="600" y="148" text-anchor="middle" class="sub">mcrr Instruction Breakdown</text>
+
+<rect x="60" y="168" width="1080" height="50" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="2"/>
+<text x="600" y="200" text-anchor="middle" class="grn">mcrr  p0, #4, r4, r5, c0</text>
+
+<text x="80" y="250" class="cyn">mcrr</text>
+<text x="200" y="250" class="dim">Move to Coprocessor (2 regs)</text>
+<text x="80" y="278" class="amb">p0</text>
+<text x="200" y="278" class="dim">Coprocessor 0 (GPIO)</text>
+<text x="620" y="250" class="grn">r4</text>
+<text x="700" y="250" class="dim">GPIO pin number</text>
+<text x="620" y="278" class="red">r5</text>
+<text x="700" y="278" class="dim">Value (0=LOW, 1=HIGH)</text>
+
+<!-- Two Coprocessor Registers -->
+<rect x="40" y="320" width="540" height="210" rx="8" class="pnl"/>
+<text x="310" y="358" text-anchor="middle" class="sub">Output Value (c0)</text>
+
+<rect x="60" y="378" width="500" height="50" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="80" y="410" class="grn">mcrr p0,#4,r4,r5,c0</text>
+
+<text x="60" y="455" class="txt">r4 = pin number</text>
+<text x="60" y="485" class="txt">r5 = 0 or 1</text>
+<text x="60" y="515" class="dim">Controls GPIO output state</text>
+
+<rect x="620" y="320" width="540" height="210" rx="8" class="pnl"/>
+<text x="890" y="358" text-anchor="middle" class="sub">Output Enable (c4)</text>
+
+<rect x="640" y="378" width="500" height="50" rx="4" fill="#0a0a0f" stroke="#ffaa00" stroke-width="1"/>
+<text x="660" y="410" class="amb">mcrr p0,#4,r4,r5,c4</text>
+
+<text x="640" y="455" class="txt">r4 = pin number</text>
+<text x="640" y="485" class="txt">r5 = 1 (enable output)</text>
+<text x="640" y="515" class="dim">Sets pin direction to OUTPUT</text>
+
+<!-- GPIO Init Full Sequence -->
+<rect x="40" y="545" width="1120" height="235" rx="8" class="pnl"/>
+<text x="600" y="583" text-anchor="middle" class="sub">gpio_init(16) Sequence</text>
+
+<rect x="60" y="603" width="340" height="80" rx="6" fill="#0a0a0f" stroke="#00d4ff" stroke-width="1"/>
+<text x="230" y="633" text-anchor="middle" class="cyn">Step 1: Config Pad</text>
+<text x="230" y="660" text-anchor="middle" class="dim">addr 0x40038044</text>
+
+<rect x="420" y="603" width="340" height="80" rx="6" fill="#0a0a0f" stroke="#ffaa00" stroke-width="1"/>
+<text x="590" y="633" text-anchor="middle" class="amb">Step 2: Set Func</text>
+<text x="590" y="660" text-anchor="middle" class="dim">FUNCSEL = 5 (SIO)</text>
+
+<rect x="780" y="603" width="340" height="80" rx="6" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="950" y="633" text-anchor="middle" class="grn">Step 3: Enable Out</text>
+<text x="950" y="660" text-anchor="middle" class="dim">mcrr p0,#4,r4,r5,c4</text>
+
+<line x1="400" y1="643" x2="420" y2="643" stroke="#00ff41" stroke-width="2"/>
+<line x1="760" y1="643" x2="780" y2="643" stroke="#00ff41" stroke-width="2"/>
+
+<text x="60" y="720" class="dim">Pad: clear OD, set IE, clear ISO</text>
+<text x="60" y="750" class="dim">SIO = fast single-cycle GPIO access</text>
+</svg>

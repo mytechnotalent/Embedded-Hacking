@@ -1,0 +1,70 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">RP2350 Boot Sequence</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Power-On to main() — 5 Steps</text>
+
+<!-- Step 1 -->
+<rect x="40" y="110" width="1120" height="70" rx="6" fill="#12121a" stroke="#ffaa00" stroke-width="2"/>
+<text x="60" y="137" class="amb">STEP 1</text>
+<text x="220" y="137" class="txt">Power On</text>
+<text x="60" y="167" class="dim">Cortex-M33 wakes, execution at 0x00000000 (Bootrom)</text>
+
+<!-- Arrow -->
+<text x="600" y="200" text-anchor="middle" class="grn">▼</text>
+
+<!-- Step 2 -->
+<rect x="40" y="208" width="1120" height="70" rx="6" fill="#12121a" stroke="#ffaa00" stroke-width="2"/>
+<text x="60" y="235" class="amb">STEP 2</text>
+<text x="220" y="235" class="txt">Bootrom Executes</text>
+<text x="60" y="265" class="dim">32KB on-chip ROM — finds IMAGE_DEF at 0x10000000</text>
+
+<!-- Arrow -->
+<text x="600" y="298" text-anchor="middle" class="grn">▼</text>
+
+<!-- Step 3 -->
+<rect x="40" y="306" width="1120" height="70" rx="6" fill="#12121a" stroke="#ffaa00" stroke-width="2"/>
+<text x="60" y="333" class="amb">STEP 3</text>
+<text x="220" y="333" class="txt">Flash XIP Setup (bootrom-managed)</text>
+<text x="60" y="363" class="dim">Bootrom configures flash interface &amp; XIP (no boot2 on RP2350)</text>
+
+<!-- Arrow -->
+<text x="600" y="396" text-anchor="middle" class="grn">▼</text>
+
+<!-- Step 4 -->
+<rect x="40" y="404" width="1120" height="90" rx="6" fill="#12121a" stroke="#ffaa00" stroke-width="2"/>
+<text x="60" y="431" class="amb">STEP 4</text>
+<text x="220" y="431" class="txt">Vector Table &amp; Reset Handler</text>
+<text x="60" y="463" class="dim">Reads SP from offset 0x00 -> 0x20082000</text>
+<text x="60" y="489" class="dim">Reads Reset Handler from 0x04 -> 0x1000015d</text>
+
+<!-- Arrow -->
+<text x="600" y="514" text-anchor="middle" class="grn">▼</text>
+
+<!-- Step 5 -->
+<rect x="40" y="524" width="1120" height="110" rx="6" fill="#12121a" stroke="#ffaa00" stroke-width="2"/>
+<text x="60" y="551" class="amb">STEP 5</text>
+<text x="220" y="551" class="txt">C Runtime Startup (crt0.S)</text>
+<text x="60" y="579" class="dim">Copy .data from flash -> RAM</text>
+<text x="60" y="603" class="dim">Zero .bss section</text>
+<text x="60" y="627" class="dim">Call runtime_init() -> main()</text>
+
+<!-- Bottom summary -->
+<rect x="40" y="660" width="1120" height="110" rx="6" fill="#12121a" stroke="#ffaa00" stroke-width="2"/>
+<text x="60" y="695" class="sub">Key Insight</text>
+<text x="60" y="730" class="txt">Your main() is the LAST thing to run.</text>
+<text x="60" y="760" class="txt">All 5 steps must complete first!</text>
+</svg>

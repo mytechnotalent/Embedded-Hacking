@@ -1,0 +1,9 @@
+{
+  "format": "ouroboros-hardened-demo-v1",
+  "memory_kib": 64,
+  "iterations": 3,
+  "parallelism": 1,
+  "salt_hex": "f2d518639a82019dc2d7afa5cdb6d871",
+  "nonce_hex": "1cef790d779e7c04e7f066dd90d080708797671f79efc4e4",
+  "ciphertext_and_tag_hex": "2c23b27e9562b8ed9e08e06dd99db4913e819a778bb47b71bc661e6e731a8154cdb536a4767e9bf8533e031db8e5ae7aadb431cf12d9f9c45fa9b94b80dcbbde"
+}

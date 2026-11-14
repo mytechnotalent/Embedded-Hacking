@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">GPIO Input Basics</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Reading buttons with the RP2350</text>
+
+<!-- Output vs Input -->
+<rect x="40" y="110" width="540" height="200" rx="8" class="pnl"/>
+<text x="310" y="148" text-anchor="middle" class="sub">OUTPUT (before)</text>
+
+<rect x="60" y="170" width="500" height="55" rx="4" fill="#0a0a0f" stroke="#00ff41" stroke-width="1"/>
+<text x="80" y="204" class="grn">Pico GPIO 16</text>
+<text x="370" y="204" class="txt">--></text>
+<text x="420" y="204" class="amb">LED</text>
+
+<text x="60" y="268" class="dim">We CONTROL the LED</text>
+<text x="60" y="293" class="dim">gpio_put(pin, value)</text>
+
+<rect x="620" y="110" width="540" height="200" rx="8" class="pnl"/>
+<text x="890" y="148" text-anchor="middle" class="sub">INPUT (new!)</text>
+
+<rect x="640" y="170" width="500" height="55" rx="4" fill="#0a0a0f" stroke="#00d4ff" stroke-width="1"/>
+<text x="660" y="204" class="cyn">Pico GPIO 15</text>
+<text x="950" y="204" class="txt">&lt;--</text>
+<text x="1000" y="204" class="amb">BTN</text>
+
+<text x="640" y="268" class="dim">We READ button state</text>
+<text x="640" y="293" class="dim">gpio_get(pin)</text>
+
+<!-- Floating Input Problem -->
+<rect x="40" y="330" width="540" height="200" rx="8" class="pnl"/>
+<text x="310" y="368" text-anchor="middle" class="sub">Floating Input</text>
+
+<text x="60" y="408" class="txt">No connection =</text>
+<text x="60" y="438" class="red">RANDOM values!</text>
+
+<text x="60" y="478" class="dim">Read 1: HIGH</text>
+<text x="260" y="478" class="dim">Read 2: LOW</text>
+<text x="60" y="503" class="dim">Read 3: HIGH</text>
+<text x="260" y="503" class="dim">Read 4: HIGH</text>
+<text x="440" y="503" class="dim">???</text>
+
+<!-- Pull Resistors -->
+<rect x="620" y="330" width="540" height="200" rx="8" class="pnl"/>
+<text x="890" y="368" text-anchor="middle" class="sub">Pull Resistors</text>
+
+<text x="640" y="408" class="cyn">Type</text>
+<text x="840" y="408" class="cyn">Default</text>
+<text x="1000" y="408" class="cyn">Pressed</text>
+
+<line x1="640" y1="418" x2="1140" y2="418" stroke="#1a1a2e" stroke-width="1"/>
+
+<text x="640" y="448" class="amb">Pull-Up</text>
+<text x="840" y="448" class="grn">HIGH(1)</text>
+<text x="1000" y="448" class="red">LOW(0)</text>
+
+<text x="640" y="483" class="amb">Pull-Down</text>
+<text x="840" y="483" class="red">LOW(0)</text>
+<text x="1000" y="483" class="grn">HIGH(1)</text>
+
+<text x="640" y="513" class="dim">Pico 2 has internal pull resistors!</text>
+
+<!-- GPIO Functions -->
+<rect x="40" y="550" width="1120" height="230" rx="8" class="pnl"/>
+<text x="600" y="588" text-anchor="middle" class="sub">GPIO Input Functions</text>
+
+<text x="60" y="628" class="grn">gpio_init(pin)</text>
+<text x="500" y="628" class="dim">Initialize pin</text>
+
+<text x="60" y="658" class="grn">gpio_set_dir(pin, GPIO_IN)</text>
+<text x="500" y="658" class="dim">Set as input</text>
+
+<text x="60" y="688" class="grn">gpio_pull_up(pin)</text>
+<text x="500" y="688" class="dim">Enable pull-up</text>
+
+<text x="60" y="718" class="grn">gpio_get(pin)</text>
+<text x="500" y="718" class="dim">Read state (0 or 1)</text>
+
+<text x="60" y="748" class="dim">No external resistor needed -- internal pull-up!</text>
+</svg>

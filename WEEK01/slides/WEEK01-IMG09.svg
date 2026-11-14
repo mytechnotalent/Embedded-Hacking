@@ -1,0 +1,92 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+  .bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+  .title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+  .sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+  .txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+  .dim{font:20px 'Courier New',monospace;fill:#888}
+  .mid{dominant-baseline:middle}
+  .grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+  .red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+  .cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+  .amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+  .badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+
+<!-- Title -->
+<text x="600" y="52" text-anchor="middle" class="title">ELF File Structure</text>
+<text x="600" y="88" text-anchor="middle" class="dim">Binary Format</text>
+
+  <!-- Left Panel: ELF Layout -->
+  <rect x="30" y="105" width="440" height="675" class="pnl" rx="8"/>
+  <text x="250" y="148" text-anchor="middle" class="sub">ELF File Layout (Offsets)</text>
+  <line x1="50" y1="163" x2="450" y2="163" stroke="#1a1a2e"/>
+  <text x="55" y="173" class="dim">Higher file offsets</text>
+
+  <!-- Section Headers (higher offsets) -->
+  <rect x="55" y="180" width="385" height="50" rx="4" fill="#1a0f0f" stroke="#ff0040" stroke-width="2"/>
+  <text x="247" y="205" text-anchor="middle" class="red mid">Section Headers</text>
+
+  <!-- .symtab -->
+  <rect x="55" y="245" width="385" height="55" rx="4" fill="#0f0f1a" stroke="#00d4ff" stroke-width="2"/>
+  <text x="247" y="272.5" text-anchor="middle" class="cyn mid">.symtab</text>
+
+  <!-- .bss section -->
+  <rect x="55" y="315" width="385" height="55" rx="4" fill="#0a0a0f" stroke="#888888" stroke-width="1" stroke-dasharray="6"/>
+  <text x="247" y="342.5" text-anchor="middle" class="txt mid">.bss</text>
+
+  <!-- .data section -->
+  <rect x="55" y="385" width="385" height="55" rx="4" fill="#1a1a0f" stroke="#ffaa00" stroke-width="2"/>
+  <text x="247" y="412.5" text-anchor="middle" class="amb mid">.data</text>
+
+  <!-- .rodata section -->
+  <rect x="55" y="455" width="385" height="55" rx="4" fill="#1a1a0f" stroke="#ffaa00" stroke-width="2"/>
+  <text x="247" y="482.5" text-anchor="middle" class="amb mid">.rodata</text>
+
+  <!-- .text section -->
+  <rect x="55" y="525" width="385" height="75" rx="4" fill="#0f1a0f" stroke="#00ff41" stroke-width="2"/>
+  <text x="247" y="552" text-anchor="middle" class="grn mid">.text</text>
+  <text x="247" y="576" text-anchor="middle" class="dim mid">Machine code</text>
+
+  <!-- Program Headers -->
+  <rect x="55" y="615" width="385" height="55" rx="4" fill="#0f0f1a" stroke="#00d4ff" stroke-width="2"/>
+  <text x="247" y="642.5" text-anchor="middle" class="cyn mid">Program Headers</text>
+
+  <!-- ELF Header (offset 0x0000) -->
+  <rect x="55" y="685" width="385" height="60" rx="4" fill="#1a0f0f" stroke="#ff0040" stroke-width="2"/>
+  <text x="247" y="710" text-anchor="middle" class="red mid">ELF Header</text>
+  <text x="247" y="730" text-anchor="middle" class="dim mid">Magic: 7f 45 4c 46 (off 0x0000)</text>
+
+  <!-- Right Panel: Details -->
+  <rect x="500" y="105" width="670" height="675" class="pnl" rx="8"/>
+  <text x="835" y="148" text-anchor="middle" class="sub">Section Details + Mapping</text>
+  <line x1="520" y1="163" x2="1150" y2="163" stroke="#1a1a2e"/>
+
+  <text x="525" y="205" class="red">ELF Header</text>
+  <text x="525" y="240" class="txt">Arch: ARM 32-bit</text>
+  <text x="525" y="272" class="txt">Entry point addr</text>
+  <text x="525" y="304" class="dim">Type: executable</text>
+
+  <line x1="520" y1="332" x2="1150" y2="332" stroke="#1a1a2e"/>
+
+  <text x="525" y="372" class="grn">.text = code</text>
+  <text x="525" y="407" class="txt">All instructions</text>
+  <text x="525" y="439" class="txt">Maps to XIP flash</text>
+  <text x="525" y="471" class="dim">Disassemble this!</text>
+
+  <line x1="520" y1="499" x2="1150" y2="499" stroke="#1a1a2e"/>
+
+  <text x="525" y="539" class="amb">.data / .rodata</text>
+  <text x="525" y="574" class="txt">.data = initialized</text>
+  <text x="525" y="606" class="txt">.rodata = constants</text>
+  <text x="525" y="638" class="txt">.bss = zeroed vars</text>
+
+  <line x1="520" y1="666" x2="1150" y2="666" stroke="#1a1a2e"/>
+
+  <text x="525" y="706" class="cyn">.symtab = symbols</text>
+  <text x="525" y="741" class="txt">Function names</text>
+  <text x="780" y="706" class="dim">ELF header is file metadata</text>
+  <text x="780" y="734" class="dim">not runtime address 0x1000....</text>
+  <text x="780" y="762" class="dim">Use section VMA/LMA for memory map</text>
+</svg>

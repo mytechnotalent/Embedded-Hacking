@@ -1,0 +1,94 @@
+# Python standards for this repository.
+#
+# Scope note: only the small number of first-party helper scripts at the repo
+# root are linted. Firmware projects under 0x*/ are C/C++/ASM and are not
+# Python, and vendored trees (pico-sdk, build/) are excluded explicitly.
+#
+# Run:
+#   ruff check .
+#   ruff format .
+#   ruff check --fix .
+
+[project]
+name = "embedded-hacking-tools"
+version = "1.0.0"
+description = "Host-side tooling for the Embedded Hacking course"
+requires-python = ">=3.10"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+# Scope: the first-party host-side helpers at the repo root only. The lesson
+# trees below are per-lesson material that predates this config and are
+# intentionally not linted; migrate a file to the repo root, or run ruff on it
+# directly with an explicit path, when you touch it.
+extend-exclude = [
+    "0x*",
+    "WEEK*",
+    "**/build",
+    "pico-sdk",
+    "**/pico-sdk",
+    "node_modules",
+]
+
+[tool.ruff.lint]
+# E/W  pycodestyle      - formatting-independent style
+# F    pyflakes         - unused imports, undefined names, f-string gaps
+# I    isort            - import ordering
+# UP   pyupgrade        - modern syntax for the declared target version
+# B    bugbear          - real bug patterns
+# SIM  simplify         - redundant code
+# C4   comprehensions   - needless comprehension / generator misuse
+# RET  return           - inconsistent returns
+# PTH  pathlib          - use pathlib instead of os.path
+# ARG  unused-arguments - dead parameters
+# D    pydocstyle       - docstring presence and convention
+# ANN  annotations      - type annotations
+# TRY  tryceratops      - correct exception handling
+# PIE  misc             - misc lints
+# RUF  ruff-specific    - modern idioms and correctness rules
+select = [
+    "E",
+    "F",
+    "I",
+    "UP",
+    "B",
+    "SIM",
+    "C4",
+    "RET",
+    "PTH",
+    "ARG",
+    "D",
+    "ANN",
+    "TRY",
+    "PIE",
+    "RUF",
+]
+
+ignore = [
+    # The UF2 block format is a byte-level binary format; several conversions
+    # legitimately deal in loose byte slices and magic integers.
+    "E501",
+    # C901 complexity: convert_from_uf2 is a linear decoder over a block stream
+    # and reads far better as one pass than split into helpers.
+    "C901",
+    # Legacy CLI scripts print progress to stdout as their primary output.
+    "T201",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tutorial scripts are run directly and use a permissive argparse style.
+"uf2conv.py" = ["D100"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-annotations]
+# Accept `-> None` omission only on __init__; require annotations elsewhere.
+suppress-dummy-args = false
+mypy-init-return = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"

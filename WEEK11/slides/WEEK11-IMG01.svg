@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<style>
+.bg{fill:#0a0a0f}.pnl{fill:#12121a;stroke:#1a1a2e}.hdr{fill:#12121a}
+.title{font:bold 42px 'Courier New',monospace;fill:#00ff41}
+.sub{font:bold 28px 'Courier New',monospace;fill:#00d4ff}
+.txt{font:24px 'Courier New',monospace;fill:#c0c0c0}
+.dim{font:20px 'Courier New',monospace;fill:#888}
+.grn{font:bold 24px 'Courier New',monospace;fill:#00ff41}
+.red{font:bold 24px 'Courier New',monospace;fill:#ff0040}
+.cyn{font:bold 24px 'Courier New',monospace;fill:#00d4ff}
+.amb{font:bold 24px 'Courier New',monospace;fill:#ffaa00}
+.badge{stroke:#00ff41;rx:14}
+</style>
+<rect class="bg" width="1200" height="800"/>
+<rect class="hdr" x="0" y="0" width="1200" height="100" rx="0"/>
+<text class="title" x="600" y="52" text-anchor="middle">C Structures (Structs)</text>
+<text class="dim" x="600" y="88" text-anchor="middle">Grouping Related Data Together</text>
+
+<!-- What is a Struct -->
+<rect class="pnl" x="30" y="110" width="1140" height="200" rx="8"/>
+<text class="sub" x="50" y="150">What is a Struct?</text>
+<text class="txt" x="50" y="185">A user-defined type that groups</text>
+<text class="txt" x="50" y="215">related variables under one name</text>
+<text class="dim" x="50" y="250">Like a form with multiple fields</text>
+<text class="dim" x="50" y="275">-- each field holds different data</text>
+
+<!-- Struct Definition -->
+<rect class="pnl" x="30" y="330" width="555" height="300" rx="8"/>
+<text class="sub" x="50" y="370">Struct Definition</text>
+<rect x="50" y="385" width="515" height="230" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="cyn" x="70" y="413">typedef struct {</text>
+<text class="txt" x="100" y="441">uint8_t led1_pin;</text>
+<text class="txt" x="100" y="469">uint8_t led2_pin;</text>
+<text class="txt" x="100" y="497">uint8_t led3_pin;</text>
+<text class="txt" x="100" y="525">bool led1_state;</text>
+<text class="txt" x="100" y="553">bool led2_state;</text>
+<text class="txt" x="100" y="581">bool led3_state;</text>
+<text class="cyn" x="70" y="607">} simple_led_ctrl_t;</text>
+
+<!-- Why Use Structs -->
+<rect class="pnl" x="615" y="330" width="555" height="300" rx="8"/>
+<text class="sub" x="635" y="370">Why Use Structs?</text>
+<text class="grn" x="635" y="410">1.</text>
+<text class="txt" x="680" y="410">Organization</text>
+<text class="dim" x="680" y="435">Related data stays together</text>
+<text class="grn" x="635" y="470">2.</text>
+<text class="txt" x="680" y="470">Readability</text>
+<text class="dim" x="680" y="495">Code easier to understand</text>
+<text class="grn" x="635" y="530">3.</text>
+<text class="txt" x="680" y="530">Scalability</text>
+<text class="dim" x="680" y="555">Easy to add more features</text>
+<text class="grn" x="635" y="590">4.</text>
+<text class="txt" x="680" y="590">Pass to Functions</text>
+
+<!-- Struct Container Visualization -->
+<rect class="pnl" x="30" y="650" width="1140" height="110" rx="8"/>
+<text class="sub" x="50" y="682">simple_led_ctrl_t leds</text>
+<rect x="50" y="695" width="170" height="45" rx="6" fill="#0a0a0f" stroke="#00ff41"/>
+<text class="grn" x="65" y="724">pin1: 16</text>
+<rect x="240" y="695" width="170" height="45" rx="6" fill="#0a0a0f" stroke="#00ff41"/>
+<text class="grn" x="255" y="724">pin2: 17</text>
+<rect x="430" y="695" width="170" height="45" rx="6" fill="#0a0a0f" stroke="#00ff41"/>
+<text class="grn" x="445" y="724">pin3: 18</text>
+<rect x="630" y="695" width="160" height="45" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="dim" x="645" y="722">state1: 0</text>
+<rect x="810" y="695" width="160" height="45" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="dim" x="825" y="722">state2: 0</text>
+<rect x="990" y="695" width="160" height="45" rx="6" fill="#0a0a0f" stroke="#1a1a2e"/>
+<text class="dim" x="1005" y="722">state3: 0</text>
+</svg>
