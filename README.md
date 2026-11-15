@@ -22,11 +22,11 @@ By using this repository and course, you acknowledge and agree that:
 
 <br>
 
-# Today's Tutorial [November 13, 2026]
-## Lesson 355: AVR Assembler Course (Chapter 009: Servo Motor)
-This lesson will teach you how to control a mechanical Servo Motor by generating precise Pulse Width Modulation (PWM) signals using Timer1 in pure AVR assembly.
+# Today's Tutorial [November 15, 2026]
+## Lesson 357: AVR Assembler Course (Chapter 011: DHT11 Sensor)
+This lesson will teach you how to write a software driver for a single-wire digital communications protocol to read humidity and temperature from a DHT11 sensor in pure AVR assembly.
 
--> Click [HERE](https://github.com/mytechnotalent/Assembler/blob/main/lessons/009/lesson.md) to read the lesson and see the code.
+-> Click [HERE](https://github.com/mytechnotalent/Assembler/blob/main/lessons/011/lesson.md) to read the lesson and see the code.
 
 <br>
 
